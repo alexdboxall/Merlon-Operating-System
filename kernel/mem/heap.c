@@ -1,0 +1,606 @@
+#include <common.h>
+#include <assert.h>
+#include <stdbool.h>
+#include <panic.h>
+#include <virtual.h>
+#include <arch.h>
+#include <string.h>
+#include <log.h>
+
+// TODO: locks!
+// TODO: what happens when we are out of heap, so we ask for virt, but then virt asks for heap to allocate memory
+//       for the bookkeeping? solution: store a 'reserve' virtual page or two (with locked RAM behind it) in a global
+//       variable, and use that on request, and on request refill that, and detect recurison and don't double-request
+//       from system.
+
+#define BOOTSTRAP_AREA_SIZE (1024 * 16)
+
+/**
+ * Used as a system block that can be used even before the virtual memory manager is setup.
+ */
+static uint8_t bootstrap_memory_area[BOOTSTRAP_AREA_SIZE] __attribute__ ((aligned(ARCH_PAGE_SIZE)));
+
+/**
+ * Represents a section of memory that is either allocated or free. The memory address
+ * it represents is itself, excluding the metadata at the start or end.
+ *
+ * See the report for further details.
+ */
+struct block {
+    /*
+     * The entire size of the block. The low 2 bits do not form part of the size,
+     * the low bit is set for allocated blocks, and the second lowest bit is the
+     * mark flag for the garbage collector.
+     */
+    size_t size;
+
+    /*
+     * Only here on free blocks. Allocated blocks use this as the start of allocated
+     * memory.
+     */
+    struct block* next;
+    struct block* prev;
+
+    /*
+     * At position size - sizeof(size_t), there is the trailing size tag.
+     * There are no flags in the low bit of this value, unlike the heading size tag.
+     */
+};
+
+/**
+ * Must be a power of 2.
+ */
+#define ALIGNMENT 8
+
+/**
+ * The amount of metadata at the start and end of allocated blocks. The next and free
+ * pointers in free blocks do not count.
+ */
+#define METADATA_LEADING_AMOUNT (sizeof(size_t))
+#define METADATA_TRIALING_AMOUNT (sizeof(size_t))
+#define METADATA_TOTAL_AMOUNT (METADATA_LEADING_AMOUNT + METADATA_TRIALING_AMOUNT)
+
+/**
+* Having blocks of size 8 is wasteful, as they need to be at least 32 bytes long total to fit
+* the metadata when free, but only need 16 bytes metadata when allocated. Therefore, we have
+* 8 spare bytes that are wasted.
+*/
+#define MINIMUM_REQUEST_SIZE_INTERNAL 16
+
+/**
+ * NUM_INCREMENTAL_FREE_LISTS = how many of MINIMUM_REQUEST_SIZE_INTERNAL + ALIGNMENT * N we have
+ * NUM_EXPONENTIAL_FREE_LISTS = how many of RoundUpPower2(MINIMUM_REQUEST_SIZE_INTERNAL + (ALIGNMENT * NUM_INCREMENTAL_FREE_LISTS)) << N
+ * The last size should be larger than the max allocation size, as otherwise we could allocate larger than we have in the final list.
+ */
+#define TOTAL_NUM_FREE_LISTS 36
+
+/**
+ * An array which holds the minimum allocation sizes that each free list can hold.
+ */
+static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
+    16,
+    24,
+    32,
+    48,
+    64,
+    96,
+    128,
+    192,
+    256,
+    384,                // 10
+    512,
+    768,
+    1024,
+    1536,
+    2048,
+    1024 * 3,
+    1024 * 4,
+    1024 * 6,
+    1024 * 8,
+    1024 * 12,          // 20
+    1024 * 16,
+    1024 * 24,
+    1024 * 32,
+    1024 * 48,
+    1024 * 64,
+    1024 * 128,
+    1024 * 256,
+    1024 * 512,
+    1024 * 1024,
+    1024 * 1024 * 2,        // 30
+    1024 * 1024 * 4,
+    1024 * 1024 * 8,        // 32
+    1024 * 1024 * 16,       
+    1024 * 1024 * 32,
+    1024 * 1024 * 64,
+    1024 * 1024 * 128,      // 36
+};
+
+/**
+ * Used to work out which free list a block should be in, when we are *reading* a block.
+ * This rounds the size *up*, meaning it cannot be used to insert a block into a list.
+ * NOT USED TO INSERT BLOCKS!! 
+ */
+static int GetSmallestListIndexThatFits(size_t size_without_metadata) {
+    int i = 0;
+    while (true) {
+        if (size_without_metadata <= free_list_block_sizes[i]) {
+            return i;
+        }
+        ++i;
+    }
+}
+
+/**
+ * Calculates which free list a block should be inserted in. This one rounds *down*, and
+ * so it should not normally be used to look up where a block should be.
+ */
+static int GetInsertionIndex(size_t size_without_metadata) {
+    /*
+     * This will only fail if we somehow get a block that is smaller than the minimum
+     * possible size (i.e., something has gone very wrong.)
+     */
+    assert(size_without_metadata >= free_list_block_sizes[0]);
+
+    /*
+     * We can't round down to the next one when it's the smallest possible size,
+     * so handle this case specially.
+     */
+    if (size_without_metadata == free_list_block_sizes[0]) {
+        return 0;
+    }
+        
+    /*
+     * Look until we go past the block size we need, and then return the previous
+     * value. This gives us the final block size that doesn't exceed the input value.
+     */
+    for (int i = 0; i < TOTAL_NUM_FREE_LISTS - 1; ++i) {
+        if (size_without_metadata <= free_list_block_sizes[i]) {
+            return i - 1;
+        }
+    }
+
+    Panic(PANIC_HEAP_REQUEST_TOO_LARGE);
+}
+
+/**
+ * Global arrays always initialise to zero (and therefore, to NULL).
+ * Entries in free lists must have a user allocated size GREATER OR EQUAL TO the size in free_list_block_sizes.
+ */
+static struct block* head_block[TOTAL_NUM_FREE_LISTS];
+
+/**
+ * Adding to a void pointer is undefined behaviour, so this gets around that by
+ * casting to a byte pointer.
+ */
+static void* AddVoidPtr(void* ptr, size_t offset) {
+    return (void*) (((uint8_t*) ptr) + offset);
+}
+
+/**
+ * Subtracting from a void pointer is undefined behaviour, so this gets around that by
+ * casting to a byte pointer.
+ */
+static void* SubVoidPointer(void* ptr, size_t offset) {
+    return (void*) (((uint8_t*) ptr) - offset);
+}
+
+/**
+ * Rounds up a user-supplied allocation size to the alignment. If the value is smaller than
+ * the minimum request size that is internally supported, it will round it up to that size.
+ */
+static size_t RoundUpSize(size_t size) {
+    /* Should have already been checked against. */
+    assert(size != 0);
+
+    if (size < MINIMUM_REQUEST_SIZE_INTERNAL) {
+        size = MINIMUM_REQUEST_SIZE_INTERNAL;
+    }
+
+    return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
+}
+
+/**
+ * Marks a block as being free (unallocated).
+ */
+static void MarkFree(struct block* block) {
+    block->size &= ~1;
+}
+
+/**
+ * Marks a block as being allocated.
+ */
+static void MarkAllocated(struct block* block) {
+    block->size |= 1;
+}
+
+/**
+ * Returns true if the block is allocated, or false if it is free. 
+ */
+static bool IsAllocated(struct block* block) {
+    return block->size & 1;
+}
+
+/**
+ * Given a block, returns its total size, including metadata. This takes into account
+ * the flags on the size field and removes them from the return value. 
+ */
+static size_t GetBlockSize(struct block* block) {
+    size_t size = block->size & ~1;
+
+    /*
+     * Ensure the other size tag matches. If it doesn't, there has been memory corruption.
+     */
+    assert(*(((size_t*) block) + (size / sizeof(size_t)) - 1) == size);
+    return size;
+}
+
+/**
+ * Sets the *total* size of a given block. This does not do any checking, so the caller must be
+ * careful to ensure that calling this doesn't leak memory (by setting it too small), or cause
+ * double-allocation of the same area (by setting it too large).
+ */
+static void SetSizeTags(struct block* block, size_t size) {
+    block->size = (block->size & 1) | size;
+    *(((size_t*) block) + (size / sizeof(size_t)) - 1) = size;
+}
+
+static void* GetSystemMemory(size_t size) {
+    static size_t bootstrap_used = 0;
+
+    if (bootstrap_used + size < BOOTSTRAP_AREA_SIZE) {
+        bootstrap_used += size;
+        return bootstrap_memory_area + bootstrap_used - size;
+    }
+
+    if (!IsVirtInitialised()) {
+        Panic(PANIC_OUT_OF_BOOTSTRAP_HEAP);
+    }
+    
+    return (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+}
+
+/**
+ * Allocates a new block from the system that is able to hold the amount of data
+ * specified. Also allocated enough memory for fenceposts on either side of the data,
+ * and sets up these fenceposts correctly.
+ */
+static struct block* RequestBlock(size_t total_size) {
+    /*
+     * We need to add the extra bytes for fenceposts to be added. We must do this before we
+     * round up to the nearest areana size (if we did it after, it wouldn't be aligned anymore).
+     */
+    total_size += MINIMUM_REQUEST_SIZE_INTERNAL * 2;
+    total_size = (total_size + ARCH_PAGE_SIZE - 1) & ~(ARCH_PAGE_SIZE - 1);
+
+    /*
+     * Get memory from the system.
+     */
+    struct block* block = (struct block*) GetSystemMemory(total_size);
+    if (block == NULL) {
+        Panic(PANIC_OUT_OF_HEAP);
+    }
+
+    /*
+     * Set the metadata for both the fenceposts and the main data block. 
+     * Keep in mind that total_size now includes the fencepost metadata (see top of function), so this
+     * sometimes needs to be subtracted off.
+     */
+    struct block* left_fence = block;
+    struct block* actual_block = (struct block*) (((size_t*) block) + MINIMUM_REQUEST_SIZE_INTERNAL / sizeof(size_t));
+    struct block* right_fence  = (struct block*) (((size_t*) block) + (total_size - MINIMUM_REQUEST_SIZE_INTERNAL) / sizeof(size_t));
+
+    SetSizeTags(left_fence, MINIMUM_REQUEST_SIZE_INTERNAL);
+    SetSizeTags(actual_block, total_size - 2 * MINIMUM_REQUEST_SIZE_INTERNAL);
+    SetSizeTags(right_fence, MINIMUM_REQUEST_SIZE_INTERNAL);
+
+    actual_block->prev = NULL;
+    actual_block->next = NULL;
+    
+    MarkAllocated(left_fence);
+    MarkAllocated(right_fence);
+    MarkFree(actual_block);
+
+    return actual_block;
+}
+
+/**
+ * Removes a block from a free list. It needs to take in the exact free list's index (as opposed to calculating
+ * it itself), as this may be used halfway though allocations or deallocations where the block isn't yet in
+ * its correct block.
+ */
+static void RemoveBlock(int free_list_index, struct block* block) {
+    /*
+     * Perform a standard linked list deletion. 
+     */
+    if (block->prev == NULL && block->next == NULL) {
+        assert(head_block[free_list_index] == block);
+        head_block[free_list_index] = NULL;
+
+    } else if (block->prev == NULL) {
+        head_block[free_list_index] = block->next;
+        block->next->prev = NULL;
+
+    } else if (block->next == NULL) {
+        block->prev->next = NULL;
+
+    } else {
+        block->prev->next = block->next;
+        block->next->prev = block->prev;
+    }
+}
+
+/**
+ * Adds a block to its appropriate free list. It also coalesces the block with surrounding free blocks
+ * if possible.
+ */
+static struct block* AddBlock(struct block* block) {
+    /*
+     * Although this function is technically recursive (because it needs to shuffle blocks into different
+     * lists by calling itself again), but there are a constant number of free lists, so it is still
+     * coalescing in constant time.
+     */
+    size_t size = GetBlockSize(block);
+
+    int free_list_index = GetInsertionIndex(size - METADATA_TOTAL_AMOUNT);
+
+    size_t prev_block_size = *(((size_t*) block) - 1);
+    struct block* prev_block = (struct block*) (((size_t*) block) - prev_block_size / sizeof(size_t));
+    struct block* next_block = (struct block*) (((size_t*) block) + size / sizeof(size_t));
+
+    if (IsAllocated(prev_block) && IsAllocated(next_block)) {
+        /*
+         * Cannot coalesce here, so just add to the free list.
+         */
+        block->prev = NULL;
+        block->next = head_block[free_list_index];
+        if (block->next != NULL) {
+            block->next->prev = block;
+        }
+        head_block[free_list_index] = block;
+        MarkFree(block);
+        return block;
+
+    } else if (IsAllocated(prev_block) && !IsAllocated(next_block)) {
+        /*
+         * Need to coalesce with the one on the right.
+         */
+        RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
+        SetSizeTags(block, size + GetBlockSize(next_block));
+        block->prev = NULL;
+        block->next = NULL;
+        MarkFree(block);
+        return AddBlock(block);
+    
+    } else if (!IsAllocated(prev_block) && IsAllocated(next_block)) {
+        /*
+         * Need to coalesce with the one on the left.
+         */
+        RemoveBlock(GetInsertionIndex(GetBlockSize(prev_block) - METADATA_TOTAL_AMOUNT), prev_block);
+        SetSizeTags(prev_block, size + GetBlockSize(prev_block));
+        prev_block->prev = NULL;
+        prev_block->next = NULL;
+        MarkFree(prev_block);
+        return AddBlock(prev_block);
+
+    } else {
+        /*
+         * Coalesce with blocks on both sides.
+         */
+        RemoveBlock(GetInsertionIndex(GetBlockSize(prev_block) - METADATA_TOTAL_AMOUNT), prev_block);
+        RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
+        SetSizeTags(prev_block, size + GetBlockSize(prev_block) + GetBlockSize(next_block));
+        prev_block->prev = NULL;
+        prev_block->next = NULL;
+        MarkFree(prev_block);
+        return AddBlock(prev_block);
+    }
+}
+
+/*
+ * Allocates a block. The block to be allocated will be the first block in the given free
+ * list, and that free list must be non-empty, and be able to fit the requested size.
+ */
+static struct block* AllocateBlock(struct block* block, int free_list_index, size_t user_requested_size) {
+    assert(block != NULL);
+
+    size_t total_size = user_requested_size + METADATA_TOTAL_AMOUNT;
+    size_t block_size = GetBlockSize(block);
+
+    assert(block_size >= total_size);
+
+    if (total_size - block_size < MINIMUM_REQUEST_SIZE_INTERNAL) {
+        /*
+         * We can just remove from the list altogether if the sizes match up exactly,
+         * or if there would be so little left over that we can't form a new block.
+         */
+        RemoveBlock(free_list_index, block);
+
+        /*
+         * Prevent memory leak (from having a hole in memory), but do it after removing
+         * the block, as this may change the list it needs to be in, and RemoveBlock
+         * will not like that.
+         */
+        SetSizeTags(block, total_size);
+
+        MarkAllocated(block);
+        return block;
+
+    } else {
+        /*
+         * We must split the block into two. If no list change is needed, we can leave the 'leftover' parts in the list
+         * as is (just fixing up the size tags), and then return the new block.
+         */
+
+        RemoveBlock(free_list_index, block);
+
+        size_t leftover = block_size - total_size;
+        SetSizeTags(block, leftover);
+
+        struct block* allocated_block = (struct block*) (((size_t*) block) + (leftover / sizeof(size_t)));
+        SetSizeTags(allocated_block, total_size);
+
+        /*
+         * Must be done before we try to move around the leftovers (or else it will actually
+         * coalesce back into one block). 
+         */
+        MarkAllocated(allocated_block);
+
+        /*
+        * We need to remove the leftover block from this list, and add it to the correct list.
+        */
+        MarkFree(block);
+        AddBlock(block);
+
+        return allocated_block;
+    }
+}
+
+/**
+ * Allocates a block that can fit the user requested size. It will request new memory from the
+ * system if required. If it returns NULL, then there is not enough memory of the system to
+ * satisfy the request.
+ */
+static struct block* FindBlock(size_t user_requested_size) {
+    /*
+     * Check the free lists in order, starting from the smallest one that will fit the block.
+     * If we find one with a free block, then we allocate the head of that list.
+     */
+    int min_index = GetSmallestListIndexThatFits(user_requested_size);
+    for (int i = min_index; i < TOTAL_NUM_FREE_LISTS; ++i) {
+        if (head_block[i] != NULL) {
+            return AllocateBlock(head_block[i], i, user_requested_size);
+        }
+    }
+
+    /*
+     * If we can't find a block that will fit, then we must allocate more memory.
+     */
+    size_t total_size = user_requested_size + METADATA_TOTAL_AMOUNT;
+    struct block* sys_block = RequestBlock(total_size);
+
+    /*
+     * Put the new memory in the free list (which ought to be empty, as wouldn't need to
+     * request new memory otherwise). Then we can allocate the block.
+     */
+    int sys_index = GetInsertionIndex(GetBlockSize(sys_block) - METADATA_TOTAL_AMOUNT);
+    assert(head_block[sys_index] == NULL);
+    head_block[sys_index] = sys_block;
+    return AllocateBlock(head_block[sys_index], sys_index, user_requested_size);
+}
+
+void* AllocHeap(size_t size) {
+    /*
+     * We cannot allocate zero blocks (as it would be useless, and couldn't be freed.)
+     * Size cannot be negative as a size_t is an unsigned type.
+     */
+    if (size == 0) {
+        return NULL;
+    }
+
+    size = RoundUpSize(size);
+
+    struct block* block = FindBlock(size);
+
+    assert(((size_t) block & (ALIGNMENT - 1)) == 0);
+    return AddVoidPtr(block, METADATA_LEADING_AMOUNT);
+}
+
+void FreeHeap(void* ptr) {
+    /*
+     * Guard against NULL, as the standard says: "If ptr is a null pointer, no action occurs"
+     */
+    if (ptr == NULL) {
+        return;
+    }
+    
+    struct block* block = SubVoidPointer(ptr, METADATA_LEADING_AMOUNT);
+    block->prev = NULL;
+    block->next = NULL;
+    AddBlock(block);
+}
+
+/*
+ * Completely untested. 
+ */
+void* ReallocHeap(void* ptr, size_t new_size) {
+    if (ptr == NULL || new_size == 0) {
+        return NULL;
+    }
+
+    struct block* block = SubVoidPointer(ptr, METADATA_LEADING_AMOUNT);
+    size_t old_size = GetBlockSize(block);
+    new_size += METADATA_TOTAL_AMOUNT;
+
+    if (new_size == old_size) {
+        return ptr;
+
+    } else if (new_size < old_size) {
+        /*
+         * Not enough space to create a free block (sure, it may be possible to coalesce,
+         * but who really cares - that extra space will still be able to be allocated by someone
+         * else later on.
+         */
+        size_t freed_bytes = old_size - new_size;
+        if (freed_bytes < MINIMUM_REQUEST_SIZE_INTERNAL) {
+            return ptr;
+        }
+        
+        /*
+         * Decrease the size of the current block, and add the leftovers as a new free block.
+         */
+        struct block* freed_area = (struct block*) (((size_t*) block) + (new_size / sizeof(size_t)));
+        SetSizeTags(block, new_size);
+        SetSizeTags(freed_area, freed_bytes);
+        MarkFree(freed_area);
+        AddBlock(freed_area);
+        return ptr;
+
+    } else {
+        /*
+         * We need to expand the block.
+         */
+        size_t bytes_to_expand_by = new_size - old_size;
+
+        struct block* next_block = (struct block*) (((size_t*) block) + old_size / sizeof(size_t));
+        size_t next_block_size = GetBlockSize(next_block);
+        size_t remainder_in_next = next_block_size - bytes_to_expand_by;
+
+        if (!IsAllocated(next_block) && next_block_size >= bytes_to_expand_by) {
+            RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
+
+            /*
+             * If there is only going to be a tiny bit left in the next block after we allocate,
+             * we should just eat the entire next block.
+             */
+            if (remainder_in_next < METADATA_TOTAL_AMOUNT) {
+                SetSizeTags(block, old_size + next_block_size);
+
+            } else {
+                SetSizeTags(block, new_size);
+                SetSizeTags(next_block, remainder_in_next);
+                MarkFree(next_block);
+                AddBlock(next_block);
+            }
+
+            return ptr;
+
+        } else {
+            void* new_ptr = AllocHeap(new_size - METADATA_TOTAL_AMOUNT);
+            memcpy(ptr, new_ptr, new_size - METADATA_TOTAL_AMOUNT);
+            FreeHeap(ptr);
+            return new_ptr;
+        }
+    }
+}
+
+void InitHeap(void) {
+
+}
+
+void* AllocHeapZero(size_t size) {
+    void* ptr = AllocHeap(size);
+    memset(ptr, 0, size);
+    return ptr;
+}
+
