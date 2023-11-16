@@ -5,10 +5,10 @@
 #include <virtual.h>
 #include <arch.h>
 #include <string.h>
+#include <spinlock.h>
 #include <heap.h>
 #include <log.h>
-
-// TODO: locks!
+#include <irql.h>
 
 #define BOOTSTRAP_AREA_SIZE (1024 * 16)
 #define MAX_EMERGENCY_BLOCKS 16
@@ -30,6 +30,8 @@ static uint8_t bootstrap_memory_area[BOOTSTRAP_AREA_SIZE] __attribute__ ((aligne
 static struct emergency_block emergency_blocks[MAX_EMERGENCY_BLOCKS] = {
     {.address = bootstrap_memory_area, .size = BOOTSTRAP_AREA_SIZE, .valid = true}
 };
+
+static struct spinlock heap_lock;
 
 static void* AllocateFromEmergencyBlocks(size_t size) {
     for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
@@ -345,6 +347,8 @@ static void SetSizeTags(struct block* block, size_t size) {
 }
 
 static void* GetSystemMemory(size_t size, int flags) {
+    EXACT_IRQL(IRQL_SCHEDULER);
+
     if (flags & HEAP_NO_FAULT) {
         if (flags & HEAP_ALLOW_PAGING) {
             PanicEx(PANIC_OUT_OF_BOOTSTRAP_HEAP, "HEAP_NO_FAULT was set alongside HEAP_ALLOW_PAGING");
@@ -361,6 +365,8 @@ static void* GetSystemMemory(size_t size, int flags) {
  * and sets up these fenceposts correctly.
  */
 static struct block* RequestBlock(size_t total_size, int flags) {
+    EXACT_IRQL(IRQL_SCHEDULER);
+
     /*
      * We need to add the extra bytes for fenceposts to be added. We must do this before we
      * round up to the nearest areana size (if we did it after, it wouldn't be aligned anymore).
@@ -413,6 +419,8 @@ static struct block* RequestBlock(size_t total_size, int flags) {
  * its correct block.
  */
 static void RemoveBlock(int free_list_index, struct block* block) {
+    EXACT_IRQL(IRQL_SCHEDULER);
+
     struct block** head_list = GetHeapForBlock(block);
 
     /*
@@ -440,6 +448,8 @@ static void RemoveBlock(int free_list_index, struct block* block) {
  * if possible.
  */
 static struct block* AddBlock(struct block* block) {
+    EXACT_IRQL(IRQL_SCHEDULER);
+
     /*
      * Although this function is technically recursive (because it needs to shuffle blocks into different
      * lists by calling itself again), but there are a constant number of free lists, so it is still
@@ -539,6 +549,7 @@ static struct block* AddBlock(struct block* block) {
  * list, and that free list must be non-empty, and be able to fit the requested size.
  */
 static struct block* AllocateBlock(struct block* block, int free_list_index, size_t user_requested_size) {
+    EXACT_IRQL(IRQL_SCHEDULER);
     assert(block != NULL);
 
     size_t total_size = user_requested_size + METADATA_TOTAL_AMOUNT;
@@ -604,6 +615,8 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
  * satisfy the request.
  */
 static struct block* FindBlock(size_t user_requested_size, int flags) {
+    EXACT_IRQL(IRQL_SCHEDULER);
+
     struct block** head_list = GetHeap(flags & HEAP_ALLOW_PAGING);
     /*
      * Check the free lists in order, starting from the smallest one that will fit the block.
@@ -641,6 +654,8 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
 }
 
 void* AllocHeapEx(size_t size, int flags) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     /*
      * We cannot allocate zero blocks (as it would be useless, and couldn't be freed.)
      * Size cannot be negative as a size_t is an unsigned type.
@@ -655,7 +670,10 @@ void* AllocHeapEx(size_t size, int flags) {
         flags |= HEAP_ALLOW_PAGING;
     }
 
+    int irql = AcquireSpinlock(&heap_lock, true);
     struct block* block = FindBlock(size, flags);
+    ReleaseSpinlockAndLower(&heap_lock, irql);
+
     assert(((size_t) block & (ALIGNMENT - 1)) == 0);
 
     void* ptr = AddVoidPtr(block, METADATA_LEADING_AMOUNT);
@@ -667,14 +685,18 @@ void* AllocHeapEx(size_t size, int flags) {
 }
 
 void* AllocHeap(size_t size) {
+    MAX_IRQL(IRQL_SCHEDULER);
     return AllocHeapEx(size, 0);
 }
 
 void* AllocHeapZero(size_t size) {
+    MAX_IRQL(IRQL_SCHEDULER);
     return AllocHeapEx(size, HEAP_ZERO);
 }
 
 void FreeHeap(void* ptr) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     /*
      * Guard against NULL, as the standard says: "If ptr is a null pointer, no action occurs"
      */
@@ -685,13 +707,18 @@ void FreeHeap(void* ptr) {
     struct block* block = SubVoidPointer(ptr, METADATA_LEADING_AMOUNT);
     block->prev = NULL;
     block->next = NULL;
+
+    int irql = AcquireSpinlock(&heap_lock, true);
     AddBlock(block);
+    ReleaseSpinlockAndLower(&heap_lock, irql);
 }
 
 /*
  * Completely untested. 
  */
 void* ReallocHeap(void* ptr, size_t new_size) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     if (ptr == NULL || new_size == 0) {
         return NULL;
     }
@@ -714,6 +741,8 @@ void* ReallocHeap(void* ptr, size_t new_size) {
             return ptr;
         }
         
+        int irql = AcquireSpinlock(&heap_lock, true);
+
         /*
          * Decrease the size of the current block, and add the leftovers as a new free block.
          */
@@ -722,6 +751,9 @@ void* ReallocHeap(void* ptr, size_t new_size) {
         SetSizeTags(freed_area, freed_bytes);
         MarkFree(freed_area);
         AddBlock(freed_area);
+
+        ReleaseSpinlockAndLower(&heap_lock, irql);
+
         return ptr;
 
     } else {
@@ -735,6 +767,8 @@ void* ReallocHeap(void* ptr, size_t new_size) {
         size_t remainder_in_next = next_block_size - bytes_to_expand_by;
 
         if (!IsAllocated(next_block) && next_block_size >= bytes_to_expand_by) {
+            int irql = AcquireSpinlock(&heap_lock, true);
+
             RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
 
             /*
@@ -751,6 +785,8 @@ void* ReallocHeap(void* ptr, size_t new_size) {
                 AddBlock(next_block);
             }
 
+            ReleaseSpinlockAndLower(&heap_lock, irql);
+            
             return ptr;
 
         } else {
@@ -763,6 +799,6 @@ void* ReallocHeap(void* ptr, size_t new_size) {
 }
 
 void InitHeap(void) {
-
+    InitSpinlock(&heap_lock, "heap", IRQL_SCHEDULER);
 }
 

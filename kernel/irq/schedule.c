@@ -1,5 +1,6 @@
 
 #include <irql.h>
+#include <common.h>
 #include <assert.h>
 
 void ScheduleInternal(void) {
@@ -10,8 +11,9 @@ void ScheduleInternal(void) {
 }
 
 void Schedule(void) {
-    if (GetIrql() >= IRQL_SCHEDULER) {
-        // TODO: defer it
+    // TODO: decide if a page fault handler should allow task switches or not (I would guess )
+    if (GetIrql() != IRQL_STANDARD) {
+        PostponeScheduleUntilStandardIrql();
         return;
     }
 

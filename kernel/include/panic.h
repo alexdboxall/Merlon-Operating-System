@@ -65,6 +65,11 @@ enum {
      */
     PANIC_INVALID_IRQL,
 
+    /*
+     * Spinlock acquired from the wrong IRQL level.
+     */
+    PANIC_SPINLOCK_WRONG_IRQL,
+
     _PANIC_HIGHEST_VALUE
 };
 

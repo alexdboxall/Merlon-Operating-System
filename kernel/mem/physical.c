@@ -18,6 +18,8 @@
 #include <spinlock.h>
 #include <assert.h>
 #include <string.h>
+#include <irql.h>
+#include <log.h>
 #include <virtual.h>
 
 /*
@@ -48,7 +50,7 @@
  * to be allocated (this is why we set it to something higher than 0 or 1, to provide a buffer
  * for eviction to work in).
  */
-#define NUM_EMERGENCY_PAGES 16
+#define NUM_EMERGENCY_PAGES 32
 
 /*
  * One bit per page. Lower bits refer to lower pages. A clear bit indicates
@@ -144,22 +146,20 @@ static void RemoveStackEntry(size_t index) {
  * @param addr The address of the page to deallocate. Must be page-aligned.
  */
 void DeallocPhys(size_t addr) {
+    MAX_IRQL(IRQL_SCHEDULER);
     assert(addr % ARCH_PAGE_SIZE == 0);
 
     size_t page = addr / ARCH_PAGE_SIZE;
 
-    bool first = RecursiveAcquireSpinlock(&phys_lock);
+    int irql = AcquireSpinlock(&phys_lock, true);
 
-    DeallocateBitmapEntry(page);
     ++pages_left;
-
+    DeallocateBitmapEntry(page);
     if (allocation_stack != NULL) {
         PushIndex(page);
     }
 
-    if (first) {
-        ReleaseSpinlock(&phys_lock);
-    }
+    ReleaseSpinlockAndLower(&phys_lock, irql);
 }
 
 /**
@@ -171,6 +171,8 @@ void DeallocPhys(size_t addr) {
  * @param size The size of the allocation. This should be the same value that was passed into AllocPhysContinuous().
  */
 void DeallocPhysContiguous(size_t addr, size_t bytes) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     for (size_t i = 0; i < pages; ++i) {
         DeallocPhys(addr);
@@ -178,32 +180,38 @@ void DeallocPhysContiguous(size_t addr, size_t bytes) {
     }
 }
 
+static void EvictPagesIfNeeded(void* context) {
+    (void) context;
+
+    /*
+    * We can't fault later on, so we evict now if we are getting low on memory. If this faults,
+    * the recursion will not cause the spinlock to be re-acquired, and so the evicted code won't
+    * run again either - this prevents infinite recurison loops. These fault handlers and recursive
+    * calls can allocate and make use of these 'emergency' pages that we keep by doing this eviction
+    * before we actually run out of memory.
+    *
+    * We loop so that if the first evictions end up needing to allocate memory, we can hopefully
+    * perform another eviction to make up for it (that shouldn't need extra memory).
+    */
+
+    // TODO: probs needs lock on pages_left
+    while (pages_left < NUM_EMERGENCY_PAGES) {
+        EvictVirt();
+    }
+}
+
 /**
  * Allocates a page of physical memory. The resulting memory can be freed with DeallocPhys(). May cause
- * pages to be evicted from RAM in order to 
+ * pages to be evicted from RAM in order to have to enough physical memory.
  *
  * @return The start address of the page of physical memory, or 0 if a page could not be allocated.
  */
 size_t AllocPhys(void) {
-    bool first = RecursiveAcquireSpinlock(&phys_lock);
+    MAX_IRQL(IRQL_SCHEDULER);
 
-    /*
-     * We can't fault later on, so we evict now if we are getting low on memory. If this faults,
-     * the recursion will not cause the spinlock to be re-acquired, and so the evicted code won't
-     * run again either - this prevents infinite recurison loops. These fault handlers and recursive
-     * calls can allocate and make use of these 'emergency' pages that we keep by doing this eviction
-     * before we actually run out of memory.
-     *
-     * We loop so that if the first evictions end up needing to allocate memory, we can hopefully
-     * perform another eviction to make up for it (that shouldn't need extra memory).
-     */
-    while (pages_left < NUM_EMERGENCY_PAGES && first) {
-        EvictVirt();
-    }
+    DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
 
-    /*
-     * The remainder of this function must never fault.
-     */
+    int irql = AcquireSpinlock(&phys_lock, true);
 
     size_t index = 0;
     if (allocation_stack == NULL) {
@@ -222,9 +230,7 @@ size_t AllocPhys(void) {
     AllocateBitmapEntry(index);
     --pages_left;
 
-    if (first) {
-        ReleaseSpinlock(&phys_lock);
-    }
+    ReleaseSpinlockAndLower(&phys_lock, irql);
 
     return index * ARCH_PAGE_SIZE;
 }
@@ -265,15 +271,16 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
     size_t max_index = max_addr == 0 ? highest_valid_page_index + 1 : max_addr / ARCH_PAGE_SIZE;
     size_t count = 0;
 
+    int irql = AcquireSpinlock(&phys_lock, true);
+
     /*
      * We need to check we won't try to over-allocate memory, or allocate so much memory that it puts
      * us in a critical position.
      */
     if (pages + NUM_EMERGENCY_PAGES >= pages_left) {
+        ReleaseSpinlockAndLower(&phys_lock, irql);
         return 0;
     }
-
-    bool first = RecursiveAcquireSpinlock(&phys_lock);
 
     for (size_t index = min_index; index < max_index; ++index) {
         /*
@@ -297,18 +304,12 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
                 ++start_index;
             }
 
-            if (first) {
-                ReleaseSpinlock(&phys_lock);
-            }
-
+            ReleaseSpinlockAndLower(&phys_lock, irql);
             return start_index * ARCH_PAGE_SIZE;
         }
     }
 
-    if (first) {
-        ReleaseSpinlock(&phys_lock);
-    }    
-
+    ReleaseSpinlockAndLower(&phys_lock, irql);
     return 0;
 }
 
@@ -319,8 +320,8 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
  * gets called. Must only be called once.
  */
 void InitPhys(void) {
-    InitSpinlock(&phys_lock, "phys");
-    
+    InitSpinlock(&phys_lock, "phys", IRQL_SCHEDULER);
+
 	/*
 	* Scan the memory tables and fill in the memory that is there.
 	*/

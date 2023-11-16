@@ -2,6 +2,7 @@
 #include <panic.h>
 #include <cpu.h>
 #include <irql.h>
+#include <log.h>
 
 struct irql_deferment {
     int irql;
@@ -13,16 +14,22 @@ struct irql_deferment {
  * Assumes that interrupts are completely off as we go into this function. 
  */
 static void SetHardwareStateForLevel(int level) {
+    if (true /* TODO: ArchIsReadyForInterrupts() */) {
+        return;
+    }
+
     if (level >= IRQL_DRIVER) {
         // TODO: mask certain irqs
     } else {
         // TODO: unmask all irqs
     }
 
-    if (level < IRQL_PANIC) {
+    if (level < IRQL_HIGH) {
         ArchEnableInterrupts();
     }
 }
+
+static void* deferred_tasks[IRQL_HIGH];
 
 /**
  * Runs a function at an IRQL lower than or equal to the current IRQL. If the IRQLs match,
@@ -37,13 +44,16 @@ static void SetHardwareStateForLevel(int level) {
  * 
  * @max_irql IRQL_HIGH
  */
-void RunAtIrql(int irql, void(*handler)(void*), void* context) {
+void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
     if (irql == GetIrql()) {
         handler(context);
-        return;
 
     } else if (irql > GetIrql()) {
         Panic(PANIC_INVALID_IRQL);
+
+    } else {
+        // TODO: do something with deferred_tasks[irql]
+        Panic(PANIC_NOT_IMPLEMENTED);
     }
 }
 
@@ -73,24 +83,35 @@ int RaiseIrql(int level) {
     return existing_level;
 }
 
+static bool postponed_task_switch = false;
+
 // Max IRQL: IRQL_HIGH
-void LowerIrql(int level) {
+void LowerIrql(int target_level) {
+    // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)
     ArchDisableInterrupts();
 
-    if (level > GetIrql()) {
+    int current_level = GetIrql();
+
+    if (target_level > current_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    /* 
-     * Must do these as we leave, not enter IRQL_SCHEDULER, as if e.g. the timer causes a deferred task switch
-     * while we are already in Schedule() (i.e. at IRQL_SCHEDULER), we want the orignal task switch to occur
-     * before the deferred one gets run (otherwise we corrupt the task switch). 
-     */
-    if (level < IRQL_SCHEDULER) {
-        // TODO: need to go through the deferred heap and go through them in order (obviously setting GetCpu()->irql and
-        // SetHardwareStateForLevel as we go, then we do the final switch
+    while (current_level != target_level) {
+        --current_level;
+        GetCpu()->irql = current_level;
+        SetHardwareStateForLevel(current_level);
+
+        // RUN ANY HANDLERS AT LEVEL
+        //      (i.e. look through deferred_tasks[current_level])
     }
    
-    GetCpu()->irql = level;
-    SetHardwareStateForLevel(level);
+    if (current_level == IRQL_STANDARD && postponed_task_switch) {
+        postponed_task_switch = false;
+        Schedule();
+    }
+}
+
+void PostponeScheduleUntilStandardIrql(void) {
+    // TODO: does this function need its own lock ? (e.g. just for setting postponed_task_switch)
+    postponed_task_switch = true;
 }

@@ -1,5 +1,18 @@
 #pragma once
 
+/**
+ * SIMPLE TABLE
+ *
+ *                  Can page fault?     Can task switch?    Can use drivers?    Can have IRQs?
+ * IRQL_STANDARD    YES                 YES                 YES                 YES
+ * IRQL_PAGE_FAULT  SORT OF             YES                 YES                 YES                     (only the page fault handler can generate a nested page fault, e.g. handling some COW stuff)
+ * IRQL_SCHEDULER   NO                  SORT OF             YES                 YES                     (only the scheduler can make a task switch occur, others get postponed)
+ * IRQL_DRIVER      NO                  NO                  SORT OF             YES                     (only higher priority drivers can be used)
+ * IRQL_TIMER       NO                  NO                  NO                  YES                     
+ * IRQL_HIGH        NO                  NO                  NO                  NO
+ *
+ */
+
 /*
  * Scheduler works. Page faults are allowed.
  */
@@ -8,31 +21,34 @@
 /*
  * Scheduler still works at this point. Cannot page fault.
  */
-#define IRQL_PAGE_FAULT     10
+#define IRQL_PAGE_FAULT     1
 
 /*
  * This is the scheduler (and therefore things won't be scheduled out 'behind its back'). Cannot page fault. 
  */
-#define IRQL_SCHEDULER      20
+#define IRQL_SCHEDULER      2
 
 /*
  * Scheduling will be postponed. Cannot page fault. Cannot use lower-priority devices.
  */
-#define IRQL_DRIVER         30      // 30...79 is the driver range
+#define IRQL_DRIVER         3      // 3...39 is the driver range
 
 /*
  * No scheduling, no page faulting, no using other hardware devices.
  */
-#define IRQL_TIMER          80      // 80...89 is the special range
+#define IRQL_TIMER          40
 
 /*
  * No interrupts from here.
  */
-#define IRQL_INIT           92
-#define IRQL_PANIC          95
-#define IRQL_HIGH           99      // generic 'highest possible' 
+#define IRQL_HIGH           41
 
-void RunAtIrql(int irql, void(*handler)(void*), void* context);
+void PostponeScheduleUntilStandardIrql(void);
+void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
 int GetIrql(void);
 int RaiseIrql(int level);
 void LowerIrql(int level);
+
+#define MAX_IRQL(l) assert(GetIrql() <= l)
+#define MIN_IRQL(l) assert(GetIrql() >= l)
+#define EXACT_IRQL(l) assert(GetIrql() == l)

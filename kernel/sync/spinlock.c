@@ -1,38 +1,45 @@
 #include <spinlock.h>
 #include <string.h>
 #include <arch.h>
+#include <irql.h>
+#include <panic.h>
+#include <log.h>
 #include <assert.h>
 
-void InitSpinlock(struct spinlock* lock, const char* name) {
+void InitSpinlock(struct spinlock* lock, const char* name, int irql) {
     assert(strlen(name) <= 15);
+
+    if (irql < IRQL_SCHEDULER) {
+        Panic(PANIC_SPINLOCK_WRONG_IRQL);
+    }
 
     lock->lock = 0;
     lock->owner = NULL;
+    lock->irql = irql;
     strcpy(lock->name, name);
 }
 
-void AcquireSpinlock(struct spinlock* lock) {
-    (void) lock;
-
+int AcquireSpinlock(struct spinlock* lock, bool raise_irql) {
     assert(lock->lock == 0);
 
+    if (raise_irql) {
+        RaiseIrql(lock->irql);
+
+    } else if (lock->irql != GetIrql()) {
+        Panic(PANIC_SPINLOCK_WRONG_IRQL);
+    }
+
     ArchIrqSpinlockAcquire(&lock->lock);
-    lock->owner = NULL; //GetCurrentThread();
-}
-
-bool TryAcquireSpinlock(struct spinlock* lock) {
-    (void) lock;
-    return false; 
-}
-
-bool RecursiveAcquireSpinlock(struct spinlock* lock) {
-    // TODO: this is not atomic. may cause issues with both allocation AND free.
-
-    (void) lock;
-    return false;
+    //lock->owner = GetCurrentThread();
+    return lock->irql;
 }
 
 void ReleaseSpinlock(struct spinlock* lock) {
     lock->owner = NULL;
     ArchIrqSpinlockRelease(&lock->lock);
+}
+
+void ReleaseSpinlockAndLower(struct spinlock* lock, int new_irql) {
+    ReleaseSpinlock(lock);
+    LowerIrql(new_irql);
 }

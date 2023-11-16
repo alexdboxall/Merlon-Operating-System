@@ -10,6 +10,7 @@
 #include <string.h>
 #include <log.h>
 #include <sys/types.h>
+#include <irql.h>
 #include <cpu.h>
 
 // TODO: spinlocks!
@@ -447,6 +448,8 @@ static void HandleSwapfileFault(struct vas_entry* entry) {
 }
 
 void HandleVirtFault(void* fault_info) {
+    int irql = RaiseIrql(IRQL_PAGE_FAULT);
+
     size_t faulting_virt = ArchGetVirtFaultAddress(fault_info);
     int fault_type = ArchGetVirtFaultType(fault_info);
 
@@ -469,16 +472,19 @@ void HandleVirtFault(void* fault_info) {
 
     if (entry->cow && (fault_type & VM_WRITE)) {
         HandleCowFault(entry);
+        LowerIrql(irql);
         return;
     }
 
     if (entry->file && !entry->in_ram) {
         HandleFileBackedFault(entry);
+        LowerIrql(irql);
         return;
     }
 
     if (entry->swapfile) {
         HandleSwapfileFault(entry);
+        LowerIrql(irql);
         return;
     }
 
@@ -491,6 +497,9 @@ void HandleVirtFault(void* fault_info) {
         ArchUpdateMapping(GetVas(), entry);
         ArchFlushTlb(GetVas());
         memset((void*) entry->virtual, 0, ARCH_PAGE_SIZE);
+
+        LowerIrql(irql);
+        return;
     }
 
     Panic(PANIC_UNKNOWN);
