@@ -4,4 +4,4 @@ PANIC 2
 
  *** KERNEL PANIC ***
 
-0x2 - manually initiated
+0x2 - boot successful!!

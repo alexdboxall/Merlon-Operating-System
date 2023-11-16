@@ -25,12 +25,13 @@ void KernelMain(void) {
     MarkTfwStartPoint(TFW_SP_AFTER_VIRT);
 
     //ReinitPhys();
-    MarkTfwStartPoint(TFW_SP_AFTER_HEAP_REINIT);
+    //RestoreHeap();
+    MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
 
     //InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
-    Panic(PANIC_MANUALLY_INITIATED);
+    PanicEx(PANIC_MANUALLY_INITIATED, "boot successful!!");
 
     while (1) {
         ;

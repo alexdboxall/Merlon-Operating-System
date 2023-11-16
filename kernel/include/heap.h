@@ -26,6 +26,7 @@
 
 void* AllocHeapEx(size_t size, int flags);
 void* AllocHeap(size_t size);
+void RestoreHeap(void);
 void* ReallocHeap(void* ptr, size_t size);
 void* AllocHeapZero(size_t size);
 void FreeHeap(void* ptr);

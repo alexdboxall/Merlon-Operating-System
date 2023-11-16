@@ -8,25 +8,94 @@
 #include <heap.h>
 #include <log.h>
 
-// TODO: make the heap 'generic' (i.e. allow it to work on any backend, maybe taking a struct/integer id in for all args
-//       with that backend), and then have a few different heaps implemented over it:
-//
-//              AllocHeap()         <- non-paged heap (once allocated, will stay in memory, but may fault when allocating)
-//              AllocPagedHeap()    <- paged heap (anything could be paged out at any time)
-//  
-
 // TODO: locks!
-// TODO: what happens when we are out of heap, so we ask for virt, but then virt asks for heap to allocate memory
-//       for the bookkeeping? solution: store a 'reserve' virtual page or two (with locked RAM behind it) in a global
-//       variable, and use that on request, and on request refill that, and detect recurison and don't double-request
-//       from system.
 
 #define BOOTSTRAP_AREA_SIZE (1024 * 16)
+#define MAX_EMERGENCY_BLOCKS 16
+
+struct emergency_block {
+    uint8_t* address;
+    size_t size;
+    bool valid;
+};
 
 /**
  * Used as a system block that can be used even before the virtual memory manager is setup.
  */
 static uint8_t bootstrap_memory_area[BOOTSTRAP_AREA_SIZE] __attribute__ ((aligned(ARCH_PAGE_SIZE)));
+
+/*
+ * Used to give us memory when we are not allowed to fault (i.e. can't allocate virtual memory).
+ */
+static struct emergency_block emergency_blocks[MAX_EMERGENCY_BLOCKS] = {
+    {.address = bootstrap_memory_area, .size = BOOTSTRAP_AREA_SIZE, .valid = true}
+};
+
+static void* AllocateFromEmergencyBlocks(size_t size) {
+    for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
+        if (emergency_blocks[i].valid && emergency_blocks[i].size >= size) {
+            void* address = emergency_blocks[i].address;
+
+            emergency_blocks[i].address += size;
+            emergency_blocks[i].size -= size;
+
+            if (emergency_blocks[i].size < ARCH_PAGE_SIZE) {
+                emergency_blocks[i].valid = false;
+            }
+
+            return address;
+        }
+    }
+
+    Panic(PANIC_OUT_OF_BOOTSTRAP_HEAP);
+}
+
+static void AddBlockToBackupHeap(size_t size) {
+    void* address = (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+    int index_of_smallest_block = 0;
+    for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
+        if (emergency_blocks[i].valid) {
+            if (emergency_blocks[i].size < emergency_blocks[index_of_smallest_block].size) {
+                index_of_smallest_block = i;
+            }
+        } else {
+            emergency_blocks[i].valid = true;
+            emergency_blocks[i].size = size;
+            emergency_blocks[i].address = address;
+            return;
+        }
+    }
+
+    LogWriteSerial("losing 0x%X bytes due to strangeness with backup heap.\n", emergency_blocks[index_of_smallest_block].size);
+    LogWriteSerial("TODO: could probably just add this as a regular block to the regular heap.\n");
+
+    emergency_blocks[index_of_smallest_block].size = size;
+    emergency_blocks[index_of_smallest_block].address = address;
+}
+
+/**
+ * Should be called at the nearest possible safe opportunity after a call to AllocHeapEx with HEAP_NO_FAULT set. IRQL must be IRQ_STANDARD.
+ */
+void RestoreHeap(void) {
+    size_t total_size = 0;
+    size_t largest_block = 0;
+    
+    for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
+        if (emergency_blocks[i].valid) {
+            size_t size = emergency_blocks[i].size;
+            total_size += size;
+            if (size > largest_block) {
+                largest_block = size;
+            }
+        }
+    }
+
+    while (largest_block < BOOTSTRAP_AREA_SIZE || total_size < BOOTSTRAP_AREA_SIZE * 2) {
+        AddBlockToBackupHeap(BOOTSTRAP_AREA_SIZE);
+        total_size += BOOTSTRAP_AREA_SIZE;
+        largest_block = BOOTSTRAP_AREA_SIZE;
+    }
+}
 
 /**
  * Represents a section of memory that is either allocated or free. The memory address
@@ -111,6 +180,7 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     1024 * 32,
     1024 * 48,
     1024 * 64,
+    1024 * 96,
     1024 * 128,
     1024 * 256,
     1024 * 512,
@@ -120,8 +190,7 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     1024 * 1024 * 8,        // 32
     1024 * 1024 * 16,       
     1024 * 1024 * 32,
-    1024 * 1024 * 64,
-    1024 * 1024 * 128,      // 36
+    1024 * 1024 * 64,       // 36
 };
 
 /**
@@ -276,18 +345,11 @@ static void SetSizeTags(struct block* block, size_t size) {
 }
 
 static void* GetSystemMemory(size_t size, int flags) {
-    static size_t bootstrap_used = 0;
-
     if (flags & HEAP_NO_FAULT) {
         if (flags & HEAP_ALLOW_PAGING) {
             PanicEx(PANIC_OUT_OF_BOOTSTRAP_HEAP, "HEAP_NO_FAULT was set alongside HEAP_ALLOW_PAGING");
         }
-        if (bootstrap_used + size < BOOTSTRAP_AREA_SIZE) {
-            bootstrap_used += size;
-            return bootstrap_memory_area + bootstrap_used - size;
-        }
-
-        Panic(PANIC_OUT_OF_BOOTSTRAP_HEAP);
+        return AllocateFromEmergencyBlocks(size);
     }
 
     return (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | (flags & HEAP_ALLOW_PAGING ? 0 : VM_LOCK), NULL, 0);
