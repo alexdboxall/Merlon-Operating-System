@@ -3,6 +3,7 @@
 #include <arch.h>
 #include <log.h>
 #include <debug.h>
+#include <irql.h>
 
 static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_UNKNOWN] 				= "unknown",
@@ -15,7 +16,8 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_HEAP_REQUEST_TOO_LARGE]	= "heap request too large",
 	[PANIC_ASSERTION_FAILURE] 		= "assertion failure",
 	[PANIC_NO_MEMORY_MAP]			= "no memory map",
-	[PANIC_NOT_IMPLEMENTED] 		= "not implemented"
+	[PANIC_NOT_IMPLEMENTED] 		= "not implemented",
+	[PANIC_INVALID_IRQL]			= "invalid irq level"
 };
 
 _Noreturn void Panic(int code)
@@ -25,6 +27,7 @@ _Noreturn void Panic(int code)
 }
 
 _Noreturn void PanicEx(int code, const char* message) {
+	RaiseIrql(IRQL_PANIC);
 	LogWriteSerial("PANIC %d\n", code);
 	if (IsInTfwTest()) {
 		LogWriteSerial("in test.\n");

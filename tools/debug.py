@@ -1,8 +1,10 @@
 import os
 import time
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE,SIG_DFL)
 
-serialFileW = 'dbgpipe_osread' #'/dev/ttys00' + input('Enter serial port num: ')
-serialFileR = 'l2.txt'
+serialFileW = 'build/dbgpipe_osread'
+serialFileR = 'build/dbgpipe_oswrite.txt'
 
 w = open(serialFileW, 'wb', 0)
 

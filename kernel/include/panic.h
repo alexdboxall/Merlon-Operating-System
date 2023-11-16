@@ -60,6 +60,11 @@ enum {
      */
     PANIC_NOT_IMPLEMENTED,
 
+    /*
+     * Wrong IRQL
+     */
+    PANIC_INVALID_IRQL,
+
     _PANIC_HIGHEST_VALUE
 };
 

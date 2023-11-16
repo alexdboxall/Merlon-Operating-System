@@ -1,0 +1,7 @@
+KernelMain: kernel is initialising...
+PANIC 2
+
+
+ *** KERNEL PANIC ***
+
+0x2 - manually initiated

@@ -11,6 +11,7 @@ struct cpu {
     struct thread* current_thread;
     platform_cpu_data_t* platform_specific;
     size_t cpu_number;
+    int irql;
 };
 
 void InitBootstrapCpu(void);

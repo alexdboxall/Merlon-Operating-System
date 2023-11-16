@@ -27,7 +27,7 @@ void KernelMain(void) {
     //ReinitPhys();
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP_REINIT);
 
-    InitOtherCpu();
+    //InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
     Panic(PANIC_MANUALLY_INITIATED);

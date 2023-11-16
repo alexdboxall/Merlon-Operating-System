@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <heap.h>
 #include <string.h>
+#include <irql.h>
 
 static int num_cpus = 1;
 static struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
@@ -10,6 +11,7 @@ static struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
 static void InitCpuTableEntry(int index) {
     cpu_table[index].cpu_number = index;
     cpu_table[index].platform_specific = AllocHeapZero(sizeof(platform_cpu_data_t));
+    cpu_table[index].irql = IRQL_INIT;
 }
 
 void InitBootstrapCpu(void) {
