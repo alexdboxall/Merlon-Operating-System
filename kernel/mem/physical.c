@@ -123,6 +123,7 @@ static inline void PushIndex(size_t index) {
 }
 
 static inline size_t PopIndex(void) {
+    assert(allocation_stack_pointer != 0);
     return allocation_stack[--allocation_stack_pointer];
 }
 
@@ -221,7 +222,7 @@ size_t AllocPhys(void) {
          * here short and simple.
          */
         while (!IsBitmapEntryFree(index)) {
-            ++index;
+            index = (index + 1) % MAX_MEMORY_PAGES;
         }
     } else {
         index = PopIndex();

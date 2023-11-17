@@ -70,6 +70,9 @@ enum {
      */
     PANIC_SPINLOCK_WRONG_IRQL,
 
+
+    PANIC_PRIORITY_QUEUE,
+
     _PANIC_HIGHEST_VALUE
 };
 

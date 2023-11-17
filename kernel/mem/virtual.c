@@ -346,7 +346,7 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
 
             } else {
                 LogWriteSerial("fork() on a hardware-mapped page is not implemented yet");
-                Panic(PANIC_NOT_IMPLEMENTED);
+                PanicEx(PANIC_NOT_IMPLEMENTED, "CopyVasRecursive");
             }
             
         } else {

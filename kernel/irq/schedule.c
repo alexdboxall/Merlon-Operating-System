@@ -1,6 +1,7 @@
 
 #include <irql.h>
 #include <common.h>
+#include <schedule.h>
 #include <assert.h>
 
 void ScheduleInternal(void) {

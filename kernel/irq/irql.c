@@ -3,39 +3,27 @@
 #include <cpu.h>
 #include <irql.h>
 #include <log.h>
+#include <priorityqueue.h>
+#include <schedule.h>
 
 struct irql_deferment {
-    int irql;
     void (*handler)(void*);
     void* context;
 };
 
-/*
- * Assumes that interrupts are completely off as we go into this function. 
- */
-static void SetHardwareStateForLevel(int level) {
-    if (true /* TODO: ArchIsReadyForInterrupts() */) {
-        return;
-    }
+// TODO: needs to be per-cpu
+struct priority_queue* deferred_functions;
 
-    if (level >= IRQL_DRIVER) {
-        // TODO: mask certain irqs
-    } else {
-        // TODO: unmask all irqs
-    }
-
-    if (level < IRQL_HIGH) {
-        ArchEnableInterrupts();
-    }
-}
-
-static void* deferred_tasks[IRQL_HIGH];
+// TODO: probably needs to be per-cpu??
+static bool init_irql_done = false;
 
 /**
  * Runs a function at an IRQL lower than or equal to the current IRQL. If the IRQLs match,
  * the function will be run immediately. If the target IRQL is lower than the current IRQL,
  * it will be deferred until the IRQL level drops below IRQL_SCHEDULER. Deferred function
- * calls will be run in order from highest IRQL to lowest.
+ * calls will be run in order from highest IRQL to lowest. If InitIrql() has not been called
+ * prior to calling this function, any requests meant to be deferred will instead be silently
+ * ignored (this is needed to bootstrap the physical memory manager, et al.).
  *
  * @param irql      The IRQL level to run the function at. This IRQL must be lower than the
  *                  current IRQL, or a panic will occur.
@@ -52,8 +40,12 @@ void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
         Panic(PANIC_INVALID_IRQL);
 
     } else {
-        // TODO: do something with deferred_tasks[irql]
-        Panic(PANIC_NOT_IMPLEMENTED);
+        if (init_irql_done) {
+            struct irql_deferment deferment;
+            deferment.context = context;
+            deferment.handler = handler;
+            PriorityQueueInsert(deferred_functions, (void*) &deferment, irql);
+        }
     }
 }
 
@@ -78,7 +70,7 @@ int RaiseIrql(int level) {
     }
 
     GetCpu()->irql = level;
-    SetHardwareStateForLevel(level);
+    // ArchSetIrql(current_level);
 
     return existing_level;
 }
@@ -99,7 +91,7 @@ void LowerIrql(int target_level) {
     while (current_level != target_level) {
         --current_level;
         GetCpu()->irql = current_level;
-        SetHardwareStateForLevel(current_level);
+        // ArchSetIrql(current_level);
 
         // RUN ANY HANDLERS AT LEVEL
         //      (i.e. look through deferred_tasks[current_level])
@@ -114,4 +106,12 @@ void LowerIrql(int target_level) {
 void PostponeScheduleUntilStandardIrql(void) {
     // TODO: does this function need its own lock ? (e.g. just for setting postponed_task_switch)
     postponed_task_switch = true;
+}
+
+/**
+ * Requires TFW_SP_AFTER_HEAP or later.
+ */
+void InitIrql(void) {
+    deferred_functions = PriorityQueueCreate(128, true, sizeof(struct irql_deferment));
+    init_irql_done = true;
 }

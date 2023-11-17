@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #define VM_READ         1
 #define VM_WRITE        2
@@ -17,7 +18,6 @@
 struct vas_entry {
     size_t virtual;
     
-
     uint8_t in_ram          : 1;        /* Whether it is backed by a physical page or not. (i.e. does it have a real page table entry) */ 
     uint8_t allocated       : 1;        /* Whether or not to free a physical page on deallocation. Differs from in_ram when VM_MAP_HARDWARE is set. */
     uint8_t file            : 1;        /* Whether or not the page is file-mapped. */

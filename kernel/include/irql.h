@@ -48,6 +48,7 @@ void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
 int GetIrql(void);
 int RaiseIrql(int level);
 void LowerIrql(int level);
+void InitIrql(void);
 
 #define MAX_IRQL(l) assert(GetIrql() <= l)
 #define MIN_IRQL(l) assert(GetIrql() >= l)

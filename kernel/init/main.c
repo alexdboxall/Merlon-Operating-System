@@ -4,12 +4,15 @@
 #include <cpu.h>
 #include <log.h>
 #include <debug.h>
+#include <irql.h>
 #include <panic.h>
 
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
     InitTfw();
+    LogWriteSerial("init tfw done.\n");
+    
     MarkTfwStartPoint(TFW_SP_INITIAL);
 
     InitPhys();
@@ -18,6 +21,7 @@ void KernelMain(void) {
     InitHeap();
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
+    InitIrql();
     InitBootstrapCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_BOOTSTRAP_CPU);
 

@@ -1,7 +1,12 @@
 import os
 import time
+import math
+import sys
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE,SIG_DFL)
+
+nightly = '--nightly' in sys.argv
+stopOnError = '--stop-on-error' in sys.argv
 
 serialFileW = 'build/dbgpipe_osread'
 serialFileR = 'build/dbgpipe_oswrite.txt'
@@ -12,7 +17,20 @@ w = open(serialFileW, 'wb', 0)
 open(serialFileR, 'wb').close()
 r = open(serialFileR, 'rb', 0)
 
+def textNormal():
+    print('\033[0m', flush=True, end='')
+
+def textRed():
+    print('\033[91m', flush=True, end='')
+
+def textGreen():
+    print('\033[92m', flush=True, end='')
+
+def textYellow():
+    print('\033[93m', flush=True, end='')
+
 def sendAck(w):
+    global nightly
     bytes = bytearray()
     bytes.append(0xAA)  # start of packet
     bytes.append(0x00)  # type
@@ -20,7 +38,10 @@ def sendAck(w):
     bytes.append(0x00)  # size mid
     bytes.append(0x01)  # size low
     bytes.append(0xBB)  # sync. byte (start of data)
-    bytes.append(0x66)  # DATA: initialise
+    if nightly:
+        bytes.append(0x67)  # DATA: initialise
+    else:
+        bytes.append(0x66)  # DATA: initialise
     bytes.append(0xCC)  # sync. byte (end of data)
     w.write(bytes)
 
@@ -29,12 +50,21 @@ sendAck(w)
 currentTest = ''
 
 saveState = None
+tests_done = False
+testStartTime = 0
+testIsNightlyOnly = False
+time.sleep(1.5)
+
+if nightly:
+    print('\n\nRunning test suite in nightly mode:')
+else:
+    print('\n\nRunning test suite:')
 
 while True:
     aa = r.read(1)
     if len(aa) > 0:
         if aa[0] == 0xAA:
-            time.sleep(0.3)
+            time.sleep(0.7)
             type_ = r.read(1)[0]
             size1 = r.read(1)[0]
             size2 = r.read(1)[0]
@@ -89,16 +119,21 @@ while True:
                     bytes.append(0xCC)  # sync. byte (end of data)
                     w.write(bytes)
 
+                if tests_done:
+                    break
+
             elif data[0] == 0x33 or data[0] == 0x44 or data[0] == 0x34 or data[0] == 0x35 or data[0] == 0x45:
                 saveState = bytearray()
                 j = 8
                 if data[0] == 0x33:
+                    testIsNightlyOnly = data[1] == 0x1
                     for i in range(0, size - 8 - 96):
                         saveState.append(data[j])
                         j += 1
                     currentTest = ''
                     for i in range(96):
-                        currentTest += chr(data[j + i])
+                        if data[j + i] != 0:
+                            currentTest += chr(data[j + i])
                     
                 else:
                     for i in range(0, size - 8):
@@ -106,12 +141,33 @@ while True:
                         j += 1
 
                 if data[0] == 0x33:
-                    print('Starting test \'' + currentTest + '\'... ', end='', flush=True)
+                    print('Starting test \'' + currentTest + '\'... ' + (' ' * (96 - len(currentTest))), end='', flush=True)
+                    testStartTime = round(time.time() * 1000)
 
-                if data[0] % 16 == 4:
-                    print('passed')
-                elif data[0] % 16 == 5:
-                    print('failed')
+                
+                if data[0] % 16 in [4, 5]:
+                    ellapsedTime = round(time.time() * 1000) - testStartTime
+                    if testIsNightlyOnly and not nightly:
+                        textYellow()
+                        print('skipped nightly')
+                        textNormal()
+                    else:
+                        if data[0] % 16 == 4: 
+                            textGreen()
+                            print('passed', end='')
+                        else:
+                            textRed()
+                            print('failed', end='')
+                        textNormal()
+                        if ellapsedTime < 1000:
+                            timeStr = str(ellapsedTime) + ' ms'
+                        else:
+                            timeStr = str(str(int(round(ellapsedTime / 1000))) + '.' + str(int(round(ellapsedTime % 1000 / 10))) + ' s')
+                        print(' ({})'.format(timeStr))
+                        if data[0] % 16 == 5 and stopOnError:
+                            print('\nStopping as --stop-on-error was set.')
+                            break
+
 
                 sendAck(w)      # causes reboot
                 sendAck(w)      # to let it know we're ready
@@ -119,7 +175,10 @@ while True:
 
                 if data[0] == 0x44:
                     print('All test cases are completed!')
-                    break
+
+                    # need to keep going until it reboots, as it needs to know that tests have finished
+                    tests_done = True
+
 
 w.close()
 r.close()

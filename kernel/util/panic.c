@@ -18,7 +18,8 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_NO_MEMORY_MAP]			= "no memory map",
 	[PANIC_NOT_IMPLEMENTED] 		= "not implemented",
 	[PANIC_INVALID_IRQL]			= "invalid irq level",
-	[PANIC_SPINLOCK_WRONG_IRQL]		= "spinlock wrong irql"
+	[PANIC_SPINLOCK_WRONG_IRQL]		= "spinlock wrong irql",
+	[PANIC_PRIORITY_QUEUE]			= "invalid operation on priority queue",
 };
 
 _Noreturn void Panic(int code)
@@ -28,7 +29,7 @@ _Noreturn void Panic(int code)
 }
 
 _Noreturn void PanicEx(int code, const char* message) {
-	LogWriteSerial("PANIC %d\n", code);
+	LogWriteSerial("PANIC %d %s\n", code, message);
 	if (IsInTfwTest()) {
 		LogWriteSerial("in test.\n");
 		FinishedTfwTest(code);
