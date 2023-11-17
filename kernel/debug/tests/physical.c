@@ -100,15 +100,15 @@ TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
 
 void RegisterTfwPhysTests() {
     // PLEASE NOTE: until we implement virtual memory, it's actually always using the bitmap allocator
-    
+
     RegisterTfwTest("Is AllocPhys sane", TFW_SP_AFTER_PHYS, SanityCheck, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic AllocPhys test (bitmap)", TFW_SP_AFTER_PHYS, BasicAllocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic AllocPhys test (stack)", TFW_SP_AFTER_HEAP, BasicAllocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic DeallocPhys test (bitmap)", TFW_SP_AFTER_PHYS, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic DeallocPhys test (stack)", TFW_SP_AFTER_HEAP, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
 
-    RegisterTfwTest("AllocPhys and DeallocPhys stress test (bitmap 1)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 1);
-    RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (bitmap 2)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 2);
+    RegisterTfwTest("AllocPhys and DeallocPhys stress test (bitmap 1)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 0);
+    RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (bitmap 2)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 1);
     RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 1)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 2)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 1);
     RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 3)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 2);
