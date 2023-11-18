@@ -184,6 +184,8 @@ void DeallocPhysContiguous(size_t addr, size_t bytes) {
 static void EvictPagesIfNeeded(void* context) {
     (void) context;
 
+    EXACT_IRQL(IRQL_STANDARD);
+
     /*
     * We can't fault later on, so we evict now if we are getting low on memory. If this faults,
     * the recursion will not cause the spinlock to be re-acquired, and so the evicted code won't
@@ -209,7 +211,7 @@ static void EvictPagesIfNeeded(void* context) {
  */
 size_t AllocPhys(void) {
     MAX_IRQL(IRQL_SCHEDULER);
-
+        LogWriteSerial("Deferring phys: 0x%X\n", EvictPagesIfNeeded);
     DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
 
     int irql = AcquireSpinlock(&phys_lock, true);

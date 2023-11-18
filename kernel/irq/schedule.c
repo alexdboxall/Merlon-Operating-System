@@ -5,7 +5,7 @@
 #include <assert.h>
 
 void ScheduleInternal(void) {
-    assert(GetIrql() == IRQL_SCHEDULER);
+    EXACT_IRQL(IRQL_SCHEDULER);
     // TODO: assert(spinlock is held)
 
     

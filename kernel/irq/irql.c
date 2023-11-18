@@ -89,7 +89,7 @@ void LowerIrql(int target_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    while (current_level != target_level) {
+    while (init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(deferred_functions) > 0) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
         assert(next.priority <= current_level);
 
@@ -97,18 +97,27 @@ void LowerIrql(int target_level) {
             current_level = next.priority;
             GetCpu()->irql = current_level;
             ArchSetIrql(current_level);
+
+            /*
+             * Must Pop() before we call the handler (otherwise if the handler does a raise/lower, it will
+             * retrigger itself and cause a recursion loop), and must also get data off the queue before we Pop().
+             */
             struct irql_deferment* deferred_call = (struct irql_deferment*) next.data;
-            deferred_call->handler(deferred_call->context);
+            void* context = deferred_call->context;
+            void (*handler)(void*) = deferred_call->handler;
             PriorityQueuePop(deferred_functions);
+            assert(handler != NULL);
+            handler(context);
 
         } else {
-            current_level = target_level;
-            GetCpu()->irql = current_level;
-            ArchSetIrql(current_level);
             break;
         }
     }
-   
+
+    current_level = target_level;
+    GetCpu()->irql = current_level;
+    ArchSetIrql(current_level);
+
     if (current_level == IRQL_STANDARD && postponed_task_switch) {
         postponed_task_switch = false;
         Schedule();

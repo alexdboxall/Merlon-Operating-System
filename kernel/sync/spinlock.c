@@ -22,6 +22,10 @@ void InitSpinlock(struct spinlock* lock, const char* name, int irql) {
 int AcquireSpinlock(struct spinlock* lock, bool raise_irql) {
     assert(lock->lock == 0);
 
+    LogWriteSerial("ABC\n");
+    int prior_irql = GetIrql();
+    LogWriteSerial("DEF %d\n", prior_irql);
+
     if (raise_irql) {
         RaiseIrql(lock->irql);
 
@@ -31,7 +35,7 @@ int AcquireSpinlock(struct spinlock* lock, bool raise_irql) {
 
     ArchIrqSpinlockAcquire(&lock->lock);
     //lock->owner = GetCurrentThread();
-    return lock->irql;
+    return prior_irql;
 }
 
 void ReleaseSpinlock(struct spinlock* lock) {

@@ -4,6 +4,7 @@
 #include <cpu.h>
 #include <log.h>
 #include <debug.h>
+#include <assert.h>
 #include <timer.h>
 #include <irql.h>
 #include <panic.h>
@@ -30,6 +31,7 @@ void KernelMain(void) {
     InitTimer();
 
     InitBootstrapCpu();
+    assert(GetIrql() == IRQL_STANDARD);
     MarkTfwStartPoint(TFW_SP_AFTER_BOOTSTRAP_CPU);
 
     InitVirt();

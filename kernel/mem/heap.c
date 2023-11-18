@@ -78,6 +78,10 @@ static void AddBlockToBackupHeap(size_t size) {
 static void RestoreEmergencyPages(void* context) {
     (void) context;
 
+    EXACT_IRQL(IRQL_STANDARD);
+
+    LogWriteSerial("RestoreEmergencyPages...\n");
+
     size_t total_size = 0;
     size_t largest_block = 0;
     
@@ -352,7 +356,9 @@ static void* GetSystemMemory(size_t size, int flags) {
         if (flags & HEAP_ALLOW_PAGING) {
             PanicEx(PANIC_OUT_OF_BOOTSTRAP_HEAP, "HEAP_NO_FAULT was set alongside HEAP_ALLOW_PAGING");
         }
-        DeferUntilIrql(IRQL_STANDARD, RestoreEmergencyPages, NULL);
+        if (IsVirtInitialised()) {
+            DeferUntilIrql(IRQL_STANDARD, RestoreEmergencyPages, NULL);
+        }
         return AllocateFromEmergencyBlocks(size);
     }
 
