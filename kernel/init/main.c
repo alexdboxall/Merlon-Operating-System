@@ -21,17 +21,12 @@ void KernelMain(void) {
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS);
 
     InitHeap();
-    MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
-
-    /*
-     * These actually just do things like allocate locks, etc., they don't actually, e.g.
-     * initialise the timer hardware.
-     */
     InitIrql();
     InitTimer();
+    assert(GetIrql() == IRQL_STANDARD);
+    MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
     InitBootstrapCpu();
-    assert(GetIrql() == IRQL_STANDARD);
     MarkTfwStartPoint(TFW_SP_AFTER_BOOTSTRAP_CPU);
 
     InitVirt();

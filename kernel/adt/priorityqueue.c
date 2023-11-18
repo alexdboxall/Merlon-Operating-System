@@ -100,7 +100,7 @@ void PriorityQueuePop(struct priority_queue* queue) {
     }
 
     for (int i = 0; i < queue->ints_per_element; ++i) {
-        queue->array[i] = queue->array[queue->size * queue->ints_per_element + i];
+        queue->array[i] = queue->array[(queue->size - 1) * queue->ints_per_element + i];
     }
 
     --queue->size;

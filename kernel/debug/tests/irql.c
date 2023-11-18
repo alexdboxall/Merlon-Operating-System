@@ -115,7 +115,7 @@ TFW_CREATE_TEST(DeferWorksNormally) { TFW_IGNORE_UNUSED
     RaiseIrql(IRQL_SCHEDULER);
     DeferUntilIrql(IRQL_STANDARD, defer_me, (void*) 2);
     assert(counter == 1);
-    LowerIrql(IRQL_SCHEDULER);
+    LowerIrql(IRQL_STANDARD);
     assert(counter == 2);
 }
 
@@ -257,7 +257,7 @@ TFW_CREATE_TEST(DeferWithDeferringInHandler) { TFW_IGNORE_UNUSED
 }
 
 void RegisterTfwIrqlTests(void) {
-    RegisterTfwTest("RaiseIrql, LowerIrql and GetIrql work", TFW_SP_ALL_CLEAR, RaiseLowerTest, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("RaiseIrql, LowerIrql and GetIrql work", TFW_SP_AFTER_HEAP, RaiseLowerTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("DeferUntilIrql gets run immediately at level", TFW_SP_AFTER_HEAP, DeferRunsImmediatelyAtLevel, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("DeferUntilIrql gets run on level lowering", TFW_SP_AFTER_HEAP, DeferWorksNormally, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("DeferUntilIrql defers get ignored before heap", TFW_SP_AFTER_PHYS, DeferDoesntWorkBeforeHeap, PANIC_UNIT_TEST_OK, 0);
