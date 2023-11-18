@@ -21,7 +21,8 @@
  			 or ARCH_KRNL_SBRK_LIMIT may equal ARCH_USER_AREA_BASE)
 *	- the user stack area, via ARCH_USER_STACK_BASE and ARCH_USER_STACK_LIMIT
 *       	(may overlap with ARCH_USER_AREA_BASE and ARCH_USER_AREA_LIMIT)
-*	- should provide a typedef for platform_cpu_data_t
+*	- a typedef for platform_cpu_data_t
+*	- a typedef for platform_irq_context_t
 */
 
 
@@ -100,6 +101,12 @@ size_t ArchGetVirtFaultAddress(void* fault_info);
 int ArchGetVirtFaultType(void* fault_info);
 void ArchAddGlobalsToVas(struct vas* vas);
 int ArchGetCurrentCpuIndex(void);
+void ArchSendEoi(int irq_num);
+/*
+ * Sets the CPUs interrupt state (and mask devices) based on an IRQL. This function
+ * will always be called with interrupts completely disabled.
+ */
+void ArchSetIrql(int irql);
 
 void ArchInitBootstrapCpu(struct cpu* cpu);
 

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <log.h>
 #include <panic.h>
+#include <priorityqueue.h>
 
 struct priority_queue {
     int capacity;
@@ -14,10 +15,6 @@ struct priority_queue {
     int* array;     // length is: capacity * ints_per_element
 };
 
-struct priority_queue_result {
-    int prority;
-    void* data;
-};
 
 struct priority_queue* PriorityQueueCreate(int capacity, bool max, int element_width) {
     struct priority_queue* queue = AllocHeap(sizeof(struct priority_queue));
@@ -69,34 +66,38 @@ void PriorityQueueInsert(struct priority_queue* queue, void* elem, int priority)
     }
 
     int i = queue->size++;
-    LogWriteSerial("inserting data of priority %d. i = %d, ipe = %d, ew = %d. %d.\n", priority, i, queue->ints_per_element, queue->element_width, i * queue->ints_per_element);
     queue->array[i * queue->ints_per_element] = priority;
-    LogWriteSerial("A.\n");
     memcpy(queue->array + i * queue->ints_per_element + 1, elem, queue->element_width);
-    LogWriteSerial("B.\n");
 
     while (i != 0 && queue->array[((i - 1) / 2) * queue->ints_per_element] < queue->array[i * queue->ints_per_element]) {
-            LogWriteSerial("C.\n");
-SwapElements(queue, (i - 1) / 2, i);
+        SwapElements(queue, (i - 1) / 2, i);
         i = (i - 1) / 2;
     }
-        LogWriteSerial("D.\n");
-
 }
 
+/*
+ * returns the priority, and a REFERENCE to the data IN THE PRIORITY QUEUE. It is NOT a copy!
+ * This is why Pop() can't return it, because popping it overwrites the data!
+ */
 struct priority_queue_result PriorityQueuePeek(struct priority_queue* queue) {
     if (queue->size == 0) {
-        PanicEx(PANIC_PRIORITY_QUEUE, "peek/pop called on empty");
+        PanicEx(PANIC_PRIORITY_QUEUE, "peek called on empty");
     }
 
     struct priority_queue_result retv;
-    retv.prority = queue->array[0];
+    retv.priority = queue->array[0];
     retv.data = (void*) (queue->array + 1);
     return retv;
 }
 
-struct priority_queue_result PriorityQueuePop(struct priority_queue* queue) {
-    struct priority_queue_result retv = PriorityQueuePeek(queue);
+/*
+ * doesn't return the value, as the value would have been erased in the pop (PriorityQueue doesn't
+ * allocate memory, as it needs to be used in high IRQL situations).
+ */
+void PriorityQueuePop(struct priority_queue* queue) {
+    if (queue->size == 0) {
+        PanicEx(PANIC_PRIORITY_QUEUE, "pop called on empty");
+    }
 
     for (int i = 0; i < queue->ints_per_element; ++i) {
         queue->array[i] = queue->array[queue->size * queue->ints_per_element + i];
@@ -104,7 +105,6 @@ struct priority_queue_result PriorityQueuePop(struct priority_queue* queue) {
 
     --queue->size;
     Heapify(queue, 0);
-    return retv;
 }
 
 int PriorityQueueGetCapacity(struct priority_queue* queue) {

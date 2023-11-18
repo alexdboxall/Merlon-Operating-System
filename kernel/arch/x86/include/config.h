@@ -35,6 +35,7 @@
 #include <machine/gdt.h>
 #include <machine/idt.h>
 #include <machine/tss.h>
+#include <machine/regs.h>
 
 typedef struct {
     /* Plz keep tss at the top, thread switching assembly needs it */
@@ -47,3 +48,5 @@ typedef struct {
     struct idt_ptr idtr;
 
 } platform_cpu_data_t;
+
+typedef struct x86_regs platform_irq_context_t;

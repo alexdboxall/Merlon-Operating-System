@@ -25,18 +25,14 @@ static void DbgWriteByte(uint8_t value) {
 		;
 	}
 	outb(0x3E8, value);
-    //LogWriteSerial("W: 0x%X\n", value);
 }
 
 static uint8_t DbgReadByte() {
-    //LogWriteSerial("R: ");
     while ((inb(0x2F8 + 5) & 1) == 0) {
         ;
     }
  
-    uint8_t v = inb(0x2F8);
-    //LogWriteSerial("0x%X\n", v);
-    return v;
+    return inb(0x2F8);
 }
 
 void DbgWritePacket(int type, uint8_t* data, int size) {

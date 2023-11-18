@@ -5,6 +5,7 @@
 #include <log.h>
 #include <priorityqueue.h>
 #include <schedule.h>
+#include <assert.h>
 
 struct irql_deferment {
     void (*handler)(void*);
@@ -70,7 +71,7 @@ int RaiseIrql(int level) {
     }
 
     GetCpu()->irql = level;
-    // ArchSetIrql(current_level);
+    ArchSetIrql(level);
 
     return existing_level;
 }
@@ -89,12 +90,23 @@ void LowerIrql(int target_level) {
     }
 
     while (current_level != target_level) {
-        --current_level;
-        GetCpu()->irql = current_level;
-        // ArchSetIrql(current_level);
+        struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
+        assert(next.priority <= current_level);
 
-        // RUN ANY HANDLERS AT LEVEL
-        //      (i.e. look through deferred_tasks[current_level])
+        if (next.priority >= target_level) {
+            current_level = next.priority;
+            GetCpu()->irql = current_level;
+            ArchSetIrql(current_level);
+            struct irql_deferment* deferred_call = (struct irql_deferment*) next.data;
+            deferred_call->handler(deferred_call->context);
+            PriorityQueuePop(deferred_functions);
+
+        } else {
+            current_level = target_level;
+            GetCpu()->irql = current_level;
+            ArchSetIrql(current_level);
+            break;
+        }
     }
    
     if (current_level == IRQL_STANDARD && postponed_task_switch) {

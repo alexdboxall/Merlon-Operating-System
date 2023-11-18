@@ -259,7 +259,7 @@ size_t AllocPhys(void) {
  */
 size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_t boundary) {
     /*
-     * This function should not be called before the bitmap allocator is setup.
+     * This function should not be called before the stack allocator is setup.
      * (There is no need for InitVirt() to use this function, and so checking here removes
      * a check that would have to be done in a loop later).
      */

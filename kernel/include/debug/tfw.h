@@ -27,6 +27,8 @@ enum {
     TFW_SP_AFTER_VIRT,
     TFW_SP_AFTER_PHYS_REINIT,
     TFW_SP_AFTER_ALL_CPU,
+
+    TFW_SP_ALL_CLEAR,
 };
 
 struct tfw_test {

@@ -4,6 +4,7 @@
 #include <cpu.h>
 #include <log.h>
 #include <debug.h>
+#include <timer.h>
 #include <irql.h>
 #include <panic.h>
 
@@ -21,7 +22,13 @@ void KernelMain(void) {
     InitHeap();
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
+    /*
+     * These actually just do things like allocate locks, etc., they don't actually, e.g.
+     * initialise the timer hardware.
+     */
     InitIrql();
+    InitTimer();
+
     InitBootstrapCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_BOOTSTRAP_CPU);
 
@@ -29,14 +36,13 @@ void KernelMain(void) {
     MarkTfwStartPoint(TFW_SP_AFTER_VIRT);
 
     //ReinitPhys();
-    //RestoreHeap();
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
 
     //InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
-    PanicEx(PANIC_MANUALLY_INITIATED, "boot successful!!");
-
+    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
+    LogWriteSerial("Boot successful! Kernel is completely initialised.\n");
     while (1) {
         ;
     }

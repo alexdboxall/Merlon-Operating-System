@@ -4,8 +4,11 @@
 #include <machine/gdt.h>
 #include <machine/idt.h>
 #include <machine/tss.h>
+#include <machine/pic.h>
+#include <machine/pit.h>
 #include <cpu.h>
 #include <machine/portio.h>
+#include <machine/interrupt.h>
 
 void ArchInitBootstrapCpu(struct cpu* cpu) {
     (void) cpu;
@@ -13,6 +16,12 @@ void ArchInitBootstrapCpu(struct cpu* cpu) {
     x86InitGdt();
     x86InitIdt();
     x86InitTss();
+    
+    InitPic();
+    InitPit(100);
+
+    ArchEnableInterrupts();
+    x86MakeReadyForIrqs();
 }
 
 bool ArchInitNextCpu(struct cpu* cpu) {

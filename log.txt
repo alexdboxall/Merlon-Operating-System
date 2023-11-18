@@ -1,44 +1,3 @@
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk...
-c[?7l[2JKernelMain: kernel is initialising...
+KernelMain: kernel is initialising...
 init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 0
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 0, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 1
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 1, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk...
-c[?7l[2JKernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
+Boot successful! Kernel is completely initialised.

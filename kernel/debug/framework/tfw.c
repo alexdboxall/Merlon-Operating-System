@@ -176,6 +176,7 @@ void MarkTfwStartPoint(int id) {
 }
 
 void RegisterTfwTests(void) {
+    RegisterTfwInitTests();
     RegisterTfwPhysTests();
 }
 

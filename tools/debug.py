@@ -53,18 +53,21 @@ saveState = None
 tests_done = False
 testStartTime = 0
 testIsNightlyOnly = False
-time.sleep(1.5)
 
-if nightly:
-    print('\n\nRunning test suite in nightly mode:')
-else:
-    print('\n\nRunning test suite:')
+printedIntro = False
+
 
 while True:
     aa = r.read(1)
     if len(aa) > 0:
         if aa[0] == 0xAA:
-            time.sleep(0.7)
+            time.sleep(0.6)
+            if not printedIntro:
+                printedIntro = True
+                if nightly:
+                    print('\n\nRunning test suite in nightly mode:')
+                else:
+                    print('\n\nRunning test suite:')
             type_ = r.read(1)[0]
             size1 = r.read(1)[0]
             size2 = r.read(1)[0]
@@ -144,9 +147,9 @@ while True:
                     print('Starting test \'' + currentTest + '\'... ' + (' ' * (96 - len(currentTest))), end='', flush=True)
                     testStartTime = round(time.time() * 1000)
 
-                
                 if data[0] % 16 in [4, 5]:
                     ellapsedTime = round(time.time() * 1000) - testStartTime
+                    ellapsedTime -= 600     # debug.py does a time.sleep(0.6), which adds to the reported test time (if you change this time, the tests times reported change with it). subtract it off to get more accurate estimate
                     if testIsNightlyOnly and not nightly:
                         textYellow()
                         print('skipped nightly')

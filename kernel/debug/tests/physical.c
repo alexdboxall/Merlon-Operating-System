@@ -98,7 +98,11 @@ TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
     }
 }
 
-void RegisterTfwPhysTests() {
+TFW_CREATE_TEST(ContiguousAllocationRequiresStackAllocator) { TFW_IGNORE_UNUSED 
+    assert(AllocPhysContiguous(ARCH_PAGE_SIZE, 0, 0, 0) == 0);
+}
+
+void RegisterTfwPhysTests(void) {
     // PLEASE NOTE: until we implement virtual memory, it's actually always using the bitmap allocator
 
     RegisterTfwTest("Is AllocPhys sane", TFW_SP_AFTER_PHYS, SanityCheck, PANIC_UNIT_TEST_OK, 0);
@@ -106,20 +110,20 @@ void RegisterTfwPhysTests() {
     RegisterTfwTest("Basic AllocPhys test (stack)", TFW_SP_AFTER_HEAP, BasicAllocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic DeallocPhys test (bitmap)", TFW_SP_AFTER_PHYS, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic DeallocPhys test (stack)", TFW_SP_AFTER_HEAP, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
-
     RegisterTfwTest("AllocPhys and DeallocPhys stress test (bitmap 1)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 0);
     RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (bitmap 2)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 1);
     RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 1)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 2)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 1);
     RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 3)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 2);
     RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 4)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 3);
-
     RegisterTfwTest("AllocPhys returns page aligned addresses", TFW_SP_AFTER_HEAP, IsPageAligned, PANIC_UNIT_TEST_OK, 0);
-
     RegisterTfwTest("DeallocPhys only accepts page aligned addresses (1)", TFW_SP_AFTER_HEAP, DeallocationChecksForPageAlignment, PANIC_ASSERTION_FAILURE, 1);
     RegisterTfwTest("DeallocPhys only accepts page aligned addresses (2)", TFW_SP_AFTER_HEAP, DeallocationChecksForPageAlignment, PANIC_ASSERTION_FAILURE, ARCH_PAGE_SIZE / 2);
-
     RegisterTfwTest("DeallocPhys checks for double allocation", TFW_SP_AFTER_HEAP, DoubleDeallocationFails, PANIC_ASSERTION_FAILURE, 0);
+
+    RegisterTfwTest("AllocPhysContiguous requires the stack allocator", TFW_SP_AFTER_PHYS, ContiguousAllocationRequiresStackAllocator, PANIC_UNIT_TEST_OK, 0);
+
+    // TODO: contiguous tests (probably write InitVirt first though)
 }
 
 #endif

@@ -2,6 +2,7 @@
 
 #ifndef NDEBUG
 
-void RegisterTfwPhysTests();
+void RegisterTfwPhysTests(void);
+void RegisterTfwInitTests(void);
 
 #endif
