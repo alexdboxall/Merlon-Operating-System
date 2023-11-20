@@ -26,7 +26,8 @@
         "pic.h": "c",
         "log.h": "c",
         "avl.h": "c",
-        "ios": "c"
+        "ios": "c",
+        "__locale": "c"
     },
     "files.exclude": {
         "**/.git": true,
