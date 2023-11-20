@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <heap.h>
 #include <avl.h>
+#include <log.h>
 
 struct avl_node {
     struct avl_node* left;
@@ -86,6 +87,9 @@ static struct avl_node* AvlBalance(struct avl_node* tree) {
 static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_comparator comparator) {
     struct avl_node* new_tree;
     
+    assert(comparator != NULL);
+    assert(tree != NULL);
+
     if (comparator(data, tree->data) < 0) {
         struct avl_node* left_tree;
         if (tree->left == NULL) {
@@ -149,19 +153,20 @@ static struct avl_node* AvlDelete(struct avl_node* tree, void* data, avl_compara
          * This will continue until we reach a different case.
          */
         
-        to_free = tree->right;
-        while (to_free->left != NULL) {
-            to_free = to_free->left;
+        struct avl_node* node = tree->right;
+        while (node->left != NULL) {
+            node = node->left;
         }
 
-        tree->data = to_free->data;
-        tree->right = AvlDelete(tree->right, to_free->data, comparator);
+        tree->data = node->data;
+        tree->right = AvlDelete(tree->right, node->data, comparator);
     }
 
     /* 
      * If NULL is passed in, nothing happens (which is want we want).
      */
-    FreeHeap(to_free);
+
+    FreeHeap(to_free);      // TODO: this appears to be buggy..?
 
     return AvlBalance(tree);
 }
@@ -234,7 +239,11 @@ avl_comparator AvlTreeSetComparator(struct avl_tree* tree, avl_comparator handle
 }
 
 void AvlTreeInsert(struct avl_tree* tree, void* data) {
-    tree->root = AvlInsert(tree->root, data, tree->equality_handler);
+    if (tree->root == NULL) {
+        tree->root = AvlCreateNode(data, NULL, NULL);
+    } else {
+        tree->root = AvlInsert(tree->root, data, tree->equality_handler);
+    }
     tree->size++;
 }
 

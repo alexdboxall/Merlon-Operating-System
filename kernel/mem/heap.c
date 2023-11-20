@@ -129,6 +129,14 @@ struct block {
      */
 };
 
+#ifndef NDEBUG
+static int outstanding_allocations = 0;
+
+int DbgGetOutstandingHeapAllocations(void) {
+    return outstanding_allocations;
+}
+#endif
+
 /**
  * Must be a power of 2.
  */
@@ -334,6 +342,7 @@ static size_t GetBlockSize(struct block* block) {
     /*
      * Ensure the other size tag matches. If it doesn't, there has been memory corruption.
      */
+    LogWriteSerial("0x%X vs 0x%X\n", *(((size_t*) block) + (size / sizeof(size_t)) - 1), size);
     assert(*(((size_t*) block) + (size / sizeof(size_t)) - 1) == size);
     return size;
 }
@@ -678,6 +687,11 @@ void* AllocHeapEx(size_t size, int flags) {
 
     int irql = AcquireSpinlock(&heap_lock, true);
     struct block* block = FindBlock(size, flags);
+
+#ifndef NDEBUG
+    outstanding_allocations++;
+#endif
+
     ReleaseSpinlockAndLower(&heap_lock, irql);
 
     assert(((size_t) block & (ALIGNMENT - 1)) == 0);
@@ -716,6 +730,11 @@ void FreeHeap(void* ptr) {
 
     int irql = AcquireSpinlock(&heap_lock, true);
     AddBlock(block);
+
+#ifndef NDEBUG
+    outstanding_allocations--;
+#endif
+
     ReleaseSpinlockAndLower(&heap_lock, irql);
 }
 
@@ -726,6 +745,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     if (ptr == NULL || new_size == 0) {
+        // TODO: free the old block??
         return NULL;
     }
 

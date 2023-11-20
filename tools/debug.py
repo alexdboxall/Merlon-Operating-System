@@ -61,7 +61,7 @@ while True:
     aa = r.read(1)
     if len(aa) > 0:
         if aa[0] == 0xAA:
-            time.sleep(0.6)
+            time.sleep(0.5)
             if not printedIntro:
                 printedIntro = True
                 if nightly:
@@ -149,7 +149,7 @@ while True:
 
                 if data[0] % 16 in [4, 5]:
                     ellapsedTime = round(time.time() * 1000) - testStartTime
-                    ellapsedTime -= 600     # debug.py does a time.sleep(0.6), which adds to the reported test time (if you change this time, the tests times reported change with it). subtract it off to get more accurate estimate
+                    ellapsedTime -= 500     # debug.py does a time.sleep(0.3), which adds to the reported test time (if you change this time, the tests times reported change with it). subtract it off to get more accurate estimate
                     if testIsNightlyOnly and not nightly:
                         textYellow()
                         print('skipped nightly')

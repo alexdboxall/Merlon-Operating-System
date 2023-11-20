@@ -32,7 +32,7 @@ for path, subdirs, files in os.walk(os.getcwd()):
                 if l.find('assert') != -1:
                     asserts += 1
             lines += j
-            if n.find('test/') != -1 or n.find('test\\') != -1:
+            if n.find('debug/tests/') != -1 or n.find('debug\\tests\\') != -1:
                 testing += j
             if n.find('arch/') != -1 or n.find('arch\\') != -1 or n.find('x86/') != -1 or n.find('x86\\') != -1:
                 platlines += j

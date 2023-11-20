@@ -19,6 +19,8 @@ struct priority_queue* deferred_functions;
 static bool init_irql_done = false;
 
 /**
+ * [[docs/kernel/DeferuntilIrql.md]]
+ * 
  * Runs a function at an IRQL lower than or equal to the current IRQL. If the IRQLs match,
  * the function will be run immediately. If the target IRQL is lower than the current IRQL,
  * it will be deferred until the IRQL level drops below IRQL_SCHEDULER. Deferred function
@@ -32,6 +34,7 @@ static bool init_irql_done = false;
  * @param context   An arguement given to the handler function.
  * 
  * @max_irql IRQL_HIGH
+ * 
  */
 void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
     if (irql == GetIrql()) {
@@ -42,13 +45,10 @@ void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
 
     } else {
         if (init_irql_done) {
-            LogWriteSerial("PUTTING IN DEFERMENT AT IRQL %d\n", irql);
             struct irql_deferment deferment;
             deferment.context = context;
             deferment.handler = handler;
             PriorityQueueInsert(deferred_functions, (void*) &deferment, irql);
-        } else {
-            LogWriteSerial("INIT IRQL NOT DONE!\n");
         }
     }
 }
@@ -92,15 +92,6 @@ void LowerIrql(int target_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    LogWriteSerial("LowerIrql: queue size = %d, current %d, target %d, done %d\n", 
-        init_irql_done ? PriorityQueueGetUsedSize(deferred_functions) : -1,
-        current_level,
-        target_level,
-        init_irql_done
-    );
-
-    // LowerIrql: queue size = 1, current 2, target 2, done 1
-
     while (init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(deferred_functions) > 0) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
         assert(next.priority <= current_level);
@@ -117,8 +108,6 @@ void LowerIrql(int target_level) {
             struct irql_deferment* deferred_call = (struct irql_deferment*) next.data;
             void* context = deferred_call->context;
             void (*handler)(void*) = deferred_call->handler;
-
-            LogWriteSerial("    -> 0x%X(0x%X) %% %d\n", handler, context, current_level);
 
             PriorityQueuePop(deferred_functions);
             assert(handler != NULL);

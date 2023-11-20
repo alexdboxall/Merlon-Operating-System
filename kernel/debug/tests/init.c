@@ -18,3 +18,5 @@ void RegisterTfwInitTests(void) {
 }
 
 #endif
+void RegisterTfwAVLTreeTests(void);
+void RegisterTfwPriorityQueueTests(void);

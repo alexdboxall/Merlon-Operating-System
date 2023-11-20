@@ -4,7 +4,13 @@
 #include <string.h>
 #include <log.h>
 #include <panic.h>
+#include <assert.h>
 #include <priorityqueue.h>
+
+/*
+ * Implements the max-heap and min-heap data structures. To avoid confusion with the
+ * heap memory manager, it is referred to as a priority queue.
+ */
 
 struct priority_queue {
     int capacity;
@@ -15,8 +21,10 @@ struct priority_queue {
     int* array;     // length is: capacity * ints_per_element
 };
 
-
 struct priority_queue* PriorityQueueCreate(int capacity, bool max, int element_width) {
+    assert(capacity > 0);
+    assert(element_width > 0);
+
     struct priority_queue* queue = AllocHeap(sizeof(struct priority_queue));
     queue->capacity = capacity;
     queue->size = 0;
@@ -25,6 +33,11 @@ struct priority_queue* PriorityQueueCreate(int capacity, bool max, int element_w
     queue->max = max;
     queue->array = AllocHeap(sizeof(int) * queue->ints_per_element * capacity);
     return queue;
+}
+
+void PriorityQueueDestroy(struct priority_queue* queue) {
+    FreeHeap(queue->array);
+    FreeHeap(queue);
 }
 
 static void SwapElements(struct priority_queue* queue, int a, int b) {
@@ -69,9 +82,16 @@ void PriorityQueueInsert(struct priority_queue* queue, void* elem, int priority)
     queue->array[i * queue->ints_per_element] = priority;
     memcpy(queue->array + i * queue->ints_per_element + 1, elem, queue->element_width);
 
-    while (i != 0 && queue->array[((i - 1) / 2) * queue->ints_per_element] < queue->array[i * queue->ints_per_element]) {
-        SwapElements(queue, (i - 1) / 2, i);
-        i = (i - 1) / 2;
+    if (queue->max) {
+        while (i != 0 && queue->array[((i - 1) / 2) * queue->ints_per_element] < queue->array[i * queue->ints_per_element]) {
+            SwapElements(queue, (i - 1) / 2, i);
+            i = (i - 1) / 2;
+        }
+    } else {
+        while (i != 0 && queue->array[((i - 1) / 2) * queue->ints_per_element] > queue->array[i * queue->ints_per_element]) {
+            SwapElements(queue, (i - 1) / 2, i);
+            i = (i - 1) / 2;
+        }
     }
 }
 

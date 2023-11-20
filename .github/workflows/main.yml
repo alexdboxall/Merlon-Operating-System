@@ -9,6 +9,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run script file
       run: |
-         chmod +x ./build.sh
-         ./build.sh
+         chmod +x ./debug.sh
+         ./debug.sh
       shell: bash

@@ -23,6 +23,17 @@
         "spinlock.h": "c",
         "priorityqueue.h": "c",
         "irq.h": "c",
-        "pic.h": "c"
+        "pic.h": "c",
+        "log.h": "c",
+        "avl.h": "c",
+        "ios": "c"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
     }
 }

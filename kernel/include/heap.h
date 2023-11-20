@@ -31,5 +31,10 @@ void* AllocHeapZero(size_t size);
 void FreeHeap(void* ptr);
 void InitHeap(void);
 
+#ifndef NDEBUG
+int DbgGetOutstandingHeapAllocations(void);
+#endif
+
+
 #define malloc(x) AllocHeap(x)
 #define free(x) FreeHeap(x)

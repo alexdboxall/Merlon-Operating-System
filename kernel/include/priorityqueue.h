@@ -15,3 +15,4 @@ struct priority_queue_result PriorityQueuePeek(struct priority_queue* queue);
 void PriorityQueuePop(struct priority_queue* queue);
 int PriorityQueueGetCapacity(struct priority_queue* queue);
 int PriorityQueueGetUsedSize(struct priority_queue* queue);
+void PriorityQueueDestroy(struct priority_queue* queue);
