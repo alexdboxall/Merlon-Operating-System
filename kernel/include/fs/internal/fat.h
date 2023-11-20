@@ -33,6 +33,8 @@ struct fat_data {
 };
 
 int GetFatShortFilename(char* lfn, char* output, char* directory);
+void FormatFatShortName(char* with_dot, char* without_dot);
+void UnformatFatShortName(char* without_dot, char* with_dot);
 
 int ReadFatCluster(struct fat_data* fat, int cluster, bool buffer);
 int WriteFatCluster(struct fat_data* fat, int cluster, bool buffer);
