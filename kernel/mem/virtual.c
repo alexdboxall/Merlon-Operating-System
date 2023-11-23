@@ -24,11 +24,17 @@ static int VirtAvlComparator(void* a, void* b) {
     return (a_entry->virtual < b_entry->virtual) ? -1 : 1;
 }
 
-struct vas* CreateVas(void) {
-    struct vas* vas = AllocHeap(sizeof(struct vas));
+void CreateVasEx(struct vas* vas, int flags) {
     vas->mappings = AvlTreeCreate();
     AvlTreeSetComparator(vas->mappings, VirtAvlComparator);
-    ArchAddGlobalsToVas(vas);
+    if (!(flags & VAS_NO_ARCH_INIT)) {
+        ArchInitVas(vas);
+    }
+}
+
+struct vas* CreateVas() {
+    struct vas* vas = AllocHeap(sizeof(struct vas));
+    CreateVasEx(vas, 0);
     return vas;
 }
 
@@ -75,7 +81,9 @@ void EvictVirt(void) {
 }
 
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, void* file, off_t pos) {
-    struct vas_entry* entry = AllocHeap(sizeof(struct vas_entry));
+    LogWriteSerial("creating a mapping from v 0x%X -> p 0x%X\n", virtual, physical);
+
+    struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
     entry->allocated = false;
 
     bool lock = flags & VM_LOCK;
@@ -87,7 +95,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
          * We are not allowed to check if the physical page is allocated/free, because it might come
          * from a VM_MAP_HARDWARE request, which can map non-RAM pages. 
          */
-        if (physical != 0) {
+        if (physical == 0) {
             physical = AllocPhys();
             entry->allocated = true;
         }
@@ -97,7 +105,6 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      * MapVirt checks for conflicting flags and returns, so this code doesn't need to worry about that.
      */
     entry->virtual = virtual;
-
     entry->read = flags & VM_READ;
     entry->write = flags & VM_WRITE;
     entry->exec = flags & VM_EXEC;
@@ -110,12 +117,10 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     /*
      * TODO: later on, check if shared, and add phys->virt entry if needed
      */
-    
+    LogWriteSerial("about to insert into tree.\n");
     AvlTreeInsert(vas->mappings, entry);
-    
-    if (entry->in_ram) {
-        ArchAddMapping(vas, entry);
-    }
+    LogWriteSerial("about to add an arch entry!\n");
+    ArchAddMapping(vas, entry);
 }
 
 static bool IsPageInUse(struct vas* vas, size_t virtual) {
@@ -135,8 +140,13 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
 }
 
 static size_t AllocVirtRange(size_t pages) {
-    (void) pages;
-    return 0;
+    /*
+     * TODO: make this deallocatable, and not x86 specific (with that memory address)
+     */
+    static size_t hideous_allocator = 0xD0000000U;
+    size_t retv = hideous_allocator;
+    hideous_allocator += pages * ARCH_PAGE_SIZE;
+    return retv;
 }
 
 static void FreeVirtRange(size_t virtual, size_t pages) {
@@ -144,7 +154,14 @@ static void FreeVirtRange(size_t virtual, size_t pages) {
     (void) pages;
 }
 
+static void AvlPrinter(void* data_) {
+    struct vas_entry* data = (struct vas_entry*) data_;
+    LogWriteSerial("[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", data->virtual, data->physical, data->allocated, data->cow, data->in_ram, data->lock, data->ref_count);
+}
+
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, void* file, off_t pos) {
+    LogWriteSerial("MapVirt: vas 0x%X. v 0x%X -> p 0x%X. %d pages. flags are 0x%X\n", vas, virtual, physical, pages, flags);
+
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
@@ -186,8 +203,10 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     }
     
     for (size_t i = 0; i < pages; ++i) {
-        AddMapping(vas, physical + i * ARCH_PAGE_SIZE, virtual + i * ARCH_PAGE_SIZE, flags, file, pos);
+        AddMapping(vas, physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE), virtual + i * ARCH_PAGE_SIZE, flags, file, pos);
     }   
+    LogWriteSerial("MAPPINGS ARE NOW:\n");
+    AvlTreePrint(vas->mappings, AvlPrinter);
 
     if (vas == GetVas()) {
         ArchFlushTlb(vas);
@@ -203,7 +222,13 @@ size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* f
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
     struct vas_entry dummy;
+#ifndef NDEBUG   
+    dummy.physical = 0xBAADC0DE;
+#endif
     dummy.virtual = virtual;
+
+    LogWriteSerial("VAS MAPPINGS ARE:\n");
+    AvlTreePrint(vas->mappings, AvlPrinter);
     
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     assert(res != NULL);
@@ -216,6 +241,12 @@ size_t GetPhysFromVirt(size_t virtual) {
 
 void LockVirt(size_t virtual) {
     struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+
+    if (!entry->in_ram) {
+        // TODO: probably need to make HandleVirtFault call a subfunction 'BringIntoRAM', and then have
+        //       that be called here too.
+    }
+
     entry->lock = true;
 }
 
@@ -447,16 +478,18 @@ static void HandleSwapfileFault(struct vas_entry* entry) {
     // TODO: read into entry->virtual from swapfile
 }
 
-void HandleVirtFault(void* fault_info) {
+void HandleVirtFault(size_t faulting_virt, int fault_type) {
+    LogWriteSerial("HandleVirtFault A\n");
     int irql = RaiseIrql(IRQL_PAGE_FAULT);
 
-    size_t faulting_virt = ArchGetVirtFaultAddress(fault_info);
-    int fault_type = ArchGetVirtFaultType(fault_info);
+    (void) fault_type;
 
     struct vas_entry* entry = GetVirtEntry(GetVas(), faulting_virt);
     if (entry == NULL) {
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
     }
+    LogWriteSerial("\nentry: v 0x%X, p 0x%X. aclr = %d%d%d%d\n", entry->virtual, entry->physical, entry->allocated, entry->cow, entry->lock, entry->in_ram);
+    LogWriteSerial("HandleVirtFault B\n");
 
     /*
      * Sanity check that our flags are configured correctly.

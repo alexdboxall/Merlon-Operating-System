@@ -342,7 +342,6 @@ static size_t GetBlockSize(struct block* block) {
     /*
      * Ensure the other size tag matches. If it doesn't, there has been memory corruption.
      */
-    LogWriteSerial("0x%X vs 0x%X\n", *(((size_t*) block) + (size / sizeof(size_t)) - 1), size);
     assert(*(((size_t*) block) + (size / sizeof(size_t)) - 1) == size);
     return size;
 }
@@ -371,6 +370,7 @@ static void* GetSystemMemory(size_t size, int flags) {
         return AllocateFromEmergencyBlocks(size);
     }
 
+    LogWriteSerial("MapVirt call (A).\n");
     return (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | (flags & HEAP_ALLOW_PAGING ? 0 : VM_LOCK), NULL, 0);
 }
 
@@ -706,12 +706,12 @@ void* AllocHeapEx(size_t size, int flags) {
 
 void* AllocHeap(size_t size) {
     MAX_IRQL(IRQL_SCHEDULER);
-    return AllocHeapEx(size, 0);
+    return AllocHeapEx(size, HEAP_NO_FAULT);
 }
 
 void* AllocHeapZero(size_t size) {
     MAX_IRQL(IRQL_SCHEDULER);
-    return AllocHeapEx(size, HEAP_ZERO);
+    return AllocHeapEx(size, HEAP_ZERO | HEAP_NO_FAULT);
 }
 
 void FreeHeap(void* ptr) {

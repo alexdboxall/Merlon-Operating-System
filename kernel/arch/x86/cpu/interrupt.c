@@ -5,6 +5,7 @@
 #include <log.h>
 #include <irq.h>
 #include <irql.h>
+#include <virtual.h>
 
 static bool ready_for_irqs = false;
 
@@ -19,8 +20,14 @@ static int GetRequiredIrql(int irq_num) {
 void x86HandleInterrupt(struct x86_regs* r) {
     int num = r->int_no;
 
+    LogWriteSerial("GOT IRQ: %d\n", num);
+
     if (num >= PIC_IRQ_BASE && num < PIC_IRQ_BASE + 16) {
         RespondToIrq(num, GetRequiredIrql(num));
+
+    } else if (num == 14) {
+        extern size_t x86GetCr2();
+        HandleVirtFault(x86GetCr2(), 0);
     }
     /*
 

@@ -82,11 +82,11 @@ int WriteFatEntry(struct fat_data* fat, int entry, uint32_t value) {
             return status;
         }
 
-        buffer[offset + 0] = (value >> 0) & 0xFF;
-        buffer[offset + 1] = (value >> 8) & 0xFF;
+        buffer[offset + 0] = value;
+        buffer[offset + 1] = value >> 8;
         if (fat->fat_type == FAT32) {
-            buffer[offset + 2] = (value >> 16) & 0xFF;
-            buffer[offset + 3] = (value >> 24) & 0xFF;
+            buffer[offset + 2] = value >> 16;
+            buffer[offset + 3] = value >> 24;
         }
 
         for (int i = 0; i < fat->num_fats; ++i) {

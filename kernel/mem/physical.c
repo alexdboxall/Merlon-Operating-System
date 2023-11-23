@@ -211,7 +211,7 @@ static void EvictPagesIfNeeded(void* context) {
  */
 size_t AllocPhys(void) {
     MAX_IRQL(IRQL_SCHEDULER);
-        LogWriteSerial("Deferring phys: 0x%X\n", EvictPagesIfNeeded);
+    
     DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
 
     int irql = AcquireSpinlock(&phys_lock, true);
@@ -365,15 +365,25 @@ static void ReclaimBitmapSpace(void) {
      * e.g. if we allow the system to access 16GB of RAM, but we only have 4MB, then we can save 31 pages
      * (or 124KB), which on a system with only 4MB of RAM is 3% of total physical memory).
      */
+    LogWriteSerial("highest_valid_page_index = 0x%X\n", highest_valid_page_index);
+
     size_t num_unreachable_pages = MAX_MEMORY_PAGES - (highest_valid_page_index + 1);
     size_t num_unreachable_entries = num_unreachable_pages / BITS_PER_ENTRY;
     size_t num_unreachable_bitmap_pages = num_unreachable_entries / ARCH_PAGE_SIZE;
 
     size_t end_bitmap = ((size_t) allocation_bitmap) + sizeof(allocation_bitmap);
-    size_t unreachable_region = end_bitmap - ARCH_PAGE_SIZE * num_unreachable_bitmap_pages;
+    size_t unreachable_region = ((end_bitmap - ARCH_PAGE_SIZE * num_unreachable_bitmap_pages) + ARCH_PAGE_SIZE - 1) & ~(ARCH_PAGE_SIZE - 1);
+    LogWriteSerial("ReinitPhys: C.1\n");
 
     while (num_unreachable_bitmap_pages--) {
-        size_t physical = GetPhysFromVirt(unreachable_region);
+        LogWriteSerial("ReinitPhys: C.2 %d. 0x%X\n", num_unreachable_pages + 1, unreachable_region);
+
+        /*
+         * TODO: using GetPhysFromVirt isn't valid here, as it only looks at the AVL tree, while this function is trying
+         *       to look at the 'raw' underlying stuff.
+         */
+        size_t physical = ArchVirtualToPhysical(unreachable_region);
+        LogWriteSerial("ReinitPhys: C.3 0x%X\n", physical);
         DeallocPhys(physical);
         
         unreachable_region += ARCH_PAGE_SIZE;
@@ -388,14 +398,19 @@ static void ReclaimBitmapSpace(void) {
  */
 void ReinitPhys(void) {
     assert(allocation_stack == NULL);
-    
+    LogWriteSerial("ReinitPhys: A\n");
+    LogWriteSerial("MapVirt call (B).\n");
     allocation_stack = (size_t*) MapVirt(0, 0, (highest_valid_page_index + 1) * sizeof(size_t), VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
 
+    LogWriteSerial("ReinitPhys: B\n");
     for (size_t i = 0; i < MAX_MEMORY_PAGES; ++i) {
         if (IsBitmapEntryFree(i)) {
             PushIndex(i);
         }
     }
+    LogWriteSerial("ReinitPhys: C\n");
 
     ReclaimBitmapSpace();
+    LogWriteSerial("ReinitPhys: D\n");
+
 }

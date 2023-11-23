@@ -27,7 +27,10 @@
         "log.h": "c",
         "avl.h": "c",
         "ios": "c",
-        "__locale": "c"
+        "__locale": "c",
+        "errno.h": "c",
+        "virtual.h": "c",
+        "cpu.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

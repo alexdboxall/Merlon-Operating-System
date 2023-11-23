@@ -19,7 +19,7 @@ struct fat_data {
         uint64_t root_dir_cluster_32;
     };
     uint64_t root_dir_num_sectors_12_16;
-    uint64_t total_sectors;
+    int total_clusters;
     uint64_t first_data_sector;
     uint64_t first_fat_sector;
     int fat_type;               // FAT12 or FAT16 or FAT32

@@ -1,7 +1,7 @@
-global ArchGetVirtFaultAddress
+global x86GetCr2
 global x86SetCr3
 
-ArchGetVirtFaultAddress:
+x86GetCr2:
     mov eax, cr2
     ret
 

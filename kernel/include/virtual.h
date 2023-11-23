@@ -14,6 +14,7 @@
 #define VM_FIXED_VIRT   64
 #define VM_MAP_HARDWARE 128     /* map a physical page that doesn't live within the physical memoery manager*/
 
+#define VAS_NO_ARCH_INIT    1
 
 struct vas_entry {
     size_t virtual;
@@ -39,10 +40,7 @@ struct vas_entry {
     int ref_count;
 };
 
-struct vas {
-    struct avl_tree* mappings;
-    void* arch_data;
-};
+struct vas;
 
 void LockVirt(size_t virtual);
 void UnlockVirt(size_t virtual);
@@ -52,9 +50,20 @@ void EvictVirt(void);
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos);
 void UnmapVirt(size_t virtual, size_t bytes);
 size_t GetPhysFromVirt(size_t virtual);
+
 struct vas* CreateVas(void);
+void CreateVasEx(struct vas* vas, int flags);
 struct vas* CopyVas(void);
 struct vas* GetVas(void);
 void SetVas(struct vas* vas);
 void InitVirt(void);
 bool IsVirtInitialised(void);
+
+void HandleVirtFault(size_t faulting_virt, int fault_type);
+
+#include <arch.h>
+
+struct vas {
+    struct avl_tree* mappings;
+    platform_vas_data_t* arch_data;
+};

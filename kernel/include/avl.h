@@ -8,6 +8,7 @@ struct avl_node;
 typedef void (*avl_deletion_handler)(void*);
 typedef int (*avl_comparator)(void*, void*);
 
+void AvlTreePrint(struct avl_tree* tree, void(*printer)(void*));
 struct avl_tree* AvlTreeCreate(void);
 void AvlTreeInsert(struct avl_tree* tree, void* data);
 void AvlTreeDelete(struct avl_tree* tree, void* data);

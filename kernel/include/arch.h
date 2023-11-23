@@ -23,6 +23,7 @@
 *       	(may overlap with ARCH_USER_AREA_BASE and ARCH_USER_AREA_LIMIT)
 *	- a typedef for platform_cpu_data_t
 *	- a typedef for platform_irq_context_t
+*	- a typedef for platform_vas_data_t
 */
 
 
@@ -97,9 +98,23 @@ void ArchAddMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUnmap(struct vas* vas, struct vas_entry* entry);
 void ArchSetVas(struct vas* vas);
-size_t ArchGetVirtFaultAddress(void* fault_info);
-int ArchGetVirtFaultType(void* fault_info);
-void ArchAddGlobalsToVas(struct vas* vas);
+
+/*
+ * Used only if the AVL tree is insufficient, e.g. for deallocating part of the kernel region to, e.g.
+ * reclaim the physical memory bitmap. Works only for the current VAS. Returns 0 on no mapping.
+ */
+size_t ArchVirtualToPhysical(size_t virtual);
+
+/*
+ * Initialises a given VAS with platform specific data (e.g. mapping the kernel in).
+ */
+void ArchInitVas(struct vas* vas);
+
+/*
+ * Initialises virtual memory in general, i.e. creates the first VAS.
+ */
+void ArchInitVirt(void);
+
 int ArchGetCurrentCpuIndex(void);
 void ArchSendEoi(int irq_num);
 /*
@@ -116,4 +131,4 @@ void ArchInitBootstrapCpu(struct cpu* cpu);
  */
 bool ArchInitNextCpu(struct cpu* cpu);
 
-void ArchInitVirt(void);
+

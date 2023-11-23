@@ -49,4 +49,10 @@ typedef struct {
 
 } platform_cpu_data_t;
 
+typedef struct {
+    size_t p_page_directory;		// cr3
+	size_t* v_page_directory;		// what we use to access the tables
+    
+} platform_vas_data_t;
+
 typedef struct x86_regs platform_irq_context_t;

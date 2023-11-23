@@ -84,12 +84,14 @@ static struct avl_node* AvlBalance(struct avl_node* tree) {
     }
 }
 
+
 static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_comparator comparator) {
     struct avl_node* new_tree;
     
     assert(comparator != NULL);
     assert(tree != NULL);
 
+    LogWriteSerial("Insert A\n");
     if (comparator(data, tree->data) < 0) {
         struct avl_node* left_tree;
         if (tree->left == NULL) {
@@ -108,8 +110,11 @@ static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_compara
         }
         new_tree = AvlCreateNode(tree->data, tree->left, right_tree);
     }
+    LogWriteSerial("Insert B\n");
 
     FreeHeap(tree);
+        LogWriteSerial("Insert C\n");
+
     return AvlBalance(new_tree);
 }
 
@@ -177,7 +182,10 @@ static void* AvlGet(struct avl_node* tree, void* data, avl_comparator comparator
     }
 
     if (comparator(tree->data, data) == 0) {
-        return data;
+        /*
+         * Must return tree->data, as tree->data != data if there is a custom comparator.
+         */
+        return tree->data;
     }
 
     void* left = AvlGet(tree->left, data, comparator);
@@ -185,6 +193,19 @@ static void* AvlGet(struct avl_node* tree, void* data, avl_comparator comparator
         return left;
     }
     return AvlGet(tree->right, data, comparator);
+}
+
+static void AvlPrint(struct avl_node* tree, void(*printer)(void*)) {
+    if (tree == NULL) { 
+        return;
+    }
+    AvlPrint(tree->left, printer);
+    if (printer == NULL) {
+        LogWriteSerial("[[0x%X]], \n", tree->data);
+    } else {
+        printer(tree->data);
+    }
+    AvlPrint(tree->right, printer);
 }
 
 static bool AvlContains(struct avl_node* tree, void* data, avl_comparator comparator) {
@@ -295,4 +316,8 @@ void* AvlTreeGetData(struct avl_node* node) {
     }
 
     return node->data;
+}
+
+void AvlTreePrint(struct avl_tree* tree, void(*printer)(void*)) {
+    AvlPrint(tree->root, printer);
 }
