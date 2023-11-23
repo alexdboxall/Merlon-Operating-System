@@ -149,3 +149,47 @@ int GetFatShortFilename(char* lfn, char* output, char* directory) {
     strcpy(output, name);
     return LFN_BOTH;
 }
+
+void FormatFatShortName(char* with_dot, char* without_dot) {
+    memset(without_dot, ' ', 11);
+    without_dot[11] = 0;
+
+    int i;
+    for (i = 0; i < 8 && with_dot[i] && with_dot[i] != '.'; ++i) {
+        without_dot[i] = with_dot[i];
+    }
+    if (with_dot[i] == '.') {
+        ++i;
+        for (int j = 0; j < 3 && with_dot[i]; ++j) {
+            without_dot[8 + j] = with_dot[i];
+            ++i;
+        }
+    }
+}
+
+void UnformatFatShortName(char* without_dot, char* with_dot) {
+    int i = 0;
+    int j = 0;
+    while (without_dot[i]) {
+        if (i == 8) {
+            with_dot[j++] = '.';
+        }
+        if (without_dot[i] != ' ') {
+            with_dot[j++] = without_dot[i];
+        }
+        ++i;
+    }
+    
+    if (with_dot[j - 1] == '.') {
+        /*
+         * Remove trailing dot if there's one there (i.e. no file extension). This also null terminates the string.
+         */
+        with_dot[j - 1] = 0;
+    } else {
+        /*
+         * Still need to null terminate.
+         */
+        with_dot[j] = 0;
+    }
+}
+
