@@ -142,7 +142,27 @@ void EvictVirt(void) {
 }
 
 /**
- *  
+ * Adds a virtual page mapping to the specified virtual address space. This will add it both to the mapping tree
+ * and the architectural paging structures (so that page faults can be raised, etc., if there is no backing yet).
+ * 
+ * @param vas       The virtual address space to map this page to
+ * @param physical  Only used if VM_LOCK is specified in flags. Determines the physical page that will back the
+ *                      virtual mapping. If VM_LOCK is set, and this is 0, then a physical page will be allocated. If
+ *                      VM_LOCK is set, and this is non-zero, then that physical address will be used.
+ * @param virtual   The virtual address to map the memory to. This should be non-zero.
+ * @param flags     Various bitflags to affect the attributes of the mapping. Flags that are used here are:
+ *                      VM_READ     : if set, the page will be marked as readable
+ *                      VM_WRITE    : if set, the page will be marked as writable
+ *                      VM_USER     : if set, then usermode can access this page without faulting
+ *                      VM_EXEC     : if set, then code can be executed in this page
+ *                      VM_LOCK     : if set, the page will immediately get a physical memory backing, and will not be
+ *                                    paged out
+ *                      VM_FILE     : if set, this page is file-backed
+ *                  All other flags are ignored by this function.
+ * @param file      If VM_FILE is set, then the page is backed by this file, starting at the position specified by pos.
+ * @param pos       If VM_FILE is set, then this is the offset into the file where the page is mapped to.
+ * 
+ * @maxirql IRQL_SCHEDULER
  */
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, void* file, off_t pos) {
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
@@ -171,6 +191,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->write = flags & VM_WRITE;
     entry->exec = flags & VM_EXEC;
     entry->file = flags & VM_FILE;
+    entry->user = flags & VM_USER;
     entry->physical = physical;
     entry->ref_count = 1;
     entry->file_offset = pos;
@@ -227,6 +248,35 @@ static void AvlPrinter(void* data_) {
     LogWriteSerial("[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", data->virtual, data->physical, data->allocated, data->cow, data->in_ram, data->lock, data->ref_count);
 }*/
 
+
+/**
+ * Creates a virtual memory mapping.
+ * 
+ * @param vas       The virtual address space to map this page to
+ * @param physical  Only used if VM_LOCK is specified in flags. Determines the physical page that will back the
+ *                      virtual mapping. If VM_LOCK is set, and this is 0, then a physical page will be allocated. If
+ *                      VM_LOCK is set, and this is non-zero, then that physical address will be used. In this instance,
+ *                      VM_MAP_HARDWARE must also be set. If VM_MAP_HARDWARE is not set, this value must be 0.
+ * @param virtual   The virtual address to map the memory to. If this is 0, then a virtual memory region of the correct
+ *                      size will be allocated.
+ * @param pages     The number of contiguous pages to map in this way
+ * @param flags     Various bitflags to affect the attributes of the mapping. Flags that are used here are:
+ *                      VM_READ         : if set, the page will be marked as readable
+ *                      VM_WRITE        : if set, the page will be marked as writable
+ *                      VM_USER         : if set, then usermode can access this page without faulting
+ *                      VM_EXEC         : if set, then code can be executed in this page
+ *                      VM_LOCK         : if set, the page will immediately get a physical memory backing, and will not be
+ *                                        paged out
+ *                      VM_FILE         : if set, this page is file-backed. Cannot be combined with VM_MAP_HARDWARE.
+ *                      VM_MAP_HARDWARE : if set, a physical address can be specified for the backing. If this flag is set,
+ *                                        then VM_LOCK must also be set, and VM_FILE must be clear.
+ * @param file      If VM_FILE is set, then the page is backed by this file, starting at the position specified by pos.
+ *                      If VM_FILE is clear, then this value must be NULL.
+ * @param pos       If VM_FILE is set, then this is the offset into the file where the page is mapped to. If VM_FILE is clear,
+ *                      then this value must be 0.
+ * 
+ * @maxirql IRQL_SCHEDULER
+ */
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, void* file, off_t pos) {
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
@@ -269,7 +319,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     }
     
     for (size_t i = 0; i < pages; ++i) {
-        AddMapping(vas, physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE), virtual + i * ARCH_PAGE_SIZE, flags, file, pos);
+        AddMapping(vas, physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE), virtual + i * ARCH_PAGE_SIZE, flags, file, pos + i * ARCH_PAGE_SIZE);
     }   
 
     if (vas == GetVas()) {
@@ -279,6 +329,18 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     return virtual;
 }
 
+/**
+ * Creates a virtual memory mapping in the current virtual address space.
+ * 
+ * @param physical  See `MapVirtEx`
+ * @param virtual   See `MapVirtEx`
+ * @param pages     The minimum number of bytes to map
+ * @param flags     See `MapVirtEx`
+ * @param file      See `MapVirtEx`
+ * @param pos       See `MapVirtEx`
+ * 
+ * @maxirql IRQL_SCHEDULER
+ */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos) {
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     return MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
