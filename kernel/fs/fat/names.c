@@ -108,16 +108,8 @@ int GetFatShortFilename(char* lfn, char* output, char* directory) {
         }
     }
 
-    char name[13];
-    name[8] = 0;
-    strncpy(name, stripped_name, 6);
-    int len = strlen(name);
-    name[len] = '~';
-    name[len + 1] = '1';
-
-    int num = 1;
-
-    while (DoesFileExist(name, stripped_extension, directory)) {
+    int num = 0;
+    do {
         ++num;
         
         int digits = 1;
@@ -126,27 +118,22 @@ int GetFatShortFilename(char* lfn, char* output, char* directory) {
         if (num >= 1000) ++digits;
         if (num >= 10000) ++digits;
         if (num >= 100000) ++digits;
-
-        if (7 - digits <= 0) {
+        if (num >= 1000000) {
             return LFN_ERROR;
         }
 
-        memset(name, 0, 13);
-        strncpy(name, stripped_name, 7 - digits);
-        len = strlen(name);
-        name[len] = '~';
+        memset(output, 0, 13);
+        strncpy(output, stripped_name, 7 - digits);
+        int len = strlen(output);
+        output[len] = '~';
         int num_copy = num;
         for (int j = 0; j < digits; ++j) {
-            name[len + digits - j] = num_copy % 10 + '0';
+            output[len + digits - j] = num_copy % 10 + '0';
             num_copy /= 10;
         }
 
-        if (num > 10) {
-            break;
-        }
-    }
+     } while (DoesFileExist(output, stripped_extension, directory));
 
-    strcpy(output, name);
     return LFN_BOTH;
 }
 

@@ -91,7 +91,6 @@ static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_compara
     assert(comparator != NULL);
     assert(tree != NULL);
 
-    LogWriteSerial("Insert A\n");
     if (comparator(data, tree->data) < 0) {
         struct avl_node* left_tree;
         if (tree->left == NULL) {
@@ -110,10 +109,8 @@ static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_compara
         }
         new_tree = AvlCreateNode(tree->data, tree->left, right_tree);
     }
-    LogWriteSerial("Insert B\n");
 
     FreeHeap(tree);
-        LogWriteSerial("Insert C\n");
 
     return AvlBalance(new_tree);
 }

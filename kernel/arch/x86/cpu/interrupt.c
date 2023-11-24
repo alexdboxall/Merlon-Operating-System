@@ -20,8 +20,6 @@ static int GetRequiredIrql(int irq_num) {
 void x86HandleInterrupt(struct x86_regs* r) {
     int num = r->int_no;
 
-    LogWriteSerial("GOT IRQ: %d\n", num);
-
     if (num >= PIC_IRQ_BASE && num < PIC_IRQ_BASE + 16) {
         RespondToIrq(num, GetRequiredIrql(num));
 
@@ -29,11 +27,9 @@ void x86HandleInterrupt(struct x86_regs* r) {
         extern size_t x86GetCr2();
         HandleVirtFault(x86GetCr2(), 0);
     }
-    /*
 
-    else if (page fault irq) {
-        RespondToVirtFault(fault_addr)
-    } else if (protection fault, etc. || page fault unhandled) {
+    /*
+    if (protection fault, etc. || page fault unhandled) {
         RespondToUnhandledFault
     } else if (syscall) {
         RespondToSyscall(...)

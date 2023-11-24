@@ -62,14 +62,11 @@ static void log_intnv(uint32_t i, int base)
 	logsnv(str);
 }
 
-void LogWriteSerial(const char* format, ...)
-{
+static void LogWriteSerialVa(const char* format, va_list list) {
 	if (format == NULL) {
-		LogWriteSerial("NULL");
+		format = "NULL";
 	}
 
-	va_list list;
-	va_start(list, format);
 	int i = 0;
 
 	while (format[i]) {
@@ -101,6 +98,20 @@ void LogWriteSerial(const char* format, ...)
 		}
 		i++;
 	}
+}
 
+void LogWriteSerial(const char* format, ...)
+{
+	va_list list;
+	va_start(list, format);
+	LogWriteSerialVa(format, list);
+	va_end(list);
+}
+
+void LogDeveloperWarning(char* format, ...) {
+	va_list list;
+	va_start(list, format);
+	LogWriteSerial(">>> KERNEL DEVELOPER WARNING:\n    ");
+	LogWriteSerialVa(format, list);
 	va_end(list);
 }

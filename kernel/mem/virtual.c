@@ -8,12 +8,13 @@
 #include <assert.h>
 #include <panic.h>
 #include <string.h>
+#include <spinlock.h>
 #include <log.h>
 #include <sys/types.h>
 #include <irql.h>
 #include <cpu.h>
 
-// TODO: spinlocks!
+static bool virt_initialised = false;
 
 static int VirtAvlComparator(void* a, void* b) {
     struct vas_entry* a_entry = (struct vas_entry*) a;
@@ -26,6 +27,12 @@ static int VirtAvlComparator(void* a, void* b) {
 
 void CreateVasEx(struct vas* vas, int flags) {
     vas->mappings = AvlTreeCreate();
+
+    /*
+     * We are in for a world of hurt if someone is able to page fault while
+     * holding the lock on a virtual address space, so better make it IRQL_SCHEDULER.
+     */
+    InitSpinlock(&vas->lock, "vas", IRQL_SCHEDULER);
     AvlTreeSetComparator(vas->mappings, VirtAvlComparator);
     if (!(flags & VAS_NO_ARCH_INIT)) {
         ArchInitVas(vas);
@@ -42,6 +49,8 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
     assert(!entry->lock);
     assert(!entry->cow);
 
+    int irql = AcquireSpinlock(&vas->lock, true);
+
     if (!entry->in_ram) {
         /*
          * Nothing happens, as this page isn't even in RAM.
@@ -53,7 +62,9 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
          */
 
         // TODO: write entry->virtual back to file.
-        
+        //       this will probably want to be deferred (i.e. copy the data to get rid of to a 
+        //       new AllocPhys() page, then give that to the defer handler.
+
         entry->in_ram = false;
         DeallocPhys(entry->physical);
         ArchUnmap(vas, entry);
@@ -68,12 +79,15 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
 
 
         // TODO: put it on the swapfile!
+        //       this will probably want to be deferred (i.e. copy the data to get rid of to a 
+        //       new AllocPhys() page, then give that to the defer handler.
 
         ArchUnmap(vas, entry);
-        
         DeallocPhys(entry->physical);
         ArchFlushTlb(vas);
     }
+    
+    ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
 void EvictVirt(void) {
@@ -81,8 +95,6 @@ void EvictVirt(void) {
 }
 
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, void* file, off_t pos) {
-    LogWriteSerial("creating a mapping from v 0x%X -> p 0x%X\n", virtual, physical);
-
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
     entry->allocated = false;
 
@@ -117,31 +129,36 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     /*
      * TODO: later on, check if shared, and add phys->virt entry if needed
      */
-    LogWriteSerial("about to insert into tree.\n");
+    
+    int irql = AcquireSpinlock(&vas->lock, true);
     AvlTreeInsert(vas->mappings, entry);
-    LogWriteSerial("about to add an arch entry!\n");
     ArchAddMapping(vas, entry);
-}
-
-static bool IsPageInUse(struct vas* vas, size_t virtual) {
-    struct vas_entry dummy;
-    dummy.virtual = virtual;
-    return AvlTreeContains(vas->mappings, (void*) &dummy);
+    ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
 static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
+    bool in_use = false;
+
+    struct vas_entry dummy;
+    dummy.virtual = virtual;
+
+    int irql = AcquireSpinlock(&vas->lock, true);
     for (size_t i = 0; i < pages; ++i) {
-        if (IsPageInUse(vas, virtual + i * ARCH_PAGE_SIZE)) {
-            return true;
+        if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
+            in_use = true;
+            break;
         }
+        dummy.virtual += ARCH_PAGE_SIZE;
     }
 
-    return false;
+    ReleaseSpinlockAndLower(&vas->lock, irql);
+    return in_use;
 }
 
 static size_t AllocVirtRange(size_t pages) {
     /*
      * TODO: make this deallocatable, and not x86 specific (with that memory address)
+     * TODO: this probably needs a global lock of some sort.
      */
     static size_t hideous_allocator = 0xD0000000U;
     size_t retv = hideous_allocator;
@@ -154,14 +171,13 @@ static void FreeVirtRange(size_t virtual, size_t pages) {
     (void) pages;
 }
 
+/*
 static void AvlPrinter(void* data_) {
     struct vas_entry* data = (struct vas_entry*) data_;
     LogWriteSerial("[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", data->virtual, data->physical, data->allocated, data->cow, data->in_ram, data->lock, data->ref_count);
-}
+}*/
 
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, void* file, off_t pos) {
-    LogWriteSerial("MapVirt: vas 0x%X. v 0x%X -> p 0x%X. %d pages. flags are 0x%X\n", vas, virtual, physical, pages, flags);
-
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
@@ -205,8 +221,6 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     for (size_t i = 0; i < pages; ++i) {
         AddMapping(vas, physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE), virtual + i * ARCH_PAGE_SIZE, flags, file, pos);
     }   
-    LogWriteSerial("MAPPINGS ARE NOW:\n");
-    AvlTreePrint(vas->mappings, AvlPrinter);
 
     if (vas == GetVas()) {
         ArchFlushTlb(vas);
@@ -227,20 +241,26 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 #endif
     dummy.virtual = virtual;
 
-    LogWriteSerial("VAS MAPPINGS ARE:\n");
-    AvlTreePrint(vas->mappings, AvlPrinter);
-    
+    // TODO: assert lock is held.
+
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     assert(res != NULL);
     return res;
 }
 
 size_t GetPhysFromVirt(size_t virtual) {
-    return GetVirtEntry(GetVas(), virtual)->physical;
+    struct vas* vas = GetVas();
+    int irql = AcquireSpinlock(&vas->lock, true);
+    size_t result = GetVirtEntry(GetVas(), virtual)->physical;
+    ReleaseSpinlockAndLower(&vas->lock, irql);
+    return result;
 }
 
 void LockVirt(size_t virtual) {
-    struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    struct vas* vas = GetVas();
+    int irql = AcquireSpinlock(&vas->lock, true);
+
+    struct vas_entry* entry = GetVirtEntry(vas, virtual);
 
     if (!entry->in_ram) {
         // TODO: probably need to make HandleVirtFault call a subfunction 'BringIntoRAM', and then have
@@ -248,11 +268,15 @@ void LockVirt(size_t virtual) {
     }
 
     entry->lock = true;
+    ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
 void UnlockVirt(size_t virtual) {
-    struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    struct vas* vas = GetVas();
+    int irql = AcquireSpinlock(&vas->lock, true);
+    struct vas_entry* entry = GetVirtEntry(vas, virtual);
     entry->lock = false;
+    ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
 void SetVirtPermissions(size_t virtual, int set, int clear) {
@@ -263,35 +287,47 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
         assert(false);
         return;
     }
+    
+    struct vas* vas = GetVas();
+    int irql = AcquireSpinlock(&vas->lock, true);
 
-    struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    struct vas_entry* entry = GetVirtEntry(vas, virtual);
     entry->read = (set & VM_READ) ? true : (clear & VM_READ ? false : entry->read);
     entry->write = (set & VM_WRITE) ? true : (clear & VM_WRITE ? false : entry->write);
     entry->exec = (set & VM_EXEC) ? true : (clear & VM_EXEC ? false : entry->exec);
     entry->user = (set & VM_USER) ? true : (clear & VM_USER ? false : entry->user);
 
-    ArchUpdateMapping(GetVas(), entry);
-    ArchFlushTlb(GetVas());
+    ArchUpdateMapping(vas, entry);
+    ArchFlushTlb(vas);
+
+    ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
 int GetVirtPermissions(size_t virtual) {
-    struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    struct vas* vas = GetVas();
+    int irql = AcquireSpinlock(&vas->lock, true);
+    struct vas_entry entry = *GetVirtEntry(GetVas(), virtual);
+    ReleaseSpinlockAndLower(&vas->lock, irql);
+
     int permissions = 0;
-    if (entry->read) permissions |= VM_READ;
-    if (entry->write) permissions |= VM_WRITE;
-    if (entry->exec) permissions |= VM_EXEC;
-    if (entry->lock) permissions |= VM_LOCK;
-    if (entry->file) permissions |= VM_FILE;
-    if (entry->user) permissions |= VM_USER;
+    if (entry.read) permissions |= VM_READ;
+    if (entry.write) permissions |= VM_WRITE;
+    if (entry.exec) permissions |= VM_EXEC;
+    if (entry.lock) permissions |= VM_LOCK;
+    if (entry.file) permissions |= VM_FILE;
+    if (entry.user) permissions |= VM_USER;
+
     return permissions;
 }
 
 void UnmapVirt(size_t virtual, size_t bytes) {
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
-
     bool needs_tlb_flush = false;
 
     struct vas* vas = GetVas();
+
+    int irql = AcquireSpinlock(&vas->lock, true);
+
     for (size_t i = 0; i < pages; ++i) {
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
         entry->ref_count--;
@@ -306,11 +342,15 @@ void UnmapVirt(size_t virtual, size_t bytes) {
                  * TODO: there will eventually something that indicates where on the swapfile
                  *       things are free/allocated. basically here, we just have to mark it as
                  *       free on the disk again (don't need to clear the actual data or anything)
+                 * 
+                 *       remember to defer it
                  */
             }
             if (entry->file) { 
                 /*
                  * TODO: write to the file
+                 *
+                 *       remember to defer it
                  */
             }
             if (entry->allocated) {
@@ -318,8 +358,7 @@ void UnmapVirt(size_t virtual, size_t bytes) {
                 DeallocPhys(entry->physical);
             }
 
-
-            AvlTreeDelete(vas->mappings, entry);
+            AvlTreeDelete(vas->mappings, entry); 
             FreeHeap(entry);
             FreeVirtRange(virtual + i * ARCH_PAGE_SIZE, 1);
         }
@@ -328,6 +367,8 @@ void UnmapVirt(size_t virtual, size_t bytes) {
     if (needs_tlb_flush) {
         ArchFlushTlb(vas);
     }
+
+    ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
 static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
@@ -408,12 +449,18 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
 struct vas* CopyVas(void) {
     struct vas* vas = GetVas();
     struct vas* new_vas = CreateVas();
+
+    int irql = AcquireSpinlock(&vas->lock, true);
     CopyVasRecursive(AvlTreeGetRootNode(vas->mappings), new_vas);
     ArchFlushTlb(vas);
+    ReleaseSpinlockAndLower(&vas->lock, irql);
+
     return new_vas;
 }
 
 struct vas* GetVas(void) {
+    // TODO: cpu probably needs to have a lock object in it called current_vas_lock, which needs to be held whenever
+    //       someone reads or writes to current_vas;
     return GetCpu()->current_vas;
 }
 
@@ -422,9 +469,10 @@ void SetVas(struct vas* vas) {
     ArchSetVas(vas);
 }
 
-static bool virt_initialised = false;
-
 void InitVirt(void) {
+    // TODO: cpu probably needs to have a lock object in it called current_vas_lock, which needs to be held whenever
+    //       someone reads or writes to current_vas;
+
     assert(!virt_initialised);
     ArchInitVirt();
     virt_initialised = true;   

@@ -70,6 +70,10 @@ enum {
      */
     PANIC_SPINLOCK_WRONG_IRQL,
 
+    /*
+     * No more physical memory, even after evicting old pages.
+     */
+    PANIC_OUT_OF_PHYS,
 
     PANIC_PRIORITY_QUEUE,
 

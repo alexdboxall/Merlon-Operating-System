@@ -63,7 +63,12 @@ TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
         int rng = (unsigned int) (next / 65536) % 32768;
         next = next * 1103515245 + 12345;
 
-        if (allocated < (400 + (rng % 100))) {
+        /*
+         * This all gets a bit dodgy if it's too much higher than 400 on a 4MB system, as it will
+         * eventually need to evict pages, but because we haven't actually mapped any of them into
+         * virtual memory, we just hang.
+         */
+        if (allocated < (300 + (rng % 80))) {
             size_t f = AllocPhys();
             for (int j = 0; j < 512; ++j) {
                 if (frames[j] == f) {
@@ -103,19 +108,17 @@ TFW_CREATE_TEST(ContiguousAllocationRequiresStackAllocator) { TFW_IGNORE_UNUSED
 }
 
 void RegisterTfwPhysTests(void) {
-    // PLEASE NOTE: until we implement virtual memory, it's actually always using the bitmap allocator
-
     RegisterTfwTest("Is AllocPhys sane", TFW_SP_AFTER_PHYS, SanityCheck, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic AllocPhys test (bitmap)", TFW_SP_AFTER_PHYS, BasicAllocationTest, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("Basic AllocPhys test (stack)", TFW_SP_AFTER_HEAP, BasicAllocationTest, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("Basic AllocPhys test (stack)", TFW_SP_AFTER_PHYS_REINIT, BasicAllocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Basic DeallocPhys test (bitmap)", TFW_SP_AFTER_PHYS, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("Basic DeallocPhys test (stack)", TFW_SP_AFTER_HEAP, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("Basic DeallocPhys test (stack)", TFW_SP_AFTER_PHYS_REINIT, BasicDeallocationTest, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("AllocPhys and DeallocPhys stress test (bitmap 1)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 0);
     RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (bitmap 2)", TFW_SP_AFTER_PHYS, StressTest, PANIC_UNIT_TEST_OK, 1);
-    RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 1)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 2)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 1);
-    RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 3)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 2);
-    RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 4)", TFW_SP_AFTER_HEAP, StressTest, PANIC_UNIT_TEST_OK, 3);
+    RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 1)", TFW_SP_AFTER_PHYS_REINIT, StressTest, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("AllocPhys and DeallocPhys stress test (stack 2)", TFW_SP_AFTER_PHYS_REINIT, StressTest, PANIC_UNIT_TEST_OK, 1);
+    RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 3)", TFW_SP_AFTER_PHYS_REINIT, StressTest, PANIC_UNIT_TEST_OK, 2);
+    RegisterNightlyTfwTest("AllocPhys and DeallocPhys stress test (stack 4)", TFW_SP_AFTER_PHYS_REINIT, StressTest, PANIC_UNIT_TEST_OK, 3);
     RegisterTfwTest("AllocPhys returns page aligned addresses", TFW_SP_AFTER_HEAP, IsPageAligned, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("DeallocPhys only accepts page aligned addresses (1)", TFW_SP_AFTER_HEAP, DeallocationChecksForPageAlignment, PANIC_ASSERTION_FAILURE, 1);
     RegisterTfwTest("DeallocPhys only accepts page aligned addresses (2)", TFW_SP_AFTER_HEAP, DeallocationChecksForPageAlignment, PANIC_ASSERTION_FAILURE, ARCH_PAGE_SIZE / 2);
@@ -123,7 +126,7 @@ void RegisterTfwPhysTests(void) {
 
     RegisterTfwTest("AllocPhysContiguous requires the stack allocator", TFW_SP_AFTER_PHYS, ContiguousAllocationRequiresStackAllocator, PANIC_UNIT_TEST_OK, 0);
 
-    // TODO: contiguous tests (probably write InitVirt first though)
+    // TODO: contiguous tests...
 }
 
 #endif

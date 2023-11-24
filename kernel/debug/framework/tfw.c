@@ -177,10 +177,10 @@ void MarkTfwStartPoint(int id) {
 
 void RegisterTfwTests(void) {
     RegisterTfwInitTests();
+    RegisterTfwPhysTests();
     RegisterTfwAVLTreeTests();
     RegisterTfwPriorityQueueTests();
     RegisterTfwIrqlTests();
-    RegisterTfwPhysTests();
 }
 
 void InitTfw(void) {

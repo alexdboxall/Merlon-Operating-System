@@ -68,8 +68,8 @@ static void AddBlockToBackupHeap(size_t size) {
         }
     }
 
-    LogWriteSerial("losing 0x%X bytes due to strangeness with backup heap.\n", emergency_blocks[index_of_smallest_block].size);
-    LogWriteSerial("TODO: could probably just add this as a regular block to the regular heap.\n");
+    LogDeveloperWarning("losing 0x%X bytes due to strangeness with backup heap.\n", emergency_blocks[index_of_smallest_block].size);
+    LogDeveloperWarning("TODO: could probably just add this as a regular block to the regular heap.\n");
 
     emergency_blocks[index_of_smallest_block].size = size;
     emergency_blocks[index_of_smallest_block].address = address;
@@ -370,7 +370,6 @@ static void* GetSystemMemory(size_t size, int flags) {
         return AllocateFromEmergencyBlocks(size);
     }
 
-    LogWriteSerial("MapVirt call (A).\n");
     return (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | (flags & HEAP_ALLOW_PAGING ? 0 : VM_LOCK), NULL, 0);
 }
 
@@ -668,6 +667,11 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     return AllocateBlock(head_list[sys_index], sys_index, user_requested_size);
 }
 
+/**
+ * Allocates memory on the heap. Unless you *really* know what you're doing, you should always
+ * pass HEAP_NO_FAULT. AllocHeap passes this automatically, but this one doesn't (in case you
+ * want to allocate from the pagable pool).
+ */
 void* AllocHeapEx(size_t size, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
 
@@ -745,7 +749,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     if (ptr == NULL || new_size == 0) {
-        // TODO: free the old block??
+        LogDeveloperWarning("do not call ReallocHeap() with a NULL pointer or zero size!\n");
         return NULL;
     }
 

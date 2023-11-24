@@ -30,7 +30,9 @@
         "__locale": "c",
         "errno.h": "c",
         "virtual.h": "c",
-        "cpu.h": "c"
+        "cpu.h": "c",
+        "string.h": "c",
+        "typeinfo": "c"
     },
     "files.exclude": {
         "**/.git": true,

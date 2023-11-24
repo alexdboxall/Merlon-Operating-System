@@ -20,6 +20,7 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_INVALID_IRQL]			= "invalid irq level",
 	[PANIC_SPINLOCK_WRONG_IRQL]		= "spinlock wrong irql",
 	[PANIC_PRIORITY_QUEUE]			= "invalid operation on priority queue",
+	[PANIC_OUT_OF_PHYS]				= "no physical memory left"
 };
 
 _Noreturn void Panic(int code)

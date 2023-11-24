@@ -35,10 +35,10 @@ void KernelMain(void) {
     ReinitPhys();
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
 
-    size_t* my_mem = (size_t*) MapVirt(0, 0, 50, VM_READ | VM_WRITE, 0, 0);
+    /*size_t* my_mem = (size_t*) MapVirt(0, 0, 50, VM_READ | VM_WRITE, 0, 0);
     LogWriteSerial("AAA\n");
     my_mem[0] = 0x12;
-    LogWriteSerial("BBB\n");
+    LogWriteSerial("BBB\n");*/
 
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
