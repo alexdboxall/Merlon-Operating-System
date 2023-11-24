@@ -45,3 +45,11 @@ void ReleaseSpinlockAndLower(struct spinlock* lock, int new_irql) {
     ReleaseSpinlock(lock);
     LowerIrql(new_irql);
 }
+
+/**
+ * This function has no atomic guarantees. It should only be used for debugging and writing
+ * assertion statements. 
+ */
+bool IsSpinlockHeld(struct spinlock* lock) {
+    return lock->lock;
+}

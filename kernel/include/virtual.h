@@ -25,13 +25,12 @@ struct vas_entry {
     uint8_t cow             : 1;        /* */
     uint8_t swapfile        : 1;        /* Whether or not the page has been moved to a swapfile. Will not occur if 'file' is set (will back to that file instead)*/
     uint8_t lock            : 1;           
-
     uint8_t read            : 1;
     uint8_t write           : 1;
+    
     uint8_t exec            : 1;
     uint8_t user            : 1;
-    uint8_t global          : 1;
-    uint8_t                 : 5;
+    uint8_t                 : 6;
 
     off_t file_offset;
     void* file_node;

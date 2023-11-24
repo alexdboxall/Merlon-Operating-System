@@ -14,6 +14,13 @@
 #include <irql.h>
 #include <cpu.h>
 
+/**
+ * Whether or not virtual memory is available for use. Can be read with IsVirtInitialised(), and is set when
+ * InitVirt() has completed.
+ * 
+ * Does not have a lock, as only the bootstrap CPU should be modifiying it, and this happens before threads
+ * are set up. Once set to true, it is never changed again, so there is no read/write problems.
+ */
 static bool virt_initialised = false;
 
 static int VirtAvlComparator(void* a, void* b) {
@@ -25,7 +32,19 @@ static int VirtAvlComparator(void* a, void* b) {
     return (a_entry->virtual < b_entry->virtual) ? -1 : 1;
 }
 
+/**
+ * Initialises a virtual address space in an already allocated section of memory.
+ * 
+ * @param vas The memory to initialise a virtual address space object in.
+ * @param flags Can be 0 or VAS_NO_ARCH_INIT. If VAS_NO_ARCH_INIT is provided, then no architecture-specific
+ *              code will be called. This flag should only be set if called by architecture-specific functions
+ *              (e.g. to create the initial address space). Normally, 0 should be passed in.
+ * 
+ * @maxirql IRQL_SCHEDULER
+ */
 void CreateVasEx(struct vas* vas, int flags) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     vas->mappings = AvlTreeCreate();
 
     /*
@@ -39,13 +58,34 @@ void CreateVasEx(struct vas* vas, int flags) {
     }
 }
 
+/**
+ * Allocates and initialises a new virtual address space.
+ * 
+ * @return The virtual address space which was created.
+ * 
+ * @maxirql IRQL_SCHEDULER
+ */
 struct vas* CreateVas() {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     struct vas* vas = AllocHeap(sizeof(struct vas));
     CreateVasEx(vas, 0);
     return vas;
 }
 
+/**
+ * Evicts a particular page mapping from virtual memory, freeing up its physical page (if it had one).
+ * This will often involve accessing the disk to put it on swapfile (or save modifications to a file-backed
+ * page).
+ * 
+ * @param vas The virtual address space that we're evicting from. Does not have to be the current one.
+ * @param entry The virtual page to remove from virtual memory.
+ * 
+ * @maxirql IRQL_SCHEDULER
+ */
 void EvictPage(struct vas* vas, struct vas_entry* entry) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     assert(!entry->lock);
     assert(!entry->cow);
 
@@ -90,10 +130,20 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
     ReleaseSpinlockAndLower(&vas->lock, irql);
 }
 
+/**
+ * Searches through virtual memory (that doesn't necessarily have to be in the current virtual address space),
+ * and finds and evicts a page of virtual memory, to try free up physical memory. 
+ * 
+ * @maxirql IRQL_SCHEDULER
+ */
 void EvictVirt(void) {
+    MAX_IRQL(IRQL_SCHEDULER);
 
 }
 
+/**
+ *  
+ */
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, void* file, off_t pos) {
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
     entry->allocated = false;
@@ -241,7 +291,7 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 #endif
     dummy.virtual = virtual;
 
-    // TODO: assert lock is held.
+    assert(IsSpinlockHeld(&vas->lock));
 
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     assert(res != NULL);
@@ -381,68 +431,62 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
 
     struct vas_entry* entry = AvlTreeGetData(node);
 
-    /*
-     * Kernel global entries have already been done in the new VAS by CreateVas(), so
-     * no need to copy them again.
-     */
-    if (!entry->global) {
-        if (entry->lock) {
+    if (entry->lock) {
+        /*
+        * Got to add the new entry right now. We know it must be in memory as it
+        * is locked.
+        */
+        assert(entry->in_ram);
+
+        if (entry->allocated) {
             /*
-             * Got to add the new entry right now. We know it must be in memory as it
-             * is locked.
-             */
-            assert(entry->in_ram);
-
-            if (entry->allocated) {
-                /*
-                * Copy the physical page. We do this by copying the data into a buffer,
-                * putting a new physical page in the existing VAS and then copying the 
-                * data there. Then the original physical page that was there is free to use
-                * as the copy.
-                */
-                uint8_t page_data[ARCH_PAGE_SIZE];
-                memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
-                size_t new_physical = entry->physical;
-                entry->physical = AllocPhys();
-                ArchUpdateMapping(GetVas(), entry);
-                ArchFlushTlb(GetVas());
-                memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
-
-                struct vas_entry* new_entry = AllocHeap(sizeof(struct vas_entry));
-                *new_entry = *entry;
-                new_entry->ref_count = 1;
-                new_entry->physical = new_physical;
-                new_entry->allocated = true;
-                AvlTreeInsert(new_vas->mappings, entry);
-                ArchAddMapping(new_vas, entry);
-
-            } else {
-                LogWriteSerial("fork() on a hardware-mapped page is not implemented yet");
-                PanicEx(PANIC_NOT_IMPLEMENTED, "CopyVasRecursive");
-            }
-            
-        } else {
-            /*
-             * If it's on swap, it's okay to still mark it as COW, as when we reload we will
-             * try to do the 'copy'-on-write, and then we will reload from swap, and it will
-             * then reload and then be copied. Alternatively, if it is read, then it gets brought
-             * back into memory, but as a COW page still.
-             *
-             * BSS memory works fine like this too (but will incur another fault when it is used).
-             *
-             * At this stage (where shared memory doesn't exist yet), file mapped pages will also
-             * be COWed. This means there will two copies of the file in memory should they write
-             * to it. The final process to release memory will ultimately 'win' and have its changes
-             * perserved to disk (the others will get overwritten).
-             */
-            entry->cow = true;
-            entry->ref_count++;
-
-            AvlTreeInsert(new_vas->mappings, entry);
-
+            * Copy the physical page. We do this by copying the data into a buffer,
+            * putting a new physical page in the existing VAS and then copying the 
+            * data there. Then the original physical page that was there is free to use
+            * as the copy.
+            */
+            uint8_t page_data[ARCH_PAGE_SIZE];
+            memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
+            size_t new_physical = entry->physical;
+            entry->physical = AllocPhys();
             ArchUpdateMapping(GetVas(), entry);
+            ArchFlushTlb(GetVas());
+            memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
+
+            struct vas_entry* new_entry = AllocHeap(sizeof(struct vas_entry));
+            *new_entry = *entry;
+            new_entry->ref_count = 1;
+            new_entry->physical = new_physical;
+            new_entry->allocated = true;
+            AvlTreeInsert(new_vas->mappings, entry);
             ArchAddMapping(new_vas, entry);
+
+        } else {
+            LogWriteSerial("fork() on a hardware-mapped page is not implemented yet");
+            PanicEx(PANIC_NOT_IMPLEMENTED, "CopyVasRecursive");
         }
+        
+    } else {
+        /*
+        * If it's on swap, it's okay to still mark it as COW, as when we reload we will
+        * try to do the 'copy'-on-write, and then we will reload from swap, and it will
+        * then reload and then be copied. Alternatively, if it is read, then it gets brought
+        * back into memory, but as a COW page still.
+        *
+        * BSS memory works fine like this too (but will incur another fault when it is used).
+        *
+        * At this stage (where shared memory doesn't exist yet), file mapped pages will also
+        * be COWed. This means there will two copies of the file in memory should they write
+        * to it. The final process to release memory will ultimately 'win' and have its changes
+        * perserved to disk (the others will get overwritten).
+        */
+        entry->cow = true;
+        entry->ref_count++;
+
+        AvlTreeInsert(new_vas->mappings, entry);
+
+        ArchUpdateMapping(GetVas(), entry);
+        ArchAddMapping(new_vas, entry);
     }
 }
 
@@ -526,6 +570,17 @@ static void HandleSwapfileFault(struct vas_entry* entry) {
     // TODO: read into entry->virtual from swapfile
 }
 
+/**
+ * Handles a page fault. Only to be called by the low-level, platform specific interrupt handler when a page
+ * fault occurs. It will attempt to resolve any fault (e.g. handling copy-on-write, swapfile, file-backed, etc.).
+ * 
+ * @param faulting_virt The virtual address that was accessed that caused the page fault
+ * @param fault_type The reason why a page fault occured. Is a bitfield of VM_WRITE, VM_READ and VM_USER.
+ *                   VM_READ should be set if a non-present page was accessed. VM_USER should be set for permission
+ *                   faults, and VM_WRITE should be set if the operation was caused by a write (as opposed to a read).
+ * 
+ * @maxirql IRQL_PAGE_FAULT 
+ */
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
     LogWriteSerial("HandleVirtFault A\n");
     int irql = RaiseIrql(IRQL_PAGE_FAULT);
@@ -546,7 +601,6 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     assert(!(entry->file && entry->swapfile));
     assert(!(!entry->in_ram && entry->lock));
     assert(!(entry->cow && entry->lock));
-    assert(!(entry->cow && entry->global));
 
     // TODO: check for access violations (e.g. user using a supervisor page)
     //          (read / write is not necessarily a problem, e.g. COW)
@@ -586,6 +640,14 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     Panic(PANIC_UNKNOWN);
 }
 
+/**
+ * Determines whether or not virtual memory has been initialised yet. This can be used to determine if it
+ * is possible to call any virtual memory functions (e.g. in the physical memory and heap allocators).
+ * 
+ * @return True if virtual memory is available, false otherwise.
+ * 
+ * @maxirql IRQL_HIGH
+ */
 bool IsVirtInitialised(void) {
     return virt_initialised;
 }
