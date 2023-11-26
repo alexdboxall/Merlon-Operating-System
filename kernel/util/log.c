@@ -1,5 +1,6 @@
 
 #include <common.h>
+#include <log.h>
 
 static void IntToStr(uint32_t i, char* output, int base)
 {
@@ -42,27 +43,30 @@ static uint8_t inb(uint16_t port)
 	return value;
 }
 
-static void logcnv(char c)
+static void logcnv(char c, bool screen)
 {	
 	while ((inb(0x3F8 + 5) & 0x20) == 0) {
 		;
 	}
 	outb(0x3F8, c);
+	if (screen) {
+		DbgScreenPutchar(c);
+	}
 }
 
-static void logsnv(char* a)
+static void logsnv(char* a, bool screen)
 {
-	while (*a) logcnv(*a++);
+	while (*a) logcnv(*a++, screen);
 }
 
-static void log_intnv(uint32_t i, int base)
+static void log_intnv(uint32_t i, int base, bool screen)
 {
 	char str[12];
     IntToStr(i, str, base);
-	logsnv(str);
+	logsnv(str, screen);
 }
 
-static void LogWriteSerialVa(const char* format, va_list list) {
+static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 	if (format == NULL) {
 		format = "NULL";
 	}
@@ -73,28 +77,28 @@ static void LogWriteSerialVa(const char* format, va_list list) {
 		if (format[i] == '%') {
 			switch (format[++i]) {
 			case '%': 
-				logcnv('%'); break;
+				logcnv('%', screen); break;
 			case 'c':
-				logcnv(va_arg(list, int)); break;
+				logcnv(va_arg(list, int), screen); break;
 			case 's': 
-				logsnv(va_arg(list, char*)); break;
+				logsnv(va_arg(list, char*), screen); break;
 			case 'd': 
-				log_intnv(va_arg(list, signed), 10); break;
+				log_intnv(va_arg(list, signed), 10, screen); break;
 			case 'x':
 			case 'X': 
-				log_intnv(va_arg(list, unsigned), 16); break;
+				log_intnv(va_arg(list, unsigned), 16, screen); break;
 			case 'l':
 			case 'L': 
-				log_intnv(va_arg(list, unsigned long long), 16); break;
+				log_intnv(va_arg(list, unsigned long long), 16, screen); break;
 			case 'u':
-				log_intnv(va_arg(list, unsigned), 10); break;
+				log_intnv(va_arg(list, unsigned), 10, screen); break;
 			default: 
-				logcnv('%'); 
-				logcnv(format[i]);
+				logcnv('%', screen); 
+				logcnv(format[i], screen);
 				break;
 			}
 		} else {
-			logcnv(format[i]);
+			logcnv(format[i], screen);
 		}
 		i++;
 	}
@@ -104,14 +108,21 @@ void LogWriteSerial(const char* format, ...)
 {
 	va_list list;
 	va_start(list, format);
-	LogWriteSerialVa(format, list);
+	LogWriteSerialVa(format, list, false);
 	va_end(list);
 }
 
-void LogDeveloperWarning(char* format, ...) {
+void LogDeveloperWarning(const char* format, ...) {
 	va_list list;
 	va_start(list, format);
 	LogWriteSerial(">>> KERNEL DEVELOPER WARNING:\n    ");
-	LogWriteSerialVa(format, list);
+	LogWriteSerialVa(format, list, false);
+	va_end(list);
+}
+
+void DbgScreenPrintf(const char* format, ...) {
+	va_list list;
+	va_start(list, format);
+	LogWriteSerialVa(format, list, true);
 	va_end(list);
 }

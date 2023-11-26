@@ -1,4 +1,8 @@
 #pragma once
 
-void LogWriteSerial(char* format, ...);
-void LogDeveloperWarning(char* format, ...);
+void LogWriteSerial(const char* format, ...);
+void LogDeveloperWarning(const char* format, ...);
+
+void DbgScreenPrintf(const char* format, ...);
+void DbgScreenPuts(char* str);
+void DbgScreenPutchar(char c);

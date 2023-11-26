@@ -9,8 +9,6 @@
 #include <irql.h>
 #include <panic.h>
 
-extern void vesa_puts(char* s);
-extern void vesa_putchar(char c);
 extern void InitDbgScreen(void);
 
 void KernelMain(void) {
@@ -37,19 +35,14 @@ void KernelMain(void) {
     ReinitPhys();
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
 
-    /*size_t* my_mem = (size_t*) MapVirt(0, 0, 50, VM_READ | VM_WRITE, 0, 0);
-    LogWriteSerial("AAA\n");
-    my_mem[0] = 0x12;
-    LogWriteSerial("BBB\n");*/
 
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
     LogWriteSerial("Boot successful! Kernel is completely initialised.\n");
-
     InitDbgScreen();
-    vesa_puts("NOS Kernel");
+    DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     
     while (1) {
         ;

@@ -9,3 +9,6 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
 void FoundPhysPage(size_t addr);
 void InitPhys(void);
 void ReinitPhys(void);
+
+size_t GetTotalPhysKilobytes(void);
+size_t GetFreePhysKilobytes(void);

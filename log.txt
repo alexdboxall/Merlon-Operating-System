@@ -19,19 +19,15 @@ x86MapPage: v 0xD0006000 -> p 0x129000. flags 1.
 x86MapPage: v 0xD0007000 -> p 0x128000. flags 1.
 x86MapPage: v 0xD0008000 -> p 0x3FF000. flags 1.
 Boot successful! Kernel is completely initialised.
-data is at 0xC010C4D4
-...
-Allocating the virtual framebuffer...
-The physical address is 0xFD000000, size = 2359296
 x86MapPage: v 0xD0009000 -> p 0xFD000000. flags 1.
 x86MapPage: v 0xD000A000 -> p 0xFD001000. flags 1.
 x86MapPage: v 0xD000B000 -> p 0xFD002000. flags 1.
 x86MapPage: v 0xD000C000 -> p 0xFD003000. flags 1.
+IRQ 32
 x86MapPage: v 0xD000D000 -> p 0xFD004000. flags 1.
 x86MapPage: v 0xD000E000 -> p 0xFD005000. flags 1.
 x86MapPage: v 0xD000F000 -> p 0xFD006000. flags 1.
 x86MapPage: v 0xD0010000 -> p 0xFD007000. flags 1.
-IRQ 32
 x86MapPage: v 0xD0011000 -> p 0xFD008000. flags 1.
 x86MapPage: v 0xD0012000 -> p 0xFD009000. flags 1.
 x86MapPage: v 0xD0013000 -> p 0xFD00A000. flags 1.
@@ -56,6 +52,7 @@ x86MapPage: v 0xD0025000 -> p 0xFD01C000. flags 1.
 x86MapPage: v 0xD0026000 -> p 0xFD01D000. flags 1.
 x86MapPage: v 0xD0027000 -> p 0xFD01E000. flags 1.
 x86MapPage: v 0xD0028000 -> p 0xFD01F000. flags 1.
+IRQ 32
 x86MapPage: v 0xD0029000 -> p 0xFD020000. flags 1.
 x86MapPage: v 0xD002A000 -> p 0xFD021000. flags 1.
 x86MapPage: v 0xD002B000 -> p 0xFD022000. flags 1.
@@ -75,8 +72,7 @@ x86MapPage: v 0xD0038000 -> p 0xFD02F000. flags 1.
 x86MapPage: v 0xD0039000 -> p 0xFD030000. flags 1.
 x86MapPage: v 0xD003A000 -> p 0xFD031000. flags 1.
 x86MapPage: v 0xD003B000 -> p 0xFD032000. flags 1.
-xIRQ 32
-86MapPage: v 0xD003C000 -> p 0xFD033000. flags 1.
+x86MapPage: v 0xD003C000 -> p 0xFD033000. flags 1.
 x86MapPage: v 0xD003D000 -> p 0xFD034000. flags 1.
 x86MapPage: v 0xD003E000 -> p 0xFD035000. flags 1.
 x86MapPage: v 0xD003F000 -> p 0xFD036000. flags 1.
@@ -95,7 +91,8 @@ x86MapPage: v 0xD004B000 -> p 0xFD042000. flags 1.
 x86MapPage: v 0xD004C000 -> p 0xFD043000. flags 1.
 x86MapPage: v 0xD004D000 -> p 0xFD044000. flags 1.
 x86MapPage: v 0xD004E000 -> p 0xFD045000. flags 1.
-x86MapPage: v 0xD004F000 -> p 0xFD046000. flags 1.
+x86MapPage: v 0xD004F00IRQ 32
+0 -> p 0xFD046000. flags 1.
 x86MapPage: v 0xD0050000 -> p 0xFD047000. flags 1.
 x86MapPage: v 0xD0051000 -> p 0xFD048000. flags 1.
 x86MapPage: v 0xD0052000 -> p 0xFD049000. flags 1.
@@ -118,8 +115,7 @@ x86MapPage: v 0xD0062000 -> p 0xFD059000. flags 1.
 x86MapPage: v 0xD0063000 -> p 0xFD05A000. flags 1.
 x86MapPage: v 0xD0064000 -> p 0xFD05B000. flags 1.
 x86MapPage: v 0xD0065000 -> p 0xFD05C000. flags 1.
-xIRQ 32
-86MapPage: v 0xD0066000 -> p 0xFD05D000. flags 1.
+x86MapPage: v 0xD0066000 -> p 0xFD05D000. flags 1.
 x86MapPage: v 0xD0067000 -> p 0xFD05E000. flags 1.
 x86MapPage: v 0xD0068000 -> p 0xFD05F000. flags 1.
 x86MapPage: v 0xD0069000 -> p 0xFD060000. flags 1.
@@ -141,6 +137,7 @@ x86MapPage: v 0xD0070000 -> p 0xFD067000. flags 1.
 x86MapPage: v 0xD0071000 -> p 0xFD068000. flags 1.
 x86MapPage: v 0xD0072000 -> p 0xFD069000. flags 1.
 x86MapPage: v 0xD0073000 -> p 0xFD06A000. flags 1.
+IRQ 32
 x86MapPage: v 0xD0074000 -> p 0xFD06B000. flags 1.
 x86MapPage: v 0xD0075000 -> p 0xFD06C000. flags 1.
 x86MapPage: v 0xD0076000 -> p 0xFD06D000. flags 1.
@@ -160,8 +157,7 @@ x86MapPage: v 0xD0083000 -> p 0xFD07A000. flags 1.
 x86MapPage: v 0xD0084000 -> p 0xFD07B000. flags 1.
 x86MapPage: v 0xD0085000 -> p 0xFD07C000. flags 1.
 x86MapPage: v 0xD0086000 -> p 0xFD07D000. flags 1.
-xIRQ 32
-86MapPage: v 0xD0087000 -> p 0xFD07E000. flags 1.
+x86MapPage: v 0xD0087000 -> p 0xFD07E000. flags 1.
 x86MapPage: v 0xD0088000 -> p 0xFD07F000. flags 1.
 x86MapPage: v 0xD0089000 -> p 0xFD080000. flags 1.
 x86MapPage: v 0xD008A000 -> p 0xFD081000. flags 1.
@@ -177,8 +173,8 @@ x86MapPage: v 0xD0093000 -> p 0xFD08A000. flags 1.
 x86MapPage: v 0xD0094000 -> p 0xFD08B000. flags 1.
 x86MapPage: v 0xD0095000 -> p 0xFD08C000. flags 1.
 x86MapPage: v 0xD0096000 -> p 0xFD08D000. flags 1.
-x86MapPage: v 0xD0097000 -> p 0xFD08E000. flags 1.
-IRQ 32
+xIRQ 32
+86MapPage: v 0xD0097000 -> p 0xFD08E000. flags 1.
 x86MapPage: v 0xD0098000 -> p 0xFD08F000. flags 1.
 x86MapPage: v 0xD0099000 -> p 0xFD090000. flags 1.
 x86MapPage: v 0xD009A000 -> p 0xFD091000. flags 1.
@@ -208,6 +204,10 @@ x86MapPage: v 0xD00B1000 -> p 0xFD0A8000. flags 1.
 PriorityQueueGetUsedSize(deferred_functions): A 1
 D
 E
+FIRQ 32
+PriorityQueueGetUsedSize(deferred_functions): A 1
+D
+E
 F
 G
 H
@@ -217,6 +217,9 @@ x86MapPage: v 0xD0249000 -> p 0x3FE000. flags 1.
 x86MapPage: v 0xD024A000 -> p 0x3FD000. flags 1.
 x86MapPage: v 0xD024B000 -> p 0x3FC000. flags 1.
 x86MapPage: v 0xD024C000 -> p 0x3FB000. flags 1.
+
+G
+H
 x86MapPage: v 0xD00B2000 -> p 0xFD0A9000. flags 1.
 x86MapPage: v 0xD00B3000 -> p 0xFD0AA000. flags 1.
 x86MapPage: v 0xD00B4000 -> p 0xFD0AB000. flags 1.
@@ -224,8 +227,7 @@ x86MapPage: v 0xD00B5000 -> p 0xFD0AC000. flags 1.
 x86MapPage: v 0xD00B6000 -> p 0xFD0AD000. flags 1.
 x86MapPage: v 0xD00B7000 -> p 0xFD0AE000. flags 1.
 x86MapPage: v 0xD00B8000 -> p 0xFD0AF000. flags 1.
-xIRQ 32
-86MapPage: v 0xD00B9000 -> p 0xFD0B0000. flags 1.
+x86MapPage: v 0xD00B9000 -> p 0xFD0B0000. flags 1.
 x86MapPage: v 0xD00BA000 -> p 0xFD0B1000. flags 1.
 x86MapPage: v 0xD00BB000 -> p 0xFD0B2000. flags 1.
 x86MapPage: v 0xD00BC000 -> p 0xFD0B3000. flags 1.
@@ -244,7 +246,8 @@ x86MapPage: v 0xD00C8000 -> p 0xFD0BF000. flags 1.
 x86MapPage: v 0xD00C9000 -> p 0xFD0C0000. flags 1.
 x86MapPage: v 0xD00CA000 -> p 0xFD0C1000. flags 1.
 x86MapPage: v 0xD00CB000 -> p 0xFD0C2000. flags 1.
-x86MapPage: v 0xD00CC000 -> p 0xFD0C3000. flags 1.
+x86MapPage: v 0xD00CC000 -> p 0xFD0IRQ 32
+C3000. flags 1.
 x86MapPage: v 0xD00CD000 -> p 0xFD0C4000. flags 1.
 x86MapPage: v 0xD00CE000 -> p 0xFD0C5000. flags 1.
 x86MapPage: v 0xD00CF000 -> p 0xFD0C6000. flags 1.
@@ -262,8 +265,7 @@ x86MapPage: v 0xD00DA000 -> p 0xFD0D1000. flags 1.
 x86MapPage: v 0xD00DB000 -> p 0xFD0D2000. flags 1.
 x86MapPage: v 0xD00DC000 -> p 0xFD0D3000. flags 1.
 x86MapPage: v 0xD00DD000 -> p 0xFD0D4000. flags 1.
-x86MapPage: v 0xD00DE000 ->IRQ 32
- p 0xFD0D5000. flags 1.
+x86MapPage: v 0xD00DE000 -> p 0xFD0D5000. flags 1.
 x86MapPage: v 0xD00DF000 -> p 0xFD0D6000. flags 1.
 x86MapPage: v 0xD00E0000 -> p 0xFD0D7000. flags 1.
 x86MapPage: v 0xD00E1000 -> p 0xFD0D8000. flags 1.
@@ -277,7 +279,8 @@ x86MapPage: v 0xD00E8000 -> p 0xFD0DF000. flags 1.
 x86MapPage: v 0xD00E9000 -> p 0xFD0E0000. flags 1.
 x86MapPage: v 0xD00EA000 -> p 0xFD0E1000. flags 1.
 x86MapPage: v 0xD00EB000 -> p 0xFD0E2000. flags 1.
-x86MapPage: v 0xD00EC000 -> p 0xFD0E3000. flags 1.
+xIRQ 32
+86MapPage: v 0xD00EC000 -> p 0xFD0E3000. flags 1.
 x86MapPage: v 0xD00ED000 -> p 0xFD0E4000. flags 1.
 x86MapPage: v 0xD00EE000 -> p 0xFD0E5000. flags 1.
 x86MapPage: v 0xD00EF000 -> p 0xFD0E6000. flags 1.
@@ -299,8 +302,7 @@ PriorityQueueGetUsedSize(deferred_functions): C 0
 x86MapPage: v 0xD00F7000 -> p 0xFD0EE000. flags 1.
 x86MapPage: v 0xD00F8000 -> p 0xFD0EF000. flags 1.
 x86MapPage: v 0xD00F9000 -> p 0xFD0F0000. flags 1.
-xIRQ 32
-86MapPage: v 0xD00FA000 -> p 0xFD0F1000. flags 1.
+x86MapPage: v 0xD00FA000 -> p 0xFD0F1000. flags 1.
 x86MapPage: v 0xD00FB000 -> p 0xFD0F2000. flags 1.
 x86MapPage: v 0xD00FC000 -> p 0xFD0F3000. flags 1.
 x86MapPage: v 0xD00FD000 -> p 0xFD0F4000. flags 1.
@@ -308,7 +310,8 @@ x86MapPage: v 0xD00FE000 -> p 0xFD0F5000. flags 1.
 x86MapPage: v 0xD00FF000 -> p 0xFD0F6000. flags 1.
 x86MapPage: v 0xD0100000 -> p 0xFD0F7000. flags 1.
 x86MapPage: v 0xD0101000 -> p 0xFD0F8000. flags 1.
-x86MapPage: v 0xD0102000 -> p 0xFD0F9000. flags 1.
+xIRQ 32
+86MapPage: v 0xD0102000 -> p 0xFD0F9000. flags 1.
 x86MapPage: v 0xD0103000 -> p 0xFD0FA000. flags 1.
 x86MapPage: v 0xD0104000 -> p 0xFD0FB000. flags 1.
 x86MapPage: v 0xD0105000 -> p 0xFD0FC000. flags 1.
@@ -328,11 +331,11 @@ x86MapPage: v 0xD0112000 -> p 0xFD109000. flags 1.
 x86MapPage: v 0xD0113000 -> p 0xFD10A000. flags 1.
 x86MapPage: v 0xD0114000 -> p 0xFD10B000. flags 1.
 x86MapPage: v 0xD0115000 -> p 0xFD10C000. flags 1.
-xIRQ 32
-86MapPage: v 0xD0116000 -> p 0xFD10D000. flags 1.
+x86MapPage: v 0xD0116000 -> p 0xFD10D000. flags 1.
 x86MapPage: v 0xD0117000 -> p 0xFD10E000. flags 1.
 x86MapPage: v 0xD0118000 -> p 0xFD10F000. flags 1.
 x86MapPage: v 0xD0119000 -> p 0xFD110000. flags 1.
+IRQ 32
 x86MapPage: v 0xD011A000 -> p 0xFD111000. flags 1.
 x86MapPage: v 0xD011B000 -> p 0xFD112000. flags 1.
 x86MapPage: v 0xD011C000 -> p 0xFD113000. flags 1.
@@ -356,11 +359,11 @@ x86MapPage: v 0xD012D000 -> p 0xFD124000. flags 1.
 x86MapPage: v 0xD012E000 -> p 0xFD125000. flags 1.
 x86MapPage: v 0xD012F000 -> p 0xFD126000. flags 1.
 x86MapPage: v 0xD0130000 -> p 0xFD127000. flags 1.
-xIRQ 32
-86MapPage: v 0xD0131000 -> p 0xFD128000. flags 1.
+x86MapPage: v 0xD0131000 -> p 0xFD128000. flags 1.
 x86MapPage: v 0xD0132000 -> p 0xFD129000. flags 1.
 x86MapPage: v 0xD0133000 -> p 0xFD12A000. flags 1.
 x86MapPage: v 0xD0134000 -> p 0xFD12B000. flags 1.
+IRQ 32
 x86MapPage: v 0xD0135000 -> p 0xFD12C000. flags 1.
 x86MapPage: v 0xD0136000 -> p 0xFD12D000. flags 1.
 x86MapPage: v 0xD0137000 -> p 0xFD12E000. flags 1.
@@ -413,10 +416,10 @@ x86MapPage: v 0xD015C000 -> p 0xFD153000. flags 1.
 x86MapPage: v 0xD015D000 -> p 0xFD154000. flags 1.
 x86MapPage: v 0xD015E000 -> p 0xFD155000. flags 1.
 x86MapPage: v 0xD015F000 -> p 0xFD156000. flags 1.
-x86MapPage: v 0xD0160000 -> p 0xFD157000. flags 1.
+xIRQ 32
+86MapPage: v 0xD0160000 -> p 0xFD157000. flags 1.
 x86MapPage: v 0xD0161000 -> p 0xFD158000. flags 1.
 x86MapPage: v 0xD0162000 -> p 0xFD159000. flags 1.
-IRQ 32
 x86MapPage: v 0xD0163000 -> p 0xFD15A000. flags 1.
 x86MapPage: v 0xD0164000 -> p 0xFD15B000. flags 1.
 x86MapPage: v 0xD0165000 -> p 0xFD15C000. flags 1.
@@ -436,12 +439,12 @@ x86MapPage: v 0xD0172000 -> p 0xFD169000. flags 1.
 x86MapPage: v 0xD0173000 -> p 0xFD16A000. flags 1.
 x86MapPage: v 0xD0174000 -> p 0xFD16B000. flags 1.
 x86MapPage: v 0xD0175000 -> p 0xFD16C000. flags 1.
+IRQ 32
 x86MapPage: v 0xD0176000 -> p 0xFD16D000. flags 1.
 x86MapPage: v 0xD0177000 -> p 0xFD16E000. flags 1.
 x86MapPage: v 0xD0178000 -> p 0xFD16F000. flags 1.
 x86MapPage: v 0xD0179000 -> p 0xFD170000. flags 1.
 x86MapPage: v 0xD017A000 -> p 0xFD171000. flags 1.
-IRQ 32
 x86MapPage: v 0xD017B000 -> p 0xFD172000. flags 1.
 x86MapPage: v 0xD017C000 -> p 0xFD173000. flags 1.
 x86MapPage: v 0xD017D000 -> p 0xFD174000. flags 1.
@@ -463,7 +466,8 @@ G
 H
 PriorityQueueGetUsedSize(deferred_functions): B 1
 PriorityQueueGetUsedSize(deferred_functions): C 0
-x86MapPage: v 0xD0188000 -> p 0xFD17F000. flags 1.
+xIRQ 32
+86MapPage: v 0xD0188000 -> p 0xFD17F000. flags 1.
 x86MapPage: v 0xD0189000 -> p 0xFD180000. flags 1.
 x86MapPage: v 0xD018A000 -> p 0xFD181000. flags 1.
 x86MapPage: v 0xD018B000 -> p 0xFD182000. flags 1.
@@ -475,7 +479,6 @@ x86MapPage: v 0xD0190000 -> p 0xFD187000. flags 1.
 x86MapPage: v 0xD0191000 -> p 0xFD188000. flags 1.
 x86MapPage: v 0xD0192000 -> p 0xFD189000. flags 1.
 x86MapPage: v 0xD0193000 -> p 0xFD18A000. flags 1.
-IRQ 32
 x86MapPage: v 0xD0194000 -> p 0xFD18B000. flags 1.
 x86MapPage: v 0xD0195000 -> p 0xFD18C000. flags 1.
 x86MapPage: v 0xD0196000 -> p 0xFD18D000. flags 1.
@@ -484,6 +487,7 @@ x86MapPage: v 0xD0198000 -> p 0xFD18F000. flags 1.
 x86MapPage: v 0xD0199000 -> p 0xFD190000. flags 1.
 x86MapPage: v 0xD019A000 -> p 0xFD191000. flags 1.
 x86MapPage: v 0xD019B000 -> p 0xFD192000. flags 1.
+IRQ 32
 x86MapPage: v 0xD019C000 -> p 0xFD193000. flags 1.
 x86MapPage: v 0xD019D000 -> p 0xFD194000. flags 1.
 x86MapPage: v 0xD019E000 -> p 0xFD195000. flags 1.
@@ -498,13 +502,13 @@ x86MapPage: v 0xD01A6000 -> p 0xFD19D000. flags 1.
 x86MapPage: v 0xD01A7000 -> p 0xFD19E000. flags 1.
 x86MapPage: v 0xD01A8000 -> p 0xFD19F000. flags 1.
 x86MapPage: v 0xD01A9000 -> p 0xFD1A0000. flags 1.
-x86MapPage: v 0xIRQ 32
-D01AA000 -> p 0xFD1A1000. flags 1.
+x86MapPage: v 0xD01AA000 -> p 0xFD1A1000. flags 1.
 x86MapPage: v 0xD01AB000 -> p 0xFD1A2000. flags 1.
 x86MapPage: v 0xD01AC000 -> p 0xFD1A3000. flags 1.
 x86MapPage: v 0xD01AD000 -> p 0xFD1A4000. flags 1.
 x86MapPage: v 0xD01AE000 -> p 0xFD1A5000. flags 1.
-x86MapPage: v 0xD01AF000 -> p 0xFD1A6000. flags 1.
+xIRQ 32
+86MapPage: v 0xD01AF000 -> p 0xFD1A6000. flags 1.
 x86MapPage: v 0xD01B0000 -> p 0xFD1A7000. flags 1.
 x86MapPage: v 0xD01B1000 -> p 0xFD1A8000. flags 1.
 x86MapPage: v 0xD01B2000 -> p 0xFD1A9000. flags 1.
@@ -518,13 +522,13 @@ x86MapPage: v 0xD01B9000 -> p 0xFD1B0000. flags 1.
 x86MapPage: v 0xD01BA000 -> p 0xFD1B1000. flags 1.
 x86MapPage: v 0xD01BB000 -> p 0xFD1B2000. flags 1.
 x86MapPage: v 0xD01BC000 -> p 0xFD1B3000. flags 1.
-IRQ 32
 x86MapPage: v 0xD01BD000 -> p 0xFD1B4000. flags 1.
 x86MapPage: v 0xD01BE000 -> p 0xFD1B5000. flags 1.
 x86MapPage: v 0xD01BF000 -> p 0xFD1B6000. flags 1.
 x86MapPage: v 0xD01C0000 -> p 0xFD1B7000. flags 1.
 x86MapPage: v 0xD01C1000 -> p 0xFD1B8000. flags 1.
-x86MapPage: v 0xD01C2000 -> p 0xFD1B9000. flags 1.
+xIRQ 32
+86MapPage: v 0xD01C2000 -> p 0xFD1B9000. flags 1.
 x86MapPage: v 0xD01C3000 -> p 0xFD1BA000. flags 1.
 x86MapPage: v 0xD01C4000 -> p 0xFD1BB000. flags 1.
 x86MapPage: v 0xD01C5000 -> p 0xFD1BC000. flags 1.
@@ -535,8 +539,7 @@ x86MapPage: v 0xD01C9000 -> p 0xFD1C0000. flags 1.
 x86MapPage: v 0xD01CA000 -> p 0xFD1C1000. flags 1.
 x86MapPage: v 0xD01CB000 -> p 0xFD1C2000. flags 1.
 x86MapPage: v 0xD01CC000 -> p 0xFD1C3000. flags 1.
-xIRQ 32
-86MapPage: v 0xD01CD000 -> p 0xFD1C4000. flags 1.
+x86MapPage: v 0xD01CD000 -> p 0xFD1C4000. flags 1.
 x86MapPage: v 0xD01CE000 -> p 0xFD1C5000. flags 1.
 x86MapPage: v 0xD01CF000 -> p 0xFD1C6000. flags 1.
 PriorityQueueGetUsedSize(deferred_functions): A 1
@@ -548,6 +551,7 @@ H
 PriorityQueueGetUsedSize(deferred_functions): B 1
 PriorityQueueGetUsedSize(deferred_functions): C 0
 x86MapPage: v 0xD024D000 -> p 0x3FA000. flags 1.
+IRQ 32
 x86MapPage: v 0xD024E000 -> p 0x3F9000. flags 1.
 x86MapPage: v 0xD024F000 -> p 0x3F8000. flags 1.
 x86MapPage: v 0xD0250000 -> p 0x3F7000. flags 1.
@@ -559,11 +563,11 @@ x86MapPage: v 0xD01D4000 -> p 0xFD1CB000. flags 1.
 x86MapPage: v 0xD01D5000 -> p 0xFD1CC000. flags 1.
 x86MapPage: v 0xD01D6000 -> p 0xFD1CD000. flags 1.
 x86MapPage: v 0xD01D7000 -> p 0xFD1CE000. flags 1.
-IRQ 32
 x86MapPage: v 0xD01D8000 -> p 0xFD1CF000. flags 1.
 x86MapPage: v 0xD01D9000 -> p 0xFD1D0000. flags 1.
 x86MapPage: v 0xD01DA000 -> p 0xFD1D1000. flags 1.
 x86MapPage: v 0xD01DB000 -> p 0xFD1D2000. flags 1.
+IRQ 32
 x86MapPage: v 0xD01DC000 -> p 0xFD1D3000. flags 1.
 x86MapPage: v 0xD01DD000 -> p 0xFD1D4000. flags 1.
 x86MapPage: v 0xD01DE000 -> p 0xFD1D5000. flags 1.
@@ -576,12 +580,12 @@ x86MapPage: v 0xD01E4000 -> p 0xFD1DB000. flags 1.
 x86MapPage: v 0xD01E5000 -> p 0xFD1DC000. flags 1.
 x86MapPage: v 0xD01E6000 -> p 0xFD1DD000. flags 1.
 x86MapPage: v 0xD01E7000 -> p 0xFD1DE000. flags 1.
-xIRQ 32
-86MapPage: v 0xD01E8000 -> p 0xFD1DF000. flags 1.
+x86MapPage: v 0xD01E8000 -> p 0xFD1DF000. flags 1.
 x86MapPage: v 0xD01E9000 -> p 0xFD1E0000. flags 1.
 x86MapPage: v 0xD01EA000 -> p 0xFD1E1000. flags 1.
 x86MapPage: v 0xD01EB000 -> p 0xFD1E2000. flags 1.
-x86MapPage: v 0xD01EC000 -> p 0xFD1E3000. flags 1.
+xIRQ 32
+86MapPage: v 0xD01EC000 -> p 0xFD1E3000. flags 1.
 x86MapPage: v 0xD01ED000 -> p 0xFD1E4000. flags 1.
 x86MapPage: v 0xD01EE000 -> p 0xFD1E5000. flags 1.
 x86MapPage: v 0xD01EF000 -> p 0xFD1E6000. flags 1.
@@ -590,10 +594,10 @@ x86MapPage: v 0xD01F1000 -> p 0xFD1E8000. flags 1.
 x86MapPage: v 0xD01F2000 -> p 0xFD1E9000. flags 1.
 x86MapPage: v 0xD01F3000 -> p 0xFD1EA000. flags 1.
 x86MapPage: v 0xD01F4000 -> p 0xFD1EB000. flags 1.
+IRQ 32
 x86MapPage: v 0xD01F5000 -> p 0xFD1EC000. flags 1.
 x86MapPage: v 0xD01F6000 -> p 0xFD1ED000. flags 1.
 x86MapPage: v 0xD01F7000 -> p 0xFD1EE000. flags 1.
-IRQ 32
 x86MapPage: v 0xD01F8000 -> p 0xFD1EF000. flags 1.
 x86MapPage: v 0xD01F9000 -> p 0xFD1F0000. flags 1.
 x86MapPage: v 0xD01FA000 -> p 0xFD1F1000. flags 1.
@@ -605,13 +609,13 @@ x86MapPage: v 0xD01FF000 -> p 0xFD1F6000. flags 1.
 x86MapPage: v 0xD0200000 -> p 0xFD1F7000. flags 1.
 x86MapPage: v 0xD0201000 -> p 0xFD1F8000. flags 1.
 x86MapPage: v 0xD0202000 -> p 0xFD1F9000. flags 1.
+IRQ 32
 x86MapPage: v 0xD0203000 -> p 0xFD1FA000. flags 1.
 x86MapPage: v 0xD0204000 -> p 0xFD1FB000. flags 1.
 x86MapPage: v 0xD0205000 -> p 0xFD1FC000. flags 1.
 x86MapPage: v 0xD0206000 -> p 0xFD1FD000. flags 1.
 x86MapPage: v 0xD0207000 -> p 0xFD1FE000. flags 1.
-xIRQ 32
-86MapPage: v 0xD0208000 -> p 0xFD1FF000. flags 1.
+x86MapPage: v 0xD0208000 -> p 0xFD1FF000. flags 1.
 x86MapPage: v 0xD0209000 -> p 0xFD200000. flags 1.
 x86MapPage: v 0xD020A000 -> p 0xFD201000. flags 1.
 x86MapPage: v 0xD020B000 -> p 0xFD202000. flags 1.
@@ -619,11 +623,11 @@ x86MapPage: v 0xD020C000 -> p 0xFD203000. flags 1.
 x86MapPage: v 0xD020D000 -> p 0xFD204000. flags 1.
 x86MapPage: v 0xD020E000 -> p 0xFD205000. flags 1.
 x86MapPage: v 0xD020F000 -> p 0xFD206000. flags 1.
+IRQ 32
 x86MapPage: v 0xD0210000 -> p 0xFD207000. flags 1.
 x86MapPage: v 0xD0211000 -> p 0xFD208000. flags 1.
 x86MapPage: v 0xD0212000 -> p 0xFD209000. flags 1.
 x86MapPage: v 0xD0213000 -> p 0xFD20A000. flags 1.
-IRQ 32
 x86MapPage: v 0xD0214000 -> p 0xFD20B000. flags 1.
 PriorityQueueGetUsedSize(deferred_functions): A 1
 D
@@ -642,13 +646,13 @@ x86MapPage: v 0xD021A000 -> p 0xFD211000. flags 1.
 x86MapPage: v 0xD021B000 -> p 0xFD212000. flags 1.
 x86MapPage: v 0xD021C000 -> p 0xFD213000. flags 1.
 x86MapPage: v 0xD021D000 -> p 0xFD214000. flags 1.
-x86MapPage: v 0xD021E000 -> p 0xFD215000. flags 1.
+xIRQ 32
+86MapPage: v 0xD021E000 -> p 0xFD215000. flags 1.
 x86MapPage: v 0xD021F000 -> p 0xFD216000. flags 1.
 x86MapPage: v 0xD0220000 -> p 0xFD217000. flags 1.
 x86MapPage: v 0xD0221000 -> p 0xFD218000. flags 1.
 x86MapPage: v 0xD0222000 -> p 0xFD219000. flags 1.
-xIRQ 32
-86MapPage: v 0xD0223000 -> p 0xFD21A000. flags 1.
+x86MapPage: v 0xD0223000 -> p 0xFD21A000. flags 1.
 x86MapPage: v 0xD0224000 -> p 0xFD21B000. flags 1.
 x86MapPage: v 0xD0225000 -> p 0xFD21C000. flags 1.
 x86MapPage: v 0xD0226000 -> p 0xFD21D000. flags 1.
@@ -660,9 +664,9 @@ x86MapPage: v 0xD022B000 -> p 0xFD222000. flags 1.
 x86MapPage: v 0xD022C000 -> p 0xFD223000. flags 1.
 x86MapPage: v 0xD022D000 -> p 0xFD224000. flags 1.
 x86MapPage: v 0xD022E000 -> p 0xFD225000. flags 1.
-x86MapPage: v 0xD022F000 -> p 0xFD226000. flags 1.
+xIRQ 32
+86MapPage: v 0xD022F000 -> p 0xFD226000. flags 1.
 x86MapPage: v 0xD0230000 -> p 0xFD227000. flags 1.
-IRQ 32
 x86MapPage: v 0xD0231000 -> p 0xFD228000. flags 1.
 x86MapPage: v 0xD0232000 -> p 0xFD229000. flags 1.
 x86MapPage: v 0xD0233000 -> p 0xFD22A000. flags 1.
@@ -675,9 +679,9 @@ x86MapPage: v 0xD0239000 -> p 0xFD230000. flags 1.
 x86MapPage: v 0xD023A000 -> p 0xFD231000. flags 1.
 x86MapPage: v 0xD023B000 -> p 0xFD232000. flags 1.
 x86MapPage: v 0xD023C000 -> p 0xFD233000. flags 1.
-x86MapPage: v 0xD023D000 -> p 0xFD234000. flags 1.
+xIRQ 32
+86MapPage: v 0xD023D000 -> p 0xFD234000. flags 1.
 x86MapPage: v 0xD023E000 -> p 0xFD235000. flags 1.
-IRQ 32
 x86MapPage: v 0xD023F000 -> p 0xFD236000. flags 1.
 x86MapPage: v 0xD0240000 -> p 0xFD237000. flags 1.
 x86MapPage: v 0xD0241000 -> p 0xFD238000. flags 1.
@@ -688,12 +692,651 @@ x86MapPage: v 0xD0245000 -> p 0xFD23C000. flags 1.
 x86MapPage: v 0xD0246000 -> p 0xFD23D000. flags 1.
 x86MapPage: v 0xD0247000 -> p 0xFD23E000. flags 1.
 x86MapPage: v 0xD0248000 -> p 0xFD23F000. flags 1.
-The virtual framebuffer is at 0xD0009000
-data is at 0xC010C4D4 (&0xC012F048)
-0x123456, 0xABCDEF
-the whodunnit is at 0xC012F050
 IRQ 32
-GOT TO HERE!
+
+  NOSIRQ 32
+ Kernel
+  Copyright Alex Boxall 2022-2023
+
+  1084 / 2872 KB used
+
+  ...IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
+IRQ 32
 IRQ 32
 IRQ 32
 IRQ 32

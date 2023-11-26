@@ -6,8 +6,6 @@
 #include <errno.h>
 #include <log.h>
 
-//uint8_t _dbg_terminal_font[]
-
 /*
 * VESA Terminal and Video Driver for x86 Systems
 * 
@@ -35,10 +33,7 @@ struct vesa_data {
     int depth_in_bits;
 };
 
-static uint8_t whodunnit[16];
-static volatile int UH_OH;
-static volatile struct vesa_data* data;
-static volatile int UH_OH_2;
+static struct vesa_data* data;
 
 /*
 * Moves the cursor position to a newline, handling the case where
@@ -85,7 +80,7 @@ static void vesa_render_character(char c) {
 * Writes a character to the current cursor position and increments the 
 * cursor location. Can handle newlines and the edges of the screen.
 */
-void vesa_putchar(char c) {
+void DbgScreenPutchar(char c) {
     if (c == '\n') {
         vesa_newline();
         return;
@@ -112,9 +107,9 @@ void vesa_putchar(char c) {
     }
 
     if (c == '\t') {
-        vesa_putchar(' ');
+        DbgScreenPutchar(' ');
         while (data->cursor_x % 8 != 0) {
-            vesa_putchar(' ');
+            DbgScreenPutchar(' ');
         }
         return;
     }
@@ -127,9 +122,9 @@ void vesa_putchar(char c) {
     }
 }
 
-void vesa_puts(char* s) {
+void DbgScreenPuts(char* s) {
     for (int i = 0; s[i]; ++i) {
-        vesa_putchar(s[i]);
+        DbgScreenPutchar(s[i]);
     }
 }
 
@@ -144,10 +139,6 @@ void InitDbgScreen(void) {
     extern uint8_t vesa_depth;
 
     data = AllocHeap(sizeof(struct vesa_data));
-    UH_OH = 0x123456;
-    UH_OH_2 = 0xABCDEF;
-    LogWriteSerial("data is at 0x%X\n", data);
-
     data->cursor_x = 0;
     data->cursor_y = 0;
     data->fg_colour = 0xC0C0C0;
@@ -160,30 +151,15 @@ void InitDbgScreen(void) {
     
     SCREEN_WIDTH = data->width / 8;
     SCREEN_HEIGHT = data->height / 16;
-    LogWriteSerial("...\n");
 
-    memset(whodunnit, 0xAA, sizeof(whodunnit));
-    
-    LogWriteSerial("Allocating the virtual framebuffer...\n");
-    LogWriteSerial("The physical address is 0x%X, size = %d\n", data->framebuffer_physical, data->pitch * data->height);
-    uint8_t* vfb = (uint8_t*) MapVirt(data->framebuffer_physical, 0, data->pitch * data->height, VM_LOCK | VM_MAP_HARDWARE | VM_READ | VM_WRITE, NULL, 0);
-    LogWriteSerial("The virtual framebuffer is at 0x%X\n", vfb);
-    LogWriteSerial("data is at 0x%X (&0x%X)\n", data, &data);
-    LogWriteSerial("0x%X, 0x%X\n", UH_OH, UH_OH_2);
-    LogWriteSerial("the whodunnit is at 0x%X\n", whodunnit);
-    data->framebuffer_virtual = vfb;
+    data->framebuffer_virtual = (uint8_t*) MapVirt(data->framebuffer_physical, 0, data->pitch * data->height, VM_LOCK | VM_MAP_HARDWARE | VM_READ | VM_WRITE, NULL, 0);
 
     /*
     * Clear the screen.
     */
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; ++i) {
-        vesa_putchar('X');
+        DbgScreenPutchar(' ');
     }
     data->cursor_x = 0;
     data->cursor_y = 0;
-
-    LogWriteSerial("GOT TO HERE!\n");
-    while (true) {
-        ;
-    }
 }

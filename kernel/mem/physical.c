@@ -82,6 +82,11 @@ static size_t allocation_stack_pointer = 0;
 static size_t pages_left = 0;
 
 /*
+ * The total number of allocatable pages on the system. Gets set during InitPhys() and ReinitPhys()
+ */
+static size_t total_pages = 0;
+
+/*
  * The highest physical page number that exists on this system. Gets set during InitPhys() when
  * scanning the system's memory map.
  */
@@ -358,6 +363,7 @@ void InitPhys(void) {
 			while (first_page < last_page && first_page < MAX_MEMORY_PAGES) {
                 DeallocateBitmapEntry(first_page);
                 ++pages_left;
+                ++total_pages;
 
                 if (first_page > highest_valid_page_index) {
                     highest_valid_page_index = first_page;
@@ -394,6 +400,7 @@ static void ReclaimBitmapSpace(void) {
     while (num_unreachable_bitmap_pages--) {
         DeallocPhys(ArchVirtualToPhysical(unreachable_region));
         unreachable_region += ARCH_PAGE_SIZE;
+        ++total_pages;
     }
 }
 
@@ -415,4 +422,13 @@ void ReinitPhys(void) {
     }
 
     ReclaimBitmapSpace();
+}
+
+
+size_t GetTotalPhysKilobytes(void) {
+    return total_pages * (ARCH_PAGE_SIZE / 1024);
+}
+
+size_t GetFreePhysKilobytes(void) {
+    return pages_left * (ARCH_PAGE_SIZE / 1024);
 }
