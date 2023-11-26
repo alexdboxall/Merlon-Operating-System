@@ -54,7 +54,7 @@ static void* AllocateFromEmergencyBlocks(size_t size) {
 
 static void AddBlockToBackupHeap(size_t size) {
     void* address = (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
-    LogWriteSerial("added emergency block at 0x%X to heap\n", address);
+
     int index_of_smallest_block = 0;
     for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
         if (emergency_blocks[i].valid) {
@@ -80,8 +80,6 @@ static void RestoreEmergencyPages(void* context) {
     (void) context;
 
     EXACT_IRQL(IRQL_STANDARD);
-
-    LogWriteSerial("RestoreEmergencyPages...\n");
 
     size_t total_size = 0;
     size_t largest_block = 0;
@@ -231,6 +229,7 @@ static int GetInsertionIndex(size_t size_without_metadata) {
      * This will only fail if we somehow get a block that is smaller than the minimum
      * possible size (i.e., something has gone very wrong.)
      */
+
     assert(size_without_metadata >= free_list_block_sizes[0]);
 
     /*
@@ -240,7 +239,7 @@ static int GetInsertionIndex(size_t size_without_metadata) {
     if (size_without_metadata == free_list_block_sizes[0]) {
         return 0;
     }
-        
+  
     /*
      * Look until we go past the block size we need, and then return the previous
      * value. This gives us the final block size that doesn't exceed the input value.
@@ -400,7 +399,7 @@ static struct block* RequestBlock(size_t total_size, int flags) {
     if (block == NULL) {
         Panic(PANIC_OUT_OF_HEAP);
     }
-    
+
     /*
      * Set the metadata for both the fenceposts and the main data block. 
      * Keep in mind that total_size now includes the fencepost metadata (see top of function), so this
@@ -458,6 +457,17 @@ static void RemoveBlock(int free_list_index, struct block* block) {
     }
 }
 
+/*static void DbgCheckNeighbours(struct block* block) {
+    size_t size = GetBlockSize(block);
+    LogWriteSerial("    Block @ 0x%X is of size %d, and %s\n", block, size, IsAllocated(block) ? "allocated" : "free");
+    size_t prev_block_size = *(((size_t*) block) - 1);
+    struct block* prev_block = (struct block*) (((size_t*) block) - prev_block_size / sizeof(size_t));
+    struct block* next_block = (struct block*) (((size_t*) block) + size / sizeof(size_t));
+
+    LogWriteSerial("    Prev @ 0x%X is of size %d, and %s\n", prev_block, GetBlockSize(prev_block), IsAllocated(prev_block) ? "allocated" : "free");
+    LogWriteSerial("    Next @ 0x%X is of size %d, and %s\n\n", next_block, GetBlockSize(next_block), IsAllocated(next_block) ? "allocated" : "free");
+}*/
+
 /**
  * Adds a block to its appropriate free list. It also coalesces the block with surrounding free blocks
  * if possible.
@@ -503,7 +513,7 @@ static struct block* AddBlock(struct block* block) {
          */
         bool swappable = IsOnSwappableHeap(block);
         assert(swappable == IsOnSwappableHeap(next_block));
-
+    
         RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
         SetSizeTags(block, size + GetBlockSize(next_block));
         block->prev = NULL;
@@ -549,6 +559,7 @@ static struct block* AddBlock(struct block* block) {
 
         RemoveBlock(GetInsertionIndex(GetBlockSize(prev_block) - METADATA_TOTAL_AMOUNT), prev_block);
         RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
+
         SetSizeTags(prev_block, size + GetBlockSize(prev_block) + GetBlockSize(next_block));
         prev_block->prev = NULL;
         prev_block->next = NULL;
@@ -572,20 +583,18 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
 
     assert(block_size >= total_size);
 
-    if (total_size - block_size < MINIMUM_REQUEST_SIZE_INTERNAL) {
+    if (block_size - total_size < MINIMUM_REQUEST_SIZE_INTERNAL + METADATA_TOTAL_AMOUNT) {
         /*
          * We can just remove from the list altogether if the sizes match up exactly,
          * or if there would be so little left over that we can't form a new block.
          */
         RemoveBlock(free_list_index, block);
-
         /*
          * Prevent memory leak (from having a hole in memory), but do it after removing
          * the block, as this may change the list it needs to be in, and RemoveBlock
          * will not like that.
          */
-        SetSizeTags(block, total_size);
-    
+        SetSizeTags(block, block_size);
         MarkAllocated(block);
         return block;
 
@@ -619,7 +628,6 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
         */
         MarkFree(block);
         AddBlock(block);
-
         return allocated_block;
     }
 }
@@ -638,6 +646,7 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
      * If we find one with a free block, then we allocate the head of that list.
      */
     int min_index = GetSmallestListIndexThatFits(user_requested_size);
+
     for (int i = min_index; i < TOTAL_NUM_FREE_LISTS; ++i) {
         if (head_list[i] != NULL) {
             return AllocateBlock(head_list[i], i, user_requested_size);
@@ -692,6 +701,7 @@ void* AllocHeapEx(size_t size, int flags) {
 
     int irql = AcquireSpinlock(&heap_lock, true);
     struct block* block = FindBlock(size, flags);
+    //DbgCheckNeighbours(block);
 
 #ifndef NDEBUG
     outstanding_allocations++;
@@ -739,7 +749,6 @@ void FreeHeap(void* ptr) {
 #ifndef NDEBUG
     outstanding_allocations--;
 #endif
-
     ReleaseSpinlockAndLower(&heap_lock, irql);
 }
 

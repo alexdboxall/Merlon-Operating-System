@@ -26,6 +26,8 @@ void x86HandleInterrupt(struct x86_regs* r) {
     } else if (num == 14) {
         extern size_t x86GetCr2();
 
+        LogWriteSerial("PF. cr2: 0x%X, eip: 0x%X\n", x86GetCr2(), r->eip);
+
         int type = 0;
         if (r->err_code & 1) {
             type |= VM_READ;

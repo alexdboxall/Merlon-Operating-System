@@ -120,6 +120,7 @@ static inline void DeallocateBitmapEntry(size_t index) {
 }
 
 static inline void PushIndex(size_t index) {
+    assert(index <= highest_valid_page_index);
     allocation_stack[allocation_stack_pointer++] = index;
 }
 
@@ -374,6 +375,8 @@ static void ReclaimBitmapSpace(void) {
      * in the bitmap that can't be reached (due to the system not having memory that goes up that high).
      * e.g. if we allow the system to access 16GB of RAM, but we only have 4MB, then we can save 31 pages
      * (or 124KB), which on a system with only 4MB of RAM is 3% of total physical memory).
+     * 
+     * Be careful! If we do this incorrectly we will get memory corruption and some *very* mysterious bugs.
      */
 
     size_t num_unreachable_pages = MAX_MEMORY_PAGES - (highest_valid_page_index + 1);
@@ -381,12 +384,15 @@ static void ReclaimBitmapSpace(void) {
     size_t num_unreachable_bitmap_pages = num_unreachable_entries / ARCH_PAGE_SIZE;
 
     size_t end_bitmap = ((size_t) allocation_bitmap) + sizeof(allocation_bitmap);
-    size_t unreachable_region = ((end_bitmap - ARCH_PAGE_SIZE * num_unreachable_bitmap_pages) + ARCH_PAGE_SIZE - 1) & ~(ARCH_PAGE_SIZE - 1);
+    
+    /*
+     * DO NOT ROUND UP, or variables in the same page as the end of the bitmap will also be counted as 'free',
+     * causing kernel memory corruption for whatever comes in RAM after that.
+     */
+    size_t unreachable_region = ((end_bitmap - ARCH_PAGE_SIZE * num_unreachable_bitmap_pages)) & ~(ARCH_PAGE_SIZE - 1);
 
     while (num_unreachable_bitmap_pages--) {
-        size_t physical = ArchVirtualToPhysical(unreachable_region);
-        DeallocPhys(physical);
-        
+        DeallocPhys(ArchVirtualToPhysical(unreachable_region));
         unreachable_region += ARCH_PAGE_SIZE;
     }
 }

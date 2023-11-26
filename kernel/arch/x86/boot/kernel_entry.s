@@ -83,7 +83,6 @@ _start:
 	; Combine the address with the present and writable flags
 	mov edx, esi
 	or edx, 3
-	or edx, 256         ; we use this as the x86_PAGE_LOCKED flag
     cmp ecx, eax
     jg .keep           ; ** remember, the loop counter is going down **
     xor edx, edx        ; not present

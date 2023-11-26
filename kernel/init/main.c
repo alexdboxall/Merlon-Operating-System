@@ -9,6 +9,10 @@
 #include <irql.h>
 #include <panic.h>
 
+extern void vesa_puts(char* s);
+extern void vesa_putchar(char c);
+extern void InitDbgScreen(void);
+
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
@@ -43,6 +47,9 @@ void KernelMain(void) {
 
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
     LogWriteSerial("Boot successful! Kernel is completely initialised.\n");
+
+    InitDbgScreen();
+    vesa_puts("NOS Kernel");
     
     while (1) {
         ;

@@ -83,7 +83,7 @@ static bool postponed_task_switch = false;
 
 // Max IRQL: IRQL_HIGH
 void LowerIrql(int target_level) {
-    // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)
+    // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)    
     ArchDisableInterrupts();
 
     int current_level = GetIrql();
@@ -96,24 +96,41 @@ void LowerIrql(int target_level) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
         assert(next.priority <= current_level);
 
+        LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): A %d\n", PriorityQueueGetUsedSize(deferred_functions));
+
         if (next.priority >= target_level) {
             current_level = next.priority;
+            LogWriteSerial("D\n");
             GetCpu()->irql = current_level;
+            LogWriteSerial("E\n");
             ArchSetIrql(current_level);
+            LogWriteSerial("F\n");
 
             /*
              * Must Pop() before we call the handler (otherwise if the handler does a raise/lower, it will
              * retrigger itself and cause a recursion loop), and must also get data off the queue before we Pop().
              */
             struct irql_deferment* deferred_call = (struct irql_deferment*) next.data;
+            LogWriteSerial("G\n");
             void* context = deferred_call->context;
+            LogWriteSerial("H\n");
             void (*handler)(void*) = deferred_call->handler;
+            if (handler == NULL) {
+                continue;
+            }
+            LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): B %d\n", PriorityQueueGetUsedSize(deferred_functions));
 
+            // TODO: need to ensure that if this causes IRQL to change and run handlers, that it doesn't try to run this handler.
+            //       the problem there of course, is that this is how we remove a handler. maybe set the handler in the deferred
+            //       call object to NULL, and then when the nested version runs, it detects the handler is null and doesn't run
+            //       it??
+            deferred_call->handler = NULL;
             PriorityQueuePop(deferred_functions);
-            assert(handler != NULL);
+            LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): C %d\n", PriorityQueueGetUsedSize(deferred_functions));
             handler(context);
 
         } else {
+            LogWriteSerial("X\n");
             break;
         }
     }

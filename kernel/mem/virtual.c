@@ -645,7 +645,7 @@ static void HandleSwapfileFault(struct vas_entry* entry) {
  * @maxirql IRQL_PAGE_FAULT 
  */
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
-    LogWriteSerial("HandleVirtFault A\n");
+    LogWriteSerial("HandleVirtFault A, 0x%X, %d\n", faulting_virt, fault_type);
     int irql = RaiseIrql(IRQL_PAGE_FAULT);
 
     (void) fault_type;
