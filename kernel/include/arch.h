@@ -77,7 +77,10 @@ void ArchDisableInterrupts(void);
 */
 void ArchStallProcessor(void);
 
-void ArchReboot(void);
+#define ARCH_POWER_STATE_REBOOT	1
+#define ARCH_POWER_STATE_SHUTDOWN 2
+#define ARCH_POWER_STATE_SLEEP 3
+int ArchSetPowerState(int power_state);
 
 void ArchIrqSpinlockAcquire(volatile size_t* lock);
 void ArchIrqSpinlockRelease(volatile size_t* lock);

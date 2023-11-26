@@ -19,8 +19,9 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_NOT_IMPLEMENTED] 		= "not implemented",
 	[PANIC_INVALID_IRQL]			= "invalid irq level",
 	[PANIC_SPINLOCK_WRONG_IRQL]		= "spinlock wrong irql",
-	[PANIC_PRIORITY_QUEUE]			= "invalid operation on priority queue",
-	[PANIC_OUT_OF_PHYS]				= "no physical memory left"
+	[PANIC_PRIORITY_QUEUE]			= "invalid operation on a priority queue",
+	[PANIC_OUT_OF_PHYS]				= "no physical memory left",
+	[PANIC_LINKED_LIST]				= "invalid operation on a linked list",
 };
 
 _Noreturn void Panic(int code)
@@ -34,7 +35,7 @@ _Noreturn void PanicEx(int code, const char* message) {
 	if (IsInTfwTest()) {
 		LogWriteSerial("in test.\n");
 		FinishedTfwTest(code);
-		ArchReboot();
+		ArchSetPowerState(ARCH_POWER_STATE_REBOOT);
 	}
 
 	RaiseIrql(IRQL_HIGH);

@@ -54,6 +54,7 @@ static void* AllocateFromEmergencyBlocks(size_t size) {
 
 static void AddBlockToBackupHeap(size_t size) {
     void* address = (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+    LogWriteSerial("added emergency block at 0x%X to heap\n", address);
     int index_of_smallest_block = 0;
     for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
         if (emergency_blocks[i].valid) {

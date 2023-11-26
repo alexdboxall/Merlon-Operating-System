@@ -9,6 +9,7 @@
 #include <cpu.h>
 #include <machine/portio.h>
 #include <machine/interrupt.h>
+#include <errno.h>
 
 void ArchInitBootstrapCpu(struct cpu* cpu) {
     (void) cpu;
@@ -29,12 +30,37 @@ bool ArchInitNextCpu(struct cpu* cpu) {
     return false;
 }
 
-void ArchReboot(void) {
-	uint8_t good = 0x02;
+static void x86Reboot(void) {
+    uint8_t good = 0x02;
     while (good & 0x02) {
         good = inb(0x64);
 	}
     outb(0x64, 0xFE);
+}
+
+static void x86Shutdown(void) {
+    /*
+     * These ones work on emulators/hypervisors only. Once we get ACPICA, we'll put a little code here to
+     * detect if ACPICA.SYS has been loaded, and we'll do a proper shutdown instead.
+     */
+    outw(0xB004, 0x2000);       // Bochs and old QEMU
+    outw(0x0604, 0x2000);       // New QEMU
+    outw(0x4004, 0x3400);       // VirtualBox
+    outw(0x0600, 0x0034);       // Cloud Hypervisor
+}
+
+int ArchSetPowerState(int power_state) {
+	switch (power_state) {
+    case ARCH_POWER_STATE_REBOOT:
+        x86Reboot();
+        break;
+    case ARCH_POWER_STATE_SHUTDOWN:
+        x86Shutdown();
+        break;
+    default:
+        return EINVAL;
+    }
+
     while (1) {
 		ArchStallProcessor();
 	}

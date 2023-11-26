@@ -43,11 +43,11 @@ int DetectFatPartition(void* partition) {
     }
 
     /*
-    FAT can be detected by examining various fields and verifying that they are all valid:
-- Cluster size is a power of 2
-- Media type is 0xf0 or greater or equal to 0xf8
-- FAT size is not 0
-*/
+    - FAT can be detected by examining various fields and verifying that they are all valid:
+    - Cluster size is a power of 2
+    - Media type is 0xf0 or greater or equal to 0xf8
+    - FAT size is not 0
+    */
 
     /*
      * Check the OEM string.

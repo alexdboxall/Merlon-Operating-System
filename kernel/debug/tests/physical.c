@@ -6,6 +6,7 @@
 #include <log.h>
 #include <arch.h>
 #include <physical.h>
+#include <_partial_/stdlib.h>
 
 #ifndef NDEBUG
 
@@ -51,24 +52,21 @@ TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
     memset(frames, 0, sizeof(frames));
     int allocated = 0;
 
-    uint32_t next = 12 + context * 1234;
+    srand(context * 1234 + 12);
     
-    // context 0: 40,000
-    // context 1: 250,000
-    // context 2: 3,640,000 (NIGHTLY)
-    // context 3: 24,070,000 (NIGHTLY)
+    // context 0: 40,000                    (should be around 200ms)
+    // context 1: 250,000                   (should be around 1s)
+    // context 2: 3,640,000 (NIGHTLY)       (should be around 18s)
+    // context 3: 24,070,000 (NIGHTLY)      (should be around 120s)
 
     int limit = 10000 * (context * context * context * 3 + 2) * (context * context * 3 + 2);
     for (int i = 0; i < limit; ++i) {
-        int rng = (unsigned int) (next / 65536) % 32768;
-        next = next * 1103515245 + 12345;
-
         /*
          * This all gets a bit dodgy if it's too much higher than 400 on a 4MB system, as it will
          * eventually need to evict pages, but because we haven't actually mapped any of them into
          * virtual memory, we just hang.
          */
-        if (allocated < (300 + (rng % 80))) {
+        if (allocated < (300 + (rand() % 80))) {
             size_t f = AllocPhys();
             for (int j = 0; j < 512; ++j) {
                 if (frames[j] == f) {
@@ -84,10 +82,8 @@ TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
             }
         } else {
             while (allocated > 0) {
-                rng = (unsigned int) (next / 65536) % 32768;
-                next = next * 1103515245 + 12345;
                 for (int j = 0; j < 512; ++j) {
-                    int k = (j + ((rng / 1234) % 256)) % 256;
+                    int k = rand() % 256;
                     if (frames[k] != 0) {
                         DeallocPhys(frames[k]);
                         --allocated;
@@ -95,7 +91,7 @@ TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
                         break;
                     }   
                 }
-                if ((rng / 77) % 17 == 0) {
+                if (rand() % 17 == 0) {
                     break;
                 }
             }

@@ -13,8 +13,6 @@ void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
     InitTfw();
-    LogWriteSerial("init tfw done.\n");
-    
     MarkTfwStartPoint(TFW_SP_INITIAL);
 
     InitPhys();
@@ -45,6 +43,7 @@ void KernelMain(void) {
 
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
     LogWriteSerial("Boot successful! Kernel is completely initialised.\n");
+    
     while (1) {
         ;
     }

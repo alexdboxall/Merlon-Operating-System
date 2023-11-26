@@ -6,6 +6,7 @@
 #include <log.h>
 #include <arch.h>
 #include <priorityqueue.h>
+#include <_partial_/stdlib.h>
 
 #ifndef NDEBUG
 
@@ -42,8 +43,9 @@ TFW_CREATE_TEST(PriorityQueueCombined) { TFW_IGNORE_UNUSED
 }
 
 TFW_CREATE_TEST(PriorityQueueStress) { TFW_IGNORE_UNUSED
-    uint32_t next = 12345;
     int expected_size = 0;
+
+    srand(1);
 
     struct priority_queue* queue = PriorityQueueCreate(1000, true, 8);
     assert(PriorityQueueGetCapacity(queue) == 1000);
@@ -51,10 +53,9 @@ TFW_CREATE_TEST(PriorityQueueStress) { TFW_IGNORE_UNUSED
     uint32_t data[2];
 
     for (int i = 0; i < 1500000; ++i) {
-        int rng = (unsigned int) (next / 65536) % 32768;
-        next = next * 1103515245 + 12345;
+        int rng = rand();
         for (int j = 0; j < 2; ++j) {
-            data[j] = next;
+            data[j] = rand();
         }
 
         if (rng % 3 && expected_size < 1000) {

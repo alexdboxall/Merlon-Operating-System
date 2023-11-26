@@ -1,204 +1,15 @@
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
+KernelMain: kernel is initialising...
 init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
-Reached TFW_SP 3
-Reached TFW_SP 4
-x86MapPage: v 0xD0000000 -> p 0x23B000. flags 1.
-Reached TFW_SP 5
+x86MapPage: v 0xD0000000 -> p 0x235000. flags 1.
 RestoreEmergencyPages...
-x86MapPage: v 0xD0001000 -> p 0x131000. flags 1.
-x86MapPage: v 0xD0002000 -> p 0x130000. flags 1.
-x86MapPage: v 0xD0003000 -> p 0x12F000. flags 1.
-x86MapPage: v 0xD0004000 -> p 0x12E000. flags 1.
-x86MapPage: v 0xD0005000 -> p 0x12D000. flags 1.
-x86MapPage: v 0xD0006000 -> p 0x12C000. flags 1.
-x86MapPage: v 0xD0007000 -> p 0x12B000. flags 1.
+x86MapPage: v 0xD0001000 -> p 0x12D000. flags 1.
+x86MapPage: v 0xD0002000 -> p 0x12C000. flags 1.
+x86MapPage: v 0xD0003000 -> p 0x12B000. flags 1.
+x86MapPage: v 0xD0004000 -> p 0x12A000. flags 1.
+added emergency block at 0xD0001000 to heap
+x86MapPage: v 0xD0005000 -> p 0x129000. flags 1.
+x86MapPage: v 0xD0006000 -> p 0x128000. flags 1.
+x86MapPage: v 0xD0007000 -> p 0x127000. flags 1.
 x86MapPage: v 0xD0008000 -> p 0x3FF000. flags 1.
-Reached TFW_SP 6
-Reached TFW_SP 7
-MarkTfwStartPoint: running test 0
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 0, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk...
-c[?7l[2JKernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 1
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 1, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 2
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 2, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
-Reached TFW_SP 3
-Reached TFW_SP 4
-x86MapPage: v 0xD0000000 -> p 0x23B000. flags 1.
-Reached TFW_SP 5
-MarkTfwStartPoint: running test 3
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 3, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 4
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 4, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
-Reached TFW_SP 3
-Reached TFW_SP 4
-x86MapPage: v 0xD0000000 -> p 0x23B000. flags 1.
-Reached TFW_SP 5
-MarkTfwStartPoint: running test 5
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 5, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 6
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 6, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-MarkTfwStartPoint: running test 7
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 7, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
-Reached TFW_SP 3
-Reached TFW_SP 4
-x86MapPage: v 0xD0000000 -> p 0x23B000. flags 1.
-Reached TFW_SP 5
-MarkTfwStartPoint: running test 8
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 8, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
-Reached TFW_SP 3
-Reached TFW_SP 4
-x86MapPage: v 0xD0000000 -> p 0x23B000. flags 1.
-Reached TFW_SP 5
-MarkTfwStartPoint: running test 9
-PANIC 3 unit test ok
-in test.
-FinishedTfwTest: finished test 9, expected 3 vs. actual 3
-c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
-
-
-iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+003911A0+002F11A0 CA00
-Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
-
-
-Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
-init tfw done.
-Reached TFW_SP 0
-Reached TFW_SP 1
-Reached TFW_SP 2
-Reached TFW_SP 3
-Reached TFW_SP 4
-x86MapPage: v 0xD0000000 -> p 0x23B000. flags 1.
-Reached TFW_SP 5
-MarkTfwStartPoint: running test 10
+added emergency block at 0xD0005000 to heap
+Boot successful! Kernel is completely initialised.

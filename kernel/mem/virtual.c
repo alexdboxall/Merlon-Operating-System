@@ -637,9 +637,10 @@ static void HandleSwapfileFault(struct vas_entry* entry) {
  * fault occurs. It will attempt to resolve any fault (e.g. handling copy-on-write, swapfile, file-backed, etc.).
  * 
  * @param faulting_virt The virtual address that was accessed that caused the page fault
- * @param fault_type The reason why a page fault occured. Is a bitfield of VM_WRITE, VM_READ and VM_USER.
+ * @param fault_type The reason why a page fault occured. Is a bitfield of VM_WRITE, VM_READ, VM_USER and VM_EXEC.
  *                   VM_READ should be set if a non-present page was accessed. VM_USER should be set for permission
  *                   faults, and VM_WRITE should be set if the operation was caused by a write (as opposed to a read).
+ *                   VM_EXEC should be set if execution tried to occur in a non-executable page.
  * 
  * @maxirql IRQL_PAGE_FAULT 
  */

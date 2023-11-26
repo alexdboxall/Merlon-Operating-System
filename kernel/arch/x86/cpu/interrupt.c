@@ -21,11 +21,25 @@ void x86HandleInterrupt(struct x86_regs* r) {
     int num = r->int_no;
 
     if (num >= PIC_IRQ_BASE && num < PIC_IRQ_BASE + 16) {
-        RespondToIrq(num, GetRequiredIrql(num));
+        RespondToIrq(num, GetRequiredIrql(num), r);
 
     } else if (num == 14) {
         extern size_t x86GetCr2();
-        HandleVirtFault(x86GetCr2(), 0);
+
+        int type = 0;
+        if (r->err_code & 1) {
+            type |= VM_READ;
+        }
+        if (r->err_code & 2) {
+            type |= VM_WRITE;
+        }
+        if (r->err_code & 4) {
+            type |= VM_USER;
+        }
+        if (r->err_code & 16) {
+            type |= VM_EXEC;
+        }
+        HandleVirtFault(x86GetCr2(), type);
     }
 
     /*
