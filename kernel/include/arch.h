@@ -12,7 +12,6 @@
 /*
 * config.h needs to define the following:
 *	- ARCH_PAGE_SIZE
-*	- either ARCH_STACK_GROWS_DOWNWARD or ARCH_STACK_GROWS_UPWARD
 *	- ARCH_MAX_CPU_ALLOWED
 *	- ARCH_MAX_RAM_KBS
 * 	- the valid user area, via ARCH_USER_AREA_BASE and ARCH_USER_AREA_LIMIT

@@ -1,7 +1,12 @@
 #pragma once
 
+/*
+ * IMPLEMENTS STANDARD 
+ */
+
 int toupper(int c);
 int tolower(int c);
+
 int isalnum(int c);
 int isalpha(int c);
 int isblank(int c);

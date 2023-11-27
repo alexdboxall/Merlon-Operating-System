@@ -179,7 +179,7 @@ void RegisterTfwTests(void) {
     RegisterTfwInitTests();
     RegisterTfwPhysTests();
     RegisterTfwAVLTreeTests();
-    RegisterTfwPriorityQueueTests();
+    RegisterTfwPriorityQueueTests(); 
     RegisterTfwIrqlTests();
 }
 

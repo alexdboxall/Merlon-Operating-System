@@ -1,12 +1,10 @@
 #pragma once
 
 /*
-* assert.h - Assertions
-*
-*
-* Used to verify that assumptions are true.
-*
-*/
+ * IMPLEMENTS STANDARD 
+ */
+
+#define static_assert _Static_assert
 
 #ifdef COMPILE_KERNEL
 
@@ -25,6 +23,24 @@ _Noreturn void AssertionFail(const char* file, const char* line, const char* con
 #define assert(condition)
 #define assert_with_message(condition, msg)
 
+#endif
+
+#else
+
+#ifdef NDEBUG
+#define assert(ignore) ((void)0)
+#else
+
+#define ___tostr(x) #x
+#define __tostr(x) ___tostr(x)
+
+struct FILE;
+extern FILE* stderr;
+
+extern int fprintf(FILE* restrict stream, const char* restrict format, ...);
+
+// TODO: forward declaration for fprintf, extern FILE
+#define assert(condition) {if (!(condition)) {fprintf(stderr, "Assertion failed: %s, function %s, file %s, line %s.", __tostr(condition), __tostr(__func__), __tostr(__FILE__), __tostr(__LINE__));}}
 #endif
 
 #endif

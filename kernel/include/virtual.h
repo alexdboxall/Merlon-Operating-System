@@ -27,7 +27,7 @@ struct vas_entry {
     uint8_t lock            : 1;           
     uint8_t read            : 1;
     uint8_t write           : 1;
-    
+
     uint8_t exec            : 1;
     uint8_t user            : 1;
     uint8_t                 : 6;
@@ -40,6 +40,8 @@ struct vas_entry {
 };
 
 struct vas;
+
+size_t BytesToPages(size_t bytes);
 
 void LockVirt(size_t virtual);
 void UnlockVirt(size_t virtual);

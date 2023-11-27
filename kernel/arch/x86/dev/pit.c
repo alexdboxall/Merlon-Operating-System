@@ -7,6 +7,7 @@
 #include <common.h>
 #include <timer.h>
 #include <irq.h>
+#include <log.h>
 
 /*
 * x86/dev/pit.c - Programmable Interval Timer

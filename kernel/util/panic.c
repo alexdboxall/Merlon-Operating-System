@@ -22,6 +22,7 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_PRIORITY_QUEUE]			= "invalid operation on a priority queue",
 	[PANIC_OUT_OF_PHYS]				= "no physical memory left",
 	[PANIC_LINKED_LIST]				= "invalid operation on a linked list",
+	[PANIC_CANARY_DIED]				= "kernel stack overflow detected",
 };
 
 _Noreturn void Panic(int code)

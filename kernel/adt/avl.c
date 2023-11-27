@@ -168,7 +168,7 @@ static struct avl_node* AvlDelete(struct avl_node* tree, void* data, avl_compara
      * If NULL is passed in, nothing happens (which is want we want).
      */
 
-    FreeHeap(to_free);      // TODO: this appears to be buggy..?
+    FreeHeap(to_free);
 
     return AvlBalance(tree);
 }

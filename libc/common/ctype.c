@@ -35,7 +35,7 @@ int isdigit(int c) {
 }
 
 int isgraph(int c) {
-    return isalnum(c) || ispunct(c);
+    return isprint(c) && c != ' ';
 }
 
 int islower(int c) {
@@ -43,21 +43,19 @@ int islower(int c) {
 }
 
 int isprint(int c) {
-    return isgraph(c) || c == ' ';
+    return !iscntrl(c);
 }
 
 int ispunct(int c) {
-    const char* punct = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-    for (int i = 0; punct[i]; ++i) {
-        if (c == punct[i]) {
-            return 1;
-        }
-    }
-    return 0;
+    /*
+     * In the "C" locale, ispunct returns true for every printing character for which neither 
+     * isspace nor isalnum is true
+     */
+    return isprint(c) && !isspace(c) && !isalnum(c);
 }
 
 int isspace(int c) {
-    return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r';
+    return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v';
 }
 
 int isupper(int c) {

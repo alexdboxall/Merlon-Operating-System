@@ -8,8 +8,6 @@
 #define ARCH_MAX_RAM_KBS (1024 * 1024 * 4)
 
 #define ARCH_PAGE_SIZE	        4096
-#undef ARCH_STACK_GROWS_UPWARD 
-#define ARCH_STACK_GROWS_DOWNWARD
 
 /*
 * Non-inclusive of ARCH_USER_AREA_LIMIT

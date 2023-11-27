@@ -714,3 +714,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 bool IsVirtInitialised(void) {
     return virt_initialised;
 }
+
+size_t BytesToPages(size_t bytes) {
+    return (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+}

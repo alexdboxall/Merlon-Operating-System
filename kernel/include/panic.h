@@ -78,6 +78,11 @@ enum {
     PANIC_PRIORITY_QUEUE,
     PANIC_LINKED_LIST,
 
+    /*
+     * Kernel stack overflow
+     */
+    PANIC_CANARY_DIED,
+
     _PANIC_HIGHEST_VALUE
 };
 

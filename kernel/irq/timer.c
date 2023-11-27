@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <cpu.h>
 #include <irql.h>
+#include <arch.h>
 
 static struct spinlock timer_lock;
 
@@ -12,7 +13,7 @@ static uint64_t system_time = 0;
 void ReceivedTimer(uint64_t nanos) {
     EXACT_IRQL(IRQL_TIMER);
 
-    if (GetCpu() == GetCpuAtIndex(0)) {
+    if (ArchGetCurrentCpuIndex() == 0) {
         /*
          * As we're in the timer handler, we know we already have IRQL_TIMER, and so we don't
          * need to incur the additional overhead of raising and lowering.

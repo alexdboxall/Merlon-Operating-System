@@ -2,6 +2,18 @@
 
 #include <common.h>
 
+enum {
+    TFW_SP_INITIAL,
+    TFW_SP_AFTER_PHYS,
+    TFW_SP_AFTER_HEAP,
+    TFW_SP_AFTER_BOOTSTRAP_CPU,
+    TFW_SP_AFTER_VIRT,
+    TFW_SP_AFTER_PHYS_REINIT,
+    TFW_SP_AFTER_ALL_CPU,
+
+    TFW_SP_ALL_CLEAR,
+};
+
 #ifdef NDEBUG
 
 #define IsInTfwTest() false
@@ -18,18 +30,6 @@ bool IsInTfwTest(void);
 #define MAX_TWF_TESTS 100
 #define MAX_NAME_LENGTH 96      // If this changes the python must do too
 
-
-enum {
-    TFW_SP_INITIAL,
-    TFW_SP_AFTER_PHYS,
-    TFW_SP_AFTER_HEAP,
-    TFW_SP_AFTER_BOOTSTRAP_CPU,
-    TFW_SP_AFTER_VIRT,
-    TFW_SP_AFTER_PHYS_REINIT,
-    TFW_SP_AFTER_ALL_CPU,
-
-    TFW_SP_ALL_CLEAR,
-};
 
 struct tfw_test {
     char name[MAX_NAME_LENGTH];

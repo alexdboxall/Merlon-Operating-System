@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <timer.h>
 #include <irql.h>
+#include <schedule.h>
 #include <panic.h>
 
 extern void InitDbgScreen(void);
@@ -23,6 +24,7 @@ void KernelMain(void) {
     InitHeap();
     InitIrql();
     InitTimer();
+    InitScheduler();
     assert(GetIrql() == IRQL_STANDARD);
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
@@ -34,7 +36,6 @@ void KernelMain(void) {
 
     ReinitPhys();
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
-
 
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);

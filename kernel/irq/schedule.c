@@ -3,11 +3,32 @@
 #include <common.h>
 #include <schedule.h>
 #include <assert.h>
+#include <spinlock.h>
 
-void ScheduleInternal(void) {
+static struct spinlock scheduler_lock;
+
+/*
+ * Because these IRQL jumps need to persist across switches, we can't just chuck
+ * it on the stack like normal. No need for nesting / a stack to store these, as the
+ * scheduler lock cannot be nested.
+ */
+static int scheduler_lock_irql;
+
+void LockScheduler(void) {
+    scheduler_lock_irql = AcquireSpinlock(&scheduler_lock, true);
+}
+
+void UnlockScheduler(void) {
+    ReleaseSpinlockAndLower(&scheduler_lock, scheduler_lock_irql);
+}
+
+void AssertSchedulerLockHeld(void) {
+    assert(IsSpinlockHeld(&scheduler_lock));
+}
+
+void ScheduleWithLockHeld(void) {
     EXACT_IRQL(IRQL_SCHEDULER);
-    // TODO: assert(spinlock is held)
-
+    AssertSchedulerLockHeld();
     
 }
 
@@ -18,9 +39,11 @@ void Schedule(void) {
         return;
     }
 
-    int irql = RaiseIrql(IRQL_SCHEDULER);
-    // TODO: acquire scheduler spinlock
-    ScheduleInternal();
-    // TODO: release scheduler spinlock
-    LowerIrql(irql);
+    LockScheduler();
+    ScheduleWithLockHeld();
+    UnlockScheduler();
+}
+
+void InitScheduler() {
+    InitSpinlock(&scheduler_lock, "scheduler", IRQL_SCHEDULER);
 }

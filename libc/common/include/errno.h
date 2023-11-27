@@ -1,12 +1,8 @@
 #pragma once
 
 /*
-* errno.h - Error Numbers
-*
-*
-* Error codes returned by various kernel functions.
-*
-*/
+ * IMPLEMENTS STANDARD 
+ */
 
 #ifndef NULL
 #define NULL	((void*) 0)
@@ -30,7 +26,7 @@
 #define ELOOP			16			// Too many loops in symbolic link resolution
 #define EROFS			17			// Read-only filesystem
 #define EAGAIN			18			// Resource temporarily unavailable
-#define EWOULDBLOCK		EGAIN		// Operation would block, but for historical reasons
+#define EWOULDBLOCK		EAGAIN		// Operation would block, but for historical reasons
 									//			is often the same thing as EWOULDBLOCK
 #define EFAULT          19          // Hardware interrupt / fault, etc.
 #define EBADF           20          // Bad file descriptor
@@ -44,6 +40,6 @@
 
 #ifndef COMPILE_KERNEL
 
-extern int errno;
+#define errno *__thread_local_errno_()
 
 #endif

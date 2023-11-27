@@ -36,7 +36,10 @@
         "stdlib.h": "c",
         "stdint.h": "c",
         "linkedlist.h": "c",
-        "_dbg_font.h": "c"
+        "_dbg_font.h": "c",
+        "__mutex_base": "c",
+        "mutex": "c",
+        "sstream": "c"
     },
     "files.exclude": {
         "**/.git": true,

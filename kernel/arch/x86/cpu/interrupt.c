@@ -13,7 +13,7 @@ static int GetRequiredIrql(int irq_num) {
     if (irq_num == PIC_IRQ_BASE + 0) {
         return IRQL_TIMER;
     } else {
-        return IRQL_TIMER + irq_num - PIC_IRQ_BASE;
+        return IRQL_DRIVER + irq_num - PIC_IRQ_BASE;
     }
 }
 
@@ -25,8 +25,6 @@ void x86HandleInterrupt(struct x86_regs* r) {
 
     } else if (num == 14) {
         extern size_t x86GetCr2();
-
-        LogWriteSerial("PF. cr2: 0x%X, eip: 0x%X\n", x86GetCr2(), r->eip);
 
         int type = 0;
         if (r->err_code & 1) {

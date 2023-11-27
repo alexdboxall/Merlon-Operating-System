@@ -18,9 +18,9 @@
 #include <stdlib.h>
 #endif
 
-void* memchr(const void* addr, int c, size_t n)
+void* memchr(const void* s, int c, size_t n)
 {
-	const uint8_t* ptr = (const uint8_t*) addr;
+	const uint8_t* ptr = (const uint8_t*) s;
 
 	while (n--) {
 		if (*ptr == (uint8_t) c) {
@@ -33,10 +33,10 @@ void* memchr(const void* addr, int c, size_t n)
 	return NULL;
 }
 
-int memcmp(const void* addr1, const void* addr2, size_t n)
+int memcmp(const void* s1, const void* s2, size_t n)
 {
-    const uint8_t* a = (const uint8_t*) addr1;
-	const uint8_t* b = (const uint8_t*) addr2;
+    const uint8_t* a = (const uint8_t*) s1;
+	const uint8_t* b = (const uint8_t*) s2;
 
 	for (size_t i = 0; i < n; ++i) {
 		if (a[i] < b[i]) return -1;
@@ -46,7 +46,27 @@ int memcmp(const void* addr1, const void* addr2, size_t n)
 	return 0;
 }
 
-void* memcpy(void* dst, const void* src, size_t n)
+#pragma GCC push_options
+#pragma GCC optimize ("Os")
+void* memset(void* addr, int c, size_t n)
+{
+
+    /*
+    * Use the compiler's platform-specific optimised version.
+    * If that doesn't work for your system or compiler, use the below implementation.
+    */
+    //return __builtin_memset(addr, c, n);
+
+
+	uint8_t* ptr = (uint8_t*) addr;
+	for (size_t i = 0; i < n; ++i) {
+		ptr[i] = c;
+	}
+
+	return addr;
+}
+
+void* memcpy(void* restrict dst, const void* restrict src, size_t n)
 {
     /*
     * Use the compiler's platform-specific optimised version.
@@ -63,6 +83,7 @@ void* memcpy(void* dst, const void* src, size_t n)
 
 	return dst;*/
 }
+#pragma GCC pop_options
 
 void* memmove(void* dst, const void* src, size_t n)
 {
@@ -85,30 +106,12 @@ void* memmove(void* dst, const void* src, size_t n)
 	return dst;
 }
 
-void* memset(void* addr, int c, size_t n)
-{
-    /*
-    * Use the compiler's platform-specific optimised version.
-    * If that doesn't work for your system or compiler, use the below implementation.
-    */
-    return __builtin_memset(addr, c, n);
-
-	/*uint8_t* ptr = (uint8_t*) addr;
-	for (size_t i = 0; i < n; ++i) {
-		ptr[i] = c;
-	}
-
-	return addr;*/
-}
-
-char* strcat(char* dst, const char* src)
+char* strcat(char* restrict dst, const char* restrict src)
 {
 	char* ret = dst;
 
-	if (*dst) {
-		while (*++dst) {
-			;
-		}
+	while (*dst) {
+		++dst;
 	}
 
 	while ((*dst++ = *src++)) {
@@ -118,28 +121,28 @@ char* strcat(char* dst, const char* src)
 	return ret;
 }
 
-char* strchr(const char* str, int c)
+char* strchr(const char* s, int c)
 {
 	do {
-		if (*str == (char) c) {
-			return (char*) str;
+		if (*s == (char) c) {
+			return (char*) s;
 		}
-	} while (*str++);
+	} while (*s++);
 
 	return NULL;
 }
 
-int	strcmp(const char* str1, const char* str2)
+int strcmp(const char* s1, const char* s2)
 {
-	while ((*str1) && (*str1 == *str2)) {
-		++str1;
-		++str2;
+	while ((*s1) && (*s1 == *s2)) {
+		++s1;
+		++s2;
 	}
 
-	return (*(uint8_t*) str1 - *(uint8_t*) str2);
+	return (*(uint8_t*) s1 - *(uint8_t*) s2);
 }
 
-char* strcpy(char* dst, const char* src)
+char* strcpy(char* restrict dst, const char* restrict src)
 {
 	char* ret = dst;
 
@@ -223,7 +226,7 @@ size_t strlen(const char* str)
 	return len;
 }
 
-char* strncpy(char* dst, const char* src, size_t n)
+char* strncpy(char* restrict dst, const char* restrict src, size_t n)
 {
 	char* ret = dst;
 
@@ -231,7 +234,7 @@ char* strncpy(char* dst, const char* src, size_t n)
 		if (*src) {
 			*dst++ = *src++;
 		} else {
-			*dst++ = '\0';
+			*dst++ = 0;
 		}
 	}
 
@@ -245,20 +248,91 @@ char* strdup(const char* str)
 	return copy;
 }
 
-int strncmp(const char* str1, const char* str2, size_t n)
+int strncmp(const char* s1, const char* s2, size_t n)
 {
-	while (n && *str1 && (*str1 == *str2)) {
-		++str1;
-		++str2;
+	while (n && *s1 && (*s1 == *s2)) {
+		++s1;
+		++s2;
 		--n;
 	}
 	if (n == 0) {
 		return 0;
 	} else {
-		return (*(unsigned char*) str1 - *(unsigned char*) str2);
+		return (*(unsigned char*) s1 - *(unsigned char*) s2);
 	}
 }
 
-char* strncat(char* dst, const char* src, size_t n);
+char* strncat(char* restrict dst, const char* restrict src, size_t n) {
+	char* ret = dst;
+
+	while (*dst) {
+		++dst;
+	}
+
+	while (*src && n--) {
+		*dst++ = *src++;
+	}	
+
+	*dst = 0;
+	return ret;
+}
+
+int strcoll(const char* s1, const char* s2) {
+	int size1 = 1 + strxfrm(NULL, s1, 0);
+	int size2 = 1 + strxfrm(NULL, s2, 0);
+
+	char out1[size1];
+	char out2[size2];
+
+	strxfrm(out1, s1, size1);
+	strxfrm(out2, s2, size2);
+
+	return strcmp(out1, out2);
+}
+
+size_t strxfrm(char* restrict dst, const char* restrict src, size_t n) {
+	if (n == 0) {
+		if (dst != NULL) {
+			*dst = 0;
+		}
+		return 0;
+	}
+	while (n-- > 1) {
+		if (*src) {
+			*dst++ = *src++;
+		} else {
+			*dst = 0;
+			break;
+		}
+	}
+	*dst = 0;
+	return strlen(dst);
+}
+
+size_t strcspn(const char* s1, const char* s2) {
+	size_t i = 0;
+	for (; s1[i]; ++i) {
+		for (size_t j = 0; s2[j]; ++j) {
+			if (s1[i] == s2[j]) {
+				return i;
+			}
+		}
+	}
+	return i;
+}
+
+char* strpbrk(const char* s1, const char* s2) {
+	char* s = (char*) s1;
+	while (*s) {
+		for (size_t i = 0; s2[i]; ++i) {
+			if (*s == s2[i]) {
+				return s;
+			}
+		}
+		s++;
+	}
+	return NULL;
+}
+
 char* strrchr(const char* str, int n);
 char* strstr(const char* haystac, const char* needle);
