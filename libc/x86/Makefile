@@ -16,9 +16,10 @@ ASMOBJECTS = $(patsubst %.s, %.oo, $(wildcard *.s) $(wildcard */*.s) $(wildcard 
 hostedlibc: $(COBJECTS) $(ASMOBJECTS)
 # $(AS) -felf32 _systemcall.s -o _systemcall.o
 # $(AR) rcs libc.a $^ _systemcall.o
-	rm ../common/*.o || true
-	rm ../hosted/*.o || true
-	rm _systemcall.o || true
+	$(AR) rcs libc.a $^
+	rm ../common/*.o -r || true
+#	rm ../hosted/*.o || true
+#	rm _systemcall.o || true
 	
 %.o: %.c
 	$(CC) $(CPPDEFINES) $(COMPILE_FLAGS) $^ -o $@ 

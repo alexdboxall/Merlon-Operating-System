@@ -39,7 +39,8 @@
         "_dbg_font.h": "c",
         "__mutex_base": "c",
         "mutex": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "stddef.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

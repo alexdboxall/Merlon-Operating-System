@@ -11,7 +11,7 @@ LINK_FLAGS = -Wl,-Map=kernel.map -nostartfiles -nostdlib -lgcc
 LINKER_STRIP =
 CPPDEFINES = 
 
-COBJECTS = $(patsubst %.c, %.o, $(wildcard *.c) $(wildcard */*.c) $(wildcard */*/*.c) $(wildcard */*/*/*.c) $(wildcard **/*.c))
+COBJECTS = $(patsubst %.c, %.o, $(wildcard *.c) $(wildcard */*.c) $(wildcard */*/*.c) $(wildcard */*/*/*.c) $(wildcard */*/*/*/*.c) $(wildcard **/*.c))
 ASMOBJECTS = $(patsubst %.s, %.oo, $(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s) $(wildcard **/*.s))
 
 oskernel: $(COBJECTS) $(ASMOBJECTS) $(HOBJECTS)

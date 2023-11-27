@@ -1,5 +1,9 @@
 #pragma once
 
+/*
+ * IMPLEMENTS STANDARD - NEEDS TESTING THOUGH (ESP. STRTOK, STRSTR, etc.)
+ */
+
 #include <stddef.h>
 
 #ifndef NULL
@@ -23,13 +27,15 @@ void* memchr(const void* s, int c, size_t n);
 char* strchr(const char* s, int c);
 size_t strcspn(const char* s1, const char* s2);
 char* strpbrk(const char* s1, const char* s2);
+char* strrchr(const char* s, int c);
+size_t strspn(const char* s1, const char* s2);
+char* strstr(const char* haystack, const char* needle);
+char* strtok(char* restrict s, const char* restrict delim);
 
-void bzero(void* addr, size_t n);
-void* memccpy(void* dst, const void* src, int c, size_t n);
 void* memset(void* addr, int c, size_t n);
-char* strcpy(char* dst, const char* src);
-char* strdup(const char* str);
 char* strerror(int err);
 size_t strlen(const char* str);
-char* strrchr(const char* str, int n);
-char* strstr(const char* haystac, const char* needle);
+
+
+void bzero(void* addr, size_t n);
+char* strdup(const char* str);

@@ -11,6 +11,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef COMPILE_KERNEL
 #include <heap.h>
@@ -50,20 +51,18 @@ int memcmp(const void* s1, const void* s2, size_t n)
 #pragma GCC optimize ("Os")
 void* memset(void* addr, int c, size_t n)
 {
-
     /*
     * Use the compiler's platform-specific optimised version.
     * If that doesn't work for your system or compiler, use the below implementation.
     */
-    //return __builtin_memset(addr, c, n);
+    return __builtin_memset(addr, c, n);
 
-
-	uint8_t* ptr = (uint8_t*) addr;
+	/*uint8_t* ptr = (uint8_t*) addr;
 	for (size_t i = 0; i < n; ++i) {
 		ptr[i] = c;
 	}
 
-	return addr;
+	return addr;*/
 }
 
 void* memcpy(void* restrict dst, const void* restrict src, size_t n)
@@ -309,6 +308,23 @@ size_t strxfrm(char* restrict dst, const char* restrict src, size_t n) {
 	return strlen(dst);
 }
 
+size_t strspn(const char* s1, const char* s2) {
+	size_t i = 0;
+	for (; s1[i]; ++i) {
+		bool found = false;
+		for (size_t j = 0; s2[j]; ++j) {
+			if (s1[i] == s2[j]) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			return i;
+		}
+	}
+	return i;
+}
+
 size_t strcspn(const char* s1, const char* s2) {
 	size_t i = 0;
 	for (; s1[i]; ++i) {
@@ -334,5 +350,88 @@ char* strpbrk(const char* s1, const char* s2) {
 	return NULL;
 }
 
-char* strrchr(const char* str, int n);
-char* strstr(const char* haystac, const char* needle);
+char* strrchr(const char* s, int c) {
+	char* result = NULL;
+	while (*s) {
+		if (*s == (char) c) {
+			result = (char*) s;
+		}
+		s++;
+	}
+	return result;
+}
+
+char* strstr(const char* haystack, const char* needle) {
+	size_t n = strlen(needle);
+
+	if (n == 0) {
+		return (char*) haystack;
+	}
+
+    while (*haystack) {
+		if (!memcmp(haystack, needle, n)) {
+            return (char*) haystack;
+		}
+
+		haystack++;
+	}
+        
+    return NULL;
+}
+
+char* strtok(char* restrict s, const char* restrict delim) {
+	static char* saved_pointer = NULL;
+	char* token = NULL;
+
+	if (s != NULL) {
+		/*
+		 * Start a new search. 
+		 */
+		saved_pointer = s;
+
+	} else if (saved_pointer == NULL) {
+		/*
+		 * Previous search reached end of string.
+		 */
+		return NULL;
+	}
+
+	/*
+	 * Find the next non-delimiter character. If none are found, then we are at the end of the
+	 * string, and so saved_pointer goes to NULL, and will continue to be NULL. 
+	 */
+	for (size_t i = 0; saved_pointer[i]; ++i) {
+		bool found = false;
+		for (size_t j = 0; delim[j]; ++j) {
+			if (delim[j] == saved_pointer[i]) {
+				found = true;
+				token = saved_pointer + i;
+				break;
+			}
+		}
+
+		if (!found) {
+			/*
+			 * End of string, no more tokens. 
+			 */
+			saved_pointer = NULL;
+			return NULL;
+		}
+	}
+
+	for (size_t i = 0; saved_pointer[i]; ++i) {
+		for (size_t j = 0; delim[j]; ++j) {
+			if (saved_pointer[i] == delim[j]) {
+				saved_pointer[i] = 0;
+				saved_pointer += i + 1;
+				return token;
+			}
+		}
+	}
+
+	/*
+	 * Found the final token.
+	 */
+	saved_pointer = NULL;
+	return token;
+}
