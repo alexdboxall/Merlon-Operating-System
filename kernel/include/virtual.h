@@ -35,6 +35,7 @@ struct vas_entry {
     off_t file_offset;
     void* file_node;
     size_t physical;
+    size_t num_pages;
 
     int ref_count;
 };
