@@ -169,10 +169,10 @@ KernelEntryPoint:
 	mov ecx, cr3
 	mov cr3, ecx
 	
-	; On x86, we'll store the current CPU number in the FS register.
+	; On x86, we'll store the current CPU number in the DR3 register (so user code cannot modify it)
 	; Set it correctly now.
 	xor eax, eax
-	mov fs, ax
+	mov dr3, eax
 	
 	; Set the stack to the one we defined
 	mov esp, stack_top
