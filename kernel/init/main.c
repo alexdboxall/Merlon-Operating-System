@@ -14,12 +14,11 @@
 extern void InitDbgScreen(void);
 
 void MyTestThread(void* str) {
-    
     while (1) {
         uint64_t current_time = GetThread()->time_used;
         uint64_t total_time = GetSystemTimer();
         int cpu_percent = current_time * 100 / total_time;
-        DbgScreenPrintf("%s. %d%%\n", (const char*) str, cpu_percent);
+        DbgScreenPrintf("%s. %d%%, ", (const char*) str, cpu_percent);
         Schedule();
     }
 }
@@ -57,7 +56,10 @@ void KernelMain(void) {
     InitDbgScreen();
     DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     
-    CreateThread(MyTestThread, "1", GetVas(), "test thread!");
+    for (int i = 0; i < 500; ++i) {
+        CreateThread(MyTestThread, "1", GetVas(), "test thread!");
+        DbgScreenPrintf("%d: %d / %d KB used...\n", i, GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
+    }
     CreateThread(MyTestThread, "2", GetVas(), "test thread!");
 
     while (1) {

@@ -33,7 +33,7 @@ align 4
 section .bss
 align 16
 stack_bottom:
-resb 16 * 1024
+resb 4 * 1024
 stack_top:
 
 
@@ -44,9 +44,11 @@ stack_top:
 ; We will allocate one page directory, and one page table. With this, we can map
 ; 4MB of memory. As the kernel starts at 1MB, we can actually have a kernel
 ; of at most 3MB. We will replace these paging structures later once we get into 
-; the proper kernel.
+; the proper kernel (and we'll release the physical memory behind it too!)
 ;
 align 4096
+global boot_page_directory
+global boot_page_table1
 boot_page_directory: resb 4096
 boot_page_table1: resb 4096
 

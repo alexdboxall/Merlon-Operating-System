@@ -12,7 +12,10 @@
 
 #define MB_CUR_MAX ((size_t) 1)
 
+int rand(void);
+void srand(unsigned int seed);
 
+#ifndef COMPILE_KERNEL
 
 typedef struct {
     int quot;
@@ -29,8 +32,6 @@ typedef struct {
     long long int rem;
 } lldiv_t;
 
-int rand(void);
-void srand(unsigned int seed);
 void* bsearch(const void* key, const void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
 void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
 
@@ -41,3 +42,7 @@ long long int llabs(long long int j);
 div_t div(int numer, int denom);
 ldiv_t ldiv(long int numer, long int denom);
 lldiv_t lldiv(long long int numer, long long int denom);
+void* malloc(size_t size);
+void free(void* ptr);
+
+#endif

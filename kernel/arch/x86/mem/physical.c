@@ -3,6 +3,7 @@
 #include <arch.h>
 #include <assert.h>
 #include <panic.h>
+#include <log.h>
 #include <machine/virtual.h>
 
 /*
@@ -95,17 +96,39 @@ retry:
 	/*
 	* Don't allow the use of non-RAM, or addresses completely below the kernel.
 	*/
-	if (type != MULTIBOOT_MEMORY_AVAILABLE || range.start + range.length < max_kernel_addr) {
+	if (type != MULTIBOOT_MEMORY_AVAILABLE) {
 		goto retry;
 	}
 
-	/*
-	* If it starts below the kernel, but ends above it, cut it off so only the
-	* part above the kernel is used.
-	*/
-	if (range.start < max_kernel_addr) {
+	if (range.start < 0x100000) {
+		if (range.start == 0x0) {
+			range.start += 4096;
+			range.length -= 4096;
+		}
+
+		/*
+		 * Try to salvage some low memory too.
+		 */
+		if (range.length + range.start >= 0x100000) {
+			range.length = 0x100000 - range.start;
+		}
+		if (range.length + range.start >= max_kernel_addr) {
+			LogDeveloperWarning("LOST SOME MEMORY WITH RANGE 0x%X -> 0x%X\n", range.start, range.start + range.length);
+		}
+
+	} else if (range.start < max_kernel_addr) {
+		/*
+		* If it starts below the kernel, but ends above it, cut it off so only the
+		* part above the kernel is used.
+		*/
 		range.length = range.start + range.length - max_kernel_addr;
 		range.start = max_kernel_addr;
+	}
+
+	
+
+	if (range.length <= 0) {
+		goto retry;
 	}
 	
 	return &range;

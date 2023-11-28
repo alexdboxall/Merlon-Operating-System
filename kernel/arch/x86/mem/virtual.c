@@ -143,4 +143,13 @@ void ArchInitVirt(void) {
 	for (int i = 769; i < 1023; ++i) {
 		x86AllocatePageTable(vas, i);
 	}
+
+	/*
+	 * The boot assembly code set up two page tables for us, that we no longer need.
+	 * We can release that physical memory.
+	 */
+	extern size_t boot_page_directory;
+	extern size_t boot_page_table1;
+	DeallocPhys(ArchVirtualToPhysical((size_t) &boot_page_directory));
+	DeallocPhys(ArchVirtualToPhysical((size_t) &boot_page_table1));
 }

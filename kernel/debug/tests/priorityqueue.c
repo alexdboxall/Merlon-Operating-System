@@ -6,7 +6,7 @@
 #include <log.h>
 #include <arch.h>
 #include <priorityqueue.h>
-#include <_partial_/stdlib.h>
+#include <stdlib.h>
 
 #ifndef NDEBUG
 

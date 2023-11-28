@@ -81,6 +81,13 @@ static void RestoreEmergencyPages(void* context) {
 
     EXACT_IRQL(IRQL_STANDARD);
 
+    /*
+     * TODO: mabye make this greedier (i.e. grab larger blocks), but also have a way for the PMM to ask for larger
+     * blocks back if needed. would still need to retain enough stashed away for PMM/VMM to use the heap, and would
+     * need to unlock the pages, and ensure that allocations from emergency blocks are done via smallest-fit (so large
+     * blocks aren't wasted).
+     */
+
     size_t total_size = 0;
     size_t largest_block = 0;
     
@@ -152,11 +159,12 @@ int DbgGetOutstandingHeapAllocations(void) {
 #define METADATA_TOTAL_AMOUNT (METADATA_LEADING_AMOUNT + METADATA_TRIALING_AMOUNT)
 
 /**
+ * (THIS COMMENT IS ABOUT x86-64 - halve the byte values for x86)
 * Having blocks of size 8 is wasteful, as they need to be at least 32 bytes long total to fit
 * the metadata when free, but only need 16 bytes metadata when allocated. Therefore, we have
 * 8 spare bytes that are wasted.
 */
-#define MINIMUM_REQUEST_SIZE_INTERNAL 16
+#define MINIMUM_REQUEST_SIZE_INTERNAL (2 * sizeof(size_t))
 
 /**
  * NUM_INCREMENTAL_FREE_LISTS = how many of MINIMUM_REQUEST_SIZE_INTERNAL + ALIGNMENT * N we have
@@ -203,8 +211,8 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     1024 * 1024 * 4,
     1024 * 1024 * 8,        // 32
     1024 * 1024 * 16,       
-    1024 * 1024 * 32,
-    1024 * 1024 * 64,       // 36
+    1024 * 1024 * 64,
+    1024 * 1024 * 256,       // 36
 };
 
 /**

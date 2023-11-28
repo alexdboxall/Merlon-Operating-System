@@ -1,4 +1,4 @@
-#include <_partial_/stdlib.h>
+#include <stdlib.h>
 #include <stdint.h>
 
 int abs(int j) {

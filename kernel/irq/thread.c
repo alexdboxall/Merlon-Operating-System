@@ -33,7 +33,7 @@ static int scheduler_lock_irql;
 * Please note that overflowing the kernel stack into non-paged memory will lead to
 * an immediate and unrecoverable crash on most systems.
 */
-#define KERNEL_STACK_SIZE   BytesToPages(1024 * 8) * ARCH_PAGE_SIZE
+#define KERNEL_STACK_SIZE   BytesToPages(1024 * 4) * ARCH_PAGE_SIZE
 
 /*
 * The user stack is allocated as needed - this is the maximum size of the stack in
@@ -63,10 +63,11 @@ static int scheduler_lock_irql;
 * page is able to be used normally.
 */
 #ifdef NDEBUG
-#define NUM_CANARY_BYTES (1024 * 2)
+#define NUM_CANARY_PAGES 0
 #else
-
 #define NUM_CANARY_BYTES (1024 * 8)
+#define NUM_CANARY_PAGES BytesToPages(NUM_CANARY_BYTES)
+#define CANARY_VALUE     0x8BADF00D
 
 static void CheckCanary(size_t canary_base) {
     uint32_t* canary_ptr = (uint32_t*) canary_base;
@@ -78,12 +79,6 @@ static void CheckCanary(size_t canary_base) {
     }
 }
 
-#endif
-
-
-#define NUM_CANARY_PAGES BytesToPages(NUM_CANARY_BYTES)
-#define CANARY_VALUE     0x8BADF00D
-
 static void CreateCanary(size_t canary_base) {
     uint32_t* canary_ptr = (uint32_t*) canary_base;
 
@@ -91,6 +86,9 @@ static void CreateCanary(size_t canary_base) {
         *canary_ptr++ = CANARY_VALUE;
     }
 }
+
+#endif
+
 
 /*
 * Allocates a new page-aligned stack for a kernel thread, and returns
@@ -103,9 +101,10 @@ static void CreateKernelStacks(struct thread* thr) {
     size_t stack_bottom = MapVirt(0, 0, total_bytes, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
     size_t stack_top = stack_bottom + total_bytes;
 
+#ifndef NDEBUG
     thr->canary_position = stack_bottom;
     CreateCanary(stack_bottom);
-    
+#endif
     thr->kernel_stack_top = stack_top;
     thr->kernel_stack_size = total_bytes;
 
@@ -206,8 +205,6 @@ static void UpdateTimesliceExpiry(void) {
 }
 
 void ThreadInitialisationHandler(void) {
-    LogWriteSerial("ThreadInitialisationHandler\n");
-
     /*
      * This normally happends in the schedule code, just after the call to ArchSwitchThread,
      * but we forced ourselves to jump here instead, so we'd better do it now.
@@ -256,7 +253,11 @@ void AssertSchedulerLockHeld(void) {
     assert(IsSpinlockHeld(&scheduler_lock));
 }
 
-static void ProperTaskSwitch(struct thread* old_thread, struct thread* new_thread) {
+static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread) {
+    if (new_thread->vas != old_thread->vas) {
+        SetVas(new_thread->vas);
+    }
+
     new_thread->state = THREAD_STATE_RUNNING;
     ThreadListDeleteTop(&ready_list);
 
@@ -292,13 +293,11 @@ static void ScheduleWithLockHeld(void) {
          * (If not, we keep waiting until they have, then we can start multitasking).
          */
         if (ready_list.head != NULL) {
-            SetVas(new_thread->vas);
-
             /*
              * We need a place where it can write the "old" stack pointer to.
              */
             struct thread dummy;
-            ProperTaskSwitch(&dummy, new_thread);
+            SwitchToNewTask(&dummy, new_thread);
         }
         return;
     }
@@ -316,9 +315,6 @@ static void ScheduleWithLockHeld(void) {
 
     UpdatePriority(old_thread->timeslice_expiry < GetSystemTimer());
     UpdateThreadTimeUsed();
-    if (new_thread->vas != old_thread->vas) {
-        SetVas(new_thread->vas);
-    }
 
     /*
      * Put the old task back on the ready list, but only if it didn't block / get suspended.
@@ -326,12 +322,10 @@ static void ScheduleWithLockHeld(void) {
     if (old_thread->state == THREAD_STATE_RUNNING) {
         ThreadListInsert(&ready_list, old_thread);
     }
-    ProperTaskSwitch(old_thread, new_thread);
+    SwitchToNewTask(old_thread, new_thread);
 }
 
 void Schedule(void) {
-    // TODO: decide if a page fault handler should allow task switches or not
-
     if (GetIrql() != IRQL_STANDARD) {
         PostponeScheduleUntilStandardIrql();
         return;

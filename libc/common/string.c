@@ -120,17 +120,6 @@ char* strcat(char* restrict dst, const char* restrict src)
 	return ret;
 }
 
-char* strchr(const char* s, int c)
-{
-	do {
-		if (*s == (char) c) {
-			return (char*) s;
-		}
-	} while (*s++);
-
-	return NULL;
-}
-
 int strcmp(const char* s1, const char* s2)
 {
 	while ((*s1) && (*s1 == *s2)) {
@@ -150,6 +139,64 @@ char* strcpy(char* restrict dst, const char* restrict src)
 	}
 
 	return ret;
+}
+
+size_t strlen(const char* str)
+{
+	size_t len = 0;
+	while (str[len]) {
+		++len;
+	}
+	return len;
+}
+
+char* strncpy(char* restrict dst, const char* restrict src, size_t n)
+{
+	char* ret = dst;
+
+	while (n--) {
+		if (*src) {
+			*dst++ = *src++;
+		} else {
+			*dst++ = 0;
+		}
+	}
+
+	return ret;
+}
+
+char* strdup(const char* str)
+{
+	char* copy = (char*) malloc(strlen(str) + 1);
+	strcpy(copy, str);
+	return copy;
+}
+
+int strncmp(const char* s1, const char* s2, size_t n)
+{
+	while (n && *s1 && (*s1 == *s2)) {
+		++s1;
+		++s2;
+		--n;
+	}
+	if (n == 0) {
+		return 0;
+	} else {
+		return (*(unsigned char*) s1 - *(unsigned char*) s2);
+	}
+}
+
+#ifndef COMPILE_KERNEL
+
+char* strchr(const char* s, int c)
+{
+	do {
+		if (*s == (char) c) {
+			return (char*) s;
+		}
+	} while (*s++);
+
+	return NULL;
 }
 
 char* strerror(int err)
@@ -213,51 +260,6 @@ char* strerror(int err)
         return "Invalid seek";
 	default:
 		return "Unknown error";
-	}
-}
-
-size_t strlen(const char* str)
-{
-	size_t len = 0;
-	while (str[len]) {
-		++len;
-	}
-	return len;
-}
-
-char* strncpy(char* restrict dst, const char* restrict src, size_t n)
-{
-	char* ret = dst;
-
-	while (n--) {
-		if (*src) {
-			*dst++ = *src++;
-		} else {
-			*dst++ = 0;
-		}
-	}
-
-	return ret;
-}
-
-char* strdup(const char* str)
-{
-	char* copy = (char*) malloc(strlen(str) + 1);
-	strcpy(copy, str);
-	return copy;
-}
-
-int strncmp(const char* s1, const char* s2, size_t n)
-{
-	while (n && *s1 && (*s1 == *s2)) {
-		++s1;
-		++s2;
-		--n;
-	}
-	if (n == 0) {
-		return 0;
-	} else {
-		return (*(unsigned char*) s1 - *(unsigned char*) s2);
 	}
 }
 
@@ -435,3 +437,5 @@ char* strtok(char* restrict s, const char* restrict delim) {
 	saved_pointer = NULL;
 	return token;
 }
+
+#endif
