@@ -5,6 +5,30 @@
 #include <assert.h>
 #include <spinlock.h>
 
+// TODO: move to header
+#define SCHEDULE_POLICY_FIXED             0
+#define SCHEUDLE_POLICY_USER_HIGHER       1
+#define SCHEDULE_POLICY_USER_NORMAL       2
+#define SCHEDULE_POLICY_USER_LOWER        3
+
+// TODO: add schedule_policy to struct thread.
+
+static void uint64_t CalculateEndTimesliceTime(struct thread* thr) {
+    return (20 + thr->priority) * 1000000ULL;
+}
+
+static void UpdatePriority(struct thread* thr, bool yielded) {
+    int policy = thr->schedule_policy;
+    if (policy != SCHEDULE_POLICY_FIXED) {
+        int min_val = policy == SCHEUDLE_POLICY_USER_HIGHER ? 50 : (policy == SCHEDULE_POLICY_USER_NORMAL ? 100 : 150);
+        int max_val = min_val + 100;
+        int new_val = thr->priority + (yielded ? -1 : 1);
+        if (new_val >= min_val && new_val <= max_val) {
+            thr->priority = new_val;
+        }
+    }
+}
+
 static struct spinlock scheduler_lock;
 
 /*
@@ -29,6 +53,7 @@ void AssertSchedulerLockHeld(void) {
 void ScheduleWithLockHeld(void) {
     EXACT_IRQL(IRQL_SCHEDULER);
     AssertSchedulerLockHeld();
+
     
 }
 
