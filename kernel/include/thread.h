@@ -22,6 +22,7 @@ struct thread {
     uint64_t time_used;
     char* name;
     int priority;
+    int schedule_policy;
     size_t canary_position;
     
     /*
