@@ -5,15 +5,23 @@
 #include <assert.h>
 #include <spinlock.h>
 
+
 // TODO: move to header
 #define SCHEDULE_POLICY_FIXED             0
 #define SCHEUDLE_POLICY_USER_HIGHER       1
 #define SCHEDULE_POLICY_USER_NORMAL       2
 #define SCHEDULE_POLICY_USER_LOWER        3
 
+#define FIXED_PRIORITY_KERNEL_HIGH        0
+#define FIXED_PRIORITY_KERNEL_NORMAL      30
+#define FIXED_PRIORITY_IDLE               255
+
 // TODO: add schedule_policy to struct thread.
 
 static void uint64_t CalculateEndTimesliceTime(struct thread* thr) {
+    if (thr->priority == 255) {
+        return 0;
+    }
     return (20 + thr->priority) * 1000000ULL;
 }
 
