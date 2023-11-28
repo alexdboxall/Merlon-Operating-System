@@ -100,35 +100,24 @@ void LowerIrql(int target_level) {
 
         if (next.priority >= target_level) {
             current_level = next.priority;
-            LogWriteSerial("D\n");
-            GetCpu()->irql = current_level;
-            LogWriteSerial("E\n");
-            ArchSetIrql(current_level);
-            LogWriteSerial("F\n");
 
             /*
              * Must Pop() before we call the handler (otherwise if the handler does a raise/lower, it will
              * retrigger itself and cause a recursion loop), and must also get data off the queue before we Pop().
              */
             struct irql_deferment* deferred_call = (struct irql_deferment*) next.data;
-            LogWriteSerial("G\n");
             void* context = deferred_call->context;
-            LogWriteSerial("H\n");
             void (*handler)(void*) = deferred_call->handler;
             if (handler == NULL) {
+                GetCpu()->irql = current_level;
+                ArchSetIrql(current_level);
                 continue;
             }
-            LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): B %d\n", PriorityQueueGetUsedSize(deferred_functions));
-
-            // TODO: need to ensure that if this causes IRQL to change and run handlers, that it doesn't try to run this handler.
-            //       the problem there of course, is that this is how we remove a handler. maybe set the handler in the deferred
-            //       call object to NULL, and then when the nested version runs, it detects the handler is null and doesn't run
-            //       it??
-            //
-            // BUT HANG ON: PriorityQueuePop shouldn't access heap memory anyway! (except for the initial allocation!)
-            deferred_call->handler = NULL;
+            LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): B %d. handler = 0x%X\n", PriorityQueueGetUsedSize(deferred_functions), handler);
             PriorityQueuePop(deferred_functions);
             LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): C %d\n", PriorityQueueGetUsedSize(deferred_functions));
+            GetCpu()->irql = current_level;
+            ArchSetIrql(current_level);
             handler(context);
 
         } else {

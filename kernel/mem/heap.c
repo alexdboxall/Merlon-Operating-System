@@ -13,6 +13,11 @@
 #define BOOTSTRAP_AREA_SIZE (1024 * 16)
 #define MAX_EMERGENCY_BLOCKS 16
 
+/*
+ * For requests larger than this, we'll issue a warning to say that MapVirt is a much better choice.
+ */
+#define WARNING_LARGE_REQUEST_SIZE (1024 * 3 + 512)
+
 struct emergency_block {
     uint8_t* address;
     size_t size;
@@ -34,22 +39,32 @@ static struct emergency_block emergency_blocks[MAX_EMERGENCY_BLOCKS] = {
 static struct spinlock heap_lock;
 
 static void* AllocateFromEmergencyBlocks(size_t size) {
+    int smallest_block = -1;
+
     for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
         if (emergency_blocks[i].valid && emergency_blocks[i].size >= size) {
-            void* address = emergency_blocks[i].address;
-
-            emergency_blocks[i].address += size;
-            emergency_blocks[i].size -= size;
-
-            if (emergency_blocks[i].size < ARCH_PAGE_SIZE) {
-                emergency_blocks[i].valid = false;
+            if (smallest_block == -1 || emergency_blocks[i].size < emergency_blocks[smallest_block].size) {
+                smallest_block = i;
             }
-
-            return address;
         }
     }
 
-    Panic(PANIC_OUT_OF_BOOTSTRAP_HEAP);
+    if (smallest_block == -1) {
+        Panic(PANIC_OUT_OF_BOOTSTRAP_HEAP);
+    }
+
+    void* address = emergency_blocks[smallest_block].address;
+
+    LogWriteSerial("Grabbing from emo block of size 0x%X, for request 0x%X\n", emergency_blocks[smallest_block].size, size);
+
+    emergency_blocks[smallest_block].address += size;
+    emergency_blocks[smallest_block].size -= size;
+
+    if (emergency_blocks[smallest_block].size < ARCH_PAGE_SIZE) {
+        emergency_blocks[smallest_block].valid = false;
+    }
+
+    return address;
 }
 
 static void AddBlockToBackupHeap(size_t size) {
@@ -103,7 +118,7 @@ static void RestoreEmergencyPages(void* context) {
 
     LogWriteSerial("backup heap: largest is 0x%X, total is 0x%X\n", largest_block, total_size);
 
-    while (largest_block < BOOTSTRAP_AREA_SIZE || total_size < BOOTSTRAP_AREA_SIZE * 2) {
+    while (largest_block < BOOTSTRAP_AREA_SIZE / 2 || total_size < BOOTSTRAP_AREA_SIZE) {
         AddBlockToBackupHeap(BOOTSTRAP_AREA_SIZE);
         total_size += BOOTSTRAP_AREA_SIZE;
         largest_block = BOOTSTRAP_AREA_SIZE;
@@ -171,7 +186,7 @@ int DbgGetOutstandingHeapAllocations(void) {
  * NUM_EXPONENTIAL_FREE_LISTS = how many of RoundUpPower2(MINIMUM_REQUEST_SIZE_INTERNAL + (ALIGNMENT * NUM_INCREMENTAL_FREE_LISTS)) << N
  * The last size should be larger than the max allocation size, as otherwise we could allocate larger than we have in the final list.
  */
-#define TOTAL_NUM_FREE_LISTS 36
+#define TOTAL_NUM_FREE_LISTS 35
 
 /**
  * An array which holds the minimum allocation sizes that each free list can hold.
@@ -180,39 +195,38 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     16,
     24,
     32,
+    40,
     48,
+    56,
     64,
+    72,
+    80,                 
+    88,                 // 10
     96,
+    104,
+    112,
+    120,
     128,
+    160,
     192,
-    256,
-    384,                // 10
+    224,
+    256,                
+    320,                // 20
+    384,
+    448,
     512,
     768,
     1024,
     1536,
     2048,
     1024 * 3,
-    1024 * 4,
-    1024 * 6,
-    1024 * 8,
-    1024 * 12,          // 20
-    1024 * 16,
-    1024 * 24,
-    1024 * 32,
-    1024 * 48,
-    1024 * 64,
-    1024 * 96,
-    1024 * 128,
-    1024 * 256,
-    1024 * 512,
-    1024 * 1024,
-    1024 * 1024 * 2,        // 30
-    1024 * 1024 * 4,
-    1024 * 1024 * 8,        // 32
-    1024 * 1024 * 16,       
-    1024 * 1024 * 64,
-    1024 * 1024 * 256,       // 36
+    1024 * 4,           
+    1024 * 8,           // 30
+    1024 * 16,          // 31
+    1024 * 32,          // 32
+    1024 * 64,          // 33
+    1024 * 128,         // 34
+    1024 * 256,         // 35
 };
 
 /**
@@ -342,6 +356,7 @@ static struct block** GetHeapForBlock(struct block* block) {
     return GetHeap(IsOnSwappableHeap(block));
 }
 
+
 /**
  * Given a block, returns its total size, including metadata. This takes into account
  * the flags on the size field and removes them from the return value. 
@@ -354,6 +369,35 @@ static size_t GetBlockSize(struct block* block) {
      */
     assert(*(((size_t*) block) + (size / sizeof(size_t)) - 1) == size);
     return size;
+}
+
+void DbgPrintListStats(void) {
+    for (int i = 0; i < TOTAL_NUM_FREE_LISTS; ++i) {
+        struct block* unswap = GetHeap(false)[i];
+        struct block* swap = GetHeap(true)[i];
+
+        size_t unswap_blocks = 0;
+        size_t unswap_size = 0;
+        size_t swap_blocks = 0;
+        size_t swap_size = 0;
+
+        while (unswap) {
+            ++unswap_blocks;
+            unswap_size += GetBlockSize(unswap);
+            unswap = unswap->next;
+        }
+
+        while (swap) {
+            ++swap_blocks;
+            swap_size += GetBlockSize(swap);
+            swap = swap->next;
+        }
+
+        if ((unswap_blocks | swap_blocks) != 0) {
+            LogWriteSerial("Bucket %d [0x%X]: unswappable %d / 0x%X. swappable %d / 0x%X\n", i, free_list_block_sizes[i], unswap_blocks, unswap_size, swap_blocks, swap_size);
+        }
+    }
+    LogWriteSerial("\n");
 }
 
 /**
@@ -466,6 +510,7 @@ static void RemoveBlock(int free_list_index, struct block* block) {
         block->next->prev = block->prev;
     }
 }
+
 
 /*static void DbgCheckNeighbours(struct block* block) {
     size_t size = GetBlockSize(block);
@@ -703,6 +748,10 @@ void* AllocHeapEx(size_t size, int flags) {
         return NULL;
     }
 
+    if (size >= WARNING_LARGE_REQUEST_SIZE) {
+        LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should seriously consider using MapVirt.\n", size);
+    }
+
     size = RoundUpSize(size);
 
     if (flags & HEAP_FORCE_PAGING) {
@@ -711,7 +760,6 @@ void* AllocHeapEx(size_t size, int flags) {
 
     int irql = AcquireSpinlock(&heap_lock, true);
     struct block* block = FindBlock(size, flags);
-    //DbgCheckNeighbours(block);
 
 #ifndef NDEBUG
     outstanding_allocations++;
@@ -725,6 +773,8 @@ void* AllocHeapEx(size_t size, int flags) {
     if (flags & HEAP_ZERO) {
         memset(ptr, 0, size);
     }
+
+    DbgPrintListStats();
 
     return ptr;
 }

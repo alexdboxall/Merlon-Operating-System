@@ -115,7 +115,7 @@ void LogWriteSerial(const char* format, ...)
 void LogDeveloperWarning(const char* format, ...) {
 	va_list list;
 	va_start(list, format);
-	LogWriteSerial(">>> KERNEL DEVELOPER WARNING:\n    ");
+	LogWriteSerial("\n!!!!!!!!!!!!!!!!!!!!\n\n>>> KERNEL DEVELOPER WARNING:\n    ");
 	LogWriteSerialVa(format, list, false);
 	va_end(list);
 }
