@@ -16,7 +16,10 @@ extern void InitDbgScreen(void);
 void MyTestThread(void* str) {
     
     while (1) {
-        DbgScreenPrintf((const char*) str);
+        uint64_t current_time = GetThread()->time_used;
+        uint64_t total_time = GetSystemTimer();
+        int cpu_percent = current_time * 100 / total_time;
+        DbgScreenPrintf("%s. %d%%\n", (const char*) str, cpu_percent);
         Schedule();
     }
 }

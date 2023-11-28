@@ -266,9 +266,7 @@ static void ProperTaskSwitch(struct thread* old_thread, struct thread* new_threa
      * calls GetCpu(), we'll be in a bit of strife.
      */
     struct cpu* cpu = GetCpu();
-    LogWriteSerial("RAISING...\n");
     AcquireSpinlock(&innermost_lock, true);
-    LogWriteSerial("RAISED...\n");
     cpu->current_thread = new_thread;
     cpu->current_vas = new_thread->vas;
     ArchSwitchThread(old_thread, new_thread);
@@ -317,7 +315,7 @@ static void ScheduleWithLockHeld(void) {
 #endif
 
     UpdatePriority(old_thread->timeslice_expiry < GetSystemTimer());
-    LogWriteSerial("updated priority...\n");
+    UpdateThreadTimeUsed();
     if (new_thread->vas != old_thread->vas) {
         SetVas(new_thread->vas);
     }
@@ -328,10 +326,7 @@ static void ScheduleWithLockHeld(void) {
     if (old_thread->state == THREAD_STATE_RUNNING) {
         ThreadListInsert(&ready_list, old_thread);
     }
-    LogWriteSerial("about to c\n");
     ProperTaskSwitch(old_thread, new_thread);
-    LogWriteSerial("done c\n");
-
 }
 
 void Schedule(void) {
