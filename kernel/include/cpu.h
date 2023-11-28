@@ -2,6 +2,7 @@
 
 #include <common.h>
 #include <arch.h>
+#include <spinlock.h>
 
 struct vas;
 struct thread;

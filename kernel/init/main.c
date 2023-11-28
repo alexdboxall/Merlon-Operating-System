@@ -8,9 +8,18 @@
 #include <timer.h>
 #include <irql.h>
 #include <schedule.h>
+#include <thread.h>
 #include <panic.h>
 
 extern void InitDbgScreen(void);
+
+void MyTestThread(void* str) {
+    
+    while (1) {
+        DbgScreenPrintf((const char*) str);
+        Schedule();
+    }
+}
 
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
@@ -45,7 +54,10 @@ void KernelMain(void) {
     InitDbgScreen();
     DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     
+    CreateThread(MyTestThread, "1", GetVas(), "test thread!");
+    CreateThread(MyTestThread, "2", GetVas(), "test thread!");
+
     while (1) {
-        ;
+        Schedule();
     }
 }

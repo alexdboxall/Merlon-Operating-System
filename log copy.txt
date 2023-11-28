@@ -1,0 +1,2596 @@
+KernelMain: kernel is initialising...
+AllocHeapEx: 24, 0x1
+AAA. 24
+BBB. 24
+ABC. 24
+SST W
+SST X
+SST Y
+setting a left fence @ 0xC010B000
+setting a right fence @ 0xC010BFF0
+GetInsertionIndex 4056
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+AllocateBlock. 24
+block_size. 4064
+123. a 
+123. b 
+SST E 0xFE0 0x20 0xFC0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0xFC0
+GetInsertionIndex 4024
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 1536, 0x1
+AAA. 1536
+BBB. 1536
+AllocateBlock. 1536
+block_size. 4032
+123. a 
+123. b 
+SST E 0xFC0 0x608 0x9B8
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x9B8
+GetInsertionIndex 2480
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 2192, 0x3
+AAA. 2192
+BBB. 2192
+ABC. 2192
+SST W
+SST X
+SST Y
+setting a left fence @ 0xC010C000
+setting a right fence @ 0xC010CFF0
+GetInsertionIndex 4056
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+AllocateBlock. 2192
+block_size. 4064
+123. a 
+123. b 
+SST E 0xFE0 0x898 0x748
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x748
+GetInsertionIndex 1856
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 104, 0x1
+AAA. 104
+BBB. 104
+AllocateBlock. 104
+block_size. 1864
+123. a 
+123. b 
+SST E 0x748 0x70 0x6D8
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6D8
+GetInsertionIndex 1744
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1752
+123. a 
+123. b 
+SST E 0x6D8 0x18 0x6C0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6C0
+GetInsertionIndex 1720
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 8, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1728
+123. a 
+123. b 
+SST E 0x6C0 0x18 0x6A8
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6A8
+GetInsertionIndex 1696
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 16, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1704
+123. a 
+123. b 
+SST E 0x6A8 0x18 0x690
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x690
+GetInsertionIndex 1672
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1680
+123. a 
+123. b 
+SST E 0x690 0x20 0x670
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x670
+GetInsertionIndex 1640
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+cHANDLERS STARTING.
+HANDLERS DONE.
+cc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1648
+123. a 
+123. b 
+SST E 0x670 0x18 0x658
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x658
+GetInsertionIndex 1616
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+x86MapPage: v 0xD0000000 -> p 0x237000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 2192, 0x3
+AAA. 2192
+BBB. 2192
+ABC. 2192
+SST W
+SST X
+SST Y
+setting a left fence @ 0xC010D000
+setting a right fence @ 0xC010DFF0
+GetInsertionIndex 4056
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+AllocateBlock. 2192
+block_size. 4064
+123. a 
+123. b 
+SST E 0xFE0 0x898 0x748
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x748
+GetInsertionIndex 1856
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+PriorityQueueGetUsedSize(deferred_functions): A 1
+D
+E
+HANDLERS STARTING.
+PriorityQueueGetUsedSize(deferred_functions): A 1
+D
+E
+F
+G
+H
+PriorityQueueGetUsedSize(deferred_functions): B 1
+PriorityQueueGetUsedSize(deferred_functions): C 0
+RestoreEmergencyPages...
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1864
+123. a 
+123. b 
+SST E 0x748 0x20 0x728
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x728
+GetInsertionIndex 1824
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1832
+123. a 
+123. b 
+SST E 0x728 0x18 0x710
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x710
+GetInsertionIndex 1800
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1808
+123. a 
+123. b 
+SST E 0x710 0x18 0x6F8
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6F8
+GetInsertionIndex 1776
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case C
+prev block size: 1624 (block @ 0xC010C010)
+GetInsertionIndex 1616
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+SST B
+add block, of size 0x670
+GetInsertionIndex 1640
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+x86MapPage: v 0xD0001000 -> p 0x12F000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1648
+123. a 
+123. b 
+SST E 0x670 0x20 0x650
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x650
+GetInsertionIndex 1608
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1616
+123. a 
+123. b 
+SST E 0x650 0x18 0x638
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x638
+GetInsertionIndex 1584
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+cHANDLERS STARTING.
+HANDLERS DONE.
+cc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1592
+123. a 
+123. b 
+SST E 0x638 0x18 0x620
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x620
+GetInsertionIndex 1560
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case C
+prev block size: 1784 (block @ 0xC010D010)
+GetInsertionIndex 1776
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+SST B
+add block, of size 0x710
+GetInsertionIndex 1800
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+x86MapPage: v 0xD0002000 -> p 0x12E000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1808
+123. a 
+123. b 
+SST E 0x710 0x20 0x6F0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6F0
+GetInsertionIndex 1768
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1776
+123. a 
+123. b 
+SST E 0x6F0 0x18 0x6D8
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6D8
+GetInsertionIndex 1744
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1752
+123. a 
+123. b 
+SST E 0x6D8 0x18 0x6C0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x6C0
+GetInsertionIndex 1720
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case C
+prev block size: 1568 (block @ 0xC010C010)
+GetInsertionIndex 1560
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+SST B
+add block, of size 0x638
+GetInsertionIndex 1584
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+fHANDLERS STARTING.
+HANDLERS DONE.
+ree done!!!
+x86MapPage: v 0xD0003000 -> p 0x12D000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1592
+123. a 
+123. b 
+SST E 0x638 0x20 0x618
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x618
+GetInsertionIndex 1552
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1560
+123. a 
+123. b 
+SST E 0x618 0x18 0x600
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x600
+GetInsertionIndex 1528
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1536
+123. a 
+123. b 
+SST E 0x600 0x18 0x5E8
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x5E8
+GetInsertionIndex 1504
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case C
+prev block size: 1728 (block @ 0xC010D010)
+GetInsertionIndex 1720
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+SST B
+add block, of size 0x6D8
+GetInsertionIndex 1744
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1512
+123. a 
+123. b 
+SST E 0x5E8 0x18 0x5D0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x5D0
+GetInsertionIndex 1480
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+x86MapPage: v 0xD0004000 -> p 0x12C000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+added emergency block at 0xD0001000 to heap
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1488
+123. a 
+123. b 
+SST E 0x5D0 0x20 0x5B0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x5B0
+GetInsertionIndex 1448
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+cHANDLERS STARTING.
+HANDLERS DONE.
+cc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1456
+123. a 
+123. b 
+SST E 0x5B0 0x18 0x598
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x598
+GetInsertionIndex 1424
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+x86MapPage: v 0xD0005000 -> p 0x12B000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1432
+123. a 
+123. b 
+SST E 0x598 0x20 0x578
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x578
+GetInsertionIndex 1392
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1400
+123. a 
+123. b 
+SST E 0x578 0x18 0x560
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x560
+GetInsertionIndex 1368
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+fHANDLERS STARTING.
+HANDLERS DONE.
+ree done!!!
+x86MapPage: v 0xD0006000 -> p 0x12A000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1376
+123. a 
+123. b 
+SST E 0x560 0x20 0x540
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x540
+GetInsertionIndex 1336
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1344
+123. a 
+123. b 
+SST E 0x540 0x18 0x528
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x528
+GetInsertionIndex 1312
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+fHANDLERS STARTING.
+HANDLERS DONE.
+ree done!!!
+x86MapPage: v 0xD0007000 -> p 0x129000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 24, 0x3
+AAA. 24
+BBB. 24
+AllocateBlock. 24
+block_size. 1320
+123. a 
+123. b 
+SST E 0x528 0x20 0x508
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x508
+GetInsertionIndex 1280
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+HANDLERS STARTING.
+HANDLERS DONE.
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 1288
+123. a 
+123. b 
+SST E 0x508 0x18 0x4F0
+123. c 
+SST F
+123. d 
+123. e 
+123. f 
+123. g
+add block, of size 0x4F0
+GetInsertionIndex 1256
+A.
+B.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+C.
+XB.
+case A
+123. h
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+AllocHeapEx: 12, 0x1
+AAA. 16
+BBB. 16
+AllocateBlock. 16
+block_size. 24
+444. a 0x18 0x18
+444. 1
+SST D
+444. 2
+444. 3
+we've got a block!
+HANDLERS STARTING.
+HANDLERS DONE.
+ccc
+bbb
+freeing?!
+block size is 0x18
+add block, of size 0x18
+GetInsertionIndex 16
+A.
+XA.
+case A
+free alomst done
+HANDLERS STARTING.
+HANDLERS DONE.
+free done!!!
+x86MapPage: v 0xD0008000 -> p 0x3FF000. flags 1.
+HANDLERS STARTING.
+HANDLERS DONE.
+added emergency block at 0xD0005000 to heap
+HANDLERS DONE.
+F
+G
+H
+PriorityQueueGetUsedSize(deferred_functions): B 0
+PANIC 15 pop called on empty
+
+
+ *** KERNEL PANIC ***
+
+0xF - pop called on empty

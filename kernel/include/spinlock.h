@@ -2,9 +2,11 @@
 
 #include <common.h>
 
+struct thread;
+
 struct spinlock {
     size_t lock;
-    void* owner;
+    struct thread* owner;
     char name[16];
     int irql; 
 };

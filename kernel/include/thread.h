@@ -4,17 +4,17 @@
 #define THREAD_STATE_READY      1
 #define THREAD_STATE_BLOCKED    2
 
-#define THREAD_PRIORITY_HIGH    0
-#define THREAD_PRIORITY_NORMAL  127
-#define THREAD_PRIORITY_LOW     254
-#define THREAD_PRIORITY_IDLE    255
-
 struct thread {
-    struct vas* vas;
-    size_t stack_pointer;
+    /*
+     * These first two values must be in this order.
+     */
     size_t kernel_stack_top;
+    size_t stack_pointer;
+
+    struct vas* vas;
     size_t kernel_stack_size;
     void (*initial_address)(void*);
+    struct thread* next;
 
     int thread_id;
     int state;
@@ -37,3 +37,4 @@ struct thread* GetThread(void);
 void BlockThread(int reason);
 void UnblockThread(void);
 void TerminateThread(void);
+struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);

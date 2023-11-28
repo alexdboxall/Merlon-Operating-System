@@ -49,17 +49,6 @@ struct cpu;
 
 struct arch_driver_t;
 
-/*
-* Needs to setup any CPU specific structures, set up virtual memory for the system
-* and get the current_cpu structure sorted out.
-*/
-void ArchInitialiseBootstrapCpu(void); 
-
-/*
-* Called once after all CPUs are initialised.
-*/
-void ArchCompletedCpuInitialisation(void);
-
 void ArchInitDevicesNoFs(void);
 void ArchInitDevicesWithFs(void);
 
@@ -100,6 +89,12 @@ void ArchAddMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUnmap(struct vas* vas, struct vas_entry* entry);
 void ArchSetVas(struct vas* vas);
+
+
+
+void ArchSwitchThread(struct thread* old, struct thread* new);
+size_t ArchPrepareStack(size_t addr);
+
 
 /*
  * Used only if the AVL tree is insufficient, e.g. for deallocating part of the kernel region to, e.g.

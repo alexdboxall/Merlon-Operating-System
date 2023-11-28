@@ -35,22 +35,26 @@ void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* contex
     int irql = RaiseIrql(required_irql);
     ArchSendEoi(irq_num);     // must wait until we have raised
 
-    struct linked_list_node* iter = LinkedListGetFirstNode(irq_table[irq_num]);
-    while (iter != NULL) {
-        irq_handler_t handler = (irq_handler_t)(size_t) LinkedListGetDataFromNode(iter);
-        if (handler != NULL) {
-            int result = handler(context);
+    if (irq_table[irq_num] != NULL) {
+        struct linked_list_node* iter = LinkedListGetFirstNode(irq_table[irq_num]);
+        while (iter != NULL) {
+            irq_handler_t handler = (irq_handler_t)(size_t) LinkedListGetDataFromNode(iter);
+            if (handler != NULL) {
+                int result = handler(context);
 
-            /*
-             * Interrupt handlers return 0 if they could handle the IRQ (i.e. stop trying to handle it).
-             * Non-zero means 'leave this one for someone else'.
-             */
-            if (result == 0) {
-                break;
+                /*
+                * Interrupt handlers return 0 if they could handle the IRQ (i.e. stop trying to handle it).
+                * Non-zero means 'leave this one for someone else'.
+                */
+                if (result == 0) {
+                    break;
+                }
             }
-        }
 
-        iter = LinkedListGetNextNode(iter);
+            iter = LinkedListGetNextNode(iter);
+        }
+    } else {
+        DbgScreenPrintf("IRQ %d, ", irq_num);
     }
 
     LowerIrql(irql);

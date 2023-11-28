@@ -94,6 +94,8 @@ static void RestoreEmergencyPages(void* context) {
         }
     }
 
+    LogWriteSerial("backup heap: largest is 0x%X, total is 0x%X\n", largest_block, total_size);
+
     while (largest_block < BOOTSTRAP_AREA_SIZE || total_size < BOOTSTRAP_AREA_SIZE * 2) {
         AddBlockToBackupHeap(BOOTSTRAP_AREA_SIZE);
         total_size += BOOTSTRAP_AREA_SIZE;

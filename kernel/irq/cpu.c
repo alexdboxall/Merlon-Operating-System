@@ -12,6 +12,8 @@ static void InitCpuTableEntry(int index) {
     cpu_table[index].cpu_number = index;
     cpu_table[index].platform_specific = AllocHeapZero(sizeof(platform_cpu_data_t));
     cpu_table[index].irql = IRQL_STANDARD;
+    cpu_table[index].current_vas = NULL;
+    cpu_table[index].current_thread = NULL;
 }
 
 void InitBootstrapCpu(void) {

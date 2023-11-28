@@ -12,7 +12,6 @@
 #define FIXED_PRIORITY_IDLE               255
 
 void Schedule(void);
-void ScheduleWithLockHeld(void);
 void LockScheduler(void);
 void UnlockScheduler(void);
 void InitScheduler(void);

@@ -8,8 +8,23 @@
 #include <timer.h>
 #include <string.h>
 #include <irql.h>
+#include <log.h>
 #include <virtual.h>
 #include <panic.h>
+#include <common.h>
+#include <threadlist.h>
+#include <schedule.h>
+
+static struct thread_list ready_list;
+static struct spinlock scheduler_lock;
+static struct spinlock innermost_lock;
+
+/*
+ * Because these IRQL jumps need to persist across switches, we can't just chuck
+ * it on the stack like normal. No need for nesting / a stack to store these, as the
+ * scheduler lock cannot be nested.
+ */
+static int scheduler_lock_irql;
 
 /*
 * Local fixed sized arrays and variables need to fit on the kernel stack.
@@ -48,12 +63,25 @@
 * page is able to be used normally.
 */
 #ifdef NDEBUG
-#define NUM_CANARY_BYTES (1024 * 8)
+#define NUM_CANARY_BYTES (1024 * 2)
 #else
-#define NUM_CANARY_BYTES 2048
-#endif
-#define NUM_CANARY_PAGES 1
 
+#define NUM_CANARY_BYTES (1024 * 8)
+
+static void CheckCanary(size_t canary_base) {
+    uint32_t* canary_ptr = (uint32_t*) canary_base;
+
+    for (size_t i = 0; i < NUM_CANARY_BYTES / sizeof(uint32_t); ++i) {
+        if (*canary_ptr++ != CANARY_VALUE) {
+            Panic(PANIC_CANARY_DIED);
+        }
+    }
+}
+
+#endif
+
+
+#define NUM_CANARY_PAGES BytesToPages(NUM_CANARY_BYTES)
 #define CANARY_VALUE     0x8BADF00D
 
 static void CreateCanary(size_t canary_base) {
@@ -64,22 +92,12 @@ static void CreateCanary(size_t canary_base) {
     }
 }
 
-void CheckCanary(size_t canary_base) {
-    uint32_t* canary_ptr = (uint32_t*) canary_base;
-
-    for (size_t i = 0; i < NUM_CANARY_BYTES / sizeof(uint32_t); ++i) {
-        if (*canary_ptr++ != CANARY_VALUE) {
-            Panic(PANIC_CANARY_DIED);
-        }
-    }
-}
-
 /*
 * Allocates a new page-aligned stack for a kernel thread, and returns
 * the address of either the top of the stack (if it grows downward),
 * or the bottom (if it grows upward).
 */
-static void CreateKernelStack(struct thread* thr) {
+static void CreateKernelStacks(struct thread* thr) {
     int total_bytes = (BytesToPages(KERNEL_STACK_SIZE) + NUM_CANARY_PAGES) * ARCH_PAGE_SIZE;
     
     size_t stack_bottom = MapVirt(0, 0, total_bytes, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
@@ -91,6 +109,7 @@ static void CreateKernelStack(struct thread* thr) {
     thr->kernel_stack_top = stack_top;
     thr->kernel_stack_size = total_bytes;
 
+    thr->stack_pointer = ArchPrepareStack(thr->kernel_stack_top);
 }
 
 /*static*/ size_t CreateUserStack(int size) {
@@ -119,7 +138,7 @@ void BlockThread(int reason) {
     assert(reason != THREAD_STATE_READY && reason != THREAD_STATE_RUNNING);
     assert(GetCpu()->current_thread->state == THREAD_STATE_RUNNING);
     GetCpu()->current_thread->state = reason;
-    ScheduleWithLockHeld();
+    PostponeScheduleUntilStandardIrql();
 }
 
 void UnblockThread(void) { 
@@ -163,16 +182,16 @@ struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct va
     thr->state = THREAD_STATE_READY;
     thr->time_used = 0;
     thr->name = strdup(name);
-    thr->priority = THREAD_PRIORITY_NORMAL;
+    thr->priority = FIXED_PRIORITY_KERNEL_NORMAL;
+    thr->schedule_policy = SCHEDULE_POLICY_FIXED;
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
     thr->vas = vas;
     thr->thread_id = GetNextThreadId();
+    CreateKernelStacks(thr);
 
-    CreateKernelStack(thr);
-
-    // thr->stack_pointer = ArchPrepareStack(thr);      // arch_prepare_stack(thr->kernel_stack_top);
-
-    // TODO: add to the ready list
+    LockScheduler();
+    ThreadListInsert(&ready_list, thr);
+    UnlockScheduler();
 
     return thr;
 }
@@ -181,12 +200,27 @@ struct thread* GetThread(void) {
     return GetCpu()->current_thread;
 }
 
+static void UpdateTimesliceExpiry(void) {
+    struct thread* thr = GetThread();
+    thr->timeslice_expiry = GetSystemTimer() + (thr->priority == 255 ? 0 : (20 + thr->priority) * 1000000ULL);
+}
+
 void ThreadInitialisationHandler(void) {
+    LogWriteSerial("ThreadInitialisationHandler\n");
+
+    /*
+     * This normally happends in the schedule code, just after the call to ArchSwitchThread,
+     * but we forced ourselves to jump here instead, so we'd better do it now.
+     */
+    ReleaseSpinlockAndLower(&innermost_lock, IRQL_SCHEDULER);
+    UpdateTimesliceExpiry();
+
     /*
     * To get here, someone must have called thread_schedule(), and therefore
     * the lock must have been held.
     */
     UnlockScheduler();
+
 
     /* Anything else you might want to do should be done here... */
 
@@ -195,4 +229,126 @@ void ThreadInitialisationHandler(void) {
 
     /* The thread has returned, so just terminate it. */
     TerminateThread();
+}
+
+static void UpdatePriority(bool yielded) {
+    struct thread* thr = GetThread();
+    int policy = thr->schedule_policy;
+    if (policy != SCHEDULE_POLICY_FIXED) {
+        int min_val = policy == SCHEUDLE_POLICY_USER_HIGHER ? 50 : (policy == SCHEDULE_POLICY_USER_NORMAL ? 100 : 150);
+        int max_val = min_val + 100;
+        int new_val = thr->priority + (yielded ? -1 : 1);
+        if (new_val >= min_val && new_val <= max_val) {
+            thr->priority = new_val;
+        }
+    }
+}
+
+void LockScheduler(void) {
+    scheduler_lock_irql = AcquireSpinlock(&scheduler_lock, true);
+}
+
+void UnlockScheduler(void) {
+    ReleaseSpinlockAndLower(&scheduler_lock, scheduler_lock_irql);
+}
+
+void AssertSchedulerLockHeld(void) {
+    assert(IsSpinlockHeld(&scheduler_lock));
+}
+
+static void ProperTaskSwitch(struct thread* old_thread, struct thread* new_thread) {
+    new_thread->state = THREAD_STATE_RUNNING;
+    ThreadListDeleteTop(&ready_list);
+
+    /*
+     * No IRQs allowed while this happens, as we need to protect the CPU structure.
+     * Only our CPU has access to it (as it is per-CPU), but if we IRQ and then someone
+     * calls GetCpu(), we'll be in a bit of strife.
+     */
+    struct cpu* cpu = GetCpu();
+    LogWriteSerial("RAISING...\n");
+    AcquireSpinlock(&innermost_lock, true);
+    LogWriteSerial("RAISED...\n");
+    cpu->current_thread = new_thread;
+    cpu->current_vas = new_thread->vas;
+    ArchSwitchThread(old_thread, new_thread);
+
+    /*
+     * This code doesn't get called on the first time a thread gets run!! It jumps straight from
+     * ArchSwitchThread to ThreadInitialisationHandler!
+     */
+    ReleaseSpinlockAndLower(&innermost_lock, IRQL_SCHEDULER);
+    UpdateTimesliceExpiry();
+}
+
+static void ScheduleWithLockHeld(void) {
+    EXACT_IRQL(IRQL_SCHEDULER);
+    AssertSchedulerLockHeld();
+
+    struct thread* old_thread = GetThread();
+    struct thread* new_thread = ready_list.head;
+
+    if (old_thread == NULL) {
+        /*
+         * Multitasking not set up yet. Now check if someone has added a task that we can switch to.
+         * (If not, we keep waiting until they have, then we can start multitasking).
+         */
+        if (ready_list.head != NULL) {
+            SetVas(new_thread->vas);
+
+            /*
+             * We need a place where it can write the "old" stack pointer to.
+             */
+            struct thread dummy;
+            ProperTaskSwitch(&dummy, new_thread);
+        }
+        return;
+    }
+    
+    if (new_thread == old_thread || new_thread == NULL) {
+        /*
+         * Don't switch if there isn't anything else to switch to!
+         */
+        return;
+    }
+
+#ifndef NDEBUG
+    CheckCanary(old_thread->canary_position);
+#endif
+
+    UpdatePriority(old_thread->timeslice_expiry < GetSystemTimer());
+    LogWriteSerial("updated priority...\n");
+    if (new_thread->vas != old_thread->vas) {
+        SetVas(new_thread->vas);
+    }
+
+    /*
+     * Put the old task back on the ready list, but only if it didn't block / get suspended.
+     */
+    if (old_thread->state == THREAD_STATE_RUNNING) {
+        ThreadListInsert(&ready_list, old_thread);
+    }
+    LogWriteSerial("about to c\n");
+    ProperTaskSwitch(old_thread, new_thread);
+    LogWriteSerial("done c\n");
+
+}
+
+void Schedule(void) {
+    // TODO: decide if a page fault handler should allow task switches or not
+
+    if (GetIrql() != IRQL_STANDARD) {
+        PostponeScheduleUntilStandardIrql();
+        return;
+    }
+
+    LockScheduler();
+    ScheduleWithLockHeld();
+    UnlockScheduler();
+}
+
+void InitScheduler() {
+    InitSpinlock(&scheduler_lock, "scheduler", IRQL_SCHEDULER);
+    InitSpinlock(&innermost_lock, "inner scheduler", IRQL_HIGH);
+    ThreadListInit(&ready_list);
 }

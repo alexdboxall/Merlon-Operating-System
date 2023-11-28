@@ -2,7 +2,7 @@
 CC = i686-elf-gcc
 AR = i686-elf-ar
 AS = nasm
-FAKE_CROSS_COMPILER = -m32 -I../common/include -I../hosted/include
+FAKE_CROSS_COMPILER = -m32 -I../common/include -I../hosted/include -I../common/include/openlibm
 COMPILE_FLAGS = -c -Os -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -Wextra -Wpedantic -Werror -Wcast-align=strict -Wpointer-arith -fmax-errors=5 -std=gnu11 -ffreestanding $(FAKE_CROSS_COMPILER)
 LINK_FLAGS = -nostartfiles -nostdlib -lgcc 
 
@@ -14,12 +14,11 @@ COBJECTS = $(patsubst %.c, %.o, $(wildcard ../*.c) $(wildcard ../*/*.c) $(wildca
 ASMOBJECTS = $(patsubst %.s, %.oo, $(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s) $(wildcard **/*.s))
 
 hostedlibc: $(COBJECTS) $(ASMOBJECTS)
-# $(AS) -felf32 _systemcall.s -o _systemcall.o
-# $(AR) rcs libc.a $^ _systemcall.o
 	$(AR) rcs libc.a $^
-	rm ../common/*.o -r || true
-#	rm ../hosted/*.o || true
-#	rm _systemcall.o || true
+	find ../common -type f -name '*.o' -delete || true
+	find ../common -type f -name '*.oo' -delete || true
+	find ../hosted -type f -name '*.o' -delete || true
+	find ../hosted -type f -name '*.oo' -delete || true
 	
 %.o: %.c
 	$(CC) $(CPPDEFINES) $(COMPILE_FLAGS) $^ -o $@ 

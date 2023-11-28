@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <cpu.h>
 #include <irql.h>
+#include <log.h>
 #include <arch.h>
 
 static struct spinlock timer_lock;

@@ -122,6 +122,9 @@ void LinkedListDestroy(struct linked_list* list) {
 }
 
 struct linked_list_node* LinkedListGetFirstNode(struct linked_list* list) {
+    if (list == NULL) {
+        Panic(PANIC_LINKED_LIST);
+    }
     return list->head;
 }
 

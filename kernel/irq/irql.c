@@ -124,6 +124,8 @@ void LowerIrql(int target_level) {
             //       the problem there of course, is that this is how we remove a handler. maybe set the handler in the deferred
             //       call object to NULL, and then when the nested version runs, it detects the handler is null and doesn't run
             //       it??
+            //
+            // BUT HANG ON: PriorityQueuePop shouldn't access heap memory anyway! (except for the initial allocation!)
             deferred_call->handler = NULL;
             PriorityQueuePop(deferred_functions);
             LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): C %d\n", PriorityQueueGetUsedSize(deferred_functions));

@@ -40,7 +40,14 @@
         "__mutex_base": "c",
         "mutex": "c",
         "sstream": "c",
-        "stddef.h": "c"
+        "stddef.h": "c",
+        "fpmath.h": "c",
+        "i386_fpmath.h": "c",
+        "amd64_fpmath.h": "c",
+        "e_rem_pio2l.h": "c",
+        "portio.h": "c",
+        "__threading_support": "c",
+        "threadlist.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

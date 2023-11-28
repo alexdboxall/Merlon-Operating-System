@@ -4,6 +4,7 @@
 #include <irql.h>
 #include <panic.h>
 #include <log.h>
+#include <thread.h>
 #include <assert.h>
 
 void InitSpinlock(struct spinlock* lock, const char* name, int irql) {
@@ -32,11 +33,12 @@ int AcquireSpinlock(struct spinlock* lock, bool raise_irql) {
     }
 
     ArchIrqSpinlockAcquire(&lock->lock);
-    //lock->owner = GetCurrentThread();
+    lock->owner = GetThread();
     return prior_irql;
 }
 
 void ReleaseSpinlock(struct spinlock* lock) {
+    assert(lock->owner == GetThread());
     lock->owner = NULL;
     ArchIrqSpinlockRelease(&lock->lock);
 }

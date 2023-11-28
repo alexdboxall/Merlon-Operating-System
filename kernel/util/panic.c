@@ -41,6 +41,7 @@ _Noreturn void PanicEx(int code, const char* message) {
 
 	RaiseIrql(IRQL_HIGH);
 	LogWriteSerial("\n\n *** KERNEL PANIC ***\n\n0x%X - %s\n", code, message);
+	DbgScreenPrintf("\n\n  --- KERNEL PANIC ---\n\n  Error Code: %d\n  Message: %s\n", code, message);
 
 	while (1) {
 		ArchDisableInterrupts();
