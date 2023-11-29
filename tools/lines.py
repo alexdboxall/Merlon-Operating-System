@@ -16,6 +16,11 @@ for path, subdirs, files in os.walk(os.getcwd()):
     if '\\Debug' in subdirs: continue
     if '\\build' in path: continue
     if '\\build' in subdirs: continue
+    if 'toolchain' in path or 'toolchain' in subdirs: continue
+    if '/toolchain' in path or '/toolchain' in subdirs: continue
+    if '\\toolchain' in path or '\\toolchain' in subdirs: continue
+    if 'toolchain/' in path or 'toolchain/' in subdirs: continue
+    if 'toolchain\\' in path or 'toolchain\\' in subdirs: continue
 
     for name in files:
         if name.split('.')[-1] in ext:
@@ -25,7 +30,7 @@ for path, subdirs, files in os.walk(os.getcwd()):
             lns = open(n, 'r').read().split('\n')
             j = len(lns)
             for l in lns:
-                if l.startswith('* ') or l.startswith(' * ') or l.replace('\t', '    ').find('   * ') != -1:
+                if l.startswith('* ') or l.replace('\t', '').lstrip().startswith('* ') or l.replace('\t', '    ').find('   * ') != -1:
                     comments += 1
                 if l.find('assert') != -1:
                     asserts += 1
