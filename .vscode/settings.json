@@ -47,7 +47,9 @@
         "e_rem_pio2l.h": "c",
         "portio.h": "c",
         "__threading_support": "c",
-        "threadlist.h": "c"
+        "threadlist.h": "c",
+        "cstdlib": "c",
+        "cstdint": "c"
     },
     "files.exclude": {
         "**/.git": true,
