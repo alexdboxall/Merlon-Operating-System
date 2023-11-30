@@ -10,6 +10,7 @@
 #include <thread.h>
 #include <errno.h>
 #include <virtual.h>
+#include <stdlib.h>
 
 #ifndef NDEBUG
 
@@ -68,9 +69,100 @@ TFW_CREATE_TEST(SemaphoreTimeout2) { TFW_IGNORE_UNUSED
 }
 
 
+static void Thread3(void* ignored) {
+    (void) ignored;
+
+    while (true) {
+        if (rand() % 10 == 0) {
+            for (int j = 0; j < rand() % 1000000; ++j) {
+                DbgScreenPrintf("z");
+            }
+        }
+        SleepMilli(rand() % 150);
+    }
+}
+
+static void Thread3B(void* ignored) {
+    (void) ignored;
+
+    while (true) {
+        SleepMilli(rand() % 100);
+    }
+}
+
+static void Thread4(void* ignored) {
+    (void) ignored;
+
+    while (true) {
+        DbgScreenPrintf("y");
+    }
+}
+
+static struct semaphore* sems[20];
+
+void Thread5(void* ignored) {
+    (void) ignored;
+    int loops = 0;
+
+    while (true) {
+        int a = rand() % 20;
+        int b = rand() % 8;
+        int c = rand() % 3;
+        if (a == b || a == c || b == c) {
+            continue;
+        }
+
+        int ares = AcquireSemaphore(sems[a], (rand() % 10) * (rand() % 10));
+        int bres = AcquireSemaphore(sems[b], (rand() % 10) * (rand() % 10) * 2);
+        int cres = AcquireSemaphore(sems[c], (rand() % 10) * (rand() % 10) * 3);
+        if (ares == 0) {
+            ReleaseSemaphore(sems[a]);
+        }
+        if (cres == 0) {
+            ReleaseSemaphore(sems[c]);
+        }
+        if (bres == 0) {
+            ReleaseSemaphore(sems[b]);
+        }
+        ++loops;
+        if (rand() % 3 == 0) {
+            DbgScreenPrintf("%d,", loops);
+        }
+    }
+}
+
+
+TFW_CREATE_TEST(SchedulerHeartAttack) { TFW_IGNORE_UNUSED
+    EXACT_IRQL(IRQL_STANDARD);
+
+    for (int i = 0; i < 20; ++i) {
+        sems[i] = CreateSemaphore(rand() % 3 + 1);
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        CreateThread(Thread3, NULL, GetVas(), "");
+    }
+    for (int i = 0; i < 10; ++i) {
+        CreateThread(Thread3B, NULL, GetVas(), "");
+    }
+    for (int i = 0; i < 5; ++i) {
+        CreateThread(Thread4, NULL, GetVas(), "");
+    }
+    for (int i = 0; i < 100; ++i) {
+        CreateThread(Thread5, NULL, GetVas(), "");
+    }
+
+    for (int i = 0; i < (int) context; ++i) {
+        SleepMilli(1000);
+    }
+}
+
+
 void RegisterTfwSemaphoreTests(void) {
     RegisterTfwTest("Semaphores with timeouts can be woken via timeout", TFW_SP_ALL_CLEAR, SemaphoreTimeout1, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Semaphores with timeouts can be woken via release", TFW_SP_ALL_CLEAR, SemaphoreTimeout2, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("Scheduler stress test (1)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 45);
+    RegisterNightlyTfwTest("Scheduler stress test (2)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 600);
 }
 
 #endif

@@ -5,6 +5,7 @@
 #include <heap.h>
 #include <errno.h>
 #include <timer.h>
+#include <assert.h>
 #include <panic.h>
 #include <log.h>
 
@@ -32,6 +33,8 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     if (sem->current_count < sem->max_count) {
         sem->current_count++;
     } else {
+        thr->waiting_on_semaphore = sem;
+
         if (timeout_ms == 0) {
             thr->timed_out = true;
         } else if (timeout_ms == -1) {
@@ -48,6 +51,12 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     return thr->timed_out ? (timeout_ms == 0 ? EAGAIN : ETIMEDOUT) : 0;
 }
 
+void CancelSemaphoreOfThread(struct thread* thr) {
+    AssertSchedulerLockHeld();
+    assert(ThreadListContains(&thr->waiting_on_semaphore->waiting_list, thr));
+    ThreadListDelete(&thr->waiting_on_semaphore->waiting_list, thr);
+}
+
 void ReleaseSemaphore(struct semaphore* sem) {
     LockScheduler();
     if (sem->waiting_list.head == NULL) {
@@ -55,11 +64,18 @@ void ReleaseSemaphore(struct semaphore* sem) {
     } else {
         struct thread* top = ThreadListDeleteTop(&sem->waiting_list);
 
-        if (top->state == THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT && !top->timed_out) {
-            DequeueForSleep(top);
+        // this is just an optimisation, it should be possible to always run the code within the if() part (as long as 
+        // unlocking it is conditional on it
+        if (top->state == THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT) {
+            bool on_sleep_queue = TryDequeueForSleep(top);
+            if (on_sleep_queue) {
+                top->state = THREAD_STATE_READY;                // prevent recursion
+                UnblockThread(top);
+            }
+        } else {
+            UnblockThread(top);
         }
-
-        UnblockThread(top);
+        
     }
     UnlockScheduler();
 }

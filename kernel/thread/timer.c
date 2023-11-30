@@ -59,6 +59,8 @@ void InitTimer(void) {
 }
 
 void QueueForSleep(struct thread* thr) {
+    AssertSchedulerLockHeld();
+
     thr->timed_out = false;
 
     if (PriorityQueueGetUsedSize(sleep_queue) == SLEEP_QUEUE_LENGTH) {
@@ -68,13 +70,15 @@ void QueueForSleep(struct thread* thr) {
     }
 }
 
-void DequeueForSleep(struct thread* thr) {
+bool TryDequeueForSleep(struct thread* thr) {
+    AssertSchedulerLockHeld();
+    
     while (PriorityQueueGetUsedSize(sleep_queue) > 0) {
         struct priority_queue_result res = PriorityQueuePeek(sleep_queue);
         struct thread* top_thread = *((struct thread**) res.data);
         PriorityQueuePop(sleep_queue);
         if (top_thread == thr) {
-            return;
+            return true;
         }
         ThreadListInsert(&sleep_overflow_list, top_thread);
     }
@@ -83,14 +87,14 @@ void DequeueForSleep(struct thread* thr) {
     while (iter) {
         if (iter == thr) {
             ThreadListDelete(&sleep_overflow_list, iter);
-            return;
+            return true;
 
         } else {
             iter = iter->next[NEXT_INDEX_SLEEP];
         }
     }
 
-    Panic(PANIC_IMPOSSIBLE_RETURN);
+    return false;
 }
 
 void HandleSleepWakeups(void* sys_time_ptr) {
@@ -116,8 +120,8 @@ void HandleSleepWakeups(void* sys_time_ptr) {
         if (res.priority <= system_time) {
             struct thread* thr = *((struct thread**) res.data);
             thr->timed_out = true;
-            UnblockThread(thr);
             PriorityQueuePop(sleep_queue);
+            UnblockThread(thr);
         } else {
             /*
              * If this one doesn't need waking, none of the others will either.

@@ -41,8 +41,6 @@ static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int fla
 		x86AllocatePageTable(vas, table_num);
 	}
 
-	LogWriteSerial("x86MapPage: v 0x%X -> p 0x%X. flags %d.\n", virtual, physical, flags);
-
 	((size_t*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE))[page_num] = physical | flags;
 	ArchFlushTlb(vas);
 }

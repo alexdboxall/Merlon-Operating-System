@@ -2,6 +2,8 @@
 
 #include <common.h>
 
+struct semaphore;
+
 #define THREAD_STATE_RUNNING                                0
 #define THREAD_STATE_READY                                  1
 #define THREAD_STATE_SLEEPING                               2
@@ -52,6 +54,8 @@ struct thread {
     int schedule_policy;
     size_t canary_position;
     bool timed_out;
+    
+    struct semaphore* waiting_on_semaphore;
     
     /*
      * The system time at which this task's time has expired. If this is 0, then the task will not have a set time limit.

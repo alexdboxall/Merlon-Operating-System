@@ -14,6 +14,7 @@
 #include <common.h>
 #include <threadlist.h>
 #include <priorityqueue.h>
+#include <semaphore.h>
 
 static struct thread_list ready_list;
 static struct spinlock scheduler_lock;
@@ -142,6 +143,9 @@ void BlockThread(int reason) {
 
 void UnblockThread(struct thread* thr) { 
     AssertSchedulerLockHeld();
+    if (thr->state == THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT) {
+        CancelSemaphoreOfThread(thr);
+    }
     ThreadListInsert(&ready_list, thr);
 }
 

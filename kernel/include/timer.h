@@ -12,4 +12,4 @@ void InitTimer(void);
  */
 struct thread;
 void QueueForSleep(struct thread* thr);
-void DequeueForSleep(struct thread* thr);
+bool TryDequeueForSleep(struct thread* thr);

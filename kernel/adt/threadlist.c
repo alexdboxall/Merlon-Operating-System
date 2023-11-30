@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <thread.h>
 #include <panic.h>
+#include <log.h>
 #include <string.h>
 
 void ThreadListInit(struct thread_list* list, int index) {
@@ -13,7 +14,18 @@ void ThreadListInit(struct thread_list* list, int index) {
 
 void ThreadListInsert(struct thread_list* list, struct thread* thread) {
 #ifndef NDEBUG
-    assert(!ThreadListContains(list, thread))
+    if (ThreadListContains(list, thread)) {
+        LogWriteSerial("trying to insert a duplicate into list %d\n", list->index);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wframe-address"
+		LogWriteSerial("Stack trace:\n");
+		LogWriteSerial("    0x%X\n", (size_t) __builtin_return_address(0));
+		LogWriteSerial("    0x%X\n", (size_t) __builtin_return_address(1));
+		LogWriteSerial("    0x%X\n", (size_t) __builtin_return_address(2));
+#pragma GCC diagnostic pop
+
+        assert(!ThreadListContains(list, thread));
+    }
 #endif
     if (list->tail == NULL) {
         assert(list->head == NULL);
@@ -54,6 +66,10 @@ static void ProperDelete(struct thread_list* list, struct thread* iter, struct t
     if (iter == list->tail) {
         list->tail = prev;
     }
+
+    if (list->head == NULL) {
+        assert(list->tail == NULL);
+    }
 }
 
 static void ThreadListDeleteIndex(struct thread_list* list, int index) {
@@ -82,6 +98,12 @@ struct thread* ThreadListDeleteTop(struct thread_list* list) {
         list->tail = NULL;
     }
     list->head = list->head->next[list->index];
+
+    if (list->head == NULL) {
+        LogWriteSerial("list index = %d\n", list->index);
+        assert(list->tail == NULL);
+    }
+
     return top;
 }
 
