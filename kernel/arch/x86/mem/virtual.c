@@ -29,6 +29,7 @@ static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 	size_t page_dir_phys = AllocPhys();
 	page_dir[table_num] = page_dir_phys | x86_PAGE_PRESENT | x86_PAGE_WRITE;
 	ArchFlushTlb(vas);
+	LogWriteSerial("writing to here: 0x%X -> 0x%X\n", 0xFFC00000 + table_num * ARCH_PAGE_SIZE, page_dir_phys);
 	memset((void*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE), 0, ARCH_PAGE_SIZE);
 }
 

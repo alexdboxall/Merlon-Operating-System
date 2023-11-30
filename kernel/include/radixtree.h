@@ -4,6 +4,6 @@
 
 struct radix_tree;
 
-struct radix_tree* RadixTreeCreate(bool paging_allowed);
-void* RadixTreeGet(struct radix_tree* tree);
-void RadixTreeInsert(struct radix_tree* tree, uint8_t* key, int key_length, void* data);
+export struct radix_tree* RadixTreeCreate(bool paging_allowed);
+export void* RadixTreeGet(struct radix_tree* tree);
+export void RadixTreeInsert(struct radix_tree* tree, uint8_t* key, int key_length, void* data);

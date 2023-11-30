@@ -153,13 +153,14 @@ void InitDbgScreen(void) {
     SCREEN_HEIGHT = data->height / 16;
 
     data->framebuffer_virtual = (uint8_t*) MapVirt(data->framebuffer_physical, 0, data->pitch * data->height, VM_LOCK | VM_MAP_HARDWARE | VM_READ | VM_WRITE, NULL, 0);
-
+    
     /*
     * Clear the screen.
     */
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; ++i) {
         DbgScreenPutchar(' ');
     }
+    
     data->cursor_x = 0;
     data->cursor_y = 0;
 }

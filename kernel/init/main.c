@@ -7,19 +7,16 @@
 #include <assert.h>
 #include <timer.h>
 #include <irql.h>
-#include <schedule.h>
 #include <thread.h>
 #include <panic.h>
+#include <stdlib.h>
 
 extern void InitDbgScreen(void);
 
 void MyTestThread(void* str) {
     while (1) {
-        uint64_t current_time = GetThread()->time_used;
-        uint64_t total_time = GetSystemTimer();
-        int cpu_percent = current_time * 100 / total_time;
-        DbgScreenPrintf("%s. %d%%, ", (const char*) str, cpu_percent);
-        Schedule();
+        DbgScreenPrintf("%s", str);
+        SleepMilli(500);
     }
 }
 
@@ -55,14 +52,12 @@ void KernelMain(void) {
     LogWriteSerial("Boot successful! Kernel is completely initialised.\n");
     InitDbgScreen();
     DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
-    
-    for (int i = 0; i < 500; ++i) {
-        CreateThread(MyTestThread, "1", GetVas(), "test thread!");
-        DbgScreenPrintf("%d: %d / %d KB used...\n", i, GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
-    }
-    CreateThread(MyTestThread, "2", GetVas(), "test thread!");
 
-    while (1) {
-        Schedule();
-    }
+    CreateThread(MyTestThread, "1", GetVas(), "test thread!");
+    CreateThread(MyTestThread, "2", GetVas(), "test thread!");
+    CreateThread(MyTestThread, "3", GetVas(), "test thread!");
+    CreateThread(MyTestThread, "4", GetVas(), "test thread!");
+    CreateThread(MyTestThread, "5", GetVas(), "test thread!");
+
+    StartMultitasking();
 }

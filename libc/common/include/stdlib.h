@@ -2,6 +2,13 @@
 
 #include <stddef.h>
 
+#ifdef COMPILE_KERNEL
+#include <common.h>
+#define EXPORT_
+#else
+#define EXPORT_
+#endif
+
 #ifndef NULL
 #define NULL	((void*) 0)
 #endif
@@ -12,8 +19,8 @@
 
 #define MB_CUR_MAX ((size_t) 1)
 
-int rand(void);
-void srand(unsigned int seed);
+EXPORT_ int rand(void);
+EXPORT_ void srand(unsigned int seed);
 
 #ifndef COMPILE_KERNEL
 

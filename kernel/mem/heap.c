@@ -774,7 +774,7 @@ void* AllocHeapEx(size_t size, int flags) {
         memset(ptr, 0, size);
     }
 
-    DbgPrintListStats();
+    //DbgPrintListStats();
 
     return ptr;
 }

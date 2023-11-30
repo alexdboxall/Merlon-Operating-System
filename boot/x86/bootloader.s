@@ -169,7 +169,7 @@ next_sector:
 
 
     ; Get video mode information
-    mov ax, 0x7000 
+    mov ax, 0x100 
     mov es, ax
     mov ax, 0x4F01
     mov cx, 0x4118
@@ -180,6 +180,8 @@ next_sector:
     mov ax, 0x4F02
     mov bx, 0x4118
     int 0x10
+
+	
 
 	; Jump to 32 bit mode.
 	lgdt [gdtr]
@@ -443,7 +445,7 @@ start_protected_mode:
 	mov [eax + 14], word 0x0700 | '.'
 	mov [eax + 16], word 0x0700 | '.'
 	mov [eax + 18], word 0x0700 | '.'
-	
+
 	call enable_a20
 	call create_multiboot_tables
 	call load_elf

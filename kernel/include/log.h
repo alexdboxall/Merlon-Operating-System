@@ -1,7 +1,9 @@
 #pragma once
 
-void LogWriteSerial(const char* format, ...);
-void LogDeveloperWarning(const char* format, ...);
+#include <common.h>
+
+export void LogWriteSerial(const char* format, ...);
+export void LogDeveloperWarning(const char* format, ...);
 
 void DbgScreenPrintf(const char* format, ...);
 void DbgScreenPuts(char* str);

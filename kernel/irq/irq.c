@@ -53,9 +53,7 @@ void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* contex
 
             iter = LinkedListGetNextNode(iter);
         }
-    } else {
-        DbgScreenPrintf("IRQ %d, ", irq_num);
     }
-
+    
     LowerIrql(irql);
 }

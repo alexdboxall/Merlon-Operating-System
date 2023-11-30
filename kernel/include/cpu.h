@@ -18,6 +18,6 @@ struct cpu {
 void InitBootstrapCpu(void);
 void InitOtherCpu(void);
 
-struct cpu* GetCpu(void);
-int GetCpuCount(void);
-struct cpu* GetCpuAtIndex(int index);
+export struct cpu* GetCpu(void);
+export int GetCpuCount(void);
+export struct cpu* GetCpuAtIndex(int index);

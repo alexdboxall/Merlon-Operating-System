@@ -1,8 +1,19 @@
 #pragma once
 
+#include <common.h>
+
 #define THREAD_STATE_RUNNING    0
 #define THREAD_STATE_READY      1
 #define THREAD_STATE_BLOCKED    2
+
+#define SCHEDULE_POLICY_FIXED             0
+#define SCHEDULE_POLICY_USER_HIGHER       1
+#define SCHEDULE_POLICY_USER_NORMAL       2
+#define SCHEDULE_POLICY_USER_LOWER        3
+
+#define FIXED_PRIORITY_KERNEL_HIGH        0
+#define FIXED_PRIORITY_KERNEL_NORMAL      30
+#define FIXED_PRIORITY_IDLE               255
 
 struct thread {
     /*
@@ -31,10 +42,29 @@ struct thread {
      * the next time it is switched in.
      */
     uint64_t timeslice_expiry;
+
+    uint64_t sleep_expiry;
 };
 
+void Schedule(void);
+void LockScheduler(void);
+void UnlockScheduler(void);
+
+void InitScheduler(void);
+void StartMultitasking(void);
+
+void AssertSchedulerLockHeld(void);
+
 struct thread* GetThread(void);
-void BlockThread(int reason);
-void UnblockThread(void);
 void TerminateThread(void);
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);
+void BlockThread(int reason);
+void UnblockThread(struct thread* thr);
+int SetThreadPriority(struct thread* thread, int policy, int priority);
+
+void SleepUntil(uint64_t system_time_ns);
+void SleepNano(uint64_t delta_ns);
+void SleepMilli(uint32_t delta_ms);
+
+void HandleSleepWakeups(void* sys_time_ptr); // used internally between timer.c and thread.c
+void InitIdle(void);

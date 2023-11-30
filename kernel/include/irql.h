@@ -43,11 +43,14 @@
  */
 #define IRQL_HIGH           41
 
-void PostponeScheduleUntilStandardIrql(void);
-void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
-int GetIrql(void);
-int RaiseIrql(int level);
-void LowerIrql(int level);
+#include <common.h>
+
+export void PostponeScheduleUntilStandardIrql(void);
+export void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
+export int GetIrql(void);
+export int RaiseIrql(int level);
+export void LowerIrql(int level);
+
 void InitIrql(void);
 
 #define MAX_IRQL(l) assert(GetIrql() <= l)

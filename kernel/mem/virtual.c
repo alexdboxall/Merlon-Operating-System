@@ -117,7 +117,6 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         entry->in_ram = false;
         entry->swapfile = true;
 
-
         // TODO: put it on the swapfile!
         //       this will probably want to be deferred (i.e. copy the data to get rid of to a 
         //       new AllocPhys() page, then give that to the defer handler.

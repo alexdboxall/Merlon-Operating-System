@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdbool.h>
+#include <common.h>
 
 struct thread;
 

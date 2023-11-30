@@ -1,5 +1,7 @@
 #pragma once
 
+#include <common.h>
+
 enum {
     PANIC_UNKNOWN,
 
@@ -86,5 +88,5 @@ enum {
     _PANIC_HIGHEST_VALUE
 };
 
-_Noreturn void PanicEx(int code, const char* message);
-_Noreturn void Panic(int code);
+export _Noreturn void PanicEx(int code, const char* message);
+export _Noreturn void Panic(int code);

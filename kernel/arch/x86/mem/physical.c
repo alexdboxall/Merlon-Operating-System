@@ -100,7 +100,7 @@ retry:
 		goto retry;
 	}
 
-	if (range.start < 0x100000) {
+	if (range.start < 0x80000) {
 		if (range.start == 0x0) {
 			range.start += 4096;
 			range.length -= 4096;
@@ -109,13 +109,16 @@ retry:
 		/*
 		 * Try to salvage some low memory too.
 		 */
-		if (range.length + range.start >= 0x100000) {
-			range.length = 0x100000 - range.start;
+		if (range.length + range.start >= 0x80000) {
+			range.length = 0x80000 - range.start;
 		}
 		if (range.length + range.start >= max_kernel_addr) {
 			LogDeveloperWarning("LOST SOME MEMORY WITH RANGE 0x%X -> 0x%X\n", range.start, range.start + range.length);
 		}
 
+	} else if (range.start < 0x100000) {
+		goto retry;
+	
 	} else if (range.start < max_kernel_addr) {
 		/*
 		* If it starts below the kernel, but ends above it, cut it off so only the

@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <stdbool.h>
-#include <stddef.h>
+#include <common.h>
 
 #define VM_READ         1
 #define VM_WRITE        2
@@ -47,19 +47,19 @@ void LockVirt(size_t virtual);
 void UnlockVirt(size_t virtual);
 void SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
-void EvictVirt(void);
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos);
 void UnmapVirt(size_t virtual, size_t bytes);
 size_t GetPhysFromVirt(size_t virtual);
 
+struct vas* GetVas(void);
 struct vas* CreateVas(void);
 void CreateVasEx(struct vas* vas, int flags);
+
 struct vas* CopyVas(void);
-struct vas* GetVas(void);
 void SetVas(struct vas* vas);
 void InitVirt(void);
 bool IsVirtInitialised(void);
-
+void EvictVirt(void);
 void HandleVirtFault(size_t faulting_virt, int fault_type);
 
 #include <arch.h>

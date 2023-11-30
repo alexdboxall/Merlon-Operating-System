@@ -1,11 +1,10 @@
 
-CC = i686-elf-gcc
+CC = /Users/alex/Desktop/NOS/toolchain/output/bin/i386-elf-gcc
 AS = nasm
 FAKE_CROSS_COMPILER = -m32 -I"." -Iinclude -Imachine/include -Iinclude/openlibm
-COMPILE_FLAGS = -c -Os -fno-strict-aliasing -DCOMPILE_KERNEL -Wall -Wextra -Wpedantic -Werror -Wcast-align=strict -Wpointer-arith -fmax-errors=5 -std=gnu11 -ffreestanding $(FAKE_CROSS_COMPILER) -Wno-infinite-recursion -fomit-frame-pointer
-# -flto
+COMPILE_FLAGS = -c -Os -std=gnu2x -fno-strict-aliasing -DCOMPILE_KERNEL -Wall -Wextra -Wpedantic -Werror -Wcast-align=strict -Wpointer-arith -fmax-errors=5 -ffreestanding $(FAKE_CROSS_COMPILER) -Wno-infinite-recursion -fomit-frame-pointer
+#-flto
 LINK_FLAGS = -Wl,-Map=kernel.map -nostartfiles -nostdlib -lgcc
-# -flto
 
 # Set by the higher level Makefile before calling us - changes depending on whether we are compiling the debug or release build
 LINKER_STRIP =

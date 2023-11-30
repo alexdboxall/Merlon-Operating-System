@@ -344,9 +344,8 @@ void InitPhys(void) {
 	/*
 	* Scan the memory tables and fill in the memory that is there.
 	*/
-    int i = 0;
 	while (true) {
-		struct arch_memory_range* range = ArchGetMemory(i++);
+		struct arch_memory_range* range = ArchGetMemory();
 
 		if (range == NULL) {
 			/* No more memory exists */

@@ -149,19 +149,19 @@ KernelEntryPoint:
 	mov [x86_grub_table], ebx
 
     ; Grab the video data the bootloader put into memory.
-    mov ax, [0x70000 + 16]
+    mov ax, [0x1000 + 16]
     mov [vesa_pitch], ax
 
-    mov ax, [0x70000 + 18]
+    mov ax, [0x1000 + 18]
     mov [vesa_width], ax
 
-    mov ax, [0x70000 + 20]
+    mov ax, [0x1000 + 20]
     mov [vesa_height], ax
 
-    mov al, [0x70000 + 25]
+    mov al, [0x1000 + 25]
     mov [vesa_depth], al
 
-    mov eax, [0x70000 + 40]
+    mov eax, [0x1000 + 40]
     mov [vesa_framebuffer], eax
 
     ; TODO: map grub table into low memory

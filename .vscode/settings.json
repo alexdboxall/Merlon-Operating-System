@@ -49,7 +49,10 @@
         "__threading_support": "c",
         "threadlist.h": "c",
         "cstdlib": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "types.h": "c",
+        "stdbool.h": "c",
+        "thread.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

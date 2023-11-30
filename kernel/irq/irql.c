@@ -4,7 +4,7 @@
 #include <irql.h>
 #include <log.h>
 #include <priorityqueue.h>
-#include <schedule.h>
+#include <thread.h>
 #include <assert.h>
 
 struct irql_deferment {
@@ -96,9 +96,7 @@ void LowerIrql(int target_level) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
         assert(next.priority <= current_level);
 
-        LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): A %d\n", PriorityQueueGetUsedSize(deferred_functions));
-
-        if (next.priority >= target_level) {
+        if ((int) next.priority >= target_level) {
             current_level = next.priority;
 
             /*
@@ -113,15 +111,12 @@ void LowerIrql(int target_level) {
                 ArchSetIrql(current_level);
                 continue;
             }
-            LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): B %d. handler = 0x%X\n", PriorityQueueGetUsedSize(deferred_functions), handler);
             PriorityQueuePop(deferred_functions);
-            LogWriteSerial("PriorityQueueGetUsedSize(deferred_functions): C %d\n", PriorityQueueGetUsedSize(deferred_functions));
             GetCpu()->irql = current_level;
             ArchSetIrql(current_level);
             handler(context);
 
         } else {
-            LogWriteSerial("X\n");
             break;
         }
     }

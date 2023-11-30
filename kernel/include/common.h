@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
+#define export __attribute__((used))
+
 #ifndef NULL
 #define NULL ((void*) 0)
 #endif

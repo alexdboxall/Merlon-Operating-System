@@ -2,18 +2,18 @@
 #include <cpu.h>
 #include <thread.h>
 #include <spinlock.h>
-#include <schedule.h>
 #include <heap.h>
 #include <assert.h>
 #include <timer.h>
 #include <string.h>
 #include <irql.h>
 #include <log.h>
+#include <errno.h>
 #include <virtual.h>
 #include <panic.h>
 #include <common.h>
 #include <threadlist.h>
-#include <schedule.h>
+#include <priorityqueue.h>
 
 static struct thread_list ready_list;
 static struct spinlock scheduler_lock;
@@ -140,8 +140,9 @@ void BlockThread(int reason) {
     PostponeScheduleUntilStandardIrql();
 }
 
-void UnblockThread(void) { 
-
+void UnblockThread(struct thread* thr) { 
+    AssertSchedulerLockHeld();
+    ThreadListInsert(&ready_list, thr);
 }
 
 void TerminateThread(void) {
@@ -201,7 +202,7 @@ struct thread* GetThread(void) {
 
 static void UpdateTimesliceExpiry(void) {
     struct thread* thr = GetThread();
-    thr->timeslice_expiry = GetSystemTimer() + (thr->priority == 255 ? 0 : (20 + thr->priority) * 1000000ULL);
+    thr->timeslice_expiry = GetSystemTimer() + (thr->priority == 255 ? 0 : (20 + thr->priority / 4) * 1000000ULL);
 }
 
 void ThreadInitialisationHandler(void) {
@@ -228,14 +229,25 @@ void ThreadInitialisationHandler(void) {
     TerminateThread();
 }
 
+static int GetMinPriorityValueForPolicy(int policy) {
+    if (policy == SCHEDULE_POLICY_USER_HIGHER) return 50;
+    if (policy == SCHEDULE_POLICY_USER_NORMAL) return 100;
+    if (policy == SCHEDULE_POLICY_USER_LOWER) return 150;
+    return 0;
+}
+
+static int GetMaxPriorityValueForPolicy(int policy) {
+    if (policy == SCHEDULE_POLICY_FIXED) return 255;
+    return GetMinPriorityValueForPolicy(policy)  + 100;
+}
+
 static void UpdatePriority(bool yielded) {
     struct thread* thr = GetThread();
     int policy = thr->schedule_policy;
+
     if (policy != SCHEDULE_POLICY_FIXED) {
-        int min_val = policy == SCHEUDLE_POLICY_USER_HIGHER ? 50 : (policy == SCHEDULE_POLICY_USER_NORMAL ? 100 : 150);
-        int max_val = min_val + 100;
         int new_val = thr->priority + (yielded ? -1 : 1);
-        if (new_val >= min_val && new_val <= max_val) {
+        if (new_val >= GetMinPriorityValueForPolicy(policy) && new_val <= GetMaxPriorityValueForPolicy(policy)) {
             thr->priority = new_val;
         }
     }
@@ -313,7 +325,8 @@ static void ScheduleWithLockHeld(void) {
     CheckCanary(old_thread->canary_position);
 #endif
 
-    UpdatePriority(old_thread->timeslice_expiry < GetSystemTimer());
+    bool yielded = old_thread->timeslice_expiry > GetSystemTimer();
+    UpdatePriority(yielded);
     UpdateThreadTimeUsed();
 
     /*
@@ -336,8 +349,69 @@ void Schedule(void) {
     UnlockScheduler();
 }
 
+
 void InitScheduler() {
+    ThreadListInit(&ready_list);
     InitSpinlock(&scheduler_lock, "scheduler", IRQL_SCHEDULER);
     InitSpinlock(&innermost_lock, "inner scheduler", IRQL_HIGH);
-    ThreadListInit(&ready_list);
+}
+
+[[noreturn]] void StartMultitasking(void) {
+    InitIdle();
+
+    /*
+     * Once this is called, "the game is afoot!" and threads will start running.
+     */
+    Schedule();
+    
+    while (1) {
+        ;
+    }
+}
+
+
+/**
+ * Sets the priority and/or policy of a thread.
+ * 
+ * @param policy    The scheduling policy to use. Should be one of SCHEDULE_POLICY_FIXED, SCHEDULE_POLICY_USER_LOWER,
+ *                      SCHEDULE_POLICY_USER_NORMAL, SCHEDULE_POLICY_USER_HIGHER, or -1. Set to -1 to indicate that the 
+ *                      policy should not be changed.
+ * @param priority  The priority level to give the thread. Should be a value between 0 and 255, where 0 indicates the highest
+ *                      possible priority. A value of 255 indicates that the thread should only be run when the system is dile.
+ *                      If the thread's policy is SCHEDULE_POLICY_FIXED, then this value will get used directly. For other
+ *                      policies, the actual priority given to the thread may differ depending on the rules of the policy. 
+ *                      Set to -1 to indicate that the policy should not be changed.
+ * 
+ * @return Returns 0 on success, EINVAL if invalid arguments are given. If EINVAL is returned, no change will be made to the thread's
+ *         policy or priority.
+ * 
+ * @user This function may be used as a system call, as long as 'thr' points to a valid thread structure (which it should do,
+ *       as the user will probably supply thread number, which the kernel then converts to address - or kernel may just make it
+ *       a 'current thread' syscall, in which case GetThread() will be valid.
+ * 
+ * @maxirql IRQL_HIGH
+ */
+int SetThreadPriority(struct thread* thr, int policy, int priority) { 
+    if (priority < -1 || priority > 255) {
+        return EINVAL;
+    }
+    if (policy != -1 && policy != SCHEDULE_POLICY_FIXED && policy != SCHEDULE_POLICY_USER_LOWER && policy != SCHEDULE_POLICY_USER_NORMAL && policy != SCHEDULE_POLICY_USER_HIGHER) {
+        return EINVAL;
+    }
+
+    if (priority < GetMinPriorityValueForPolicy(policy)) {
+        priority = GetMinPriorityValueForPolicy(policy);
+    }
+    if (priority > GetMaxPriorityValueForPolicy(policy)) {
+        priority = GetMaxPriorityValueForPolicy(policy);
+    }
+
+    if (policy != -1) {
+        thr->schedule_policy = policy;
+    }
+    if (priority != -1) {
+        thr->priority = priority;
+    }
+
+    return 0;
 }
