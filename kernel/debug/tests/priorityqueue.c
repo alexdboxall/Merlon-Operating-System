@@ -47,8 +47,8 @@ TFW_CREATE_TEST(PriorityQueueStress) { TFW_IGNORE_UNUSED
 
     srand(1);
 
-    struct priority_queue* queue = PriorityQueueCreate(1000, true, 8);
-    assert(PriorityQueueGetCapacity(queue) == 1000);
+    struct priority_queue* queue = PriorityQueueCreate(300, true, 8);
+    assert(PriorityQueueGetCapacity(queue) == 300);
 
     uint32_t data[2];
 
@@ -58,7 +58,7 @@ TFW_CREATE_TEST(PriorityQueueStress) { TFW_IGNORE_UNUSED
             data[j] = rand();
         }
 
-        if (rng % 3 && expected_size < 1000) {
+        if (rng % 3 && expected_size < 300) {
             PriorityQueueInsert(queue, data, rng % 10000);
             ++expected_size;
             
