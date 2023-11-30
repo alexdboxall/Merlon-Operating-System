@@ -9,19 +9,10 @@
 ;
 
 
-global ArchIrqSpinlockAcquire
-global ArchIrqSpinlockRelease
+global ArchSpinlockAcquire
+global ArchSpinlockRelease
 
-global x86_allow_interrupts
-
-x86_allow_interrupts dd 0
-x86_spinlocks_held dd 0
-
-ArchIrqSpinlockAcquire:
-	; We can deadlock if the spinlock is interrupted as it is held,
-	; as an interrupt handler may try to lock the same thing
-	cli
-
+ArchSpinlockAcquire:
 	; The address of the lock is passed in as an argument
 	mov eax, [esp + 4]
 
@@ -30,10 +21,6 @@ ArchIrqSpinlockAcquire:
 	lock bts dword [eax], 0
 	jc .spin_wait
 
-	; Lock was acquired.
-	; Keep track of how many times we have disabled interrupts, so we
-	; only enable them again after that many spinlock releases.
-	inc dword [x86_spinlocks_held]
 	ret
 
 .spin_wait:
@@ -50,18 +37,8 @@ ArchIrqSpinlockAcquire:
 	jmp .try_acquire
 
 
-ArchIrqSpinlockRelease:
+ArchSpinlockRelease:
 	; The address of the lock is passed in as an argument
 	mov eax, [esp + 4]
-
-	dec dword [x86_spinlocks_held]
-	jnz .noEnableIRQ
-	
-	cmp [x86_allow_interrupts], dword 0
-	je .noEnableIRQ
-	
-	sti
-
-.noEnableIRQ:
 	lock btr dword [eax], 0
 	ret

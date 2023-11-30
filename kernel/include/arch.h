@@ -70,8 +70,8 @@ void ArchStallProcessor(void);
 #define ARCH_POWER_STATE_SLEEP 3
 int ArchSetPowerState(int power_state);
 
-void ArchIrqSpinlockAcquire(volatile size_t* lock);
-void ArchIrqSpinlockRelease(volatile size_t* lock);
+void ArchSpinlockAcquire(volatile size_t* lock);
+void ArchSpinlockRelease(volatile size_t* lock);
 
 /*
 * To be called repeatedly until it returns NULL. Each time will return a new memory
