@@ -20,6 +20,15 @@ void MyTestThread(void* str) {
     }
 }
 
+void TfwTestingThread(void* ignored) {
+    (void) ignored;
+
+    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
+    while (true) {
+        Schedule();
+    }
+}
+
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
@@ -48,8 +57,6 @@ void KernelMain(void) {
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
-    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
-    LogWriteSerial("Boot successful! Kernel is completely initialised.\n");
     InitDbgScreen();
     DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
 
@@ -58,6 +65,8 @@ void KernelMain(void) {
     CreateThread(MyTestThread, "3", GetVas(), "test thread!");
     CreateThread(MyTestThread, "4", GetVas(), "test thread!");
     CreateThread(MyTestThread, "5", GetVas(), "test thread!");
+
+    CreateThread(TfwTestingThread, NULL, GetVas(), "twf all clear tests");
 
     StartMultitasking();
 }

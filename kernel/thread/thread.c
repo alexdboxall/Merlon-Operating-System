@@ -146,7 +146,9 @@ void UnblockThread(struct thread* thr) {
 }
 
 void TerminateThread(void) {
-
+    while (true) {
+        ;
+    }
 }
 
 void UpdateThreadTimeUsed(void) {
@@ -227,6 +229,8 @@ void ThreadInitialisationHandler(void) {
 
     /* The thread has returned, so just terminate it. */
     TerminateThread();
+
+    Panic(PANIC_IMPOSSIBLE_RETURN);
 }
 
 static int GetMinPriorityValueForPolicy(int policy) {
@@ -349,9 +353,8 @@ void Schedule(void) {
     UnlockScheduler();
 }
 
-
 void InitScheduler() {
-    ThreadListInit(&ready_list);
+    ThreadListInit(&ready_list, NEXT_INDEX_READY);
     InitSpinlock(&scheduler_lock, "scheduler", IRQL_SCHEDULER);
     InitSpinlock(&innermost_lock, "inner scheduler", IRQL_HIGH);
 }

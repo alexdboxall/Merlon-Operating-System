@@ -259,6 +259,8 @@ char* strerror(int err)
         return "Broken pipe";
     case ESPIPE:
         return "Invalid seek";
+	case ETIMEDOUT:
+		return "Operation timed out";
 	default:
 		return "Unknown error";
 	}

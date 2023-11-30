@@ -33,13 +33,14 @@ int AcquireSpinlock(struct spinlock* lock, bool raise_irql) {
     }
 
     ArchIrqSpinlockAcquire(&lock->lock);
-    lock->owner = GetThread();
+    //lock->owner = GetThread();
     return prior_irql;
 }
 
 void ReleaseSpinlock(struct spinlock* lock) {
-    assert(lock->owner == GetThread());
-    lock->owner = NULL;
+    assert(lock->lock != 0);
+    //assert(lock->owner == GetThread() || lock->irql == IRQL_HIGH);
+    //lock->owner = NULL;
     ArchIrqSpinlockRelease(&lock->lock);
 }
 

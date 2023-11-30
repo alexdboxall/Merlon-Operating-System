@@ -1,272 +1,24 @@
 KernelMain: kernel is initialising...
+Reached TFW_SP 0
 memory here: 0x1000 -> 0x80000
-memory here: 0x136000 -> 0x1E0000
-memory here: 0x1E0000 -> 0x200000
+memory here: 0x13D000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
 memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
 Grabbing from emo block of size 0x4000, for request 0x1000
+Reached TFW_SP 2
 Grabbing from emo block of size 0x3000, for request 0x1000
-writing to here: 0xFFF01000 -> 0x1000
-writing to here: 0xFFF02000 -> 0x2000
-writing to here: 0xFFF03000 -> 0x3000
-writing to here: 0xFFF04000 -> 0x4000
-writing to here: 0xFFF05000 -> 0x5000
-writing to here: 0xFFF06000 -> 0x6000
-writing to here: 0xFFF07000 -> 0x7000
-writing to here: 0xFFF08000 -> 0x8000
-writing to here: 0xFFF09000 -> 0x9000
-writing to here: 0xFFF0A000 -> 0xA000
-writing to here: 0xFFF0B000 -> 0xB000
-writing to here: 0xFFF0C000 -> 0xC000
-writing to here: 0xFFF0D000 -> 0xD000
-writing to here: 0xFFF0E000 -> 0xE000
-writing to here: 0xFFF0F000 -> 0xF000
-writing to here: 0xFFF10000 -> 0x10000
-writing to here: 0xFFF11000 -> 0x11000
-writing to here: 0xFFF12000 -> 0x12000
-writing to here: 0xFFF13000 -> 0x13000
-writing to here: 0xFFF14000 -> 0x14000
-writing to here: 0xFFF15000 -> 0x15000
-writing to here: 0xFFF16000 -> 0x16000
-writing to here: 0xFFF17000 -> 0x17000
-writing to here: 0xFFF18000 -> 0x18000
-writing to here: 0xFFF19000 -> 0x19000
-writing to here: 0xFFF1A000 -> 0x1A000
-writing to here: 0xFFF1B000 -> 0x1B000
-writing to here: 0xFFF1C000 -> 0x1C000
-writing to here: 0xFFF1D000 -> 0x1D000
-writing to here: 0xFFF1E000 -> 0x1E000
-writing to here: 0xFFF1F000 -> 0x1F000
-writing to here: 0xFFF20000 -> 0x20000
-writing to here: 0xFFF21000 -> 0x21000
-writing to here: 0xFFF22000 -> 0x22000
-writing to here: 0xFFF23000 -> 0x23000
-writing to here: 0xFFF24000 -> 0x24000
-writing to here: 0xFFF25000 -> 0x25000
-writing to here: 0xFFF26000 -> 0x26000
-writing to here: 0xFFF27000 -> 0x27000
-writing to here: 0xFFF28000 -> 0x28000
-writing to here: 0xFFF29000 -> 0x29000
-writing to here: 0xFFF2A000 -> 0x2A000
-writing to here: 0xFFF2B000 -> 0x2B000
-writing to here: 0xFFF2C000 -> 0x2C000
-writing to here: 0xFFF2D000 -> 0x2D000
-writing to here: 0xFFF2E000 -> 0x2E000
-writing to here: 0xFFF2F000 -> 0x2F000
-writing to here: 0xFFF30000 -> 0x30000
-writing to here: 0xFFF31000 -> 0x31000
-writing to here: 0xFFF32000 -> 0x32000
-writing to here: 0xFFF33000 -> 0x33000
-writing to here: 0xFFF34000 -> 0x34000
-writing to here: 0xFFF35000 -> 0x35000
-writing to here: 0xFFF36000 -> 0x36000
-writing to here: 0xFFF37000 -> 0x37000
-writing to here: 0xFFF38000 -> 0x38000
-writing to here: 0xFFF39000 -> 0x39000
-writing to here: 0xFFF3A000 -> 0x3A000
-writing to here: 0xFFF3B000 -> 0x3B000
-writing to here: 0xFFF3C000 -> 0x3C000
-writing to here: 0xFFF3D000 -> 0x3D000
-writing to here: 0xFFF3E000 -> 0x3E000
-writing to here: 0xFFF3F000 -> 0x3F000
-writing to here: 0xFFF40000 -> 0x40000
-writing to here: 0xFFF41000 -> 0x41000
-writing to here: 0xFFF42000 -> 0x42000
-writing to here: 0xFFF43000 -> 0x43000
-writing to here: 0xFFF44000 -> 0x44000
-writing to here: 0xFFF45000 -> 0x45000
-writing to here: 0xFFF46000 -> 0x46000
-writing to here: 0xFFF47000 -> 0x47000
-writing to here: 0xFFF48000 -> 0x48000
-writing to here: 0xFFF49000 -> 0x49000
-writing to here: 0xFFF4A000 -> 0x4A000
-writing to here: 0xFFF4B000 -> 0x4B000
-writing to here: 0xFFF4C000 -> 0x4C000
-writing to here: 0xFFF4D000 -> 0x4D000
-writing to here: 0xFFF4E000 -> 0x4E000
-writing to here: 0xFFF4F000 -> 0x4F000
-writing to here: 0xFFF50000 -> 0x50000
-writing to here: 0xFFF51000 -> 0x51000
-writing to here: 0xFFF52000 -> 0x52000
-writing to here: 0xFFF53000 -> 0x53000
-writing to here: 0xFFF54000 -> 0x54000
-writing to here: 0xFFF55000 -> 0x55000
-writing to here: 0xFFF56000 -> 0x56000
-writing to here: 0xFFF57000 -> 0x57000
-writing to here: 0xFFF58000 -> 0x58000
-writing to here: 0xFFF59000 -> 0x59000
-writing to here: 0xFFF5A000 -> 0x5A000
-writing to here: 0xFFF5B000 -> 0x5B000
-writing to here: 0xFFF5C000 -> 0x5C000
-writing to here: 0xFFF5D000 -> 0x5D000
-writing to here: 0xFFF5E000 -> 0x5E000
-writing to here: 0xFFF5F000 -> 0x5F000
-writing to here: 0xFFF60000 -> 0x60000
-writing to here: 0xFFF61000 -> 0x61000
-writing to here: 0xFFF62000 -> 0x62000
-writing to here: 0xFFF63000 -> 0x63000
-writing to here: 0xFFF64000 -> 0x64000
-writing to here: 0xFFF65000 -> 0x65000
-writing to here: 0xFFF66000 -> 0x66000
-writing to here: 0xFFF67000 -> 0x67000
-writing to here: 0xFFF68000 -> 0x68000
-writing to here: 0xFFF69000 -> 0x69000
-writing to here: 0xFFF6A000 -> 0x6A000
-writing to here: 0xFFF6B000 -> 0x6B000
-writing to here: 0xFFF6C000 -> 0x6C000
-writing to here: 0xFFF6D000 -> 0x6D000
-writing to here: 0xFFF6E000 -> 0x6E000
-writing to here: 0xFFF6F000 -> 0x6F000
-writing to here: 0xFFF70000 -> 0x70000
-writing to here: 0xFFF71000 -> 0x71000
-writing to here: 0xFFF72000 -> 0x72000
-writing to here: 0xFFF73000 -> 0x73000
-writing to here: 0xFFF74000 -> 0x74000
-writing to here: 0xFFF75000 -> 0x75000
-writing to here: 0xFFF76000 -> 0x76000
-writing to here: 0xFFF77000 -> 0x77000
-writing to here: 0xFFF78000 -> 0x78000
-writing to here: 0xFFF79000 -> 0x79000
-writing to here: 0xFFF7A000 -> 0x7A000
-writing to here: 0xFFF7B000 -> 0x7B000
-writing to here: 0xFFF7C000 -> 0x7C000
-writing to here: 0xFFF7D000 -> 0x7D000
-writing to here: 0xFFF7E000 -> 0x7E000
-writing to here: 0xFFF7F000 -> 0x7F000
-writing to here: 0xFFF80000 -> 0x136000
-writing to here: 0xFFF81000 -> 0x137000
-writing to here: 0xFFF82000 -> 0x138000
-writing to here: 0xFFF83000 -> 0x139000
-writing to here: 0xFFF84000 -> 0x13A000
-writing to here: 0xFFF85000 -> 0x13B000
-writing to here: 0xFFF86000 -> 0x13C000
-writing to here: 0xFFF87000 -> 0x13D000
-writing to here: 0xFFF88000 -> 0x13E000
-writing to here: 0xFFF89000 -> 0x13F000
-writing to here: 0xFFF8A000 -> 0x140000
-writing to here: 0xFFF8B000 -> 0x141000
-writing to here: 0xFFF8C000 -> 0x142000
-writing to here: 0xFFF8D000 -> 0x143000
-writing to here: 0xFFF8E000 -> 0x144000
-writing to here: 0xFFF8F000 -> 0x145000
-writing to here: 0xFFF90000 -> 0x146000
-writing to here: 0xFFF91000 -> 0x147000
-writing to here: 0xFFF92000 -> 0x148000
-writing to here: 0xFFF93000 -> 0x149000
-writing to here: 0xFFF94000 -> 0x14A000
-writing to here: 0xFFF95000 -> 0x14B000
-writing to here: 0xFFF96000 -> 0x14C000
-writing to here: 0xFFF97000 -> 0x14D000
-writing to here: 0xFFF98000 -> 0x14E000
-writing to here: 0xFFF99000 -> 0x14F000
-writing to here: 0xFFF9A000 -> 0x150000
-writing to here: 0xFFF9B000 -> 0x151000
-writing to here: 0xFFF9C000 -> 0x152000
-writing to here: 0xFFF9D000 -> 0x153000
-writing to here: 0xFFF9E000 -> 0x154000
-writing to here: 0xFFF9F000 -> 0x155000
-writing to here: 0xFFFA0000 -> 0x156000
-writing to here: 0xFFFA1000 -> 0x157000
-writing to here: 0xFFFA2000 -> 0x158000
-writing to here: 0xFFFA3000 -> 0x159000
-writing to here: 0xFFFA4000 -> 0x15A000
-writing to here: 0xFFFA5000 -> 0x15B000
-writing to here: 0xFFFA6000 -> 0x15C000
-writing to here: 0xFFFA7000 -> 0x15D000
-writing to here: 0xFFFA8000 -> 0x15E000
-writing to here: 0xFFFA9000 -> 0x15F000
-writing to here: 0xFFFAA000 -> 0x160000
-writing to here: 0xFFFAB000 -> 0x161000
-writing to here: 0xFFFAC000 -> 0x162000
-writing to here: 0xFFFAD000 -> 0x163000
-writing to here: 0xFFFAE000 -> 0x164000
-writing to here: 0xFFFAF000 -> 0x165000
-writing to here: 0xFFFB0000 -> 0x166000
-writing to here: 0xFFFB1000 -> 0x167000
-writing to here: 0xFFFB2000 -> 0x168000
-writing to here: 0xFFFB3000 -> 0x169000
-writing to here: 0xFFFB4000 -> 0x16A000
-writing to here: 0xFFFB5000 -> 0x16B000
-writing to here: 0xFFFB6000 -> 0x16C000
-writing to here: 0xFFFB7000 -> 0x16D000
-writing to here: 0xFFFB8000 -> 0x16E000
-writing to here: 0xFFFB9000 -> 0x16F000
-writing to here: 0xFFFBA000 -> 0x170000
-writing to here: 0xFFFBB000 -> 0x171000
-writing to here: 0xFFFBC000 -> 0x172000
-writing to here: 0xFFFBD000 -> 0x173000
-writing to here: 0xFFFBE000 -> 0x174000
-writing to here: 0xFFFBF000 -> 0x175000
-writing to here: 0xFFFC0000 -> 0x176000
-writing to here: 0xFFFC1000 -> 0x177000
-writing to here: 0xFFFC2000 -> 0x178000
-writing to here: 0xFFFC3000 -> 0x179000
-writing to here: 0xFFFC4000 -> 0x17A000
-writing to here: 0xFFFC5000 -> 0x17B000
-writing to here: 0xFFFC6000 -> 0x17C000
-writing to here: 0xFFFC7000 -> 0x17D000
-writing to here: 0xFFFC8000 -> 0x17E000
-writing to here: 0xFFFC9000 -> 0x17F000
-writing to here: 0xFFFCA000 -> 0x180000
-writing to here: 0xFFFCB000 -> 0x181000
-writing to here: 0xFFFCC000 -> 0x182000
-writing to here: 0xFFFCD000 -> 0x183000
-writing to here: 0xFFFCE000 -> 0x184000
-writing to here: 0xFFFCF000 -> 0x185000
-writing to here: 0xFFFD0000 -> 0x186000
-writing to here: 0xFFFD1000 -> 0x187000
-writing to here: 0xFFFD2000 -> 0x188000
-writing to here: 0xFFFD3000 -> 0x189000
-writing to here: 0xFFFD4000 -> 0x18A000
-writing to here: 0xFFFD5000 -> 0x18B000
-writing to here: 0xFFFD6000 -> 0x18C000
-writing to here: 0xFFFD7000 -> 0x18D000
-writing to here: 0xFFFD8000 -> 0x18E000
-writing to here: 0xFFFD9000 -> 0x18F000
-writing to here: 0xFFFDA000 -> 0x190000
-writing to here: 0xFFFDB000 -> 0x191000
-writing to here: 0xFFFDC000 -> 0x192000
-writing to here: 0xFFFDD000 -> 0x193000
-writing to here: 0xFFFDE000 -> 0x194000
-writing to here: 0xFFFDF000 -> 0x195000
-writing to here: 0xFFFE0000 -> 0x196000
-writing to here: 0xFFFE1000 -> 0x197000
-writing to here: 0xFFFE2000 -> 0x198000
-writing to here: 0xFFFE3000 -> 0x199000
-writing to here: 0xFFFE4000 -> 0x19A000
-writing to here: 0xFFFE5000 -> 0x19B000
-writing to here: 0xFFFE6000 -> 0x19C000
-writing to here: 0xFFFE7000 -> 0x19D000
-writing to here: 0xFFFE8000 -> 0x19E000
-writing to here: 0xFFFE9000 -> 0x19F000
-writing to here: 0xFFFEA000 -> 0x1A0000
-writing to here: 0xFFFEB000 -> 0x1A1000
-writing to here: 0xFFFEC000 -> 0x1A2000
-writing to here: 0xFFFED000 -> 0x1A3000
-writing to here: 0xFFFEE000 -> 0x1A4000
-writing to here: 0xFFFEF000 -> 0x1A5000
-writing to here: 0xFFFF0000 -> 0x1A6000
-writing to here: 0xFFFF1000 -> 0x1A7000
-writing to here: 0xFFFF2000 -> 0x1A8000
-writing to here: 0xFFFF3000 -> 0x1A9000
-writing to here: 0xFFFF4000 -> 0x1AA000
-writing to here: 0xFFFF5000 -> 0x1AB000
-writing to here: 0xFFFF6000 -> 0x1AC000
-writing to here: 0xFFFF7000 -> 0x1AD000
-writing to here: 0xFFFF8000 -> 0x1AE000
-writing to here: 0xFFFF9000 -> 0x1AF000
-writing to here: 0xFFFFA000 -> 0x1B0000
-writing to here: 0xFFFFB000 -> 0x1B1000
-writing to here: 0xFFFFC000 -> 0x1B2000
-writing to here: 0xFFFFD000 -> 0x1B3000
-writing to here: 0xFFFFE000 -> 0x1B4000
-x86MapPage: v 0xD0000000 -> p 0x134000. flags 1.
+Reached TFW_SP 3
+Reached TFW_SP 4
+x86MapPage: v 0xD0000000 -> p 0x13B000. flags 1.
+Reached TFW_SP 5
 Grabbing from emo block of size 0x2000, for request 0x1000
 backup heap: largest is 0x1000, total is 0x1000
-x86MapPage: v 0xD0001000 -> p 0x12E000. flags 1.
-x86MapPage: v 0xD0002000 -> p 0x12D000. flags 1.
-x86MapPage: v 0xD0003000 -> p 0x12C000. flags 1.
-x86MapPage: v 0xD0004000 -> p 0x12B000. flags 1.
-Boot successful! Kernel is completely initialised.
+x86MapPage: v 0xD0001000 -> p 0x132000. flags 1.
+x86MapPage: v 0xD0002000 -> p 0x131000. flags 1.
+x86MapPage: v 0xD0003000 -> p 0x130000. flags 1.
+x86MapPage: v 0xD0004000 -> p 0x12F000. flags 1.
+Reached TFW_SP 6
 x86MapPage: v 0xD0005000 -> p 0xFD000000. flags 1.
 x86MapPage: v 0xD0006000 -> p 0xFD001000. flags 1.
 x86MapPage: v 0xD0007000 -> p 0xFD002000. flags 1.
@@ -328,7 +80,9 @@ x86MapPage: v 0xD003E000 -> p 0xFD039000. flags 1.
 x86MapPage: v 0xD003F000 -> p 0xFD03A000. flags 1.
 x86MapPage: v 0xD0040000 -> p 0xFD03B000. flags 1.
 x86MapPage: v 0xD0041000 -> p 0xFD03C000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
 x86MapPage: v 0xD0042000 -> p 0xFD03D000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
 x86MapPage: v 0xD0043000 -> p 0xFD03E000. flags 1.
 x86MapPage: v 0xD0044000 -> p 0xFD03F000. flags 1.
 x86MapPage: v 0xD0045000 -> p 0xFD040000. flags 1.
@@ -350,8 +104,6 @@ x86MapPage: v 0xD0054000 -> p 0xFD04F000. flags 1.
 x86MapPage: v 0xD0055000 -> p 0xFD050000. flags 1.
 x86MapPage: v 0xD0056000 -> p 0xFD051000. flags 1.
 x86MapPage: v 0xD0057000 -> p 0xFD052000. flags 1.
-Grabbing from emo block of size 0x1000, for request 0x1000
-backup heap: largest is 0x4000, total is 0x4000
 x86MapPage: v 0xD0058000 -> p 0xFD053000. flags 1.
 x86MapPage: v 0xD0059000 -> p 0xFD054000. flags 1.
 x86MapPage: v 0xD005A000 -> p 0xFD055000. flags 1.
@@ -382,7 +134,13 @@ x86MapPage: v 0xD0072000 -> p 0xFD06D000. flags 1.
 x86MapPage: v 0xD0073000 -> p 0xFD06E000. flags 1.
 x86MapPage: v 0xD0074000 -> p 0xFD06F000. flags 1.
 x86MapPage: v 0xD0075000 -> p 0xFD070000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
 x86MapPage: v 0xD0076000 -> p 0xFD071000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD0245000 -> p 0x12E000. flags 1.
+x86MapPage: v 0xD0246000 -> p 0x12D000. flags 1.
+x86MapPage: v 0xD0247000 -> p 0x12C000. flags 1.
+x86MapPage: v 0xD0248000 -> p 0x3FF000. flags 1.
 x86MapPage: v 0xD0077000 -> p 0xFD072000. flags 1.
 x86MapPage: v 0xD0078000 -> p 0xFD073000. flags 1.
 x86MapPage: v 0xD0079000 -> p 0xFD074000. flags 1.
@@ -424,20 +182,16 @@ x86MapPage: v 0xD009C000 -> p 0xFD097000. flags 1.
 x86MapPage: v 0xD009D000 -> p 0xFD098000. flags 1.
 x86MapPage: v 0xD009E000 -> p 0xFD099000. flags 1.
 x86MapPage: v 0xD009F000 -> p 0xFD09A000. flags 1.
-Grabbing from emo block of size 0x4000, for request 0x1000
 x86MapPage: v 0xD00A0000 -> p 0xFD09B000. flags 1.
-backup heap: largest is 0x3000, total is 0x3000
-x86MapPage: v 0xD0245000 -> p 0x12A000. flags 1.
-x86MapPage: v 0xD0246000 -> p 0x129000. flags 1.
-x86MapPage: v 0xD0247000 -> p 0x128000. flags 1.
-x86MapPage: v 0xD0248000 -> p 0x1FF000. flags 1.
 x86MapPage: v 0xD00A1000 -> p 0xFD09C000. flags 1.
 x86MapPage: v 0xD00A2000 -> p 0xFD09D000. flags 1.
 x86MapPage: v 0xD00A3000 -> p 0xFD09E000. flags 1.
 x86MapPage: v 0xD00A4000 -> p 0xFD09F000. flags 1.
 x86MapPage: v 0xD00A5000 -> p 0xFD0A0000. flags 1.
 x86MapPage: v 0xD00A6000 -> p 0xFD0A1000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
 x86MapPage: v 0xD00A7000 -> p 0xFD0A2000. flags 1.
+backup heap: largest is 0x4000, total is 0x6000
 x86MapPage: v 0xD00A8000 -> p 0xFD0A3000. flags 1.
 x86MapPage: v 0xD00A9000 -> p 0xFD0A4000. flags 1.
 x86MapPage: v 0xD00AA000 -> p 0xFD0A5000. flags 1.
@@ -490,7 +244,9 @@ x86MapPage: v 0xD00D8000 -> p 0xFD0D3000. flags 1.
 x86MapPage: v 0xD00D9000 -> p 0xFD0D4000. flags 1.
 x86MapPage: v 0xD00DA000 -> p 0xFD0D5000. flags 1.
 x86MapPage: v 0xD00DB000 -> p 0xFD0D6000. flags 1.
+Grabbing from emo block of size 0x2000, for request 0x1000
 x86MapPage: v 0xD00DC000 -> p 0xFD0D7000. flags 1.
+backup heap: largest is 0x4000, total is 0x5000
 x86MapPage: v 0xD00DD000 -> p 0xFD0D8000. flags 1.
 x86MapPage: v 0xD00DE000 -> p 0xFD0D9000. flags 1.
 x86MapPage: v 0xD00DF000 -> p 0xFD0DA000. flags 1.
@@ -499,8 +255,6 @@ x86MapPage: v 0xD00E1000 -> p 0xFD0DC000. flags 1.
 x86MapPage: v 0xD00E2000 -> p 0xFD0DD000. flags 1.
 x86MapPage: v 0xD00E3000 -> p 0xFD0DE000. flags 1.
 x86MapPage: v 0xD00E4000 -> p 0xFD0DF000. flags 1.
-Grabbing from emo block of size 0x3000, for request 0x1000
-backup heap: largest is 0x4000, total is 0x6000
 x86MapPage: v 0xD00E5000 -> p 0xFD0E0000. flags 1.
 x86MapPage: v 0xD00E6000 -> p 0xFD0E1000. flags 1.
 x86MapPage: v 0xD00E7000 -> p 0xFD0E2000. flags 1.
@@ -544,7 +298,9 @@ x86MapPage: v 0xD010C000 -> p 0xFD107000. flags 1.
 x86MapPage: v 0xD010D000 -> p 0xFD108000. flags 1.
 x86MapPage: v 0xD010E000 -> p 0xFD109000. flags 1.
 x86MapPage: v 0xD010F000 -> p 0xFD10A000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
 x86MapPage: v 0xD0110000 -> p 0xFD10B000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
 x86MapPage: v 0xD0111000 -> p 0xFD10C000. flags 1.
 x86MapPage: v 0xD0112000 -> p 0xFD10D000. flags 1.
 x86MapPage: v 0xD0113000 -> p 0xFD10E000. flags 1.
@@ -574,8 +330,6 @@ x86MapPage: v 0xD012A000 -> p 0xFD125000. flags 1.
 x86MapPage: v 0xD012B000 -> p 0xFD126000. flags 1.
 x86MapPage: v 0xD012C000 -> p 0xFD127000. flags 1.
 x86MapPage: v 0xD012D000 -> p 0xFD128000. flags 1.
-Grabbing from emo block of size 0x2000, for request 0x1000
-backup heap: largest is 0x4000, total is 0x5000
 x86MapPage: v 0xD012E000 -> p 0xFD129000. flags 1.
 x86MapPage: v 0xD012F000 -> p 0xFD12A000. flags 1.
 x86MapPage: v 0xD0130000 -> p 0xFD12B000. flags 1.
@@ -603,7 +357,13 @@ x86MapPage: v 0xD0145000 -> p 0xFD140000. flags 1.
 x86MapPage: v 0xD0146000 -> p 0xFD141000. flags 1.
 x86MapPage: v 0xD0147000 -> p 0xFD142000. flags 1.
 x86MapPage: v 0xD0148000 -> p 0xFD143000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
 x86MapPage: v 0xD0149000 -> p 0xFD144000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD0249000 -> p 0x3FE000. flags 1.
+x86MapPage: v 0xD024A000 -> p 0x3FD000. flags 1.
+x86MapPage: v 0xD024B000 -> p 0x3FC000. flags 1.
+x86MapPage: v 0xD024C000 -> p 0x3FB000. flags 1.
 x86MapPage: v 0xD014A000 -> p 0xFD145000. flags 1.
 x86MapPage: v 0xD014B000 -> p 0xFD146000. flags 1.
 x86MapPage: v 0xD014C000 -> p 0xFD147000. flags 1.
@@ -649,12 +409,12 @@ x86MapPage: v 0xD0173000 -> p 0xFD16E000. flags 1.
 x86MapPage: v 0xD0174000 -> p 0xFD16F000. flags 1.
 x86MapPage: v 0xD0175000 -> p 0xFD170000. flags 1.
 x86MapPage: v 0xD0176000 -> p 0xFD171000. flags 1.
-Grabbing from emo block of size 0x1000, for request 0x1000
-backup heap: largest is 0x4000, total is 0x4000
 x86MapPage: v 0xD0177000 -> p 0xFD172000. flags 1.
 x86MapPage: v 0xD0178000 -> p 0xFD173000. flags 1.
 x86MapPage: v 0xD0179000 -> p 0xFD174000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
 x86MapPage: v 0xD017A000 -> p 0xFD175000. flags 1.
+backup heap: largest is 0x4000, total is 0x6000
 x86MapPage: v 0xD017B000 -> p 0xFD176000. flags 1.
 x86MapPage: v 0xD017C000 -> p 0xFD177000. flags 1.
 x86MapPage: v 0xD017D000 -> p 0xFD178000. flags 1.
@@ -709,7 +469,9 @@ x86MapPage: v 0xD01AD000 -> p 0xFD1A8000. flags 1.
 x86MapPage: v 0xD01AE000 -> p 0xFD1A9000. flags 1.
 x86MapPage: v 0xD01AF000 -> p 0xFD1AA000. flags 1.
 x86MapPage: v 0xD01B0000 -> p 0xFD1AB000. flags 1.
+Grabbing from emo block of size 0x2000, for request 0x1000
 x86MapPage: v 0xD01B1000 -> p 0xFD1AC000. flags 1.
+backup heap: largest is 0x4000, total is 0x5000
 x86MapPage: v 0xD01B2000 -> p 0xFD1AD000. flags 1.
 x86MapPage: v 0xD01B3000 -> p 0xFD1AE000. flags 1.
 x86MapPage: v 0xD01B4000 -> p 0xFD1AF000. flags 1.
@@ -723,13 +485,7 @@ x86MapPage: v 0xD01BB000 -> p 0xFD1B6000. flags 1.
 x86MapPage: v 0xD01BC000 -> p 0xFD1B7000. flags 1.
 x86MapPage: v 0xD01BD000 -> p 0xFD1B8000. flags 1.
 x86MapPage: v 0xD01BE000 -> p 0xFD1B9000. flags 1.
-Grabbing from emo block of size 0x4000, for request 0x1000
 x86MapPage: v 0xD01BF000 -> p 0xFD1BA000. flags 1.
-backup heap: largest is 0x3000, total is 0x3000
-x86MapPage: v 0xD0249000 -> p 0x1FE000. flags 1.
-x86MapPage: v 0xD024A000 -> p 0x1FD000. flags 1.
-x86MapPage: v 0xD024B000 -> p 0x1FC000. flags 1.
-x86MapPage: v 0xD024C000 -> p 0x1FB000. flags 1.
 x86MapPage: v 0xD01C0000 -> p 0xFD1BB000. flags 1.
 x86MapPage: v 0xD01C1000 -> p 0xFD1BC000. flags 1.
 x86MapPage: v 0xD01C2000 -> p 0xFD1BD000. flags 1.
@@ -769,7 +525,9 @@ x86MapPage: v 0xD01E3000 -> p 0xFD1DE000. flags 1.
 x86MapPage: v 0xD01E4000 -> p 0xFD1DF000. flags 1.
 x86MapPage: v 0xD01E5000 -> p 0xFD1E0000. flags 1.
 x86MapPage: v 0xD01E6000 -> p 0xFD1E1000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
 x86MapPage: v 0xD01E7000 -> p 0xFD1E2000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
 x86MapPage: v 0xD01E8000 -> p 0xFD1E3000. flags 1.
 x86MapPage: v 0xD01E9000 -> p 0xFD1E4000. flags 1.
 x86MapPage: v 0xD01EA000 -> p 0xFD1E5000. flags 1.
@@ -798,8 +556,6 @@ x86MapPage: v 0xD0200000 -> p 0xFD1FB000. flags 1.
 x86MapPage: v 0xD0201000 -> p 0xFD1FC000. flags 1.
 x86MapPage: v 0xD0202000 -> p 0xFD1FD000. flags 1.
 x86MapPage: v 0xD0203000 -> p 0xFD1FE000. flags 1.
-Grabbing from emo block of size 0x3000, for request 0x1000
-backup heap: largest is 0x4000, total is 0x6000
 x86MapPage: v 0xD0204000 -> p 0xFD1FF000. flags 1.
 x86MapPage: v 0xD0205000 -> p 0xFD200000. flags 1.
 x86MapPage: v 0xD0206000 -> p 0xFD201000. flags 1.
@@ -826,7 +582,13 @@ x86MapPage: v 0xD021A000 -> p 0xFD215000. flags 1.
 x86MapPage: v 0xD021B000 -> p 0xFD216000. flags 1.
 x86MapPage: v 0xD021C000 -> p 0xFD217000. flags 1.
 x86MapPage: v 0xD021D000 -> p 0xFD218000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
 x86MapPage: v 0xD021E000 -> p 0xFD219000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD024D000 -> p 0x3FA000. flags 1.
+x86MapPage: v 0xD024E000 -> p 0x3F9000. flags 1.
+x86MapPage: v 0xD024F000 -> p 0x3F8000. flags 1.
+x86MapPage: v 0xD0250000 -> p 0x3F7000. flags 1.
 x86MapPage: v 0xD021F000 -> p 0xFD21A000. flags 1.
 x86MapPage: v 0xD0220000 -> p 0xFD21B000. flags 1.
 x86MapPage: v 0xD0221000 -> p 0xFD21C000. flags 1.
@@ -869,14 +631,1389 @@ x86MapPage: v 0xD0244000 -> p 0xFD23F000. flags 1.
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1060 / 1344 KB used
+  1076 / 3364 KB used
 
-  ...x86MapPage: v 0xD024D000 -> p 0x1FA000. flags 1.
-x86MapPage: v 0xD024E000 -> p 0x1F9000. flags 1.
+  ...x86MapPage: v 0xD0251000 -> p 0x3F6000. flags 1.
+x86MapPage: v 0xD0252000 -> p 0x3F5000. flags 1.
+x86MapPage: v 0xD0253000 -> p 0x3F4000. flags 1.
+x86MapPage: v 0xD0254000 -> p 0x3F3000. flags 1.
+x86MapPage: v 0xD0255000 -> p 0x3F2000. flags 1.
+x86MapPage: v 0xD0256000 -> p 0x3F1000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD0257000 -> p 0x3F0000. flags 1.
+x86MapPage: v 0xD0258000 -> p 0x3EF000. flags 1.
+x86MapPage: v 0xD0259000 -> p 0x3EE000. flags 1.
+x86MapPage: v 0xD025A000 -> p 0x3ED000. flags 1.
+x86MapPage: v 0xD025B000 -> p 0x3EC000. flags 1.
+x86MapPage: v 0xD025C000 -> p 0x3EB000. flags 1.
+x86MapPage: v 0xD025D000 -> p 0x3EA000. flags 1.
+x86MapPage: v 0xD025E000 -> p 0x3E9000. flags 1.
+x86MapPage: v 0xD025F000 -> p 0x3E8000. flags 1.
+x86MapPage: v 0xD0260000 -> p 0x3E7000. flags 1.
+x86MapPage: v 0xD0261000 -> p 0x3E6000. flags 1.
+x86MapPage: v 0xD0262000 -> p 0x3E5000. flags 1.
+x86MapPage: v 0xD0263000 -> p 0x3E4000. flags 1.
+x86MapPage: v 0xD0264000 -> p 0x3E3000. flags 1.
+x86MapPage: v 0xD0265000 -> p 0x3E2000. flags 1.
+12345Reached TFW_SP 7
+MarkTfwStartPoint: running test 0
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 0, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x13D000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
+Grabbing from emo block of size 0x4000, for request 0x1000
+Reached TFW_SP 2
+Grabbing from emo block of size 0x3000, for request 0x1000
+Reached TFW_SP 3
+Reached TFW_SP 4
+x86MapPage: v 0xD0000000 -> p 0x13B000. flags 1.
+Reached TFW_SP 5
 Grabbing from emo block of size 0x2000, for request 0x1000
-x86MapPage: v 0xD024F000 -> p 0x1F8000. flags 1.
+backup heap: largest is 0x1000, total is 0x1000
+x86MapPage: v 0xD0001000 -> p 0x132000. flags 1.
+x86MapPage: v 0xD0002000 -> p 0x131000. flags 1.
+x86MapPage: v 0xD0003000 -> p 0x130000. flags 1.
+x86MapPage: v 0xD0004000 -> p 0x12F000. flags 1.
+Reached TFW_SP 6
+x86MapPage: v 0xD0005000 -> p 0xFD000000. flags 1.
+x86MapPage: v 0xD0006000 -> p 0xFD001000. flags 1.
+x86MapPage: v 0xD0007000 -> p 0xFD002000. flags 1.
+x86MapPage: v 0xD0008000 -> p 0xFD003000. flags 1.
+x86MapPage: v 0xD0009000 -> p 0xFD004000. flags 1.
+x86MapPage: v 0xD000A000 -> p 0xFD005000. flags 1.
+x86MapPage: v 0xD000B000 -> p 0xFD006000. flags 1.
+x86MapPage: v 0xD000C000 -> p 0xFD007000. flags 1.
+x86MapPage: v 0xD000D000 -> p 0xFD008000. flags 1.
+x86MapPage: v 0xD000E000 -> p 0xFD009000. flags 1.
+x86MapPage: v 0xD000F000 -> p 0xFD00A000. flags 1.
+x86MapPage: v 0xD0010000 -> p 0xFD00B000. flags 1.
+x86MapPage: v 0xD0011000 -> p 0xFD00C000. flags 1.
+x86MapPage: v 0xD0012000 -> p 0xFD00D000. flags 1.
+x86MapPage: v 0xD0013000 -> p 0xFD00E000. flags 1.
+x86MapPage: v 0xD0014000 -> p 0xFD00F000. flags 1.
+x86MapPage: v 0xD0015000 -> p 0xFD010000. flags 1.
+x86MapPage: v 0xD0016000 -> p 0xFD011000. flags 1.
+x86MapPage: v 0xD0017000 -> p 0xFD012000. flags 1.
+x86MapPage: v 0xD0018000 -> p 0xFD013000. flags 1.
+x86MapPage: v 0xD0019000 -> p 0xFD014000. flags 1.
+x86MapPage: v 0xD001A000 -> p 0xFD015000. flags 1.
+x86MapPage: v 0xD001B000 -> p 0xFD016000. flags 1.
+x86MapPage: v 0xD001C000 -> p 0xFD017000. flags 1.
+x86MapPage: v 0xD001D000 -> p 0xFD018000. flags 1.
+x86MapPage: v 0xD001E000 -> p 0xFD019000. flags 1.
+x86MapPage: v 0xD001F000 -> p 0xFD01A000. flags 1.
+x86MapPage: v 0xD0020000 -> p 0xFD01B000. flags 1.
+x86MapPage: v 0xD0021000 -> p 0xFD01C000. flags 1.
+x86MapPage: v 0xD0022000 -> p 0xFD01D000. flags 1.
+x86MapPage: v 0xD0023000 -> p 0xFD01E000. flags 1.
+x86MapPage: v 0xD0024000 -> p 0xFD01F000. flags 1.
+x86MapPage: v 0xD0025000 -> p 0xFD020000. flags 1.
+x86MapPage: v 0xD0026000 -> p 0xFD021000. flags 1.
+x86MapPage: v 0xD0027000 -> p 0xFD022000. flags 1.
+x86MapPage: v 0xD0028000 -> p 0xFD023000. flags 1.
+x86MapPage: v 0xD0029000 -> p 0xFD024000. flags 1.
+x86MapPage: v 0xD002A000 -> p 0xFD025000. flags 1.
+x86MapPage: v 0xD002B000 -> p 0xFD026000. flags 1.
+x86MapPage: v 0xD002C000 -> p 0xFD027000. flags 1.
+x86MapPage: v 0xD002D000 -> p 0xFD028000. flags 1.
+x86MapPage: v 0xD002E000 -> p 0xFD029000. flags 1.
+x86MapPage: v 0xD002F000 -> p 0xFD02A000. flags 1.
+x86MapPage: v 0xD0030000 -> p 0xFD02B000. flags 1.
+x86MapPage: v 0xD0031000 -> p 0xFD02C000. flags 1.
+x86MapPage: v 0xD0032000 -> p 0xFD02D000. flags 1.
+x86MapPage: v 0xD0033000 -> p 0xFD02E000. flags 1.
+x86MapPage: v 0xD0034000 -> p 0xFD02F000. flags 1.
+x86MapPage: v 0xD0035000 -> p 0xFD030000. flags 1.
+x86MapPage: v 0xD0036000 -> p 0xFD031000. flags 1.
+x86MapPage: v 0xD0037000 -> p 0xFD032000. flags 1.
+x86MapPage: v 0xD0038000 -> p 0xFD033000. flags 1.
+x86MapPage: v 0xD0039000 -> p 0xFD034000. flags 1.
+x86MapPage: v 0xD003A000 -> p 0xFD035000. flags 1.
+x86MapPage: v 0xD003B000 -> p 0xFD036000. flags 1.
+x86MapPage: v 0xD003C000 -> p 0xFD037000. flags 1.
+x86MapPage: v 0xD003D000 -> p 0xFD038000. flags 1.
+x86MapPage: v 0xD003E000 -> p 0xFD039000. flags 1.
+x86MapPage: v 0xD003F000 -> p 0xFD03A000. flags 1.
+x86MapPage: v 0xD0040000 -> p 0xFD03B000. flags 1.
+x86MapPage: v 0xD0041000 -> p 0xFD03C000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
+x86MapPage: v 0xD0042000 -> p 0xFD03D000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
+x86MapPage: v 0xD0043000 -> p 0xFD03E000. flags 1.
+x86MapPage: v 0xD0044000 -> p 0xFD03F000. flags 1.
+x86MapPage: v 0xD0045000 -> p 0xFD040000. flags 1.
+x86MapPage: v 0xD0046000 -> p 0xFD041000. flags 1.
+x86MapPage: v 0xD0047000 -> p 0xFD042000. flags 1.
+x86MapPage: v 0xD0048000 -> p 0xFD043000. flags 1.
+x86MapPage: v 0xD0049000 -> p 0xFD044000. flags 1.
+x86MapPage: v 0xD004A000 -> p 0xFD045000. flags 1.
+x86MapPage: v 0xD004B000 -> p 0xFD046000. flags 1.
+x86MapPage: v 0xD004C000 -> p 0xFD047000. flags 1.
+x86MapPage: v 0xD004D000 -> p 0xFD048000. flags 1.
+x86MapPage: v 0xD004E000 -> p 0xFD049000. flags 1.
+x86MapPage: v 0xD004F000 -> p 0xFD04A000. flags 1.
+x86MapPage: v 0xD0050000 -> p 0xFD04B000. flags 1.
+x86MapPage: v 0xD0051000 -> p 0xFD04C000. flags 1.
+x86MapPage: v 0xD0052000 -> p 0xFD04D000. flags 1.
+x86MapPage: v 0xD0053000 -> p 0xFD04E000. flags 1.
+x86MapPage: v 0xD0054000 -> p 0xFD04F000. flags 1.
+x86MapPage: v 0xD0055000 -> p 0xFD050000. flags 1.
+x86MapPage: v 0xD0056000 -> p 0xFD051000. flags 1.
+x86MapPage: v 0xD0057000 -> p 0xFD052000. flags 1.
+x86MapPage: v 0xD0058000 -> p 0xFD053000. flags 1.
+x86MapPage: v 0xD0059000 -> p 0xFD054000. flags 1.
+x86MapPage: v 0xD005A000 -> p 0xFD055000. flags 1.
+x86MapPage: v 0xD005B000 -> p 0xFD056000. flags 1.
+x86MapPage: v 0xD005C000 -> p 0xFD057000. flags 1.
+x86MapPage: v 0xD005D000 -> p 0xFD058000. flags 1.
+x86MapPage: v 0xD005E000 -> p 0xFD059000. flags 1.
+x86MapPage: v 0xD005F000 -> p 0xFD05A000. flags 1.
+x86MapPage: v 0xD0060000 -> p 0xFD05B000. flags 1.
+x86MapPage: v 0xD0061000 -> p 0xFD05C000. flags 1.
+x86MapPage: v 0xD0062000 -> p 0xFD05D000. flags 1.
+x86MapPage: v 0xD0063000 -> p 0xFD05E000. flags 1.
+x86MapPage: v 0xD0064000 -> p 0xFD05F000. flags 1.
+x86MapPage: v 0xD0065000 -> p 0xFD060000. flags 1.
+x86MapPage: v 0xD0066000 -> p 0xFD061000. flags 1.
+x86MapPage: v 0xD0067000 -> p 0xFD062000. flags 1.
+x86MapPage: v 0xD0068000 -> p 0xFD063000. flags 1.
+x86MapPage: v 0xD0069000 -> p 0xFD064000. flags 1.
+x86MapPage: v 0xD006A000 -> p 0xFD065000. flags 1.
+x86MapPage: v 0xD006B000 -> p 0xFD066000. flags 1.
+x86MapPage: v 0xD006C000 -> p 0xFD067000. flags 1.
+x86MapPage: v 0xD006D000 -> p 0xFD068000. flags 1.
+x86MapPage: v 0xD006E000 -> p 0xFD069000. flags 1.
+x86MapPage: v 0xD006F000 -> p 0xFD06A000. flags 1.
+x86MapPage: v 0xD0070000 -> p 0xFD06B000. flags 1.
+x86MapPage: v 0xD0071000 -> p 0xFD06C000. flags 1.
+x86MapPage: v 0xD0072000 -> p 0xFD06D000. flags 1.
+x86MapPage: v 0xD0073000 -> p 0xFD06E000. flags 1.
+x86MapPage: v 0xD0074000 -> p 0xFD06F000. flags 1.
+x86MapPage: v 0xD0075000 -> p 0xFD070000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
+x86MapPage: v 0xD0076000 -> p 0xFD071000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD0245000 -> p 0x12E000. flags 1.
+x86MapPage: v 0xD0246000 -> p 0x12D000. flags 1.
+x86MapPage: v 0xD0247000 -> p 0x12C000. flags 1.
+x86MapPage: v 0xD0248000 -> p 0x3FF000. flags 1.
+x86MapPage: v 0xD0077000 -> p 0xFD072000. flags 1.
+x86MapPage: v 0xD0078000 -> p 0xFD073000. flags 1.
+x86MapPage: v 0xD0079000 -> p 0xFD074000. flags 1.
+x86MapPage: v 0xD007A000 -> p 0xFD075000. flags 1.
+x86MapPage: v 0xD007B000 -> p 0xFD076000. flags 1.
+x86MapPage: v 0xD007C000 -> p 0xFD077000. flags 1.
+x86MapPage: v 0xD007D000 -> p 0xFD078000. flags 1.
+x86MapPage: v 0xD007E000 -> p 0xFD079000. flags 1.
+x86MapPage: v 0xD007F000 -> p 0xFD07A000. flags 1.
+x86MapPage: v 0xD0080000 -> p 0xFD07B000. flags 1.
+x86MapPage: v 0xD0081000 -> p 0xFD07C000. flags 1.
+x86MapPage: v 0xD0082000 -> p 0xFD07D000. flags 1.
+x86MapPage: v 0xD0083000 -> p 0xFD07E000. flags 1.
+x86MapPage: v 0xD0084000 -> p 0xFD07F000. flags 1.
+x86MapPage: v 0xD0085000 -> p 0xFD080000. flags 1.
+x86MapPage: v 0xD0086000 -> p 0xFD081000. flags 1.
+x86MapPage: v 0xD0087000 -> p 0xFD082000. flags 1.
+x86MapPage: v 0xD0088000 -> p 0xFD083000. flags 1.
+x86MapPage: v 0xD0089000 -> p 0xFD084000. flags 1.
+x86MapPage: v 0xD008A000 -> p 0xFD085000. flags 1.
+x86MapPage: v 0xD008B000 -> p 0xFD086000. flags 1.
+x86MapPage: v 0xD008C000 -> p 0xFD087000. flags 1.
+x86MapPage: v 0xD008D000 -> p 0xFD088000. flags 1.
+x86MapPage: v 0xD008E000 -> p 0xFD089000. flags 1.
+x86MapPage: v 0xD008F000 -> p 0xFD08A000. flags 1.
+x86MapPage: v 0xD0090000 -> p 0xFD08B000. flags 1.
+x86MapPage: v 0xD0091000 -> p 0xFD08C000. flags 1.
+x86MapPage: v 0xD0092000 -> p 0xFD08D000. flags 1.
+x86MapPage: v 0xD0093000 -> p 0xFD08E000. flags 1.
+x86MapPage: v 0xD0094000 -> p 0xFD08F000. flags 1.
+x86MapPage: v 0xD0095000 -> p 0xFD090000. flags 1.
+x86MapPage: v 0xD0096000 -> p 0xFD091000. flags 1.
+x86MapPage: v 0xD0097000 -> p 0xFD092000. flags 1.
+x86MapPage: v 0xD0098000 -> p 0xFD093000. flags 1.
+x86MapPage: v 0xD0099000 -> p 0xFD094000. flags 1.
+x86MapPage: v 0xD009A000 -> p 0xFD095000. flags 1.
+x86MapPage: v 0xD009B000 -> p 0xFD096000. flags 1.
+x86MapPage: v 0xD009C000 -> p 0xFD097000. flags 1.
+x86MapPage: v 0xD009D000 -> p 0xFD098000. flags 1.
+x86MapPage: v 0xD009E000 -> p 0xFD099000. flags 1.
+x86MapPage: v 0xD009F000 -> p 0xFD09A000. flags 1.
+x86MapPage: v 0xD00A0000 -> p 0xFD09B000. flags 1.
+x86MapPage: v 0xD00A1000 -> p 0xFD09C000. flags 1.
+x86MapPage: v 0xD00A2000 -> p 0xFD09D000. flags 1.
+x86MapPage: v 0xD00A3000 -> p 0xFD09E000. flags 1.
+x86MapPage: v 0xD00A4000 -> p 0xFD09F000. flags 1.
+x86MapPage: v 0xD00A5000 -> p 0xFD0A0000. flags 1.
+x86MapPage: v 0xD00A6000 -> p 0xFD0A1000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+x86MapPage: v 0xD00A7000 -> p 0xFD0A2000. flags 1.
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD00A8000 -> p 0xFD0A3000. flags 1.
+x86MapPage: v 0xD00A9000 -> p 0xFD0A4000. flags 1.
+x86MapPage: v 0xD00AA000 -> p 0xFD0A5000. flags 1.
+x86MapPage: v 0xD00AB000 -> p 0xFD0A6000. flags 1.
+x86MapPage: v 0xD00AC000 -> p 0xFD0A7000. flags 1.
+x86MapPage: v 0xD00AD000 -> p 0xFD0A8000. flags 1.
+x86MapPage: v 0xD00AE000 -> p 0xFD0A9000. flags 1.
+x86MapPage: v 0xD00AF000 -> p 0xFD0AA000. flags 1.
+x86MapPage: v 0xD00B0000 -> p 0xFD0AB000. flags 1.
+x86MapPage: v 0xD00B1000 -> p 0xFD0AC000. flags 1.
+x86MapPage: v 0xD00B2000 -> p 0xFD0AD000. flags 1.
+x86MapPage: v 0xD00B3000 -> p 0xFD0AE000. flags 1.
+x86MapPage: v 0xD00B4000 -> p 0xFD0AF000. flags 1.
+x86MapPage: v 0xD00B5000 -> p 0xFD0B0000. flags 1.
+x86MapPage: v 0xD00B6000 -> p 0xFD0B1000. flags 1.
+x86MapPage: v 0xD00B7000 -> p 0xFD0B2000. flags 1.
+x86MapPage: v 0xD00B8000 -> p 0xFD0B3000. flags 1.
+x86MapPage: v 0xD00B9000 -> p 0xFD0B4000. flags 1.
+x86MapPage: v 0xD00BA000 -> p 0xFD0B5000. flags 1.
+x86MapPage: v 0xD00BB000 -> p 0xFD0B6000. flags 1.
+x86MapPage: v 0xD00BC000 -> p 0xFD0B7000. flags 1.
+x86MapPage: v 0xD00BD000 -> p 0xFD0B8000. flags 1.
+x86MapPage: v 0xD00BE000 -> p 0xFD0B9000. flags 1.
+x86MapPage: v 0xD00BF000 -> p 0xFD0BA000. flags 1.
+x86MapPage: v 0xD00C0000 -> p 0xFD0BB000. flags 1.
+x86MapPage: v 0xD00C1000 -> p 0xFD0BC000. flags 1.
+x86MapPage: v 0xD00C2000 -> p 0xFD0BD000. flags 1.
+x86MapPage: v 0xD00C3000 -> p 0xFD0BE000. flags 1.
+x86MapPage: v 0xD00C4000 -> p 0xFD0BF000. flags 1.
+x86MapPage: v 0xD00C5000 -> p 0xFD0C0000. flags 1.
+x86MapPage: v 0xD00C6000 -> p 0xFD0C1000. flags 1.
+x86MapPage: v 0xD00C7000 -> p 0xFD0C2000. flags 1.
+x86MapPage: v 0xD00C8000 -> p 0xFD0C3000. flags 1.
+x86MapPage: v 0xD00C9000 -> p 0xFD0C4000. flags 1.
+x86MapPage: v 0xD00CA000 -> p 0xFD0C5000. flags 1.
+x86MapPage: v 0xD00CB000 -> p 0xFD0C6000. flags 1.
+x86MapPage: v 0xD00CC000 -> p 0xFD0C7000. flags 1.
+x86MapPage: v 0xD00CD000 -> p 0xFD0C8000. flags 1.
+x86MapPage: v 0xD00CE000 -> p 0xFD0C9000. flags 1.
+x86MapPage: v 0xD00CF000 -> p 0xFD0CA000. flags 1.
+x86MapPage: v 0xD00D0000 -> p 0xFD0CB000. flags 1.
+x86MapPage: v 0xD00D1000 -> p 0xFD0CC000. flags 1.
+x86MapPage: v 0xD00D2000 -> p 0xFD0CD000. flags 1.
+x86MapPage: v 0xD00D3000 -> p 0xFD0CE000. flags 1.
+x86MapPage: v 0xD00D4000 -> p 0xFD0CF000. flags 1.
+x86MapPage: v 0xD00D5000 -> p 0xFD0D0000. flags 1.
+x86MapPage: v 0xD00D6000 -> p 0xFD0D1000. flags 1.
+x86MapPage: v 0xD00D7000 -> p 0xFD0D2000. flags 1.
+x86MapPage: v 0xD00D8000 -> p 0xFD0D3000. flags 1.
+x86MapPage: v 0xD00D9000 -> p 0xFD0D4000. flags 1.
+x86MapPage: v 0xD00DA000 -> p 0xFD0D5000. flags 1.
+x86MapPage: v 0xD00DB000 -> p 0xFD0D6000. flags 1.
+Grabbing from emo block of size 0x2000, for request 0x1000
+x86MapPage: v 0xD00DC000 -> p 0xFD0D7000. flags 1.
 backup heap: largest is 0x4000, total is 0x5000
-x86MapPage: v 0xD0250000 -> p 0x1F7000. flags 1.
-x86MapPage: v 0xD0251000 -> p 0x1F6000. flags 1.
-x86MapPage: v 0xD0252000 -> p 0x1F5000. flags 1.
-12345154321234515432123451543212345154321234515432123451543212345154321234515432123451543212345154321234515432
+x86MapPage: v 0xD00DD000 -> p 0xFD0D8000. flags 1.
+x86MapPage: v 0xD00DE000 -> p 0xFD0D9000. flags 1.
+x86MapPage: v 0xD00DF000 -> p 0xFD0DA000. flags 1.
+x86MapPage: v 0xD00E0000 -> p 0xFD0DB000. flags 1.
+x86MapPage: v 0xD00E1000 -> p 0xFD0DC000. flags 1.
+x86MapPage: v 0xD00E2000 -> p 0xFD0DD000. flags 1.
+x86MapPage: v 0xD00E3000 -> p 0xFD0DE000. flags 1.
+x86MapPage: v 0xD00E4000 -> p 0xFD0DF000. flags 1.
+x86MapPage: v 0xD00E5000 -> p 0xFD0E0000. flags 1.
+x86MapPage: v 0xD00E6000 -> p 0xFD0E1000. flags 1.
+x86MapPage: v 0xD00E7000 -> p 0xFD0E2000. flags 1.
+x86MapPage: v 0xD00E8000 -> p 0xFD0E3000. flags 1.
+x86MapPage: v 0xD00E9000 -> p 0xFD0E4000. flags 1.
+x86MapPage: v 0xD00EA000 -> p 0xFD0E5000. flags 1.
+x86MapPage: v 0xD00EB000 -> p 0xFD0E6000. flags 1.
+x86MapPage: v 0xD00EC000 -> p 0xFD0E7000. flags 1.
+x86MapPage: v 0xD00ED000 -> p 0xFD0E8000. flags 1.
+x86MapPage: v 0xD00EE000 -> p 0xFD0E9000. flags 1.
+x86MapPage: v 0xD00EF000 -> p 0xFD0EA000. flags 1.
+x86MapPage: v 0xD00F0000 -> p 0xFD0EB000. flags 1.
+x86MapPage: v 0xD00F1000 -> p 0xFD0EC000. flags 1.
+x86MapPage: v 0xD00F2000 -> p 0xFD0ED000. flags 1.
+x86MapPage: v 0xD00F3000 -> p 0xFD0EE000. flags 1.
+x86MapPage: v 0xD00F4000 -> p 0xFD0EF000. flags 1.
+x86MapPage: v 0xD00F5000 -> p 0xFD0F0000. flags 1.
+x86MapPage: v 0xD00F6000 -> p 0xFD0F1000. flags 1.
+x86MapPage: v 0xD00F7000 -> p 0xFD0F2000. flags 1.
+x86MapPage: v 0xD00F8000 -> p 0xFD0F3000. flags 1.
+x86MapPage: v 0xD00F9000 -> p 0xFD0F4000. flags 1.
+x86MapPage: v 0xD00FA000 -> p 0xFD0F5000. flags 1.
+x86MapPage: v 0xD00FB000 -> p 0xFD0F6000. flags 1.
+x86MapPage: v 0xD00FC000 -> p 0xFD0F7000. flags 1.
+x86MapPage: v 0xD00FD000 -> p 0xFD0F8000. flags 1.
+x86MapPage: v 0xD00FE000 -> p 0xFD0F9000. flags 1.
+x86MapPage: v 0xD00FF000 -> p 0xFD0FA000. flags 1.
+x86MapPage: v 0xD0100000 -> p 0xFD0FB000. flags 1.
+x86MapPage: v 0xD0101000 -> p 0xFD0FC000. flags 1.
+x86MapPage: v 0xD0102000 -> p 0xFD0FD000. flags 1.
+x86MapPage: v 0xD0103000 -> p 0xFD0FE000. flags 1.
+x86MapPage: v 0xD0104000 -> p 0xFD0FF000. flags 1.
+x86MapPage: v 0xD0105000 -> p 0xFD100000. flags 1.
+x86MapPage: v 0xD0106000 -> p 0xFD101000. flags 1.
+x86MapPage: v 0xD0107000 -> p 0xFD102000. flags 1.
+x86MapPage: v 0xD0108000 -> p 0xFD103000. flags 1.
+x86MapPage: v 0xD0109000 -> p 0xFD104000. flags 1.
+x86MapPage: v 0xD010A000 -> p 0xFD105000. flags 1.
+x86MapPage: v 0xD010B000 -> p 0xFD106000. flags 1.
+x86MapPage: v 0xD010C000 -> p 0xFD107000. flags 1.
+x86MapPage: v 0xD010D000 -> p 0xFD108000. flags 1.
+x86MapPage: v 0xD010E000 -> p 0xFD109000. flags 1.
+x86MapPage: v 0xD010F000 -> p 0xFD10A000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
+x86MapPage: v 0xD0110000 -> p 0xFD10B000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
+x86MapPage: v 0xD0111000 -> p 0xFD10C000. flags 1.
+x86MapPage: v 0xD0112000 -> p 0xFD10D000. flags 1.
+x86MapPage: v 0xD0113000 -> p 0xFD10E000. flags 1.
+x86MapPage: v 0xD0114000 -> p 0xFD10F000. flags 1.
+x86MapPage: v 0xD0115000 -> p 0xFD110000. flags 1.
+x86MapPage: v 0xD0116000 -> p 0xFD111000. flags 1.
+x86MapPage: v 0xD0117000 -> p 0xFD112000. flags 1.
+x86MapPage: v 0xD0118000 -> p 0xFD113000. flags 1.
+x86MapPage: v 0xD0119000 -> p 0xFD114000. flags 1.
+x86MapPage: v 0xD011A000 -> p 0xFD115000. flags 1.
+x86MapPage: v 0xD011B000 -> p 0xFD116000. flags 1.
+x86MapPage: v 0xD011C000 -> p 0xFD117000. flags 1.
+x86MapPage: v 0xD011D000 -> p 0xFD118000. flags 1.
+x86MapPage: v 0xD011E000 -> p 0xFD119000. flags 1.
+x86MapPage: v 0xD011F000 -> p 0xFD11A000. flags 1.
+x86MapPage: v 0xD0120000 -> p 0xFD11B000. flags 1.
+x86MapPage: v 0xD0121000 -> p 0xFD11C000. flags 1.
+x86MapPage: v 0xD0122000 -> p 0xFD11D000. flags 1.
+x86MapPage: v 0xD0123000 -> p 0xFD11E000. flags 1.
+x86MapPage: v 0xD0124000 -> p 0xFD11F000. flags 1.
+x86MapPage: v 0xD0125000 -> p 0xFD120000. flags 1.
+x86MapPage: v 0xD0126000 -> p 0xFD121000. flags 1.
+x86MapPage: v 0xD0127000 -> p 0xFD122000. flags 1.
+x86MapPage: v 0xD0128000 -> p 0xFD123000. flags 1.
+x86MapPage: v 0xD0129000 -> p 0xFD124000. flags 1.
+x86MapPage: v 0xD012A000 -> p 0xFD125000. flags 1.
+x86MapPage: v 0xD012B000 -> p 0xFD126000. flags 1.
+x86MapPage: v 0xD012C000 -> p 0xFD127000. flags 1.
+x86MapPage: v 0xD012D000 -> p 0xFD128000. flags 1.
+x86MapPage: v 0xD012E000 -> p 0xFD129000. flags 1.
+x86MapPage: v 0xD012F000 -> p 0xFD12A000. flags 1.
+x86MapPage: v 0xD0130000 -> p 0xFD12B000. flags 1.
+x86MapPage: v 0xD0131000 -> p 0xFD12C000. flags 1.
+x86MapPage: v 0xD0132000 -> p 0xFD12D000. flags 1.
+x86MapPage: v 0xD0133000 -> p 0xFD12E000. flags 1.
+x86MapPage: v 0xD0134000 -> p 0xFD12F000. flags 1.
+x86MapPage: v 0xD0135000 -> p 0xFD130000. flags 1.
+x86MapPage: v 0xD0136000 -> p 0xFD131000. flags 1.
+x86MapPage: v 0xD0137000 -> p 0xFD132000. flags 1.
+x86MapPage: v 0xD0138000 -> p 0xFD133000. flags 1.
+x86MapPage: v 0xD0139000 -> p 0xFD134000. flags 1.
+x86MapPage: v 0xD013A000 -> p 0xFD135000. flags 1.
+x86MapPage: v 0xD013B000 -> p 0xFD136000. flags 1.
+x86MapPage: v 0xD013C000 -> p 0xFD137000. flags 1.
+x86MapPage: v 0xD013D000 -> p 0xFD138000. flags 1.
+x86MapPage: v 0xD013E000 -> p 0xFD139000. flags 1.
+x86MapPage: v 0xD013F000 -> p 0xFD13A000. flags 1.
+x86MapPage: v 0xD0140000 -> p 0xFD13B000. flags 1.
+x86MapPage: v 0xD0141000 -> p 0xFD13C000. flags 1.
+x86MapPage: v 0xD0142000 -> p 0xFD13D000. flags 1.
+x86MapPage: v 0xD0143000 -> p 0xFD13E000. flags 1.
+x86MapPage: v 0xD0144000 -> p 0xFD13F000. flags 1.
+x86MapPage: v 0xD0145000 -> p 0xFD140000. flags 1.
+x86MapPage: v 0xD0146000 -> p 0xFD141000. flags 1.
+x86MapPage: v 0xD0147000 -> p 0xFD142000. flags 1.
+x86MapPage: v 0xD0148000 -> p 0xFD143000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
+x86MapPage: v 0xD0149000 -> p 0xFD144000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD0249000 -> p 0x3FE000. flags 1.
+x86MapPage: v 0xD024A000 -> p 0x3FD000. flags 1.
+x86MapPage: v 0xD024B000 -> p 0x3FC000. flags 1.
+x86MapPage: v 0xD024C000 -> p 0x3FB000. flags 1.
+x86MapPage: v 0xD014A000 -> p 0xFD145000. flags 1.
+x86MapPage: v 0xD014B000 -> p 0xFD146000. flags 1.
+x86MapPage: v 0xD014C000 -> p 0xFD147000. flags 1.
+x86MapPage: v 0xD014D000 -> p 0xFD148000. flags 1.
+x86MapPage: v 0xD014E000 -> p 0xFD149000. flags 1.
+x86MapPage: v 0xD014F000 -> p 0xFD14A000. flags 1.
+x86MapPage: v 0xD0150000 -> p 0xFD14B000. flags 1.
+x86MapPage: v 0xD0151000 -> p 0xFD14C000. flags 1.
+x86MapPage: v 0xD0152000 -> p 0xFD14D000. flags 1.
+x86MapPage: v 0xD0153000 -> p 0xFD14E000. flags 1.
+x86MapPage: v 0xD0154000 -> p 0xFD14F000. flags 1.
+x86MapPage: v 0xD0155000 -> p 0xFD150000. flags 1.
+x86MapPage: v 0xD0156000 -> p 0xFD151000. flags 1.
+x86MapPage: v 0xD0157000 -> p 0xFD152000. flags 1.
+x86MapPage: v 0xD0158000 -> p 0xFD153000. flags 1.
+x86MapPage: v 0xD0159000 -> p 0xFD154000. flags 1.
+x86MapPage: v 0xD015A000 -> p 0xFD155000. flags 1.
+x86MapPage: v 0xD015B000 -> p 0xFD156000. flags 1.
+x86MapPage: v 0xD015C000 -> p 0xFD157000. flags 1.
+x86MapPage: v 0xD015D000 -> p 0xFD158000. flags 1.
+x86MapPage: v 0xD015E000 -> p 0xFD159000. flags 1.
+x86MapPage: v 0xD015F000 -> p 0xFD15A000. flags 1.
+x86MapPage: v 0xD0160000 -> p 0xFD15B000. flags 1.
+x86MapPage: v 0xD0161000 -> p 0xFD15C000. flags 1.
+x86MapPage: v 0xD0162000 -> p 0xFD15D000. flags 1.
+x86MapPage: v 0xD0163000 -> p 0xFD15E000. flags 1.
+x86MapPage: v 0xD0164000 -> p 0xFD15F000. flags 1.
+x86MapPage: v 0xD0165000 -> p 0xFD160000. flags 1.
+x86MapPage: v 0xD0166000 -> p 0xFD161000. flags 1.
+x86MapPage: v 0xD0167000 -> p 0xFD162000. flags 1.
+x86MapPage: v 0xD0168000 -> p 0xFD163000. flags 1.
+x86MapPage: v 0xD0169000 -> p 0xFD164000. flags 1.
+x86MapPage: v 0xD016A000 -> p 0xFD165000. flags 1.
+x86MapPage: v 0xD016B000 -> p 0xFD166000. flags 1.
+x86MapPage: v 0xD016C000 -> p 0xFD167000. flags 1.
+x86MapPage: v 0xD016D000 -> p 0xFD168000. flags 1.
+x86MapPage: v 0xD016E000 -> p 0xFD169000. flags 1.
+x86MapPage: v 0xD016F000 -> p 0xFD16A000. flags 1.
+x86MapPage: v 0xD0170000 -> p 0xFD16B000. flags 1.
+x86MapPage: v 0xD0171000 -> p 0xFD16C000. flags 1.
+x86MapPage: v 0xD0172000 -> p 0xFD16D000. flags 1.
+x86MapPage: v 0xD0173000 -> p 0xFD16E000. flags 1.
+x86MapPage: v 0xD0174000 -> p 0xFD16F000. flags 1.
+x86MapPage: v 0xD0175000 -> p 0xFD170000. flags 1.
+x86MapPage: v 0xD0176000 -> p 0xFD171000. flags 1.
+x86MapPage: v 0xD0177000 -> p 0xFD172000. flags 1.
+x86MapPage: v 0xD0178000 -> p 0xFD173000. flags 1.
+x86MapPage: v 0xD0179000 -> p 0xFD174000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+x86MapPage: v 0xD017A000 -> p 0xFD175000. flags 1.
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD017B000 -> p 0xFD176000. flags 1.
+x86MapPage: v 0xD017C000 -> p 0xFD177000. flags 1.
+x86MapPage: v 0xD017D000 -> p 0xFD178000. flags 1.
+x86MapPage: v 0xD017E000 -> p 0xFD179000. flags 1.
+x86MapPage: v 0xD017F000 -> p 0xFD17A000. flags 1.
+x86MapPage: v 0xD0180000 -> p 0xFD17B000. flags 1.
+x86MapPage: v 0xD0181000 -> p 0xFD17C000. flags 1.
+x86MapPage: v 0xD0182000 -> p 0xFD17D000. flags 1.
+x86MapPage: v 0xD0183000 -> p 0xFD17E000. flags 1.
+x86MapPage: v 0xD0184000 -> p 0xFD17F000. flags 1.
+x86MapPage: v 0xD0185000 -> p 0xFD180000. flags 1.
+x86MapPage: v 0xD0186000 -> p 0xFD181000. flags 1.
+x86MapPage: v 0xD0187000 -> p 0xFD182000. flags 1.
+x86MapPage: v 0xD0188000 -> p 0xFD183000. flags 1.
+x86MapPage: v 0xD0189000 -> p 0xFD184000. flags 1.
+x86MapPage: v 0xD018A000 -> p 0xFD185000. flags 1.
+x86MapPage: v 0xD018B000 -> p 0xFD186000. flags 1.
+x86MapPage: v 0xD018C000 -> p 0xFD187000. flags 1.
+x86MapPage: v 0xD018D000 -> p 0xFD188000. flags 1.
+x86MapPage: v 0xD018E000 -> p 0xFD189000. flags 1.
+x86MapPage: v 0xD018F000 -> p 0xFD18A000. flags 1.
+x86MapPage: v 0xD0190000 -> p 0xFD18B000. flags 1.
+x86MapPage: v 0xD0191000 -> p 0xFD18C000. flags 1.
+x86MapPage: v 0xD0192000 -> p 0xFD18D000. flags 1.
+x86MapPage: v 0xD0193000 -> p 0xFD18E000. flags 1.
+x86MapPage: v 0xD0194000 -> p 0xFD18F000. flags 1.
+x86MapPage: v 0xD0195000 -> p 0xFD190000. flags 1.
+x86MapPage: v 0xD0196000 -> p 0xFD191000. flags 1.
+x86MapPage: v 0xD0197000 -> p 0xFD192000. flags 1.
+x86MapPage: v 0xD0198000 -> p 0xFD193000. flags 1.
+x86MapPage: v 0xD0199000 -> p 0xFD194000. flags 1.
+x86MapPage: v 0xD019A000 -> p 0xFD195000. flags 1.
+x86MapPage: v 0xD019B000 -> p 0xFD196000. flags 1.
+x86MapPage: v 0xD019C000 -> p 0xFD197000. flags 1.
+x86MapPage: v 0xD019D000 -> p 0xFD198000. flags 1.
+x86MapPage: v 0xD019E000 -> p 0xFD199000. flags 1.
+x86MapPage: v 0xD019F000 -> p 0xFD19A000. flags 1.
+x86MapPage: v 0xD01A0000 -> p 0xFD19B000. flags 1.
+x86MapPage: v 0xD01A1000 -> p 0xFD19C000. flags 1.
+x86MapPage: v 0xD01A2000 -> p 0xFD19D000. flags 1.
+x86MapPage: v 0xD01A3000 -> p 0xFD19E000. flags 1.
+x86MapPage: v 0xD01A4000 -> p 0xFD19F000. flags 1.
+x86MapPage: v 0xD01A5000 -> p 0xFD1A0000. flags 1.
+x86MapPage: v 0xD01A6000 -> p 0xFD1A1000. flags 1.
+x86MapPage: v 0xD01A7000 -> p 0xFD1A2000. flags 1.
+x86MapPage: v 0xD01A8000 -> p 0xFD1A3000. flags 1.
+x86MapPage: v 0xD01A9000 -> p 0xFD1A4000. flags 1.
+x86MapPage: v 0xD01AA000 -> p 0xFD1A5000. flags 1.
+x86MapPage: v 0xD01AB000 -> p 0xFD1A6000. flags 1.
+x86MapPage: v 0xD01AC000 -> p 0xFD1A7000. flags 1.
+x86MapPage: v 0xD01AD000 -> p 0xFD1A8000. flags 1.
+x86MapPage: v 0xD01AE000 -> p 0xFD1A9000. flags 1.
+x86MapPage: v 0xD01AF000 -> p 0xFD1AA000. flags 1.
+x86MapPage: v 0xD01B0000 -> p 0xFD1AB000. flags 1.
+Grabbing from emo block of size 0x2000, for request 0x1000
+x86MapPage: v 0xD01B1000 -> p 0xFD1AC000. flags 1.
+backup heap: largest is 0x4000, total is 0x5000
+x86MapPage: v 0xD01B2000 -> p 0xFD1AD000. flags 1.
+x86MapPage: v 0xD01B3000 -> p 0xFD1AE000. flags 1.
+x86MapPage: v 0xD01B4000 -> p 0xFD1AF000. flags 1.
+x86MapPage: v 0xD01B5000 -> p 0xFD1B0000. flags 1.
+x86MapPage: v 0xD01B6000 -> p 0xFD1B1000. flags 1.
+x86MapPage: v 0xD01B7000 -> p 0xFD1B2000. flags 1.
+x86MapPage: v 0xD01B8000 -> p 0xFD1B3000. flags 1.
+x86MapPage: v 0xD01B9000 -> p 0xFD1B4000. flags 1.
+x86MapPage: v 0xD01BA000 -> p 0xFD1B5000. flags 1.
+x86MapPage: v 0xD01BB000 -> p 0xFD1B6000. flags 1.
+x86MapPage: v 0xD01BC000 -> p 0xFD1B7000. flags 1.
+x86MapPage: v 0xD01BD000 -> p 0xFD1B8000. flags 1.
+x86MapPage: v 0xD01BE000 -> p 0xFD1B9000. flags 1.
+x86MapPage: v 0xD01BF000 -> p 0xFD1BA000. flags 1.
+x86MapPage: v 0xD01C0000 -> p 0xFD1BB000. flags 1.
+x86MapPage: v 0xD01C1000 -> p 0xFD1BC000. flags 1.
+x86MapPage: v 0xD01C2000 -> p 0xFD1BD000. flags 1.
+x86MapPage: v 0xD01C3000 -> p 0xFD1BE000. flags 1.
+x86MapPage: v 0xD01C4000 -> p 0xFD1BF000. flags 1.
+x86MapPage: v 0xD01C5000 -> p 0xFD1C0000. flags 1.
+x86MapPage: v 0xD01C6000 -> p 0xFD1C1000. flags 1.
+x86MapPage: v 0xD01C7000 -> p 0xFD1C2000. flags 1.
+x86MapPage: v 0xD01C8000 -> p 0xFD1C3000. flags 1.
+x86MapPage: v 0xD01C9000 -> p 0xFD1C4000. flags 1.
+x86MapPage: v 0xD01CA000 -> p 0xFD1C5000. flags 1.
+x86MapPage: v 0xD01CB000 -> p 0xFD1C6000. flags 1.
+x86MapPage: v 0xD01CC000 -> p 0xFD1C7000. flags 1.
+x86MapPage: v 0xD01CD000 -> p 0xFD1C8000. flags 1.
+x86MapPage: v 0xD01CE000 -> p 0xFD1C9000. flags 1.
+x86MapPage: v 0xD01CF000 -> p 0xFD1CA000. flags 1.
+x86MapPage: v 0xD01D0000 -> p 0xFD1CB000. flags 1.
+x86MapPage: v 0xD01D1000 -> p 0xFD1CC000. flags 1.
+x86MapPage: v 0xD01D2000 -> p 0xFD1CD000. flags 1.
+x86MapPage: v 0xD01D3000 -> p 0xFD1CE000. flags 1.
+x86MapPage: v 0xD01D4000 -> p 0xFD1CF000. flags 1.
+x86MapPage: v 0xD01D5000 -> p 0xFD1D0000. flags 1.
+x86MapPage: v 0xD01D6000 -> p 0xFD1D1000. flags 1.
+x86MapPage: v 0xD01D7000 -> p 0xFD1D2000. flags 1.
+x86MapPage: v 0xD01D8000 -> p 0xFD1D3000. flags 1.
+x86MapPage: v 0xD01D9000 -> p 0xFD1D4000. flags 1.
+x86MapPage: v 0xD01DA000 -> p 0xFD1D5000. flags 1.
+x86MapPage: v 0xD01DB000 -> p 0xFD1D6000. flags 1.
+x86MapPage: v 0xD01DC000 -> p 0xFD1D7000. flags 1.
+x86MapPage: v 0xD01DD000 -> p 0xFD1D8000. flags 1.
+x86MapPage: v 0xD01DE000 -> p 0xFD1D9000. flags 1.
+x86MapPage: v 0xD01DF000 -> p 0xFD1DA000. flags 1.
+x86MapPage: v 0xD01E0000 -> p 0xFD1DB000. flags 1.
+x86MapPage: v 0xD01E1000 -> p 0xFD1DC000. flags 1.
+x86MapPage: v 0xD01E2000 -> p 0xFD1DD000. flags 1.
+x86MapPage: v 0xD01E3000 -> p 0xFD1DE000. flags 1.
+x86MapPage: v 0xD01E4000 -> p 0xFD1DF000. flags 1.
+x86MapPage: v 0xD01E5000 -> p 0xFD1E0000. flags 1.
+x86MapPage: v 0xD01E6000 -> p 0xFD1E1000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
+x86MapPage: v 0xD01E7000 -> p 0xFD1E2000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
+x86MapPage: v 0xD01E8000 -> p 0xFD1E3000. flags 1.
+x86MapPage: v 0xD01E9000 -> p 0xFD1E4000. flags 1.
+x86MapPage: v 0xD01EA000 -> p 0xFD1E5000. flags 1.
+x86MapPage: v 0xD01EB000 -> p 0xFD1E6000. flags 1.
+x86MapPage: v 0xD01EC000 -> p 0xFD1E7000. flags 1.
+x86MapPage: v 0xD01ED000 -> p 0xFD1E8000. flags 1.
+x86MapPage: v 0xD01EE000 -> p 0xFD1E9000. flags 1.
+x86MapPage: v 0xD01EF000 -> p 0xFD1EA000. flags 1.
+x86MapPage: v 0xD01F0000 -> p 0xFD1EB000. flags 1.
+x86MapPage: v 0xD01F1000 -> p 0xFD1EC000. flags 1.
+x86MapPage: v 0xD01F2000 -> p 0xFD1ED000. flags 1.
+x86MapPage: v 0xD01F3000 -> p 0xFD1EE000. flags 1.
+x86MapPage: v 0xD01F4000 -> p 0xFD1EF000. flags 1.
+x86MapPage: v 0xD01F5000 -> p 0xFD1F0000. flags 1.
+x86MapPage: v 0xD01F6000 -> p 0xFD1F1000. flags 1.
+x86MapPage: v 0xD01F7000 -> p 0xFD1F2000. flags 1.
+x86MapPage: v 0xD01F8000 -> p 0xFD1F3000. flags 1.
+x86MapPage: v 0xD01F9000 -> p 0xFD1F4000. flags 1.
+x86MapPage: v 0xD01FA000 -> p 0xFD1F5000. flags 1.
+x86MapPage: v 0xD01FB000 -> p 0xFD1F6000. flags 1.
+x86MapPage: v 0xD01FC000 -> p 0xFD1F7000. flags 1.
+x86MapPage: v 0xD01FD000 -> p 0xFD1F8000. flags 1.
+x86MapPage: v 0xD01FE000 -> p 0xFD1F9000. flags 1.
+x86MapPage: v 0xD01FF000 -> p 0xFD1FA000. flags 1.
+x86MapPage: v 0xD0200000 -> p 0xFD1FB000. flags 1.
+x86MapPage: v 0xD0201000 -> p 0xFD1FC000. flags 1.
+x86MapPage: v 0xD0202000 -> p 0xFD1FD000. flags 1.
+x86MapPage: v 0xD0203000 -> p 0xFD1FE000. flags 1.
+x86MapPage: v 0xD0204000 -> p 0xFD1FF000. flags 1.
+x86MapPage: v 0xD0205000 -> p 0xFD200000. flags 1.
+x86MapPage: v 0xD0206000 -> p 0xFD201000. flags 1.
+x86MapPage: v 0xD0207000 -> p 0xFD202000. flags 1.
+x86MapPage: v 0xD0208000 -> p 0xFD203000. flags 1.
+x86MapPage: v 0xD0209000 -> p 0xFD204000. flags 1.
+x86MapPage: v 0xD020A000 -> p 0xFD205000. flags 1.
+x86MapPage: v 0xD020B000 -> p 0xFD206000. flags 1.
+x86MapPage: v 0xD020C000 -> p 0xFD207000. flags 1.
+x86MapPage: v 0xD020D000 -> p 0xFD208000. flags 1.
+x86MapPage: v 0xD020E000 -> p 0xFD209000. flags 1.
+x86MapPage: v 0xD020F000 -> p 0xFD20A000. flags 1.
+x86MapPage: v 0xD0210000 -> p 0xFD20B000. flags 1.
+x86MapPage: v 0xD0211000 -> p 0xFD20C000. flags 1.
+x86MapPage: v 0xD0212000 -> p 0xFD20D000. flags 1.
+x86MapPage: v 0xD0213000 -> p 0xFD20E000. flags 1.
+x86MapPage: v 0xD0214000 -> p 0xFD20F000. flags 1.
+x86MapPage: v 0xD0215000 -> p 0xFD210000. flags 1.
+x86MapPage: v 0xD0216000 -> p 0xFD211000. flags 1.
+x86MapPage: v 0xD0217000 -> p 0xFD212000. flags 1.
+x86MapPage: v 0xD0218000 -> p 0xFD213000. flags 1.
+x86MapPage: v 0xD0219000 -> p 0xFD214000. flags 1.
+x86MapPage: v 0xD021A000 -> p 0xFD215000. flags 1.
+x86MapPage: v 0xD021B000 -> p 0xFD216000. flags 1.
+x86MapPage: v 0xD021C000 -> p 0xFD217000. flags 1.
+x86MapPage: v 0xD021D000 -> p 0xFD218000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
+x86MapPage: v 0xD021E000 -> p 0xFD219000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD024D000 -> p 0x3FA000. flags 1.
+x86MapPage: v 0xD024E000 -> p 0x3F9000. flags 1.
+x86MapPage: v 0xD024F000 -> p 0x3F8000. flags 1.
+x86MapPage: v 0xD0250000 -> p 0x3F7000. flags 1.
+x86MapPage: v 0xD021F000 -> p 0xFD21A000. flags 1.
+x86MapPage: v 0xD0220000 -> p 0xFD21B000. flags 1.
+x86MapPage: v 0xD0221000 -> p 0xFD21C000. flags 1.
+x86MapPage: v 0xD0222000 -> p 0xFD21D000. flags 1.
+x86MapPage: v 0xD0223000 -> p 0xFD21E000. flags 1.
+x86MapPage: v 0xD0224000 -> p 0xFD21F000. flags 1.
+x86MapPage: v 0xD0225000 -> p 0xFD220000. flags 1.
+x86MapPage: v 0xD0226000 -> p 0xFD221000. flags 1.
+x86MapPage: v 0xD0227000 -> p 0xFD222000. flags 1.
+x86MapPage: v 0xD0228000 -> p 0xFD223000. flags 1.
+x86MapPage: v 0xD0229000 -> p 0xFD224000. flags 1.
+x86MapPage: v 0xD022A000 -> p 0xFD225000. flags 1.
+x86MapPage: v 0xD022B000 -> p 0xFD226000. flags 1.
+x86MapPage: v 0xD022C000 -> p 0xFD227000. flags 1.
+x86MapPage: v 0xD022D000 -> p 0xFD228000. flags 1.
+x86MapPage: v 0xD022E000 -> p 0xFD229000. flags 1.
+x86MapPage: v 0xD022F000 -> p 0xFD22A000. flags 1.
+x86MapPage: v 0xD0230000 -> p 0xFD22B000. flags 1.
+x86MapPage: v 0xD0231000 -> p 0xFD22C000. flags 1.
+x86MapPage: v 0xD0232000 -> p 0xFD22D000. flags 1.
+x86MapPage: v 0xD0233000 -> p 0xFD22E000. flags 1.
+x86MapPage: v 0xD0234000 -> p 0xFD22F000. flags 1.
+x86MapPage: v 0xD0235000 -> p 0xFD230000. flags 1.
+x86MapPage: v 0xD0236000 -> p 0xFD231000. flags 1.
+x86MapPage: v 0xD0237000 -> p 0xFD232000. flags 1.
+x86MapPage: v 0xD0238000 -> p 0xFD233000. flags 1.
+x86MapPage: v 0xD0239000 -> p 0xFD234000. flags 1.
+x86MapPage: v 0xD023A000 -> p 0xFD235000. flags 1.
+x86MapPage: v 0xD023B000 -> p 0xFD236000. flags 1.
+x86MapPage: v 0xD023C000 -> p 0xFD237000. flags 1.
+x86MapPage: v 0xD023D000 -> p 0xFD238000. flags 1.
+x86MapPage: v 0xD023E000 -> p 0xFD239000. flags 1.
+x86MapPage: v 0xD023F000 -> p 0xFD23A000. flags 1.
+x86MapPage: v 0xD0240000 -> p 0xFD23B000. flags 1.
+x86MapPage: v 0xD0241000 -> p 0xFD23C000. flags 1.
+x86MapPage: v 0xD0242000 -> p 0xFD23D000. flags 1.
+x86MapPage: v 0xD0243000 -> p 0xFD23E000. flags 1.
+x86MapPage: v 0xD0244000 -> p 0xFD23F000. flags 1.
+
+  NOS Kernel
+  Copyright Alex Boxall 2022-2023
+
+  1076 / 3364 KB used
+
+  ...x86MapPage: v 0xD0251000 -> p 0x3F6000. flags 1.
+x86MapPage: v 0xD0252000 -> p 0x3F5000. flags 1.
+x86MapPage: v 0xD0253000 -> p 0x3F4000. flags 1.
+x86MapPage: v 0xD0254000 -> p 0x3F3000. flags 1.
+x86MapPage: v 0xD0255000 -> p 0x3F2000. flags 1.
+x86MapPage: v 0xD0256000 -> p 0x3F1000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD0257000 -> p 0x3F0000. flags 1.
+x86MapPage: v 0xD0258000 -> p 0x3EF000. flags 1.
+x86MapPage: v 0xD0259000 -> p 0x3EE000. flags 1.
+x86MapPage: v 0xD025A000 -> p 0x3ED000. flags 1.
+x86MapPage: v 0xD025B000 -> p 0x3EC000. flags 1.
+x86MapPage: v 0xD025C000 -> p 0x3EB000. flags 1.
+x86MapPage: v 0xD025D000 -> p 0x3EA000. flags 1.
+x86MapPage: v 0xD025E000 -> p 0x3E9000. flags 1.
+x86MapPage: v 0xD025F000 -> p 0x3E8000. flags 1.
+x86MapPage: v 0xD0260000 -> p 0x3E7000. flags 1.
+x86MapPage: v 0xD0261000 -> p 0x3E6000. flags 1.
+x86MapPage: v 0xD0262000 -> p 0x3E5000. flags 1.
+x86MapPage: v 0xD0263000 -> p 0x3E4000. flags 1.
+x86MapPage: v 0xD0264000 -> p 0x3E3000. flags 1.
+x86MapPage: v 0xD0265000 -> p 0x3E2000. flags 1.
+12345Reached TFW_SP 7
+15432MarkTfwStartPoint: running test 1
+x86MapPage: v 0xD0266000 -> p 0x3E1000. flags 1.
+x86MapPage: v 0xD0267000 -> p 0x3E0000. flags 1.
+x86MapPage: v 0xD0268000 -> p 0x3DF000. flags 1.
+15324423514123553214PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 1, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x13D000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
+Grabbing from emo block of size 0x4000, for request 0x1000
+Reached TFW_SP 2
+Grabbing from emo block of size 0x3000, for request 0x1000
+Reached TFW_SP 3
+Reached TFW_SP 4
+x86MapPage: v 0xD0000000 -> p 0x13B000. flags 1.
+Reached TFW_SP 5
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x1000, total is 0x1000
+x86MapPage: v 0xD0001000 -> p 0x132000. flags 1.
+x86MapPage: v 0xD0002000 -> p 0x131000. flags 1.
+x86MapPage: v 0xD0003000 -> p 0x130000. flags 1.
+x86MapPage: v 0xD0004000 -> p 0x12F000. flags 1.
+Reached TFW_SP 6
+x86MapPage: v 0xD0005000 -> p 0xFD000000. flags 1.
+x86MapPage: v 0xD0006000 -> p 0xFD001000. flags 1.
+x86MapPage: v 0xD0007000 -> p 0xFD002000. flags 1.
+x86MapPage: v 0xD0008000 -> p 0xFD003000. flags 1.
+x86MapPage: v 0xD0009000 -> p 0xFD004000. flags 1.
+x86MapPage: v 0xD000A000 -> p 0xFD005000. flags 1.
+x86MapPage: v 0xD000B000 -> p 0xFD006000. flags 1.
+x86MapPage: v 0xD000C000 -> p 0xFD007000. flags 1.
+x86MapPage: v 0xD000D000 -> p 0xFD008000. flags 1.
+x86MapPage: v 0xD000E000 -> p 0xFD009000. flags 1.
+x86MapPage: v 0xD000F000 -> p 0xFD00A000. flags 1.
+x86MapPage: v 0xD0010000 -> p 0xFD00B000. flags 1.
+x86MapPage: v 0xD0011000 -> p 0xFD00C000. flags 1.
+x86MapPage: v 0xD0012000 -> p 0xFD00D000. flags 1.
+x86MapPage: v 0xD0013000 -> p 0xFD00E000. flags 1.
+x86MapPage: v 0xD0014000 -> p 0xFD00F000. flags 1.
+x86MapPage: v 0xD0015000 -> p 0xFD010000. flags 1.
+x86MapPage: v 0xD0016000 -> p 0xFD011000. flags 1.
+x86MapPage: v 0xD0017000 -> p 0xFD012000. flags 1.
+x86MapPage: v 0xD0018000 -> p 0xFD013000. flags 1.
+x86MapPage: v 0xD0019000 -> p 0xFD014000. flags 1.
+x86MapPage: v 0xD001A000 -> p 0xFD015000. flags 1.
+x86MapPage: v 0xD001B000 -> p 0xFD016000. flags 1.
+x86MapPage: v 0xD001C000 -> p 0xFD017000. flags 1.
+x86MapPage: v 0xD001D000 -> p 0xFD018000. flags 1.
+x86MapPage: v 0xD001E000 -> p 0xFD019000. flags 1.
+x86MapPage: v 0xD001F000 -> p 0xFD01A000. flags 1.
+x86MapPage: v 0xD0020000 -> p 0xFD01B000. flags 1.
+x86MapPage: v 0xD0021000 -> p 0xFD01C000. flags 1.
+x86MapPage: v 0xD0022000 -> p 0xFD01D000. flags 1.
+x86MapPage: v 0xD0023000 -> p 0xFD01E000. flags 1.
+x86MapPage: v 0xD0024000 -> p 0xFD01F000. flags 1.
+x86MapPage: v 0xD0025000 -> p 0xFD020000. flags 1.
+x86MapPage: v 0xD0026000 -> p 0xFD021000. flags 1.
+x86MapPage: v 0xD0027000 -> p 0xFD022000. flags 1.
+x86MapPage: v 0xD0028000 -> p 0xFD023000. flags 1.
+x86MapPage: v 0xD0029000 -> p 0xFD024000. flags 1.
+x86MapPage: v 0xD002A000 -> p 0xFD025000. flags 1.
+x86MapPage: v 0xD002B000 -> p 0xFD026000. flags 1.
+x86MapPage: v 0xD002C000 -> p 0xFD027000. flags 1.
+x86MapPage: v 0xD002D000 -> p 0xFD028000. flags 1.
+x86MapPage: v 0xD002E000 -> p 0xFD029000. flags 1.
+x86MapPage: v 0xD002F000 -> p 0xFD02A000. flags 1.
+x86MapPage: v 0xD0030000 -> p 0xFD02B000. flags 1.
+x86MapPage: v 0xD0031000 -> p 0xFD02C000. flags 1.
+x86MapPage: v 0xD0032000 -> p 0xFD02D000. flags 1.
+x86MapPage: v 0xD0033000 -> p 0xFD02E000. flags 1.
+x86MapPage: v 0xD0034000 -> p 0xFD02F000. flags 1.
+x86MapPage: v 0xD0035000 -> p 0xFD030000. flags 1.
+x86MapPage: v 0xD0036000 -> p 0xFD031000. flags 1.
+x86MapPage: v 0xD0037000 -> p 0xFD032000. flags 1.
+x86MapPage: v 0xD0038000 -> p 0xFD033000. flags 1.
+x86MapPage: v 0xD0039000 -> p 0xFD034000. flags 1.
+x86MapPage: v 0xD003A000 -> p 0xFD035000. flags 1.
+x86MapPage: v 0xD003B000 -> p 0xFD036000. flags 1.
+x86MapPage: v 0xD003C000 -> p 0xFD037000. flags 1.
+x86MapPage: v 0xD003D000 -> p 0xFD038000. flags 1.
+x86MapPage: v 0xD003E000 -> p 0xFD039000. flags 1.
+x86MapPage: v 0xD003F000 -> p 0xFD03A000. flags 1.
+x86MapPage: v 0xD0040000 -> p 0xFD03B000. flags 1.
+x86MapPage: v 0xD0041000 -> p 0xFD03C000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
+x86MapPage: v 0xD0042000 -> p 0xFD03D000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
+x86MapPage: v 0xD0043000 -> p 0xFD03E000. flags 1.
+x86MapPage: v 0xD0044000 -> p 0xFD03F000. flags 1.
+x86MapPage: v 0xD0045000 -> p 0xFD040000. flags 1.
+x86MapPage: v 0xD0046000 -> p 0xFD041000. flags 1.
+x86MapPage: v 0xD0047000 -> p 0xFD042000. flags 1.
+x86MapPage: v 0xD0048000 -> p 0xFD043000. flags 1.
+x86MapPage: v 0xD0049000 -> p 0xFD044000. flags 1.
+x86MapPage: v 0xD004A000 -> p 0xFD045000. flags 1.
+x86MapPage: v 0xD004B000 -> p 0xFD046000. flags 1.
+x86MapPage: v 0xD004C000 -> p 0xFD047000. flags 1.
+x86MapPage: v 0xD004D000 -> p 0xFD048000. flags 1.
+x86MapPage: v 0xD004E000 -> p 0xFD049000. flags 1.
+x86MapPage: v 0xD004F000 -> p 0xFD04A000. flags 1.
+x86MapPage: v 0xD0050000 -> p 0xFD04B000. flags 1.
+x86MapPage: v 0xD0051000 -> p 0xFD04C000. flags 1.
+x86MapPage: v 0xD0052000 -> p 0xFD04D000. flags 1.
+x86MapPage: v 0xD0053000 -> p 0xFD04E000. flags 1.
+x86MapPage: v 0xD0054000 -> p 0xFD04F000. flags 1.
+x86MapPage: v 0xD0055000 -> p 0xFD050000. flags 1.
+x86MapPage: v 0xD0056000 -> p 0xFD051000. flags 1.
+x86MapPage: v 0xD0057000 -> p 0xFD052000. flags 1.
+x86MapPage: v 0xD0058000 -> p 0xFD053000. flags 1.
+x86MapPage: v 0xD0059000 -> p 0xFD054000. flags 1.
+x86MapPage: v 0xD005A000 -> p 0xFD055000. flags 1.
+x86MapPage: v 0xD005B000 -> p 0xFD056000. flags 1.
+x86MapPage: v 0xD005C000 -> p 0xFD057000. flags 1.
+x86MapPage: v 0xD005D000 -> p 0xFD058000. flags 1.
+x86MapPage: v 0xD005E000 -> p 0xFD059000. flags 1.
+x86MapPage: v 0xD005F000 -> p 0xFD05A000. flags 1.
+x86MapPage: v 0xD0060000 -> p 0xFD05B000. flags 1.
+x86MapPage: v 0xD0061000 -> p 0xFD05C000. flags 1.
+x86MapPage: v 0xD0062000 -> p 0xFD05D000. flags 1.
+x86MapPage: v 0xD0063000 -> p 0xFD05E000. flags 1.
+x86MapPage: v 0xD0064000 -> p 0xFD05F000. flags 1.
+x86MapPage: v 0xD0065000 -> p 0xFD060000. flags 1.
+x86MapPage: v 0xD0066000 -> p 0xFD061000. flags 1.
+x86MapPage: v 0xD0067000 -> p 0xFD062000. flags 1.
+x86MapPage: v 0xD0068000 -> p 0xFD063000. flags 1.
+x86MapPage: v 0xD0069000 -> p 0xFD064000. flags 1.
+x86MapPage: v 0xD006A000 -> p 0xFD065000. flags 1.
+x86MapPage: v 0xD006B000 -> p 0xFD066000. flags 1.
+x86MapPage: v 0xD006C000 -> p 0xFD067000. flags 1.
+x86MapPage: v 0xD006D000 -> p 0xFD068000. flags 1.
+x86MapPage: v 0xD006E000 -> p 0xFD069000. flags 1.
+x86MapPage: v 0xD006F000 -> p 0xFD06A000. flags 1.
+x86MapPage: v 0xD0070000 -> p 0xFD06B000. flags 1.
+x86MapPage: v 0xD0071000 -> p 0xFD06C000. flags 1.
+x86MapPage: v 0xD0072000 -> p 0xFD06D000. flags 1.
+x86MapPage: v 0xD0073000 -> p 0xFD06E000. flags 1.
+x86MapPage: v 0xD0074000 -> p 0xFD06F000. flags 1.
+x86MapPage: v 0xD0075000 -> p 0xFD070000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
+x86MapPage: v 0xD0076000 -> p 0xFD071000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD0245000 -> p 0x12E000. flags 1.
+x86MapPage: v 0xD0246000 -> p 0x12D000. flags 1.
+x86MapPage: v 0xD0247000 -> p 0x12C000. flags 1.
+x86MapPage: v 0xD0248000 -> p 0x3FF000. flags 1.
+x86MapPage: v 0xD0077000 -> p 0xFD072000. flags 1.
+x86MapPage: v 0xD0078000 -> p 0xFD073000. flags 1.
+x86MapPage: v 0xD0079000 -> p 0xFD074000. flags 1.
+x86MapPage: v 0xD007A000 -> p 0xFD075000. flags 1.
+x86MapPage: v 0xD007B000 -> p 0xFD076000. flags 1.
+x86MapPage: v 0xD007C000 -> p 0xFD077000. flags 1.
+x86MapPage: v 0xD007D000 -> p 0xFD078000. flags 1.
+x86MapPage: v 0xD007E000 -> p 0xFD079000. flags 1.
+x86MapPage: v 0xD007F000 -> p 0xFD07A000. flags 1.
+x86MapPage: v 0xD0080000 -> p 0xFD07B000. flags 1.
+x86MapPage: v 0xD0081000 -> p 0xFD07C000. flags 1.
+x86MapPage: v 0xD0082000 -> p 0xFD07D000. flags 1.
+x86MapPage: v 0xD0083000 -> p 0xFD07E000. flags 1.
+x86MapPage: v 0xD0084000 -> p 0xFD07F000. flags 1.
+x86MapPage: v 0xD0085000 -> p 0xFD080000. flags 1.
+x86MapPage: v 0xD0086000 -> p 0xFD081000. flags 1.
+x86MapPage: v 0xD0087000 -> p 0xFD082000. flags 1.
+x86MapPage: v 0xD0088000 -> p 0xFD083000. flags 1.
+x86MapPage: v 0xD0089000 -> p 0xFD084000. flags 1.
+x86MapPage: v 0xD008A000 -> p 0xFD085000. flags 1.
+x86MapPage: v 0xD008B000 -> p 0xFD086000. flags 1.
+x86MapPage: v 0xD008C000 -> p 0xFD087000. flags 1.
+x86MapPage: v 0xD008D000 -> p 0xFD088000. flags 1.
+x86MapPage: v 0xD008E000 -> p 0xFD089000. flags 1.
+x86MapPage: v 0xD008F000 -> p 0xFD08A000. flags 1.
+x86MapPage: v 0xD0090000 -> p 0xFD08B000. flags 1.
+x86MapPage: v 0xD0091000 -> p 0xFD08C000. flags 1.
+x86MapPage: v 0xD0092000 -> p 0xFD08D000. flags 1.
+x86MapPage: v 0xD0093000 -> p 0xFD08E000. flags 1.
+x86MapPage: v 0xD0094000 -> p 0xFD08F000. flags 1.
+x86MapPage: v 0xD0095000 -> p 0xFD090000. flags 1.
+x86MapPage: v 0xD0096000 -> p 0xFD091000. flags 1.
+x86MapPage: v 0xD0097000 -> p 0xFD092000. flags 1.
+x86MapPage: v 0xD0098000 -> p 0xFD093000. flags 1.
+x86MapPage: v 0xD0099000 -> p 0xFD094000. flags 1.
+x86MapPage: v 0xD009A000 -> p 0xFD095000. flags 1.
+x86MapPage: v 0xD009B000 -> p 0xFD096000. flags 1.
+x86MapPage: v 0xD009C000 -> p 0xFD097000. flags 1.
+x86MapPage: v 0xD009D000 -> p 0xFD098000. flags 1.
+x86MapPage: v 0xD009E000 -> p 0xFD099000. flags 1.
+x86MapPage: v 0xD009F000 -> p 0xFD09A000. flags 1.
+x86MapPage: v 0xD00A0000 -> p 0xFD09B000. flags 1.
+x86MapPage: v 0xD00A1000 -> p 0xFD09C000. flags 1.
+x86MapPage: v 0xD00A2000 -> p 0xFD09D000. flags 1.
+x86MapPage: v 0xD00A3000 -> p 0xFD09E000. flags 1.
+x86MapPage: v 0xD00A4000 -> p 0xFD09F000. flags 1.
+x86MapPage: v 0xD00A5000 -> p 0xFD0A0000. flags 1.
+x86MapPage: v 0xD00A6000 -> p 0xFD0A1000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+x86MapPage: v 0xD00A7000 -> p 0xFD0A2000. flags 1.
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD00A8000 -> p 0xFD0A3000. flags 1.
+x86MapPage: v 0xD00A9000 -> p 0xFD0A4000. flags 1.
+x86MapPage: v 0xD00AA000 -> p 0xFD0A5000. flags 1.
+x86MapPage: v 0xD00AB000 -> p 0xFD0A6000. flags 1.
+x86MapPage: v 0xD00AC000 -> p 0xFD0A7000. flags 1.
+x86MapPage: v 0xD00AD000 -> p 0xFD0A8000. flags 1.
+x86MapPage: v 0xD00AE000 -> p 0xFD0A9000. flags 1.
+x86MapPage: v 0xD00AF000 -> p 0xFD0AA000. flags 1.
+x86MapPage: v 0xD00B0000 -> p 0xFD0AB000. flags 1.
+x86MapPage: v 0xD00B1000 -> p 0xFD0AC000. flags 1.
+x86MapPage: v 0xD00B2000 -> p 0xFD0AD000. flags 1.
+x86MapPage: v 0xD00B3000 -> p 0xFD0AE000. flags 1.
+x86MapPage: v 0xD00B4000 -> p 0xFD0AF000. flags 1.
+x86MapPage: v 0xD00B5000 -> p 0xFD0B0000. flags 1.
+x86MapPage: v 0xD00B6000 -> p 0xFD0B1000. flags 1.
+x86MapPage: v 0xD00B7000 -> p 0xFD0B2000. flags 1.
+x86MapPage: v 0xD00B8000 -> p 0xFD0B3000. flags 1.
+x86MapPage: v 0xD00B9000 -> p 0xFD0B4000. flags 1.
+x86MapPage: v 0xD00BA000 -> p 0xFD0B5000. flags 1.
+x86MapPage: v 0xD00BB000 -> p 0xFD0B6000. flags 1.
+x86MapPage: v 0xD00BC000 -> p 0xFD0B7000. flags 1.
+x86MapPage: v 0xD00BD000 -> p 0xFD0B8000. flags 1.
+x86MapPage: v 0xD00BE000 -> p 0xFD0B9000. flags 1.
+x86MapPage: v 0xD00BF000 -> p 0xFD0BA000. flags 1.
+x86MapPage: v 0xD00C0000 -> p 0xFD0BB000. flags 1.
+x86MapPage: v 0xD00C1000 -> p 0xFD0BC000. flags 1.
+x86MapPage: v 0xD00C2000 -> p 0xFD0BD000. flags 1.
+x86MapPage: v 0xD00C3000 -> p 0xFD0BE000. flags 1.
+x86MapPage: v 0xD00C4000 -> p 0xFD0BF000. flags 1.
+x86MapPage: v 0xD00C5000 -> p 0xFD0C0000. flags 1.
+x86MapPage: v 0xD00C6000 -> p 0xFD0C1000. flags 1.
+x86MapPage: v 0xD00C7000 -> p 0xFD0C2000. flags 1.
+x86MapPage: v 0xD00C8000 -> p 0xFD0C3000. flags 1.
+x86MapPage: v 0xD00C9000 -> p 0xFD0C4000. flags 1.
+x86MapPage: v 0xD00CA000 -> p 0xFD0C5000. flags 1.
+x86MapPage: v 0xD00CB000 -> p 0xFD0C6000. flags 1.
+x86MapPage: v 0xD00CC000 -> p 0xFD0C7000. flags 1.
+x86MapPage: v 0xD00CD000 -> p 0xFD0C8000. flags 1.
+x86MapPage: v 0xD00CE000 -> p 0xFD0C9000. flags 1.
+x86MapPage: v 0xD00CF000 -> p 0xFD0CA000. flags 1.
+x86MapPage: v 0xD00D0000 -> p 0xFD0CB000. flags 1.
+x86MapPage: v 0xD00D1000 -> p 0xFD0CC000. flags 1.
+x86MapPage: v 0xD00D2000 -> p 0xFD0CD000. flags 1.
+x86MapPage: v 0xD00D3000 -> p 0xFD0CE000. flags 1.
+x86MapPage: v 0xD00D4000 -> p 0xFD0CF000. flags 1.
+x86MapPage: v 0xD00D5000 -> p 0xFD0D0000. flags 1.
+x86MapPage: v 0xD00D6000 -> p 0xFD0D1000. flags 1.
+x86MapPage: v 0xD00D7000 -> p 0xFD0D2000. flags 1.
+x86MapPage: v 0xD00D8000 -> p 0xFD0D3000. flags 1.
+x86MapPage: v 0xD00D9000 -> p 0xFD0D4000. flags 1.
+x86MapPage: v 0xD00DA000 -> p 0xFD0D5000. flags 1.
+x86MapPage: v 0xD00DB000 -> p 0xFD0D6000. flags 1.
+Grabbing from emo block of size 0x2000, for request 0x1000
+x86MapPage: v 0xD00DC000 -> p 0xFD0D7000. flags 1.
+backup heap: largest is 0x4000, total is 0x5000
+x86MapPage: v 0xD00DD000 -> p 0xFD0D8000. flags 1.
+x86MapPage: v 0xD00DE000 -> p 0xFD0D9000. flags 1.
+x86MapPage: v 0xD00DF000 -> p 0xFD0DA000. flags 1.
+x86MapPage: v 0xD00E0000 -> p 0xFD0DB000. flags 1.
+x86MapPage: v 0xD00E1000 -> p 0xFD0DC000. flags 1.
+x86MapPage: v 0xD00E2000 -> p 0xFD0DD000. flags 1.
+x86MapPage: v 0xD00E3000 -> p 0xFD0DE000. flags 1.
+x86MapPage: v 0xD00E4000 -> p 0xFD0DF000. flags 1.
+x86MapPage: v 0xD00E5000 -> p 0xFD0E0000. flags 1.
+x86MapPage: v 0xD00E6000 -> p 0xFD0E1000. flags 1.
+x86MapPage: v 0xD00E7000 -> p 0xFD0E2000. flags 1.
+x86MapPage: v 0xD00E8000 -> p 0xFD0E3000. flags 1.
+x86MapPage: v 0xD00E9000 -> p 0xFD0E4000. flags 1.
+x86MapPage: v 0xD00EA000 -> p 0xFD0E5000. flags 1.
+x86MapPage: v 0xD00EB000 -> p 0xFD0E6000. flags 1.
+x86MapPage: v 0xD00EC000 -> p 0xFD0E7000. flags 1.
+x86MapPage: v 0xD00ED000 -> p 0xFD0E8000. flags 1.
+x86MapPage: v 0xD00EE000 -> p 0xFD0E9000. flags 1.
+x86MapPage: v 0xD00EF000 -> p 0xFD0EA000. flags 1.
+x86MapPage: v 0xD00F0000 -> p 0xFD0EB000. flags 1.
+x86MapPage: v 0xD00F1000 -> p 0xFD0EC000. flags 1.
+x86MapPage: v 0xD00F2000 -> p 0xFD0ED000. flags 1.
+x86MapPage: v 0xD00F3000 -> p 0xFD0EE000. flags 1.
+x86MapPage: v 0xD00F4000 -> p 0xFD0EF000. flags 1.
+x86MapPage: v 0xD00F5000 -> p 0xFD0F0000. flags 1.
+x86MapPage: v 0xD00F6000 -> p 0xFD0F1000. flags 1.
+x86MapPage: v 0xD00F7000 -> p 0xFD0F2000. flags 1.
+x86MapPage: v 0xD00F8000 -> p 0xFD0F3000. flags 1.
+x86MapPage: v 0xD00F9000 -> p 0xFD0F4000. flags 1.
+x86MapPage: v 0xD00FA000 -> p 0xFD0F5000. flags 1.
+x86MapPage: v 0xD00FB000 -> p 0xFD0F6000. flags 1.
+x86MapPage: v 0xD00FC000 -> p 0xFD0F7000. flags 1.
+x86MapPage: v 0xD00FD000 -> p 0xFD0F8000. flags 1.
+x86MapPage: v 0xD00FE000 -> p 0xFD0F9000. flags 1.
+x86MapPage: v 0xD00FF000 -> p 0xFD0FA000. flags 1.
+x86MapPage: v 0xD0100000 -> p 0xFD0FB000. flags 1.
+x86MapPage: v 0xD0101000 -> p 0xFD0FC000. flags 1.
+x86MapPage: v 0xD0102000 -> p 0xFD0FD000. flags 1.
+x86MapPage: v 0xD0103000 -> p 0xFD0FE000. flags 1.
+x86MapPage: v 0xD0104000 -> p 0xFD0FF000. flags 1.
+x86MapPage: v 0xD0105000 -> p 0xFD100000. flags 1.
+x86MapPage: v 0xD0106000 -> p 0xFD101000. flags 1.
+x86MapPage: v 0xD0107000 -> p 0xFD102000. flags 1.
+x86MapPage: v 0xD0108000 -> p 0xFD103000. flags 1.
+x86MapPage: v 0xD0109000 -> p 0xFD104000. flags 1.
+x86MapPage: v 0xD010A000 -> p 0xFD105000. flags 1.
+x86MapPage: v 0xD010B000 -> p 0xFD106000. flags 1.
+x86MapPage: v 0xD010C000 -> p 0xFD107000. flags 1.
+x86MapPage: v 0xD010D000 -> p 0xFD108000. flags 1.
+x86MapPage: v 0xD010E000 -> p 0xFD109000. flags 1.
+x86MapPage: v 0xD010F000 -> p 0xFD10A000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
+x86MapPage: v 0xD0110000 -> p 0xFD10B000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
+x86MapPage: v 0xD0111000 -> p 0xFD10C000. flags 1.
+x86MapPage: v 0xD0112000 -> p 0xFD10D000. flags 1.
+x86MapPage: v 0xD0113000 -> p 0xFD10E000. flags 1.
+x86MapPage: v 0xD0114000 -> p 0xFD10F000. flags 1.
+x86MapPage: v 0xD0115000 -> p 0xFD110000. flags 1.
+x86MapPage: v 0xD0116000 -> p 0xFD111000. flags 1.
+x86MapPage: v 0xD0117000 -> p 0xFD112000. flags 1.
+x86MapPage: v 0xD0118000 -> p 0xFD113000. flags 1.
+x86MapPage: v 0xD0119000 -> p 0xFD114000. flags 1.
+x86MapPage: v 0xD011A000 -> p 0xFD115000. flags 1.
+x86MapPage: v 0xD011B000 -> p 0xFD116000. flags 1.
+x86MapPage: v 0xD011C000 -> p 0xFD117000. flags 1.
+x86MapPage: v 0xD011D000 -> p 0xFD118000. flags 1.
+x86MapPage: v 0xD011E000 -> p 0xFD119000. flags 1.
+x86MapPage: v 0xD011F000 -> p 0xFD11A000. flags 1.
+x86MapPage: v 0xD0120000 -> p 0xFD11B000. flags 1.
+x86MapPage: v 0xD0121000 -> p 0xFD11C000. flags 1.
+x86MapPage: v 0xD0122000 -> p 0xFD11D000. flags 1.
+x86MapPage: v 0xD0123000 -> p 0xFD11E000. flags 1.
+x86MapPage: v 0xD0124000 -> p 0xFD11F000. flags 1.
+x86MapPage: v 0xD0125000 -> p 0xFD120000. flags 1.
+x86MapPage: v 0xD0126000 -> p 0xFD121000. flags 1.
+x86MapPage: v 0xD0127000 -> p 0xFD122000. flags 1.
+x86MapPage: v 0xD0128000 -> p 0xFD123000. flags 1.
+x86MapPage: v 0xD0129000 -> p 0xFD124000. flags 1.
+x86MapPage: v 0xD012A000 -> p 0xFD125000. flags 1.
+x86MapPage: v 0xD012B000 -> p 0xFD126000. flags 1.
+x86MapPage: v 0xD012C000 -> p 0xFD127000. flags 1.
+x86MapPage: v 0xD012D000 -> p 0xFD128000. flags 1.
+x86MapPage: v 0xD012E000 -> p 0xFD129000. flags 1.
+x86MapPage: v 0xD012F000 -> p 0xFD12A000. flags 1.
+x86MapPage: v 0xD0130000 -> p 0xFD12B000. flags 1.
+x86MapPage: v 0xD0131000 -> p 0xFD12C000. flags 1.
+x86MapPage: v 0xD0132000 -> p 0xFD12D000. flags 1.
+x86MapPage: v 0xD0133000 -> p 0xFD12E000. flags 1.
+x86MapPage: v 0xD0134000 -> p 0xFD12F000. flags 1.
+x86MapPage: v 0xD0135000 -> p 0xFD130000. flags 1.
+x86MapPage: v 0xD0136000 -> p 0xFD131000. flags 1.
+x86MapPage: v 0xD0137000 -> p 0xFD132000. flags 1.
+x86MapPage: v 0xD0138000 -> p 0xFD133000. flags 1.
+x86MapPage: v 0xD0139000 -> p 0xFD134000. flags 1.
+x86MapPage: v 0xD013A000 -> p 0xFD135000. flags 1.
+x86MapPage: v 0xD013B000 -> p 0xFD136000. flags 1.
+x86MapPage: v 0xD013C000 -> p 0xFD137000. flags 1.
+x86MapPage: v 0xD013D000 -> p 0xFD138000. flags 1.
+x86MapPage: v 0xD013E000 -> p 0xFD139000. flags 1.
+x86MapPage: v 0xD013F000 -> p 0xFD13A000. flags 1.
+x86MapPage: v 0xD0140000 -> p 0xFD13B000. flags 1.
+x86MapPage: v 0xD0141000 -> p 0xFD13C000. flags 1.
+x86MapPage: v 0xD0142000 -> p 0xFD13D000. flags 1.
+x86MapPage: v 0xD0143000 -> p 0xFD13E000. flags 1.
+x86MapPage: v 0xD0144000 -> p 0xFD13F000. flags 1.
+x86MapPage: v 0xD0145000 -> p 0xFD140000. flags 1.
+x86MapPage: v 0xD0146000 -> p 0xFD141000. flags 1.
+x86MapPage: v 0xD0147000 -> p 0xFD142000. flags 1.
+x86MapPage: v 0xD0148000 -> p 0xFD143000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
+x86MapPage: v 0xD0149000 -> p 0xFD144000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD0249000 -> p 0x3FE000. flags 1.
+x86MapPage: v 0xD024A000 -> p 0x3FD000. flags 1.
+x86MapPage: v 0xD024B000 -> p 0x3FC000. flags 1.
+x86MapPage: v 0xD024C000 -> p 0x3FB000. flags 1.
+x86MapPage: v 0xD014A000 -> p 0xFD145000. flags 1.
+x86MapPage: v 0xD014B000 -> p 0xFD146000. flags 1.
+x86MapPage: v 0xD014C000 -> p 0xFD147000. flags 1.
+x86MapPage: v 0xD014D000 -> p 0xFD148000. flags 1.
+x86MapPage: v 0xD014E000 -> p 0xFD149000. flags 1.
+x86MapPage: v 0xD014F000 -> p 0xFD14A000. flags 1.
+x86MapPage: v 0xD0150000 -> p 0xFD14B000. flags 1.
+x86MapPage: v 0xD0151000 -> p 0xFD14C000. flags 1.
+x86MapPage: v 0xD0152000 -> p 0xFD14D000. flags 1.
+x86MapPage: v 0xD0153000 -> p 0xFD14E000. flags 1.
+x86MapPage: v 0xD0154000 -> p 0xFD14F000. flags 1.
+x86MapPage: v 0xD0155000 -> p 0xFD150000. flags 1.
+x86MapPage: v 0xD0156000 -> p 0xFD151000. flags 1.
+x86MapPage: v 0xD0157000 -> p 0xFD152000. flags 1.
+x86MapPage: v 0xD0158000 -> p 0xFD153000. flags 1.
+x86MapPage: v 0xD0159000 -> p 0xFD154000. flags 1.
+x86MapPage: v 0xD015A000 -> p 0xFD155000. flags 1.
+x86MapPage: v 0xD015B000 -> p 0xFD156000. flags 1.
+x86MapPage: v 0xD015C000 -> p 0xFD157000. flags 1.
+x86MapPage: v 0xD015D000 -> p 0xFD158000. flags 1.
+x86MapPage: v 0xD015E000 -> p 0xFD159000. flags 1.
+x86MapPage: v 0xD015F000 -> p 0xFD15A000. flags 1.
+x86MapPage: v 0xD0160000 -> p 0xFD15B000. flags 1.
+x86MapPage: v 0xD0161000 -> p 0xFD15C000. flags 1.
+x86MapPage: v 0xD0162000 -> p 0xFD15D000. flags 1.
+x86MapPage: v 0xD0163000 -> p 0xFD15E000. flags 1.
+x86MapPage: v 0xD0164000 -> p 0xFD15F000. flags 1.
+x86MapPage: v 0xD0165000 -> p 0xFD160000. flags 1.
+x86MapPage: v 0xD0166000 -> p 0xFD161000. flags 1.
+x86MapPage: v 0xD0167000 -> p 0xFD162000. flags 1.
+x86MapPage: v 0xD0168000 -> p 0xFD163000. flags 1.
+x86MapPage: v 0xD0169000 -> p 0xFD164000. flags 1.
+x86MapPage: v 0xD016A000 -> p 0xFD165000. flags 1.
+x86MapPage: v 0xD016B000 -> p 0xFD166000. flags 1.
+x86MapPage: v 0xD016C000 -> p 0xFD167000. flags 1.
+x86MapPage: v 0xD016D000 -> p 0xFD168000. flags 1.
+x86MapPage: v 0xD016E000 -> p 0xFD169000. flags 1.
+x86MapPage: v 0xD016F000 -> p 0xFD16A000. flags 1.
+x86MapPage: v 0xD0170000 -> p 0xFD16B000. flags 1.
+x86MapPage: v 0xD0171000 -> p 0xFD16C000. flags 1.
+x86MapPage: v 0xD0172000 -> p 0xFD16D000. flags 1.
+x86MapPage: v 0xD0173000 -> p 0xFD16E000. flags 1.
+x86MapPage: v 0xD0174000 -> p 0xFD16F000. flags 1.
+x86MapPage: v 0xD0175000 -> p 0xFD170000. flags 1.
+x86MapPage: v 0xD0176000 -> p 0xFD171000. flags 1.
+x86MapPage: v 0xD0177000 -> p 0xFD172000. flags 1.
+x86MapPage: v 0xD0178000 -> p 0xFD173000. flags 1.
+x86MapPage: v 0xD0179000 -> p 0xFD174000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+x86MapPage: v 0xD017A000 -> p 0xFD175000. flags 1.
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD017B000 -> p 0xFD176000. flags 1.
+x86MapPage: v 0xD017C000 -> p 0xFD177000. flags 1.
+x86MapPage: v 0xD017D000 -> p 0xFD178000. flags 1.
+x86MapPage: v 0xD017E000 -> p 0xFD179000. flags 1.
+x86MapPage: v 0xD017F000 -> p 0xFD17A000. flags 1.
+x86MapPage: v 0xD0180000 -> p 0xFD17B000. flags 1.
+x86MapPage: v 0xD0181000 -> p 0xFD17C000. flags 1.
+x86MapPage: v 0xD0182000 -> p 0xFD17D000. flags 1.
+x86MapPage: v 0xD0183000 -> p 0xFD17E000. flags 1.
+x86MapPage: v 0xD0184000 -> p 0xFD17F000. flags 1.
+x86MapPage: v 0xD0185000 -> p 0xFD180000. flags 1.
+x86MapPage: v 0xD0186000 -> p 0xFD181000. flags 1.
+x86MapPage: v 0xD0187000 -> p 0xFD182000. flags 1.
+x86MapPage: v 0xD0188000 -> p 0xFD183000. flags 1.
+x86MapPage: v 0xD0189000 -> p 0xFD184000. flags 1.
+x86MapPage: v 0xD018A000 -> p 0xFD185000. flags 1.
+x86MapPage: v 0xD018B000 -> p 0xFD186000. flags 1.
+x86MapPage: v 0xD018C000 -> p 0xFD187000. flags 1.
+x86MapPage: v 0xD018D000 -> p 0xFD188000. flags 1.
+x86MapPage: v 0xD018E000 -> p 0xFD189000. flags 1.
+x86MapPage: v 0xD018F000 -> p 0xFD18A000. flags 1.
+x86MapPage: v 0xD0190000 -> p 0xFD18B000. flags 1.
+x86MapPage: v 0xD0191000 -> p 0xFD18C000. flags 1.
+x86MapPage: v 0xD0192000 -> p 0xFD18D000. flags 1.
+x86MapPage: v 0xD0193000 -> p 0xFD18E000. flags 1.
+x86MapPage: v 0xD0194000 -> p 0xFD18F000. flags 1.
+x86MapPage: v 0xD0195000 -> p 0xFD190000. flags 1.
+x86MapPage: v 0xD0196000 -> p 0xFD191000. flags 1.
+x86MapPage: v 0xD0197000 -> p 0xFD192000. flags 1.
+x86MapPage: v 0xD0198000 -> p 0xFD193000. flags 1.
+x86MapPage: v 0xD0199000 -> p 0xFD194000. flags 1.
+x86MapPage: v 0xD019A000 -> p 0xFD195000. flags 1.
+x86MapPage: v 0xD019B000 -> p 0xFD196000. flags 1.
+x86MapPage: v 0xD019C000 -> p 0xFD197000. flags 1.
+x86MapPage: v 0xD019D000 -> p 0xFD198000. flags 1.
+x86MapPage: v 0xD019E000 -> p 0xFD199000. flags 1.
+x86MapPage: v 0xD019F000 -> p 0xFD19A000. flags 1.
+x86MapPage: v 0xD01A0000 -> p 0xFD19B000. flags 1.
+x86MapPage: v 0xD01A1000 -> p 0xFD19C000. flags 1.
+x86MapPage: v 0xD01A2000 -> p 0xFD19D000. flags 1.
+x86MapPage: v 0xD01A3000 -> p 0xFD19E000. flags 1.
+x86MapPage: v 0xD01A4000 -> p 0xFD19F000. flags 1.
+x86MapPage: v 0xD01A5000 -> p 0xFD1A0000. flags 1.
+x86MapPage: v 0xD01A6000 -> p 0xFD1A1000. flags 1.
+x86MapPage: v 0xD01A7000 -> p 0xFD1A2000. flags 1.
+x86MapPage: v 0xD01A8000 -> p 0xFD1A3000. flags 1.
+x86MapPage: v 0xD01A9000 -> p 0xFD1A4000. flags 1.
+x86MapPage: v 0xD01AA000 -> p 0xFD1A5000. flags 1.
+x86MapPage: v 0xD01AB000 -> p 0xFD1A6000. flags 1.
+x86MapPage: v 0xD01AC000 -> p 0xFD1A7000. flags 1.
+x86MapPage: v 0xD01AD000 -> p 0xFD1A8000. flags 1.
+x86MapPage: v 0xD01AE000 -> p 0xFD1A9000. flags 1.
+x86MapPage: v 0xD01AF000 -> p 0xFD1AA000. flags 1.
+x86MapPage: v 0xD01B0000 -> p 0xFD1AB000. flags 1.
+Grabbing from emo block of size 0x2000, for request 0x1000
+x86MapPage: v 0xD01B1000 -> p 0xFD1AC000. flags 1.
+backup heap: largest is 0x4000, total is 0x5000
+x86MapPage: v 0xD01B2000 -> p 0xFD1AD000. flags 1.
+x86MapPage: v 0xD01B3000 -> p 0xFD1AE000. flags 1.
+x86MapPage: v 0xD01B4000 -> p 0xFD1AF000. flags 1.
+x86MapPage: v 0xD01B5000 -> p 0xFD1B0000. flags 1.
+x86MapPage: v 0xD01B6000 -> p 0xFD1B1000. flags 1.
+x86MapPage: v 0xD01B7000 -> p 0xFD1B2000. flags 1.
+x86MapPage: v 0xD01B8000 -> p 0xFD1B3000. flags 1.
+x86MapPage: v 0xD01B9000 -> p 0xFD1B4000. flags 1.
+x86MapPage: v 0xD01BA000 -> p 0xFD1B5000. flags 1.
+x86MapPage: v 0xD01BB000 -> p 0xFD1B6000. flags 1.
+x86MapPage: v 0xD01BC000 -> p 0xFD1B7000. flags 1.
+x86MapPage: v 0xD01BD000 -> p 0xFD1B8000. flags 1.
+x86MapPage: v 0xD01BE000 -> p 0xFD1B9000. flags 1.
+x86MapPage: v 0xD01BF000 -> p 0xFD1BA000. flags 1.
+x86MapPage: v 0xD01C0000 -> p 0xFD1BB000. flags 1.
+x86MapPage: v 0xD01C1000 -> p 0xFD1BC000. flags 1.
+x86MapPage: v 0xD01C2000 -> p 0xFD1BD000. flags 1.
+x86MapPage: v 0xD01C3000 -> p 0xFD1BE000. flags 1.
+x86MapPage: v 0xD01C4000 -> p 0xFD1BF000. flags 1.
+x86MapPage: v 0xD01C5000 -> p 0xFD1C0000. flags 1.
+x86MapPage: v 0xD01C6000 -> p 0xFD1C1000. flags 1.
+x86MapPage: v 0xD01C7000 -> p 0xFD1C2000. flags 1.
+x86MapPage: v 0xD01C8000 -> p 0xFD1C3000. flags 1.
+x86MapPage: v 0xD01C9000 -> p 0xFD1C4000. flags 1.
+x86MapPage: v 0xD01CA000 -> p 0xFD1C5000. flags 1.
+x86MapPage: v 0xD01CB000 -> p 0xFD1C6000. flags 1.
+x86MapPage: v 0xD01CC000 -> p 0xFD1C7000. flags 1.
+x86MapPage: v 0xD01CD000 -> p 0xFD1C8000. flags 1.
+x86MapPage: v 0xD01CE000 -> p 0xFD1C9000. flags 1.
+x86MapPage: v 0xD01CF000 -> p 0xFD1CA000. flags 1.
+x86MapPage: v 0xD01D0000 -> p 0xFD1CB000. flags 1.
+x86MapPage: v 0xD01D1000 -> p 0xFD1CC000. flags 1.
+x86MapPage: v 0xD01D2000 -> p 0xFD1CD000. flags 1.
+x86MapPage: v 0xD01D3000 -> p 0xFD1CE000. flags 1.
+x86MapPage: v 0xD01D4000 -> p 0xFD1CF000. flags 1.
+x86MapPage: v 0xD01D5000 -> p 0xFD1D0000. flags 1.
+x86MapPage: v 0xD01D6000 -> p 0xFD1D1000. flags 1.
+x86MapPage: v 0xD01D7000 -> p 0xFD1D2000. flags 1.
+x86MapPage: v 0xD01D8000 -> p 0xFD1D3000. flags 1.
+x86MapPage: v 0xD01D9000 -> p 0xFD1D4000. flags 1.
+x86MapPage: v 0xD01DA000 -> p 0xFD1D5000. flags 1.
+x86MapPage: v 0xD01DB000 -> p 0xFD1D6000. flags 1.
+x86MapPage: v 0xD01DC000 -> p 0xFD1D7000. flags 1.
+x86MapPage: v 0xD01DD000 -> p 0xFD1D8000. flags 1.
+x86MapPage: v 0xD01DE000 -> p 0xFD1D9000. flags 1.
+x86MapPage: v 0xD01DF000 -> p 0xFD1DA000. flags 1.
+x86MapPage: v 0xD01E0000 -> p 0xFD1DB000. flags 1.
+x86MapPage: v 0xD01E1000 -> p 0xFD1DC000. flags 1.
+x86MapPage: v 0xD01E2000 -> p 0xFD1DD000. flags 1.
+x86MapPage: v 0xD01E3000 -> p 0xFD1DE000. flags 1.
+x86MapPage: v 0xD01E4000 -> p 0xFD1DF000. flags 1.
+x86MapPage: v 0xD01E5000 -> p 0xFD1E0000. flags 1.
+x86MapPage: v 0xD01E6000 -> p 0xFD1E1000. flags 1.
+Grabbing from emo block of size 0x1000, for request 0x1000
+x86MapPage: v 0xD01E7000 -> p 0xFD1E2000. flags 1.
+backup heap: largest is 0x4000, total is 0x4000
+x86MapPage: v 0xD01E8000 -> p 0xFD1E3000. flags 1.
+x86MapPage: v 0xD01E9000 -> p 0xFD1E4000. flags 1.
+x86MapPage: v 0xD01EA000 -> p 0xFD1E5000. flags 1.
+x86MapPage: v 0xD01EB000 -> p 0xFD1E6000. flags 1.
+x86MapPage: v 0xD01EC000 -> p 0xFD1E7000. flags 1.
+x86MapPage: v 0xD01ED000 -> p 0xFD1E8000. flags 1.
+x86MapPage: v 0xD01EE000 -> p 0xFD1E9000. flags 1.
+x86MapPage: v 0xD01EF000 -> p 0xFD1EA000. flags 1.
+x86MapPage: v 0xD01F0000 -> p 0xFD1EB000. flags 1.
+x86MapPage: v 0xD01F1000 -> p 0xFD1EC000. flags 1.
+x86MapPage: v 0xD01F2000 -> p 0xFD1ED000. flags 1.
+x86MapPage: v 0xD01F3000 -> p 0xFD1EE000. flags 1.
+x86MapPage: v 0xD01F4000 -> p 0xFD1EF000. flags 1.
+x86MapPage: v 0xD01F5000 -> p 0xFD1F0000. flags 1.
+x86MapPage: v 0xD01F6000 -> p 0xFD1F1000. flags 1.
+x86MapPage: v 0xD01F7000 -> p 0xFD1F2000. flags 1.
+x86MapPage: v 0xD01F8000 -> p 0xFD1F3000. flags 1.
+x86MapPage: v 0xD01F9000 -> p 0xFD1F4000. flags 1.
+x86MapPage: v 0xD01FA000 -> p 0xFD1F5000. flags 1.
+x86MapPage: v 0xD01FB000 -> p 0xFD1F6000. flags 1.
+x86MapPage: v 0xD01FC000 -> p 0xFD1F7000. flags 1.
+x86MapPage: v 0xD01FD000 -> p 0xFD1F8000. flags 1.
+x86MapPage: v 0xD01FE000 -> p 0xFD1F9000. flags 1.
+x86MapPage: v 0xD01FF000 -> p 0xFD1FA000. flags 1.
+x86MapPage: v 0xD0200000 -> p 0xFD1FB000. flags 1.
+x86MapPage: v 0xD0201000 -> p 0xFD1FC000. flags 1.
+x86MapPage: v 0xD0202000 -> p 0xFD1FD000. flags 1.
+x86MapPage: v 0xD0203000 -> p 0xFD1FE000. flags 1.
+x86MapPage: v 0xD0204000 -> p 0xFD1FF000. flags 1.
+x86MapPage: v 0xD0205000 -> p 0xFD200000. flags 1.
+x86MapPage: v 0xD0206000 -> p 0xFD201000. flags 1.
+x86MapPage: v 0xD0207000 -> p 0xFD202000. flags 1.
+x86MapPage: v 0xD0208000 -> p 0xFD203000. flags 1.
+x86MapPage: v 0xD0209000 -> p 0xFD204000. flags 1.
+x86MapPage: v 0xD020A000 -> p 0xFD205000. flags 1.
+x86MapPage: v 0xD020B000 -> p 0xFD206000. flags 1.
+x86MapPage: v 0xD020C000 -> p 0xFD207000. flags 1.
+x86MapPage: v 0xD020D000 -> p 0xFD208000. flags 1.
+x86MapPage: v 0xD020E000 -> p 0xFD209000. flags 1.
+x86MapPage: v 0xD020F000 -> p 0xFD20A000. flags 1.
+x86MapPage: v 0xD0210000 -> p 0xFD20B000. flags 1.
+x86MapPage: v 0xD0211000 -> p 0xFD20C000. flags 1.
+x86MapPage: v 0xD0212000 -> p 0xFD20D000. flags 1.
+x86MapPage: v 0xD0213000 -> p 0xFD20E000. flags 1.
+x86MapPage: v 0xD0214000 -> p 0xFD20F000. flags 1.
+x86MapPage: v 0xD0215000 -> p 0xFD210000. flags 1.
+x86MapPage: v 0xD0216000 -> p 0xFD211000. flags 1.
+x86MapPage: v 0xD0217000 -> p 0xFD212000. flags 1.
+x86MapPage: v 0xD0218000 -> p 0xFD213000. flags 1.
+x86MapPage: v 0xD0219000 -> p 0xFD214000. flags 1.
+x86MapPage: v 0xD021A000 -> p 0xFD215000. flags 1.
+x86MapPage: v 0xD021B000 -> p 0xFD216000. flags 1.
+x86MapPage: v 0xD021C000 -> p 0xFD217000. flags 1.
+x86MapPage: v 0xD021D000 -> p 0xFD218000. flags 1.
+Grabbing from emo block of size 0x4000, for request 0x1000
+x86MapPage: v 0xD021E000 -> p 0xFD219000. flags 1.
+backup heap: largest is 0x3000, total is 0x3000
+x86MapPage: v 0xD024D000 -> p 0x3FA000. flags 1.
+x86MapPage: v 0xD024E000 -> p 0x3F9000. flags 1.
+x86MapPage: v 0xD024F000 -> p 0x3F8000. flags 1.
+x86MapPage: v 0xD0250000 -> p 0x3F7000. flags 1.
+x86MapPage: v 0xD021F000 -> p 0xFD21A000. flags 1.
+x86MapPage: v 0xD0220000 -> p 0xFD21B000. flags 1.
+x86MapPage: v 0xD0221000 -> p 0xFD21C000. flags 1.
+x86MapPage: v 0xD0222000 -> p 0xFD21D000. flags 1.
+x86MapPage: v 0xD0223000 -> p 0xFD21E000. flags 1.
+x86MapPage: v 0xD0224000 -> p 0xFD21F000. flags 1.
+x86MapPage: v 0xD0225000 -> p 0xFD220000. flags 1.
+x86MapPage: v 0xD0226000 -> p 0xFD221000. flags 1.
+x86MapPage: v 0xD0227000 -> p 0xFD222000. flags 1.
+x86MapPage: v 0xD0228000 -> p 0xFD223000. flags 1.
+x86MapPage: v 0xD0229000 -> p 0xFD224000. flags 1.
+x86MapPage: v 0xD022A000 -> p 0xFD225000. flags 1.
+x86MapPage: v 0xD022B000 -> p 0xFD226000. flags 1.
+x86MapPage: v 0xD022C000 -> p 0xFD227000. flags 1.
+x86MapPage: v 0xD022D000 -> p 0xFD228000. flags 1.
+x86MapPage: v 0xD022E000 -> p 0xFD229000. flags 1.
+x86MapPage: v 0xD022F000 -> p 0xFD22A000. flags 1.
+x86MapPage: v 0xD0230000 -> p 0xFD22B000. flags 1.
+x86MapPage: v 0xD0231000 -> p 0xFD22C000. flags 1.
+x86MapPage: v 0xD0232000 -> p 0xFD22D000. flags 1.
+x86MapPage: v 0xD0233000 -> p 0xFD22E000. flags 1.
+x86MapPage: v 0xD0234000 -> p 0xFD22F000. flags 1.
+x86MapPage: v 0xD0235000 -> p 0xFD230000. flags 1.
+x86MapPage: v 0xD0236000 -> p 0xFD231000. flags 1.
+x86MapPage: v 0xD0237000 -> p 0xFD232000. flags 1.
+x86MapPage: v 0xD0238000 -> p 0xFD233000. flags 1.
+x86MapPage: v 0xD0239000 -> p 0xFD234000. flags 1.
+x86MapPage: v 0xD023A000 -> p 0xFD235000. flags 1.
+x86MapPage: v 0xD023B000 -> p 0xFD236000. flags 1.
+x86MapPage: v 0xD023C000 -> p 0xFD237000. flags 1.
+x86MapPage: v 0xD023D000 -> p 0xFD238000. flags 1.
+x86MapPage: v 0xD023E000 -> p 0xFD239000. flags 1.
+x86MapPage: v 0xD023F000 -> p 0xFD23A000. flags 1.
+x86MapPage: v 0xD0240000 -> p 0xFD23B000. flags 1.
+x86MapPage: v 0xD0241000 -> p 0xFD23C000. flags 1.
+x86MapPage: v 0xD0242000 -> p 0xFD23D000. flags 1.
+x86MapPage: v 0xD0243000 -> p 0xFD23E000. flags 1.
+x86MapPage: v 0xD0244000 -> p 0xFD23F000. flags 1.
+
+  NOS Kernel
+  Copyright Alex Boxall 2022-2023
+
+  1076 / 3364 KB used
+
+  ...x86MapPage: v 0xD0251000 -> p 0x3F6000. flags 1.
+x86MapPage: v 0xD0252000 -> p 0x3F5000. flags 1.
+x86MapPage: v 0xD0253000 -> p 0x3F4000. flags 1.
+x86MapPage: v 0xD0254000 -> p 0x3F3000. flags 1.
+x86MapPage: v 0xD0255000 -> p 0x3F2000. flags 1.
+x86MapPage: v 0xD0256000 -> p 0x3F1000. flags 1.
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+x86MapPage: v 0xD0257000 -> p 0x3F0000. flags 1.
+x86MapPage: v 0xD0258000 -> p 0x3EF000. flags 1.
+x86MapPage: v 0xD0259000 -> p 0x3EE000. flags 1.
+x86MapPage: v 0xD025A000 -> p 0x3ED000. flags 1.
+x86MapPage: v 0xD025B000 -> p 0x3EC000. flags 1.
+x86MapPage: v 0xD025C000 -> p 0x3EB000. flags 1.
+x86MapPage: v 0xD025D000 -> p 0x3EA000. flags 1.
+x86MapPage: v 0xD025E000 -> p 0x3E9000. flags 1.
+x86MapPage: v 0xD025F000 -> p 0x3E8000. flags 1.
+x86MapPage: v 0xD0260000 -> p 0x3E7000. flags 1.
+x86MapPage: v 0xD0261000 -> p 0x3E6000. flags 1.
+x86MapPage: v 0xD0262000 -> p 0x3E5000. flags 1.
+x86MapPage: v 0xD0263000 -> p 0x3E4000. flags 1.
+x86MapPage: v 0xD0264000 -> p 0x3E3000. flags 1.
+x86MapPage: v 0xD0265000 -> p 0x3E2000. flags 1.
+12345Reached TFW_SP 7
+15432MarkTfwStartPoint: running test 2
+x86MapPage: v 0xD0266000 -> p 0x3E1000. flags 1.
+x86MapPage: v 0xD0267000 -> p 0x3E0000. flags 1.
+x86MapPage: v 0xD0268000 -> p 0x3DF000. flags 1.
+15324REL1
+REL2
+REL3
+REL4
+REL5
+REL6
+42351PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 2, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x13D000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
+MarkTfwStartPoint: running test 3
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 3, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x13D000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1

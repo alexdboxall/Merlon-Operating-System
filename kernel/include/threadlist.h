@@ -7,10 +7,11 @@ struct thread;
 struct thread_list {
     struct thread* head;
     struct thread* tail;
+    int index;
 };
 
-void ThreadListInit(struct thread_list* list);
+void ThreadListInit(struct thread_list* list, int index);
 void ThreadListInsert(struct thread_list* list, struct thread* thread);
 bool ThreadListContains(struct thread_list* list, struct thread* thread);
 void ThreadListDelete(struct thread_list* list, struct thread* thread);
-void ThreadListDeleteTop(struct thread_list* list);
+struct thread* ThreadListDeleteTop(struct thread_list* list);

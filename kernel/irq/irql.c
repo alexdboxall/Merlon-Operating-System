@@ -94,7 +94,7 @@ void LowerIrql(int target_level) {
 
     while (init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(deferred_functions) > 0) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
-        assert(next.priority <= current_level);
+        assert((int) next.priority <= current_level);
 
         if ((int) next.priority >= target_level) {
             current_level = next.priority;

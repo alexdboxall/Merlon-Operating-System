@@ -192,6 +192,7 @@ int DbgGetOutstandingHeapAllocations(void) {
  * An array which holds the minimum allocation sizes that each free list can hold.
  */
 static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
+    8,
     16,
     24,
     32,
@@ -201,7 +202,7 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     64,
     72,
     80,                 
-    88,                 // 10
+    88,                 // 11
     96,
     104,
     112,
@@ -211,7 +212,7 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     192,
     224,
     256,                
-    320,                // 20
+    320,                // 21
     384,
     448,
     512,
@@ -219,7 +220,6 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     1024,
     1536,
     2048,
-    1024 * 3,
     1024 * 4,           
     1024 * 8,           // 30
     1024 * 16,          // 31

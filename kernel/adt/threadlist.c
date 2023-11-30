@@ -6,8 +6,9 @@
 #include <panic.h>
 #include <string.h>
 
-void ThreadListInit(struct thread_list* list) {
+void ThreadListInit(struct thread_list* list, int index) {
     memset(list, 0, sizeof(struct thread_list));
+    list->index = index;
 }
 
 void ThreadListInsert(struct thread_list* list, struct thread* thread) {
@@ -19,11 +20,11 @@ void ThreadListInsert(struct thread_list* list, struct thread* thread) {
         list->head = thread;
 
     } else {
-        list->tail->next = thread;
+        list->tail->next[list->index] = thread;
     }
 
     list->tail = thread;
-    thread->next = NULL;
+    thread->next[list->index] = NULL;
 }
 
 static int ThreadListGetIndex(struct thread_list* list, struct thread* thread) {
@@ -34,7 +35,7 @@ static int ThreadListGetIndex(struct thread_list* list, struct thread* thread) {
             return i;
         }
         ++i;
-        iter = iter->next;
+        iter = iter->next[list->index];
     }
     return -1;
 }
@@ -45,9 +46,9 @@ bool ThreadListContains(struct thread_list* list, struct thread* thread) {
 
 static void ProperDelete(struct thread_list* list, struct thread* iter, struct thread* prev) {
     if (iter == list->head) {
-        list->head = list->head->next;
+        list->head = list->head->next[list->index];
     } else {
-        prev->next = iter->next;
+        prev->next[list->index] = iter->next[list->index];
     }
 
     if (iter == list->tail) {
@@ -69,17 +70,19 @@ static void ThreadListDeleteIndex(struct thread_list* list, int index) {
         }
         ++i;
         prev = iter;
-        iter = iter->next;
+        iter = iter->next[list->index];
     }
 
     Panic(PANIC_LINKED_LIST);
 }
 
-void ThreadListDeleteTop(struct thread_list* list) {
+struct thread* ThreadListDeleteTop(struct thread_list* list) {
+    struct thread* top = list->head;
     if (list->head == list->tail) {
         list->tail = NULL;
     }
-    list->head = list->head->next;
+    list->head = list->head->next[list->index];
+    return top;
 }
 
 void ThreadListDelete(struct thread_list* list, struct thread* thread) {

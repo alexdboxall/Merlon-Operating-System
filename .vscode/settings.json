@@ -52,7 +52,14 @@
         "cstdint": "c",
         "types.h": "c",
         "stdbool.h": "c",
-        "thread.h": "c"
+        "thread.h": "c",
+        "semaphore.h": "c",
+        "thread": "c",
+        "executor": "c",
+        "locale": "c",
+        "socket": "c",
+        "condition_variable": "c",
+        "future": "c"
     },
     "files.exclude": {
         "**/.git": true,

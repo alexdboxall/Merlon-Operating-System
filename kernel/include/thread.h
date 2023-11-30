@@ -2,9 +2,11 @@
 
 #include <common.h>
 
-#define THREAD_STATE_RUNNING    0
-#define THREAD_STATE_READY      1
-#define THREAD_STATE_BLOCKED    2
+#define THREAD_STATE_RUNNING                                0
+#define THREAD_STATE_READY                                  1
+#define THREAD_STATE_SLEEPING                               2
+#define THREAD_STATE_WAITING_FOR_SEMAPHORE                  3
+#define THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT     4
 
 #define SCHEDULE_POLICY_FIXED             0
 #define SCHEDULE_POLICY_USER_HIGHER       1
@@ -14,6 +16,15 @@
 #define FIXED_PRIORITY_KERNEL_HIGH        0
 #define FIXED_PRIORITY_KERNEL_NORMAL      30
 #define FIXED_PRIORITY_IDLE               255
+
+/*
+ * Determines which of the 'next' pointers are used to manage the list.
+ * A thread can be on multiple lists so long as they are different numbers.
+ * Can increase the number of 'next' pointers in the thread struct to make them distinct if needed.
+ */
+#define NEXT_INDEX_READY       0
+#define NEXT_INDEX_SLEEP       1
+#define NEXT_INDEX_SEMAPHORE   2
 
 struct thread {
     /*
@@ -25,7 +36,12 @@ struct thread {
     struct vas* vas;
     size_t kernel_stack_size;
     void (*initial_address)(void*);
-    struct thread* next;
+
+    /*
+     * Allows a thread to be on a timer and a semaphore list at the same time.
+     * Very sketchy stuff.
+     */
+    struct thread* next[3];
 
     int thread_id;
     int state;
@@ -35,6 +51,7 @@ struct thread {
     int priority;
     int schedule_policy;
     size_t canary_position;
+    bool timed_out;
     
     /*
      * The system time at which this task's time has expired. If this is 0, then the task will not have a set time limit.

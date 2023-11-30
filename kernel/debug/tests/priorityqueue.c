@@ -25,14 +25,14 @@ static void PQInsertionAndDeletionTest(bool max) {
         int* d = res.data;
         if (max) {
             assert(*d == 99 - i);
-            assert(res.priority == (99 - i) * 3);
+            assert((int) res.priority == (99 - i) * 3);
         } else {
             assert(*d == i);
-            assert(res.priority == i * 3);
+            assert((int) res.priority == i * 3);
         }
-        assert(PriorityQueueGetUsedSize(queue) == 100 - i);
+        assert((int) PriorityQueueGetUsedSize(queue) == 100 - i);
         PriorityQueuePop(queue);
-        assert(PriorityQueueGetUsedSize(queue) == 99 - i);
+        assert((int) PriorityQueueGetUsedSize(queue) == 99 - i);
     }
     PriorityQueueDestroy(queue);
 }
@@ -77,7 +77,7 @@ TFW_CREATE_TEST(PriorityQueueStress) { TFW_IGNORE_UNUSED
         assert(PriorityQueueGetUsedSize(queue) == expected_size);
     }
 
-    int prev = 99999999;
+    uint64_t prev = 99999999;
     while (PriorityQueueGetUsedSize(queue) > 0) {
         struct priority_queue_result r1 = PriorityQueuePeek(queue);
         PriorityQueuePop(queue);

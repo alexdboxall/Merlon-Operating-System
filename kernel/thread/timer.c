@@ -3,6 +3,7 @@
 #include <spinlock.h>
 #include <assert.h>
 #include <cpu.h>
+#include <panic.h>
 #include <irql.h>
 #include <log.h>
 #include <arch.h>
@@ -39,7 +40,7 @@ void ReceivedTimer(uint64_t nanos) {
         PostponeScheduleUntilStandardIrql();
     }
 
-    DeferUntilIrql(IRQL_SCHEDULER, HandleSleepWakeups, (void*) &system_time);
+    DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
 }
 
 uint64_t GetSystemTimer(void) {
@@ -53,11 +54,13 @@ uint64_t GetSystemTimer(void) {
 
 void InitTimer(void) {
     InitSpinlock(&timer_lock, "timer", IRQL_TIMER);
-    ThreadListInit(&sleep_overflow_list);
+    ThreadListInit(&sleep_overflow_list, NEXT_INDEX_SLEEP);
     sleep_queue = PriorityQueueCreate(SLEEP_QUEUE_LENGTH, false, sizeof(struct thread*));
 }
 
-static void AddToSleepList(struct thread* thr) {
+void QueueForSleep(struct thread* thr) {
+    thr->timed_out = false;
+
     if (PriorityQueueGetUsedSize(sleep_queue) == SLEEP_QUEUE_LENGTH) {
         ThreadListInsert(&sleep_overflow_list, thr);
     } else {
@@ -65,8 +68,33 @@ static void AddToSleepList(struct thread* thr) {
     }
 }
 
+void DequeueForSleep(struct thread* thr) {
+    while (PriorityQueueGetUsedSize(sleep_queue) > 0) {
+        struct priority_queue_result res = PriorityQueuePeek(sleep_queue);
+        struct thread* top_thread = *((struct thread**) res.data);
+        PriorityQueuePop(sleep_queue);
+        if (top_thread == thr) {
+            return;
+        }
+        ThreadListInsert(&sleep_overflow_list, top_thread);
+    }
+
+    struct thread* iter = sleep_overflow_list.head;
+    while (iter) {
+        if (iter == thr) {
+            ThreadListDelete(&sleep_overflow_list, iter);
+            return;
+
+        } else {
+            iter = iter->next[NEXT_INDEX_SLEEP];
+        }
+    }
+
+    Panic(PANIC_IMPOSSIBLE_RETURN);
+}
+
 void HandleSleepWakeups(void* sys_time_ptr) {
-    EXACT_IRQL(IRQL_SCHEDULER);
+    EXACT_IRQL(IRQL_STANDARD);
 
     if (GetThread() == NULL) {
         return;
@@ -86,7 +114,9 @@ void HandleSleepWakeups(void* sys_time_ptr) {
          * Check if it needs waking.
          */
         if (res.priority <= system_time) {
-            UnblockThread(*((struct thread**) res.data));
+            struct thread* thr = *((struct thread**) res.data);
+            thr->timed_out = true;
+            UnblockThread(thr);
             PriorityQueuePop(sleep_queue);
         } else {
             /*
@@ -104,11 +134,12 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     while (iter) {
         if (iter->sleep_expiry <= system_time) {
             ThreadListDelete(&sleep_overflow_list, iter);
+            iter->timed_out = true;
             UnblockThread(iter);
-            // restart, as list changed
-            iter = sleep_overflow_list.head;
+            iter = sleep_overflow_list.head;            // restart, as list changed
+
         } else {
-            iter = iter->next;
+            iter = iter->next[NEXT_INDEX_SLEEP];
         }
     }
 
@@ -122,8 +153,8 @@ void SleepUntil(uint64_t system_time_ns) {
 
     LockScheduler();
     GetThread()->sleep_expiry = system_time_ns;
-    AddToSleepList(GetThread());
-    BlockThread(THREAD_STATE_BLOCKED);
+    QueueForSleep(GetThread());
+    BlockThread(THREAD_STATE_SLEEPING);
     UnlockScheduler();
 }
 

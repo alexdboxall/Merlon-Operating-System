@@ -37,6 +37,7 @@
 #define ENFILE          25          // Too many open files in system
 #define EPIPE           26          // Broken pipe
 #define ESPIPE          27          // Illegal seek
+#define ETIMEDOUT       28          // Operation timed out
 
 #ifndef COMPILE_KERNEL
 
