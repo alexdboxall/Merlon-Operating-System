@@ -207,6 +207,10 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
         LogWriteSerial("LP2\n");
         LockProcess(prcss);
         result = TryReapProcess(prcss, pid, status);
+
+        // TODO: if result == 0, probably need to maintain a queue of 'failed to reap', then next
+        //       time we unblock from the semaphore, try reap everyone in the queue (as at the moment
+        //       we only get one change to reap - if it's out of order it will simply leak.
         UnlockProcess(prcss);
     }
 
