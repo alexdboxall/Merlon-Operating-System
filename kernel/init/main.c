@@ -10,25 +10,52 @@
 #include <thread.h>
 #include <panic.h>
 #include <stdlib.h>
+#include <process.h>
 
 extern void InitDbgScreen(void);
 
 void MyTestThread(void* str) {
     int count = 0;
     while (1) {
-        DbgScreenPrintf("%s", str);
+        (void) str;//DbgScreenPrintf("%s", str);
         SleepMilli(500);
         ++count;
         if (count == 10) {
-            TerminateThread();
+            TerminateThread(GetThread());
         }
     }
 }
 
-void TfwTestingThread(void* ignored) {
-    (void) ignored;
-
+void TfwTestingThread(void*) {
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
+    while (true) {
+        Schedule();
+    }
+}
+
+void SecondProcessThread(void*) {
+    DbgScreenPrintf("The second process is waiting 2 seconds...\n");
+    SleepMilli(2000);
+    DbgScreenPrintf("The second process is about to terminate with status 123!\n");
+    KillProcess(123);
+}
+
+void InitialProcessThread(void*) {
+    DbgScreenPrintf("This was called by something living within a process.\n");
+
+    struct process* child = CreateProcessWithEntryPoint(1, SecondProcessThread);
+    int retv;
+    WaitProcess(GetPid(child), &retv, 0);
+    DbgScreenPrintf("The child process returned with status: %d\n", retv);
+
+    while (true) {
+        Schedule();
+    }
+}
+
+void InitThread(void*) {
+    CreateProcessWithEntryPoint(0, InitialProcessThread);
+
     while (true) {
         Schedule();
     }
@@ -76,6 +103,8 @@ void KernelMain(void) {
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
+    InitProcess();
+
     InitDbgScreen();
     DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
 
@@ -86,6 +115,6 @@ void KernelMain(void) {
     CreateThread(MyTestThread, "5", GetVas(), "test thread!");
 
     CreateThread(TfwTestingThread, NULL, GetVas(), "twf all clear tests");
-
+    CreateThread(InitThread, NULL, GetVas(), "init1");
     StartMultitasking();
 }

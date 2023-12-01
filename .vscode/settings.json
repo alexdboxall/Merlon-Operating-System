@@ -59,7 +59,12 @@
         "locale": "c",
         "socket": "c",
         "condition_variable": "c",
-        "future": "c"
+        "future": "c",
+        "process.h": "c",
+        "span": "c",
+        "buffer": "c",
+        "internet": "c",
+        "ranges": "c"
     },
     "files.exclude": {
         "**/.git": true,

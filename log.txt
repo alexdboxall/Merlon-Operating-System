@@ -1,6 +1,6 @@
 KernelMain: kernel is initialising...
 memory here: 0x1000 -> 0x80000
-memory here: 0x136000 -> 0x1E0000
+memory here: 0x137000 -> 0x1E0000
 memory here: 0x1E0000 -> 0x200000
 memory here: 0xFFFC0000 -> 0x0
 Grabbing from emo block of size 0x4000, for request 0x1000
@@ -32,27 +32,47 @@ backup heap: largest is 0x3000, total is 0x3000
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1076 / 1344 KB used
+  1076 / 1340 KB used
 
-  ...12345154321234515432123451543212345154321234515432list index = 2
-Cleaning up a thread!
-Pre clean: 1108 / 1344 KB used
-Post clean: 1104 / 1344 KB used
-Done!
-Cleaning up a thread!
-Pre clean: 1104 / 1344 KB used
-Post clean: 1100 / 1344 KB used
-Done!
-Cleaning up a thread!
-Pre clean: 1100 / 1344 KB used
-Post clean: 1096 / 1344 KB used
-Done!
-Cleaning up a thread!
-Pre clean: 1096 / 1344 KB used
-Post clean: 1092 / 1344 KB used
-Done!
+  ...Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+CREATING prcss->lock: 0xD024AF44
+AC 1
+CREATED PROCESS: 0xD024AC14
+LP65
+AC 4 0xD024AC14 0xD024AF44
+This was called by something living within a process.
+CREATING prcss->lock: 0xD024A9FC
+AC 1
+AC 3
+AC 4 0xD024AC14 0xD024AF44
+CREATED PROCESS: 0xD024AA1C
+LP65
+AC 4 0xD024AC14 0xD024AF44
+LP65
+AC 4 0xD024AA1C 0xD024A9FC
+AC 5
+WAITING ON SEMAPHORE HERE: 0xD024AB7C
+The second process is waiting 2 seconds...
+The second process is about to terminate with status 123!
+aaaA
+bbbb
+cccc
+OUR PARENT IS: 1
+LP3
+AC 3
+RELEASING SEMAPHORE HERE: 0xD024AB7C
+list index = 2
+list index = 2
+GOT THE SEMAPHORE!!
+LP2
+AC 4 0xD024AC14 0xD024AF44
+TRYING TO REAP!
+ReapAux! node = 0xD024A91C
+LP1
+AC 4 0xD024AA1C 0xD024A9FC
+AC 2
+The child process returned with status: 123
 list index = 0
-Cleaning up a thread!
-Pre clean: 1092 / 1344 KB used
-Post clean: 1088 / 1344 KB used
-Done!
+list index = 2
+list index = 0

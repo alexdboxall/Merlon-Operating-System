@@ -15,6 +15,7 @@
 #include <threadlist.h>
 #include <priorityqueue.h>
 #include <semaphore.h>
+#include <process.h>
 
 static struct thread_list ready_list;
 static struct spinlock scheduler_lock;
@@ -182,6 +183,12 @@ struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct va
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr);
 
+    if (GetProcess() != NULL) {
+        AddThreadToProcess(GetProcess(), thr);
+    } else {
+        thr->process = NULL;
+    }
+
     LockScheduler();
     ThreadListInsert(&ready_list, thr);
     UnlockScheduler();
@@ -219,7 +226,7 @@ void ThreadInitialisationHandler(void) {
     GetThread()->initial_address(GetThread()->argument);   
 
     /* The thread has returned, so just terminate it. */
-    TerminateThread();
+    TerminateThread(GetThread());
 
     Panic(PANIC_IMPOSSIBLE_RETURN);
 }

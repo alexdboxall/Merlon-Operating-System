@@ -6,6 +6,7 @@
 #include <arch.h>
 #include <log.h>
 #include <avl.h>
+#include <heap.h>
 #include <virtual.h>
 
 __attribute__((fastcall)) size_t x86KernelMemoryToPhysical(size_t virtual)
@@ -90,9 +91,9 @@ void ArchFlushTlb(struct vas* vas) {
 }
 
 void ArchInitVas(struct vas* vas) {
-	platform_vas_data_t* data = vas->arch_data;
-
-	(void) data;
+	vas->arch_data = AllocHeap(sizeof(platform_vas_data_t));
+	vas->arch_data->p_page_directory = ((size_t) kernel_page_directory) - 0xC0000000;
+	vas->arch_data->v_page_directory = kernel_page_directory;
 }
 
 void ArchInitVirt(void) {

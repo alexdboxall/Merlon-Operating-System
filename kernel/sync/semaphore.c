@@ -54,16 +54,21 @@ struct semaphore* CreateSemaphore(int max_count, int initial_count) {
  */
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     MAX_IRQL(IRQL_SCHEDULER);
+    assert(sem != NULL);
 
     LockScheduler();
 
     struct thread* thr = GetThread();
+    if (thr == NULL) {
+        Panic(PANIC_SEM_HOLD_WITHOUT_THREAD);
+        return 0;
+    }
 
     /*
      * This gets set to true by the sleep wakeup routine if we get timed-out.
      */
     thr->timed_out = false;
-    
+
     if (sem->current_count < sem->max_count) {
         /*
          * Uncontested, so acquire straight away.
@@ -88,7 +93,8 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
             QueueForSleep(thr);
             BlockThread(THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT);
         }
-    }
+    } 
+
     UnlockScheduler();
     return thr->timed_out ? (timeout_ms == 0 ? EAGAIN : ETIMEDOUT) : 0;
 }
@@ -103,6 +109,7 @@ void ReleaseSemaphore(struct semaphore* sem) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     LockScheduler();
+    
     if (sem->waiting_list.head == NULL) {
         sem->current_count--;
 

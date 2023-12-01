@@ -3,6 +3,7 @@
 #include <common.h>
 
 struct semaphore;
+struct process;
 
 #define THREAD_STATE_RUNNING                                0
 #define THREAD_STATE_READY                                  1
@@ -59,6 +60,8 @@ struct thread {
     
     struct semaphore* waiting_on_semaphore;
 
+    struct process* process;
+
     /*
      * The system time at which this task's time has expired. If this is 0, then the task will not have a set time limit.
      * This value is set to GetSystemTimer() + TIMESLICE_LENGTH_MS when the task is scheduled in, and doesn't change until
@@ -79,7 +82,7 @@ void StartMultitasking(void);
 void AssertSchedulerLockHeld(void);
 
 struct thread* GetThread(void);
-void TerminateThread(void);
+void TerminateThread(struct thread* thr);
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);
 void BlockThread(int reason);
 void UnblockThread(struct thread* thr);

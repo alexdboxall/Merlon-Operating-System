@@ -339,7 +339,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
-    
+
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     return MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
 }
