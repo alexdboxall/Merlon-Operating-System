@@ -261,6 +261,8 @@ char* strerror(int err)
         return "Invalid seek";
 	case ETIMEDOUT:
 		return "Operation timed out";
+	case ENOBUFS:
+		return "No buffer space";
 	default:
 		return "Unknown error";
 	}

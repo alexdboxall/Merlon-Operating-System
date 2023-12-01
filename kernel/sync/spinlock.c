@@ -20,33 +20,18 @@ void InitSpinlock(struct spinlock* lock, const char* name, int irql) {
     strcpy(lock->name, name);
 }
 
-int AcquireSpinlock(struct spinlock* lock, bool raise_irql) {
+void AcquireSpinlockDirect(struct spinlock* lock) {
     assert(lock->lock == 0);
-
-    int prior_irql = GetIrql();
-
-    if (raise_irql) {
-        RaiseIrql(lock->irql);
-
-    } else if (lock->irql != GetIrql()) {
-        Panic(PANIC_SPINLOCK_WRONG_IRQL);
-    }
 
     ArchSpinlockAcquire(&lock->lock);
     //lock->owner = GetThread();
-    return prior_irql;
 }
 
-void ReleaseSpinlock(struct spinlock* lock) {
+void ReleaseSpinlockDirect(struct spinlock* lock) {
     assert(lock->lock != 0);
     //assert(lock->owner == GetThread() || lock->irql == IRQL_HIGH);
     //lock->owner = NULL;
     ArchSpinlockRelease(&lock->lock);
-}
-
-void ReleaseSpinlockAndLower(struct spinlock* lock, int new_irql) {
-    ReleaseSpinlock(lock);
-    LowerIrql(new_irql);
 }
 
 /**
@@ -55,4 +40,25 @@ void ReleaseSpinlockAndLower(struct spinlock* lock, int new_irql) {
  */
 bool IsSpinlockHeld(struct spinlock* lock) {
     return lock->lock;
+}
+
+int AcquireSpinlockIrql(struct spinlock* lock) {
+    assert(lock->lock == 0);
+
+    int prior_irql = GetIrql();
+    RaiseIrql(lock->irql);
+
+    if (lock->irql != GetIrql()) {
+        Panic(PANIC_SPINLOCK_WRONG_IRQL);
+    }
+
+    AcquireSpinlockDirect(lock);
+    lock->prev_irql = prior_irql;
+    return prior_irql;
+}
+
+void ReleaseSpinlockIrql(struct spinlock* lock) {
+    int old_irql = lock->prev_irql;
+    ReleaseSpinlockDirect(lock);
+    LowerIrql(old_irql);
 }

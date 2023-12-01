@@ -758,14 +758,14 @@ void* AllocHeapEx(size_t size, int flags) {
         flags |= HEAP_ALLOW_PAGING;
     }
 
-    int irql = AcquireSpinlock(&heap_lock, true);
+    AcquireSpinlockIrql(&heap_lock);
     struct block* block = FindBlock(size, flags);
 
 #ifndef NDEBUG
     outstanding_allocations++;
 #endif
 
-    ReleaseSpinlockAndLower(&heap_lock, irql);
+    ReleaseSpinlockIrql(&heap_lock);
 
     assert(((size_t) block & (ALIGNMENT - 1)) == 0);
 
@@ -803,13 +803,13 @@ void FreeHeap(void* ptr) {
     block->prev = NULL;
     block->next = NULL;
 
-    int irql = AcquireSpinlock(&heap_lock, true);
+    AcquireSpinlockIrql(&heap_lock);
     AddBlock(block);
 
 #ifndef NDEBUG
     outstanding_allocations--;
 #endif
-    ReleaseSpinlockAndLower(&heap_lock, irql);
+    ReleaseSpinlockIrql(&heap_lock);
 }
 
 /*
@@ -841,7 +841,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
             return ptr;
         }
         
-        int irql = AcquireSpinlock(&heap_lock, true);
+        AcquireSpinlockIrql(&heap_lock);
 
         /*
          * Decrease the size of the current block, and add the leftovers as a new free block.
@@ -852,7 +852,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
         MarkFree(freed_area);
         AddBlock(freed_area);
 
-        ReleaseSpinlockAndLower(&heap_lock, irql);
+        ReleaseSpinlockIrql(&heap_lock);
 
         return ptr;
 
@@ -867,7 +867,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
         size_t remainder_in_next = next_block_size - bytes_to_expand_by;
 
         if (!IsAllocated(next_block) && next_block_size >= bytes_to_expand_by) {
-            int irql = AcquireSpinlock(&heap_lock, true);
+            AcquireSpinlockIrql(&heap_lock);
 
             RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
 
@@ -885,7 +885,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
                 AddBlock(next_block);
             }
 
-            ReleaseSpinlockAndLower(&heap_lock, irql);
+            ReleaseSpinlockIrql(&heap_lock);
             
             return ptr;
 

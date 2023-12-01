@@ -93,9 +93,7 @@ static size_t total_pages = 0;
 static size_t highest_valid_page_index = 0;
 
 /*
- * A lock to prevent concurrent access to the physical memory manager. AllocPhys() is allowed to
- * cause page faults, which can lead to recursive use of this lock. Therefore, this lock should
- * be acquired with RecursiveAcquireSpinlock() instead of AcquireSpinlock()
+ * A lock to prevent concurrent access to the physical memory manager.
  */
 static struct spinlock phys_lock;
 
@@ -159,7 +157,7 @@ void DeallocPhys(size_t addr) {
 
     size_t page = addr / ARCH_PAGE_SIZE;
 
-    int irql = AcquireSpinlock(&phys_lock, true);
+    AcquireSpinlockIrql(&phys_lock);
 
     ++pages_left;
     DeallocateBitmapEntry(page);
@@ -167,7 +165,7 @@ void DeallocPhys(size_t addr) {
         PushIndex(page);
     }
 
-    ReleaseSpinlockAndLower(&phys_lock, irql);
+    ReleaseSpinlockIrql(&phys_lock);
 }
 
 /**
@@ -230,7 +228,7 @@ size_t AllocPhys(void) {
 
     DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
 
-    int irql = AcquireSpinlock(&phys_lock, true);
+    AcquireSpinlockIrql(&phys_lock);
 
     size_t index = 0;
     if (allocation_stack == NULL) {
@@ -249,7 +247,7 @@ size_t AllocPhys(void) {
     AllocateBitmapEntry(index);
     --pages_left;
 
-    ReleaseSpinlockAndLower(&phys_lock, irql);
+    ReleaseSpinlockIrql(&phys_lock);
 
     return index * ARCH_PAGE_SIZE;
 }
@@ -290,14 +288,14 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
     size_t max_index = max_addr == 0 ? highest_valid_page_index + 1 : max_addr / ARCH_PAGE_SIZE;
     size_t count = 0;
 
-    int irql = AcquireSpinlock(&phys_lock, true);
+    AcquireSpinlockIrql(&phys_lock);
 
     /*
      * We need to check we won't try to over-allocate memory, or allocate so much memory that it puts
      * us in a critical position.
      */
     if (pages + NUM_EMERGENCY_PAGES >= pages_left) {
-        ReleaseSpinlockAndLower(&phys_lock, irql);
+        ReleaseSpinlockIrql(&phys_lock);
         return 0;
     }
 
@@ -323,12 +321,12 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
                 ++start_index;
             }
 
-            ReleaseSpinlockAndLower(&phys_lock, irql);
+            ReleaseSpinlockIrql(&phys_lock);
             return start_index * ARCH_PAGE_SIZE;
         }
     }
 
-    ReleaseSpinlockAndLower(&phys_lock, irql);
+    ReleaseSpinlockIrql(&phys_lock);
     return 0;
 }
 

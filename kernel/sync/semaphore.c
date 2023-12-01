@@ -19,19 +19,19 @@ struct semaphore {
 
 /**
  * Creates a semaphore object with a specified limit on the number of concurrent holders.
- * The count is initialised to zero.
  * 
  * @param max_count The maximum number of concurrent holders of the semaphore
+ * @param initial_count The initial number of holders of the semaphore. Should normally be 0.
  * @returns The initialised semaphore. 
  * 
  * @maxirql IRQL_STANDARD
  */
-struct semaphore* CreateSemaphore(int max_count) {
+struct semaphore* CreateSemaphore(int max_count, int initial_count) {
     MAX_IRQL(IRQL_STANDARD);
 
     struct semaphore* sem = AllocHeap(sizeof(struct semaphore));
     sem->max_count = max_count;
-    sem->current_count = 0;
+    sem->current_count = initial_count;
     ThreadListInit(&sem->waiting_list, NEXT_INDEX_SEMAPHORE);
     return sem;
 }

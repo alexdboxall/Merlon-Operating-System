@@ -30,7 +30,7 @@ static void Thread1(void* sem_) {
 TFW_CREATE_TEST(SemaphoreTimeout1) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     
-    struct semaphore* sem = CreateSemaphore(1);   
+    struct semaphore* sem = CreateSemaphore(1, 0);
     AcquireSemaphore(sem, -1);
 
     CreateThread(Thread1, (void*) sem, GetVas(), "");
@@ -57,7 +57,7 @@ static void Thread2(void* sem_) {
 TFW_CREATE_TEST(SemaphoreTimeout2) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     
-    struct semaphore* sem = CreateSemaphore(1);   
+    struct semaphore* sem = CreateSemaphore(1, 0);  
     AcquireSemaphore(sem, -1);
 
     CreateThread(Thread2, (void*) sem, GetVas(), "");
@@ -136,7 +136,7 @@ TFW_CREATE_TEST(SchedulerHeartAttack) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
 
     for (int i = 0; i < 20; ++i) {
-        sems[i] = CreateSemaphore(rand() % 3 + 1);
+        sems[i] = CreateSemaphore(rand() % 3 + 1, 0);
     }
 
     for (int i = 0; i < 10; ++i) {

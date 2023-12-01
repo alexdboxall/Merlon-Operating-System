@@ -27,9 +27,9 @@ void ReceivedTimer(uint64_t nanos) {
          * As we're in the timer handler, we know we already have IRQL_TIMER, and so we don't
          * need to incur the additional overhead of raising and lowering.
          */
-        AcquireSpinlock(&timer_lock, false);
+        AcquireSpinlockDirect(&timer_lock);
         system_time += nanos;
-        ReleaseSpinlock(&timer_lock);
+        ReleaseSpinlockDirect(&timer_lock);
     }
 
     /*
@@ -46,9 +46,9 @@ void ReceivedTimer(uint64_t nanos) {
 uint64_t GetSystemTimer(void) {
     MAX_IRQL(IRQL_TIMER);
 
-    int irql = AcquireSpinlock(&timer_lock, true);
+    AcquireSpinlockIrql(&timer_lock);
     uint64_t value = system_time;
-    ReleaseSpinlockAndLower(&timer_lock, irql);
+    ReleaseSpinlockIrql(&timer_lock);
     return value;
 }
 

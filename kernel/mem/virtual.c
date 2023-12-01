@@ -89,7 +89,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
     assert(!entry->lock);
     assert(!entry->cow);
 
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
 
     if (!entry->in_ram) {
         /*
@@ -126,7 +126,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         ArchFlushTlb(vas);
     }
     
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 /**
@@ -200,10 +200,10 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      * TODO: later on, check if shared, and add phys->virt entry if needed
      */
     
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
     AvlTreeInsert(vas->mappings, entry);
     ArchAddMapping(vas, entry);
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
@@ -212,7 +212,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
     struct vas_entry dummy;
     dummy.virtual = virtual;
 
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
         if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
             in_use = true;
@@ -221,7 +221,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
         dummy.virtual += ARCH_PAGE_SIZE;
     }
 
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
     return in_use;
 }
 
@@ -361,15 +361,15 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 
 size_t GetPhysFromVirt(size_t virtual) {
     struct vas* vas = GetVas();
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
     size_t result = GetVirtEntry(GetVas(), virtual)->physical;
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
     return result;
 }
 
 void LockVirt(size_t virtual) {
     struct vas* vas = GetVas();
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
 
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
 
@@ -379,15 +379,15 @@ void LockVirt(size_t virtual) {
     }
 
     entry->lock = true;
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 void UnlockVirt(size_t virtual) {
     struct vas* vas = GetVas();
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
     entry->lock = false;
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 void SetVirtPermissions(size_t virtual, int set, int clear) {
@@ -400,7 +400,7 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
     }
     
     struct vas* vas = GetVas();
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
 
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
     entry->read = (set & VM_READ) ? true : (clear & VM_READ ? false : entry->read);
@@ -411,14 +411,14 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
     ArchUpdateMapping(vas, entry);
     ArchFlushTlb(vas);
 
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 int GetVirtPermissions(size_t virtual) {
     struct vas* vas = GetVas();
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
     struct vas_entry entry = *GetVirtEntry(GetVas(), virtual);
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 
     int permissions = 0;
     if (entry.read) permissions |= VM_READ;
@@ -437,7 +437,7 @@ void UnmapVirt(size_t virtual, size_t bytes) {
 
     struct vas* vas = GetVas();
 
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
 
     for (size_t i = 0; i < pages; ++i) {
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
@@ -479,7 +479,7 @@ void UnmapVirt(size_t virtual, size_t bytes) {
         ArchFlushTlb(vas);
     }
 
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
@@ -555,10 +555,10 @@ struct vas* CopyVas(void) {
     struct vas* vas = GetVas();
     struct vas* new_vas = CreateVas();
 
-    int irql = AcquireSpinlock(&vas->lock, true);
+    AcquireSpinlockIrql(&vas->lock);
     CopyVasRecursive(AvlTreeGetRootNode(vas->mappings), new_vas);
     ArchFlushTlb(vas);
-    ReleaseSpinlockAndLower(&vas->lock, irql);
+    ReleaseSpinlockIrql(&vas->lock);
 
     return new_vas;
 }

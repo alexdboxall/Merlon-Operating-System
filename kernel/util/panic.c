@@ -23,7 +23,7 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_OUT_OF_PHYS]						= "no physical memory left",
 	[PANIC_LINKED_LIST]						= "invalid operation on a linked list",
 	[PANIC_CANARY_DIED]						= "kernel stack overflow detected",
-	[PANIC_SEMAPHORE_DESTROY_WHILE_HELD]	= "tried to destroy a held semaphore",
+	[PANIC_SEMAPHORE_DESTROY_WHILE_HELD]	= "tried to destroy a held semaphore"
 };
 
 _Noreturn void Panic(int code)

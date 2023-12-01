@@ -38,6 +38,7 @@
 #define EPIPE           26          // Broken pipe
 #define ESPIPE          27          // Illegal seek
 #define ETIMEDOUT       28          // Operation timed out
+#define ENOBUFS         29          // No buffer space
 
 #ifndef COMPILE_KERNEL
 

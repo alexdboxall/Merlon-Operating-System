@@ -1,13 +1,4 @@
 
-;
-;
-; x86/lowlevel/gdt.s - Load GDT
-;
-; We need assembly in order to access the LGDT instruction so we can load
-; the GDT. Hence we define a function in assembly to load the GDT for us.
-;
-;
-
 
 global x86LoadGdt
 x86LoadGdt:

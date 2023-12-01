@@ -9,6 +9,8 @@ void IdleThread(void* ignored) {
     (void) ignored;
     EXACT_IRQL(IRQL_STANDARD);
 
+    SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_IDLE);
+
     while (1) {
         ArchStallProcessor();
     }

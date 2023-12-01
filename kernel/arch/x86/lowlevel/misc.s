@@ -1,12 +1,4 @@
 
-;
-;
-; x86/lowlevel/misc.s - Miscellaneous Functions
-;
-; Serveral Arch_ functions map directly to assembly instructions, so
-; implement them here.
-;
-
 global ArchReadTimestamp
 global ArchEnableInterrupts
 global ArchDisableInterrupts

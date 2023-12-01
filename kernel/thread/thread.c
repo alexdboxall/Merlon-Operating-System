@@ -21,13 +21,6 @@ static struct spinlock scheduler_lock;
 static struct spinlock innermost_lock;
 
 /*
- * Because these IRQL jumps need to persist across switches, we can't just chuck
- * it on the stack like normal. No need for nesting / a stack to store these, as the
- * scheduler lock cannot be nested.
- */
-static int scheduler_lock_irql;
-
-/*
 * Local fixed sized arrays and variables need to fit on the kernel stack.
 * Allocate at least 8KB (depending on the system page size).
 *
@@ -175,9 +168,9 @@ static int GetNextThreadId(void) {
         InitSpinlock(&thread_id_lock, "thread id", IRQL_SCHEDULER);
     }
 
-    int irql = AcquireSpinlock(&thread_id_lock, true);
+    AcquireSpinlockIrql(&thread_id_lock);
     int result = next_thread_id++;
-    ReleaseSpinlockAndLower(&thread_id_lock, irql);
+    ReleaseSpinlockIrql(&thread_id_lock);
     return result;
 }
 
@@ -216,7 +209,7 @@ void ThreadInitialisationHandler(void) {
      * This normally happends in the schedule code, just after the call to ArchSwitchThread,
      * but we forced ourselves to jump here instead, so we'd better do it now.
      */
-    ReleaseSpinlockAndLower(&innermost_lock, IRQL_SCHEDULER);
+    ReleaseSpinlockIrql(&innermost_lock);
     UpdateTimesliceExpiry();
 
     /*
@@ -262,11 +255,11 @@ static void UpdatePriority(bool yielded) {
 }
 
 void LockScheduler(void) {
-    scheduler_lock_irql = AcquireSpinlock(&scheduler_lock, true);
+    AcquireSpinlockIrql(&scheduler_lock);
 }
 
 void UnlockScheduler(void) {
-    ReleaseSpinlockAndLower(&scheduler_lock, scheduler_lock_irql);
+    ReleaseSpinlockIrql(&scheduler_lock);
 }
 
 void AssertSchedulerLockHeld(void) {
@@ -287,7 +280,7 @@ static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread
      * calls GetCpu(), we'll be in a bit of strife.
      */
     struct cpu* cpu = GetCpu();
-    AcquireSpinlock(&innermost_lock, true);
+    AcquireSpinlockIrql(&innermost_lock);
     cpu->current_thread = new_thread;
     cpu->current_vas = new_thread->vas;
     ArchSwitchThread(old_thread, new_thread);
@@ -296,7 +289,7 @@ static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread
      * This code doesn't get called on the first time a thread gets run!! It jumps straight from
      * ArchSwitchThread to ThreadInitialisationHandler!
      */
-    ReleaseSpinlockAndLower(&innermost_lock, IRQL_SCHEDULER);
+    ReleaseSpinlockIrql(&innermost_lock);
     UpdateTimesliceExpiry();
 }
 
@@ -370,10 +363,7 @@ void InitScheduler() {
      * Once this is called, "the game is afoot!" and threads will start running.
      */
     Schedule();
-    
-    while (1) {
-        ;
-    }
+    Panic(PANIC_IMPOSSIBLE_RETURN);
 }
 
 

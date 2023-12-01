@@ -1,14 +1,4 @@
 
-;
-;
-; x86/lowlevel/trap.s - Interrupt Trap Handlers
-;
-; These functions are called when an interrupt occurs. For certain interrupts,
-; the CPU pushes an error code. For consistency, we will push our own dummy
-; error code for the interrupts where an error code in not automatically pushed.
-; We will then push the interrupt number, and then jump to a common handler.
-;
-
 global isr0
 global isr1
 global isr2
