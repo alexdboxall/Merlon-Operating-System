@@ -13,11 +13,16 @@ struct cpu {
     platform_cpu_data_t* platform_specific;
     size_t cpu_number;
     int irql;
+
+    struct priority_queue* deferred_functions;
+    bool init_irql_done;
+    bool postponed_task_switch;
 };
 
+void InitCpuTable(void);
 void InitBootstrapCpu(void);
 void InitOtherCpu(void);
 
-export struct cpu* GetCpu(void);
-export int GetCpuCount(void);
-export struct cpu* GetCpuAtIndex(int index);
+struct cpu* GetCpu(void);
+int GetCpuCount(void);
+struct cpu* GetCpuAtIndex(int index);

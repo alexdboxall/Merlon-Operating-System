@@ -24,11 +24,11 @@
 #define HEAP_ALLOW_PAGING   4   
 #define HEAP_FORCE_PAGING   8
 
-export void* AllocHeapEx(size_t size, int flags);
-export void* AllocHeap(size_t size);
-export void* ReallocHeap(void* ptr, size_t size);
-export void* AllocHeapZero(size_t size);
-export void FreeHeap(void* ptr);
+void* AllocHeap(size_t size);
+void* AllocHeapEx(size_t size, int flags);
+void* ReallocHeap(void* ptr, size_t size);
+void* AllocHeapZero(size_t size);
+void FreeHeap(void* ptr);
 
 void InitHeap(void);
 

@@ -60,7 +60,7 @@ void ArchSendEoi(int irq_num) {
 }
 
 void ArchSetIrql(int irql) {
-    if (irql == IRQL_HIGH || !x86IsReadyForIrqs()) {
+    if (irql == IRQL_HIGH || irql == IRQL_TIMER || !x86IsReadyForIrqs()) {
         /*
          * Interrupts stay off.
          */

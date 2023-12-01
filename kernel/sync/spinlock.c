@@ -21,6 +21,9 @@ void InitSpinlock(struct spinlock* lock, const char* name, int irql) {
 }
 
 void AcquireSpinlockDirect(struct spinlock* lock) {
+    if (lock->lock != 0) {
+        LogWriteSerial("OOPS! %s\n", lock->name);
+    }
     assert(lock->lock == 0);
 
     ArchSpinlockAcquire(&lock->lock);

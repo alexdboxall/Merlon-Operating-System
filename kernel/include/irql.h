@@ -8,7 +8,7 @@
  * IRQL_PAGE_FAULT  SORT OF             YES                 YES                 YES                     (only the page fault handler can generate a nested page fault, e.g. handling some COW stuff)
  * IRQL_SCHEDULER   NO                  SORT OF             YES                 YES                     (only the scheduler can make a task switch occur, others get postponed)
  * IRQL_DRIVER      NO                  NO                  SORT OF             YES                     (only higher priority drivers can be used)
- * IRQL_TIMER       NO                  NO                  NO                  YES                     
+ * IRQL_TIMER       NO                  NO                  NO                  NO                      (but the timer handler jumps up to this level)                  
  * IRQL_HIGH        NO                  NO                  NO                  NO
  *
  */
@@ -34,7 +34,7 @@
 #define IRQL_DRIVER         3      // 3...39 is the driver range
 
 /*
- * No scheduling, no page faulting, no using other hardware devices.
+ * No scheduling, no page faulting, no using other hardware devices (no other irqs)
  */
 #define IRQL_TIMER          40
 
@@ -45,11 +45,11 @@
 
 #include <common.h>
 
-export void PostponeScheduleUntilStandardIrql(void);
-export void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
-export int GetIrql(void);
-export int RaiseIrql(int level);
-export void LowerIrql(int level);
+void PostponeScheduleUntilStandardIrql(void);
+void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
+int GetIrql(void);
+int RaiseIrql(int level);
+void LowerIrql(int level);
 
 void InitIrql(void);
 

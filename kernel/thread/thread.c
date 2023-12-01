@@ -142,12 +142,6 @@ void UnblockThread(struct thread* thr) {
     ThreadListInsert(&ready_list, thr);
 }
 
-void TerminateThread(void) {
-    while (true) {
-        ;
-    }
-}
-
 void UpdateThreadTimeUsed(void) {
     static uint64_t prev_time = 0;
 
@@ -358,6 +352,7 @@ void InitScheduler() {
 
 [[noreturn]] void StartMultitasking(void) {
     InitIdle();
+    InitCleaner();
 
     /*
      * Once this is called, "the game is afoot!" and threads will start running.

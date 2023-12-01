@@ -14,9 +14,14 @@
 extern void InitDbgScreen(void);
 
 void MyTestThread(void* str) {
+    int count = 0;
     while (1) {
         DbgScreenPrintf("%s", str);
         SleepMilli(500);
+        ++count;
+        if (count == 10) {
+            TerminateThread();
+        }
     }
 }
 
@@ -32,6 +37,16 @@ void TfwTestingThread(void* ignored) {
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
+    /*
+     * Allows us to call GetCpu(), which allows IRQL code to work. Anything which uses
+     * IRQL (i.e. the whole system) relies on this, so this must be done first.
+     */
+    InitCpuTable();
+    assert(GetIrql() == IRQL_STANDARD);
+
+    /*
+     * Initialise the testing framework if we're in debug mode.
+     */
     InitTfw();
     MarkTfwStartPoint(TFW_SP_INITIAL);
 
@@ -39,10 +54,14 @@ void KernelMain(void) {
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS);
 
     InitHeap();
+
+    /*
+     * Allows deferments of functions to actually happen. IRQL is still usable beforehand though.
+     */
     InitIrql();
+
     InitTimer();
     InitScheduler();
-    assert(GetIrql() == IRQL_STANDARD);
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
     InitBootstrapCpu();

@@ -45,10 +45,11 @@ void ReceivedTimer(uint64_t nanos) {
 
 uint64_t GetSystemTimer(void) {
     MAX_IRQL(IRQL_TIMER);
-
+    
     AcquireSpinlockIrql(&timer_lock);
     uint64_t value = system_time;
     ReleaseSpinlockIrql(&timer_lock);
+
     return value;
 }
 

@@ -9,6 +9,7 @@ struct semaphore;
 #define THREAD_STATE_SLEEPING                               2
 #define THREAD_STATE_WAITING_FOR_SEMAPHORE                  3
 #define THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT     4
+#define THREAD_STATE_TERMINATED                             5
 
 #define SCHEDULE_POLICY_FIXED             0
 #define SCHEDULE_POLICY_USER_HIGHER       1
@@ -27,6 +28,7 @@ struct semaphore;
 #define NEXT_INDEX_READY       0
 #define NEXT_INDEX_SLEEP       1
 #define NEXT_INDEX_SEMAPHORE   2
+#define NEXT_INDEX_TERMINATED  0        // terminated can share the ready list
 
 struct thread {
     /*
@@ -56,7 +58,7 @@ struct thread {
     bool timed_out;
     
     struct semaphore* waiting_on_semaphore;
-    
+
     /*
      * The system time at which this task's time has expired. If this is 0, then the task will not have a set time limit.
      * This value is set to GetSystemTimer() + TIMESLICE_LENGTH_MS when the task is scheduled in, and doesn't change until
@@ -89,3 +91,4 @@ void SleepMilli(uint32_t delta_ms);
 
 void HandleSleepWakeups(void* sys_time_ptr); // used internally between timer.c and thread.c
 void InitIdle(void);
+void InitCleaner(void);

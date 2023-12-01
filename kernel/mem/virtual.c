@@ -164,6 +164,8 @@ void EvictVirt(void) {
  * @maxirql IRQL_SCHEDULER
  */
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, void* file, off_t pos) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
     entry->allocated = false;
 
@@ -241,13 +243,6 @@ static void FreeVirtRange(size_t virtual, size_t pages) {
     (void) pages;
 }
 
-/*
-static void AvlPrinter(void* data_) {
-    struct vas_entry* data = (struct vas_entry*) data_;
-    LogWriteSerial("[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", data->virtual, data->physical, data->allocated, data->cow, data->in_ram, data->lock, data->ref_count);
-}*/
-
-
 /**
  * Creates a virtual memory mapping.
  * 
@@ -277,6 +272,8 @@ static void AvlPrinter(void* data_) {
  * @maxirql IRQL_SCHEDULER
  */
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, void* file, off_t pos) {
+    MAX_IRQL(IRQL_SCHEDULER);
+
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
@@ -341,6 +338,8 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
  * @maxirql IRQL_SCHEDULER
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos) {
+    MAX_IRQL(IRQL_SCHEDULER);
+    
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     return MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
 }

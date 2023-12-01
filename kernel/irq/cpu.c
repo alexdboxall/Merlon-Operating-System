@@ -7,23 +7,28 @@
 
 static int num_cpus = 1;
 static struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
+static platform_cpu_data_t boot_cpu_data;
 
 static void InitCpuTableEntry(int index) {
     cpu_table[index].cpu_number = index;
-    cpu_table[index].platform_specific = AllocHeapZero(sizeof(platform_cpu_data_t));
+    cpu_table[index].platform_specific = index != 0 ? AllocHeapZero(sizeof(platform_cpu_data_t)) : &boot_cpu_data;
     cpu_table[index].irql = IRQL_STANDARD;
     cpu_table[index].current_vas = NULL;
     cpu_table[index].current_thread = NULL;
+    cpu_table[index].init_irql_done = false;
+    cpu_table[index].postponed_task_switch = false;
 }
 
-void InitBootstrapCpu(void) {
+void InitCpuTable(void) {
     /*
      * num_cpus gets initialised to 1 in the .data section. Still a good time to check that the
      * binary loaded correctly.
      */
     assert(num_cpus == 1);
-    
     InitCpuTableEntry(0);
+}
+
+void InitBootstrapCpu(void) {
     ArchInitBootstrapCpu(cpu_table);
 }
 

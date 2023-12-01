@@ -12,15 +12,7 @@ struct irql_deferment {
     void* context;
 };
 
-// TODO: needs to be per-cpu
-struct priority_queue* deferred_functions;
-
-// TODO: probably needs to be per-cpu??
-static bool init_irql_done = false;
-
 /**
- * [[docs/kernel/DeferuntilIrql.md]]
- * 
  * Runs a function at an IRQL lower than or equal to the current IRQL. If the IRQLs match,
  * the function will be run immediately. If the target IRQL is lower than the current IRQL,
  * it will be deferred until the IRQL level drops below IRQL_SCHEDULER. Deferred function
@@ -44,11 +36,11 @@ void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
         Panic(PANIC_INVALID_IRQL);
 
     } else {
-        if (init_irql_done) {
+        if (GetCpu()->init_irql_done) {
             struct irql_deferment deferment;
             deferment.context = context;
             deferment.handler = handler;
-            PriorityQueueInsert(deferred_functions, (void*) &deferment, irql);
+            PriorityQueueInsert(GetCpu()->deferred_functions, (void*) &deferment, irql);
         }
     }
 }
@@ -79,8 +71,6 @@ int RaiseIrql(int level) {
     return existing_level;
 }
 
-static bool postponed_task_switch = false;
-
 // Max IRQL: IRQL_HIGH
 void LowerIrql(int target_level) {
     // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)    
@@ -92,8 +82,8 @@ void LowerIrql(int target_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    while (init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(deferred_functions) > 0) {
-        struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
+    while (GetCpu()->init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(GetCpu()->deferred_functions) > 0) {
+        struct priority_queue_result next = PriorityQueuePeek(GetCpu()->deferred_functions);
         assert((int) next.priority <= current_level);
 
         if ((int) next.priority >= target_level) {
@@ -102,6 +92,8 @@ void LowerIrql(int target_level) {
             /*
              * Must Pop() before we call the handler (otherwise if the handler does a raise/lower, it will
              * retrigger itself and cause a recursion loop), and must also get data off the queue before we Pop().
+             * Also must only actually lower the IRQL after doing this, so we don't get interrupted in between
+             * (as someone else could then Raise/Lower, and mess us up.)
              */
             struct irql_deferment* deferred_call = (struct irql_deferment*) next.data;
             void* context = deferred_call->context;
@@ -111,7 +103,7 @@ void LowerIrql(int target_level) {
                 ArchSetIrql(current_level);
                 continue;
             }
-            PriorityQueuePop(deferred_functions);
+            PriorityQueuePop(GetCpu()->deferred_functions);
             GetCpu()->irql = current_level;
             ArchSetIrql(current_level);
             handler(context);
@@ -125,21 +117,21 @@ void LowerIrql(int target_level) {
     GetCpu()->irql = current_level;
     ArchSetIrql(current_level);
 
-    if (current_level == IRQL_STANDARD && postponed_task_switch) {
-        postponed_task_switch = false;
+    if (current_level == IRQL_STANDARD && GetCpu()->postponed_task_switch) {
+        GetCpu()->postponed_task_switch = false;
         Schedule();
     }
 }
 
 void PostponeScheduleUntilStandardIrql(void) {
     // TODO: does this function need its own lock ? (e.g. just for setting postponed_task_switch)
-    postponed_task_switch = true;
+    GetCpu()->postponed_task_switch = true;
 }
 
 /**
  * Requires TFW_SP_AFTER_HEAP or later.
  */
 void InitIrql(void) {
-    deferred_functions = PriorityQueueCreate(128, true, sizeof(struct irql_deferment));
-    init_irql_done = true;
+    GetCpu()->deferred_functions = PriorityQueueCreate(128, true, sizeof(struct irql_deferment));
+    GetCpu()->init_irql_done = true;
 }

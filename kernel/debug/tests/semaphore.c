@@ -41,7 +41,6 @@ TFW_CREATE_TEST(SemaphoreTimeout1) { TFW_IGNORE_UNUSED
     assert(Thread1Ok);
 }
 
-
 static void Thread2(void* sem_) {
     struct semaphore* sem = (struct semaphore*) sem_;
 
@@ -67,7 +66,6 @@ TFW_CREATE_TEST(SemaphoreTimeout2) { TFW_IGNORE_UNUSED
     SleepMilli(500);
     assert(Thread1Ok);
 }
-
 
 static void Thread3(void* ignored) {
     (void) ignored;
@@ -100,8 +98,7 @@ static void Thread4(void* ignored) {
 
 static struct semaphore* sems[20];
 
-void Thread5(void* ignored) {
-    (void) ignored;
+void Thread5(void* delay) {
     int loops = 0;
 
     while (true) {
@@ -115,6 +112,9 @@ void Thread5(void* ignored) {
         int ares = AcquireSemaphore(sems[a], (rand() % 10) * (rand() % 10));
         int bres = AcquireSemaphore(sems[b], (rand() % 10) * (rand() % 10) * 2);
         int cres = AcquireSemaphore(sems[c], (rand() % 10) * (rand() % 10) * 3);
+        if (delay != NULL) {
+            SleepMilli(5);
+        }
         if (ares == 0) {
             ReleaseSemaphore(sems[a]);
         }
@@ -130,7 +130,6 @@ void Thread5(void* ignored) {
         }
     }
 }
-
 
 TFW_CREATE_TEST(SchedulerHeartAttack) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
@@ -149,7 +148,7 @@ TFW_CREATE_TEST(SchedulerHeartAttack) { TFW_IGNORE_UNUSED
         CreateThread(Thread4, NULL, GetVas(), "");
     }
     for (int i = 0; i < 100; ++i) {
-        CreateThread(Thread5, NULL, GetVas(), "");
+        CreateThread(Thread5, context % 2 == 0 ? NULL : ((void*) 1), GetVas(), "");
     }
 
     for (int i = 0; i < (int) context; ++i) {
@@ -157,13 +156,14 @@ TFW_CREATE_TEST(SchedulerHeartAttack) { TFW_IGNORE_UNUSED
     }
 }
 
-
 void RegisterTfwSemaphoreTests(void) {
     RegisterTfwTest("Semaphores with timeouts can be woken via timeout", TFW_SP_ALL_CLEAR, SemaphoreTimeout1, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Semaphores with timeouts can be woken via release", TFW_SP_ALL_CLEAR, SemaphoreTimeout2, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("Scheduler stress test (1)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 20);
-    RegisterNightlyTfwTest("Scheduler stress test (2)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 60);
-    RegisterNightlyTfwTest("Scheduler stress test (3)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 600);
+    RegisterTfwTest("Scheduler stress test (1)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 15);
+    RegisterTfwTest("Scheduler stress test (2)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 20);
+    RegisterNightlyTfwTest("Scheduler stress test (3)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 80);
+    RegisterNightlyTfwTest("Scheduler stress test (4)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 125);
+    RegisterNightlyTfwTest("Scheduler stress test (5)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 600);
 }
 
 #endif
