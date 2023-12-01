@@ -11,6 +11,7 @@
 #include <heap.h>
 #include <process.h>
 #include <log.h>
+#include <linkedlist.h>
 
 struct process {
     pid_t pid;
@@ -50,7 +51,6 @@ static int InsertIntoProcessTable(struct process* prcss) {
     pid_t pid = next_pid++;
     ReleaseSpinlockIrql(&pid_lock);
 
-    LogWriteSerial("AC 1\n");
     AcquireMutex(process_table_mutex, -1);
 
     struct process_table_node* node = AllocHeap(sizeof(struct process_table_node));
@@ -64,7 +64,6 @@ static int InsertIntoProcessTable(struct process* prcss) {
 }
 
 static void RemoveFromProcessTable(pid_t pid) {
-    LogWriteSerial("AC 2\n");
     AcquireMutex(process_table_mutex, -1);
 
     struct process_table_node dummy;
@@ -79,7 +78,6 @@ static void RemoveFromProcessTable(pid_t pid) {
 struct process* GetProcessFromPid(pid_t pid) {
     MAX_IRQL(IRQL_STANDARD);
 
-    LogWriteSerial("AC 3\n");
     AcquireMutex(process_table_mutex, -1);
 
     struct process_table_node dummy;
@@ -92,11 +90,12 @@ struct process* GetProcessFromPid(pid_t pid) {
 }
 
 void LockProcess(struct process* prcss) {
-    LogWriteSerial("AC 4 0x%X 0x%X\n", prcss, prcss->lock);
+    LogWriteSerial("LOCKING: 0x%X 0x%X\n", prcss, prcss->lock);
     AcquireMutex(prcss->lock, -1);
 }
 
 void UnlockProcess(struct process* prcss) {
+    LogWriteSerial("UNLOCKING: 0x%X 0x%X\n", prcss, prcss->lock);
     ReleaseMutex(prcss->lock);
 }
 
@@ -113,12 +112,11 @@ struct process* CreateProcess(pid_t parent_pid) {
     struct process* prcss = AllocHeap(sizeof(struct process));
 
     prcss->lock = CreateMutex();
-    LogWriteSerial("CREATING prcss->lock: 0x%X\n", prcss->lock);
     prcss->vas = CreateVas();
     prcss->parent = parent_pid;
     prcss->children = AvlTreeCreate();
     prcss->threads = AvlTreeCreate();
-    prcss->killed_children_semaphore = CreateSemaphore(1 << 30, 1 << 30);
+    prcss->killed_children_semaphore = CreateSemaphore(1000, 1000);
     prcss->retv = 0;
     prcss->terminated = false;
     prcss->pid = InsertIntoProcessTable(prcss);
@@ -130,13 +128,10 @@ struct process* CreateProcess(pid_t parent_pid) {
         UnlockProcess(parent);
     }
 
-    LogWriteSerial("CREATED PROCESS: 0x%X\n", prcss);
-
     return prcss;
 }
 
 void AddThreadToProcess(struct process* prcss, struct thread* thr) {
-    LogWriteSerial("LP65\n");
     LockProcess(prcss);
     AvlTreeInsert(prcss->threads, (void*) thr);
     thr->process = prcss;
@@ -161,17 +156,22 @@ static void ReapProcess(struct process* prcss) {
 }
 
 static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pid_t target, int* status) {
-    LogWriteSerial("ReapAux! node = 0x%X\n", node);
     if (node == NULL) {
         return 0;
     }
 
+    LogWriteSerial("   : 0x%X, %d\n", node, target);
+
     struct process* child = (struct process*) AvlTreeGetData(node);
-    LogWriteSerial("LP1\n");
+    LogWriteSerial("   about to try locking the child... (plz no deadlock..?)\n");
     LockProcess(child);
+    LogWriteSerial("    > terminated %d, pid %d\n", child->terminated, child->pid);
+
     if (child->terminated && (child->pid == target || target == (pid_t) -1)) {
         *status = child->retv;
         pid_t retv = child->pid;
+        LogWriteSerial("Actually reaping!!!\n");
+        UnlockProcess(child);       // needed in case someone is waiting on us, before our death
         ReapProcess(child);
         return retv;
     }
@@ -186,7 +186,7 @@ static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pi
 }
 
 static pid_t TryReapProcess(struct process* parent, pid_t target, int* status) {
-    LogWriteSerial("TRYING TO REAP!\n");
+    LogWriteSerial("TryReapProcess, parent->children = 0x%X, rootNode(*) = 0x%X\n", parent->children, AvlTreeGetRootNode(parent->children));
     return TryReapProcessAux(parent, AvlTreeGetRootNode(parent->children), target, status);
 } 
 
@@ -197,33 +197,47 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
 
     struct process* prcss = GetProcess();
     
+    LogWriteSerial("     -> START OF WAIT: the semaphore has count: %d\n", GetSemaphoreCount(prcss->killed_children_semaphore));
+
     pid_t result = 0;
 
+    int failed_reaps = 0;
     while (result == 0) {
-        LogWriteSerial("AC 5\n");
-        LogWriteSerial("WAITING ON SEMAPHORE HERE: 0x%X\n", prcss->killed_children_semaphore);
+        LogWriteSerial("...A\n");
         AcquireSemaphore(prcss->killed_children_semaphore, -1);
-        LogWriteSerial("GOT THE SEMAPHORE!!\n");
-        LogWriteSerial("LP2\n");
+        LogWriteSerial("...B\n");
         LockProcess(prcss);
+        LogWriteSerial("About to start reaping on %d\n", pid);
         result = TryReapProcess(prcss, pid, status);
 
-        // TODO: if result == 0, probably need to maintain a queue of 'failed to reap', then next
-        //       time we unblock from the semaphore, try reap everyone in the queue (as at the moment
-        //       we only get one change to reap - if it's out of order it will simply leak.
         UnlockProcess(prcss);
+
+        if (result == 0 && pid != (pid_t) -1) {
+            LogWriteSerial("got a failed reap! (%d)\n", pid);
+            failed_reaps++;
+        }
     }
+
+    LogWriteSerial("WaitProcess done for pid %d, with %d fails.\n", pid, failed_reaps);
+
+    /*
+     * Ensure that the next time we call WaitProcess(), we can immediately retry the reaps that
+     * we increased the semaphore for, but didn't actually reap on.
+     */
+    while (failed_reaps--) {
+        ReleaseSemaphore(prcss->killed_children_semaphore);
+    }
+
+    LogWriteSerial("     -> END OF WAIT: the semaphore has count: %d\n", GetSemaphoreCount(prcss->killed_children_semaphore));
 
     return result;
 }
 
 static void AdoptOrphan(struct process* adopter, struct process* ophan) {
-    LogWriteSerial("LP3\n");
     LockProcess(adopter);
 
     ophan->parent = adopter->pid;
     AvlTreeInsert(adopter->children, (void*) ophan);
-    LogWriteSerial("RELEASING A SEMAPHORE HERE??\n");
     ReleaseSemaphore(adopter->killed_children_semaphore);
 
     UnlockProcess(adopter);
@@ -255,12 +269,10 @@ static void KillRemainingThreads(struct avl_node* node) {
 
 void KillProcess(int retv) {
     MAX_IRQL(IRQL_STANDARD);
-    LogWriteSerial("aaaA\n");
 
     struct process* prcss = GetProcess();
     prcss->terminated = true;
     prcss->retv = retv;
-    LogWriteSerial("bbbb\n");
 
     /*
      * TODO: this needs to be deferred. (we can't destroy the thread we're on!!!)
@@ -268,23 +280,16 @@ void KillProcess(int retv) {
     //KillRemainingThreads(AvlTreeGetRootNode(prcss->threads));
     //AvlTreeDestroy(prcss->threads);
 
-    LogWriteSerial("cccc\n");
-
     OrphanChildProcesses(AvlTreeGetRootNode(prcss->children));
     AvlTreeDestroy(prcss->children);
 
     // TODO: delete the VAS when safe to do so
 
-    LogWriteSerial("OUR PARENT IS: %d\n", prcss->parent);
-
     if (prcss->parent == 0) {
         ReapProcess(prcss);
 
     } else {
-        LogWriteSerial("LP3\n");
-
         struct process* parent = GetProcessFromPid(prcss->parent);
-        LogWriteSerial("RELEASING SEMAPHORE HERE: 0x%X\n", parent->killed_children_semaphore);
         ReleaseSemaphore(parent->killed_children_semaphore);
     }
 }
@@ -297,9 +302,9 @@ struct process* GetProcess(void) {
     return thr->process;
 }
 
-struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*)) {
+struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* args) {
     struct process* prcss = CreateProcess(parent);
-    struct thread* thr = CreateThread(entry_point, NULL, prcss->vas, "init");
+    struct thread* thr = CreateThread(entry_point, args, prcss->vas, "init");
     AddThreadToProcess(prcss, thr);
     return prcss;
 }

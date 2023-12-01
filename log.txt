@@ -36,43 +36,148 @@ backup heap: largest is 0x3000, total is 0x3000
 
   ...Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x6000
-CREATING prcss->lock: 0xD024AF44
-AC 1
-CREATED PROCESS: 0xD024AC14
-LP65
-AC 4 0xD024AC14 0xD024AF44
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
 This was called by something living within a process.
-CREATING prcss->lock: 0xD024A9FC
-AC 1
-AC 3
-AC 4 0xD024AC14 0xD024AF44
-CREATED PROCESS: 0xD024AA1C
-LP65
-AC 4 0xD024AC14 0xD024AF44
-LP65
-AC 4 0xD024AA1C 0xD024A9FC
-AC 5
-WAITING ON SEMAPHORE HERE: 0xD024AB7C
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
+LOCKING: 0xD024AA1C 0xD024A9FC
+UNLOCKING: 0xD024AA1C 0xD024A9FC
 The second process is waiting 2 seconds...
-The second process is about to terminate with status 123!
-aaaA
-bbbb
-cccc
-OUR PARENT IS: 1
-LP3
-AC 3
-RELEASING SEMAPHORE HERE: 0xD024AB7C
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
+LOCKING: 0xD024A804 0xD024A7E4
+UNLOCKING: 0xD024A804 0xD024A7E4
+The second process is waiting 2 seconds...
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
+LOCKING: 0xD024AC14 0xD024AF44
+UNLOCKING: 0xD024AC14 0xD024AF44
+LOCKING: 0xD024A5F4 0xD024A5D4
+UNLOCKING: 0xD024A5F4 0xD024A5D4
+     -> START OF WAIT: the semaphore has count: 1000
+...A
+The second process is waiting 2 seconds...
+The second process is about to terminate with status 111!
 list index = 2
 list index = 2
-GOT THE SEMAPHORE!!
-LP2
-AC 4 0xD024AC14 0xD024AF44
-TRYING TO REAP!
-ReapAux! node = 0xD024A91C
-LP1
-AC 4 0xD024AA1C 0xD024A9FC
-AC 2
-The child process returned with status: 123
+...B
+LOCKING: 0xD024AC14 0xD024AF44
+About to start reaping on 4
+TryReapProcess, parent->children = 0xD024ABB4, rootNode(*) = 0xD024A4DC
+   : 0xD024A4DC, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A804 0xD024A7E4
+    > terminated 0, pid 3
+UNLOCKING: 0xD024A804 0xD024A7E4
+   : 0xD024A734, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A5F4 0xD024A5D4
+    > terminated 0, pid 4
+UNLOCKING: 0xD024A5F4 0xD024A5D4
+   : 0xD024A4C4, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024AA1C 0xD024A9FC
+    > terminated 1, pid 2
+UNLOCKING: 0xD024AA1C 0xD024A9FC
+UNLOCKING: 0xD024AC14 0xD024AF44
+got a failed reap! (4)
+...A
+list index = 0
+The second process is about to terminate with status 222!
+list index = 2
+list index = 2
+...B
+LOCKING: 0xD024AC14 0xD024AF44
+About to start reaping on 4
+TryReapProcess, parent->children = 0xD024ABB4, rootNode(*) = 0xD024A4DC
+   : 0xD024A4DC, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A804 0xD024A7E4
+    > terminated 1, pid 3
+UNLOCKING: 0xD024A804 0xD024A7E4
+   : 0xD024A734, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A5F4 0xD024A5D4
+    > terminated 0, pid 4
+UNLOCKING: 0xD024A5F4 0xD024A5D4
+   : 0xD024A4C4, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024AA1C 0xD024A9FC
+    > terminated 1, pid 2
+UNLOCKING: 0xD024AA1C 0xD024A9FC
+UNLOCKING: 0xD024AC14 0xD024AF44
+got a failed reap! (4)
+...A
+list index = 0
+The second process is about to terminate with status 333!
+list index = 2
+list index = 2
+...B
+LOCKING: 0xD024AC14 0xD024AF44
+About to start reaping on 4
+TryReapProcess, parent->children = 0xD024ABB4, rootNode(*) = 0xD024A4DC
+   : 0xD024A4DC, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A804 0xD024A7E4
+    > terminated 1, pid 3
+UNLOCKING: 0xD024A804 0xD024A7E4
+   : 0xD024A734, 4
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A5F4 0xD024A5D4
+    > terminated 1, pid 4
+Actually reaping!!!
+UNLOCKING: 0xD024A5F4 0xD024A5D4
+UNLOCKING: 0xD024AC14 0xD024AF44
+WaitProcess done for pid 4, with 2 fails.
+     -> END OF WAIT: the semaphore has count: 998
+The child process (3) returned with status: 333
+     -> START OF WAIT: the semaphore has count: 998
+...A
+...B
+LOCKING: 0xD024AC14 0xD024AF44
+About to start reaping on 4294967295
+TryReapProcess, parent->children = 0xD024ABB4, rootNode(*) = 0xD024A4DC
+   : 0xD024A4DC, 4294967295
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A804 0xD024A7E4
+    > terminated 1, pid 3
+Actually reaping!!!
+UNLOCKING: 0xD024A804 0xD024A7E4
+UNLOCKING: 0xD024AC14 0xD024AF44
+WaitProcess done for pid 4294967295, with 0 fails.
+     -> END OF WAIT: the semaphore has count: 999
+The child process (2) returned with status: 222
+     -> START OF WAIT: the semaphore has count: 999
+...A
+...B
+LOCKING: 0xD024AC14 0xD024AF44
+About to start reaping on 2
+TryReapProcess, parent->children = 0xD024ABB4, rootNode(*) = 0xD024A4DC
+   : 0xD024A4DC, 2
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A804 0xD024A7E4
+    > terminated 1, pid 3492062472
+UNLOCKING: 0xD024A804 0xD024A7E4
+   : 0xD024A734, 2
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024A5F4 0xD024A5D4
+    > terminated 1, pid 0
+UNLOCKING: 0xD024A5F4 0xD024A5D4
+   : 0xD024A4C4, 2
+   about to try locking the child... (plz no deadlock..?)
+LOCKING: 0xD024AA1C 0xD024A9FC
+    > terminated 1, pid 2
+Actually reaping!!!
+UNLOCKING: 0xD024AA1C 0xD024A9FC
+UNLOCKING: 0xD024AC14 0xD024AF44
+WaitProcess done for pid 2, with 0 fails.
+     -> END OF WAIT: the semaphore has count: 1000
+The child process (1) returned with status: 111
 list index = 0
 list index = 2
 list index = 0

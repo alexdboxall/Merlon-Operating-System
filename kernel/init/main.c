@@ -33,20 +33,29 @@ void TfwTestingThread(void*) {
     }
 }
 
-void SecondProcessThread(void*) {
+void SecondProcessThread(void* arg) {
+    int status = (int) (size_t) arg;
     DbgScreenPrintf("The second process is waiting 2 seconds...\n");
     SleepMilli(2000);
-    DbgScreenPrintf("The second process is about to terminate with status 123!\n");
-    KillProcess(123);
+    DbgScreenPrintf("The second process is about to terminate with status %d!\n", status);
+    KillProcess(status);
 }
 
 void InitialProcessThread(void*) {
     DbgScreenPrintf("This was called by something living within a process.\n");
 
-    struct process* child = CreateProcessWithEntryPoint(1, SecondProcessThread);
+    struct process* child1 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 111);
+    SleepMilli(300);
+    struct process* child2 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 222);
+    SleepMilli(300);
+    struct process* child3 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333);
     int retv;
-    WaitProcess(GetPid(child), &retv, 0);
-    DbgScreenPrintf("The child process returned with status: %d\n", retv);
+    WaitProcess(GetPid(child3), &retv, 0);
+    DbgScreenPrintf("The child process (3) returned with status: %d\n", retv);
+    WaitProcess(GetPid(child2), &retv, 0);
+    DbgScreenPrintf("The child process (2) returned with status: %d\n", retv);
+    WaitProcess(GetPid(child1), &retv, 0);
+    DbgScreenPrintf("The child process (1) returned with status: %d\n", retv);
 
     while (true) {
         Schedule();
@@ -54,7 +63,7 @@ void InitialProcessThread(void*) {
 }
 
 void InitThread(void*) {
-    CreateProcessWithEntryPoint(0, InitialProcessThread);
+    CreateProcessWithEntryPoint(0, InitialProcessThread, NULL);
 
     while (true) {
         Schedule();

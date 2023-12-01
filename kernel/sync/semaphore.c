@@ -177,3 +177,7 @@ void CancelSemaphoreOfThread(struct thread* thr) {
     assert(ThreadListContains(&thr->waiting_on_semaphore->waiting_list, thr));
     ThreadListDelete(&thr->waiting_on_semaphore->waiting_list, thr);
 }
+
+int GetSemaphoreCount(struct semaphore* sem) {
+    return sem->current_count;
+}

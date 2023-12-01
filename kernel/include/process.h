@@ -16,4 +16,4 @@ struct process* GetProcess(void);
 pid_t GetPid(struct process* prcss);
 
 void AddThreadToProcess(struct process* prcss, struct thread* thr);
-struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*));
+struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* arg);

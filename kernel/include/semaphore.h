@@ -9,6 +9,7 @@ struct semaphore* CreateSemaphore(int max_count, int initial_count);
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms);
 void ReleaseSemaphore(struct semaphore* sem);
 void DestroySemaphore(struct semaphore* sem);
+int GetSemaphoreCount(struct semaphore* sem);
 
 #define CreateMutex() CreateSemaphore(1, 0)
 #define AcquireMutex(mtx, timeout_ms) AcquireSemaphore(mtx, timeout_ms)
