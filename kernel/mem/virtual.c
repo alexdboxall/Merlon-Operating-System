@@ -56,6 +56,7 @@ void CreateVasEx(struct vas* vas, int flags) {
     if (!(flags & VAS_NO_ARCH_INIT)) {
         ArchInitVas(vas);
     }
+    
 }
 
 /**
@@ -140,6 +141,24 @@ void EvictVirt(void) {
 
 }
 
+static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
+    if (entry->global) { 
+        // do a sneaky AvlTreeInsert(GetCpu()->global_vas_mappings, entry);
+        Panic(PANIC_NOT_IMPLEMENTED);
+    } else {
+        AvlTreeInsert(vas->mappings, entry);
+    }
+}
+
+static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
+    if (entry->global) {
+        // TODO: AvlTreeDelete(GetCpu()->global_vas_mappings, entry);
+        Panic(PANIC_NOT_IMPLEMENTED);
+    } else {
+        AvlTreeDelete(vas->mappings, entry); 
+    }
+}
+
 /**
  * Adds a virtual page mapping to the specified virtual address space. This will add it both to the mapping tree
  * and the architectural paging structures (so that page faults can be raised, etc., if there is no backing yet).
@@ -193,6 +212,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->exec = flags & VM_EXEC;
     entry->file = flags & VM_FILE;
     entry->user = flags & VM_USER;
+    entry->global = !(flags & VM_LOCAL);
     entry->physical = physical;
     entry->ref_count = 1;
     entry->file_offset = pos;
@@ -203,7 +223,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      */
     
     AcquireSpinlockIrql(&vas->lock);
-    AvlTreeInsert(vas->mappings, entry);
+    InsertIntoAvl(vas, entry);
     ArchAddMapping(vas, entry);
     ReleaseSpinlockIrql(&vas->lock);
 }
@@ -216,6 +236,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
 
     AcquireSpinlockIrql(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
+        // TODO: need to check the global one too
         if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
             in_use = true;
             break;
@@ -354,7 +375,12 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
     assert(IsSpinlockHeld(&vas->lock));
 
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
-    assert(res != NULL);
+    if (res == NULL) {
+        // TODO:
+        // res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
+        // assert(res != NULL);
+        Panic(PANIC_NOT_IMPLEMENTED);
+    }
     return res;
 }
 
@@ -468,7 +494,7 @@ void UnmapVirt(size_t virtual, size_t bytes) {
                 DeallocPhys(entry->physical);
             }
 
-            AvlTreeDelete(vas->mappings, entry); 
+            DeleteFromAvl(vas, entry);
             FreeHeap(entry);
             FreeVirtRange(virtual + i * ARCH_PAGE_SIZE, 1);
         }
@@ -518,7 +544,7 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
             new_entry->ref_count = 1;
             new_entry->physical = new_physical;
             new_entry->allocated = true;
-            AvlTreeInsert(new_vas->mappings, entry);
+            AvlTreeInsert(new_vas->mappings, entry);        // don't need to insert global - we're copying so it's already in global
             ArchAddMapping(new_vas, entry);
 
         } else {
@@ -543,6 +569,7 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
         entry->cow = true;
         entry->ref_count++;
 
+        // again, no need to add to global - it's already there!
         AvlTreeInsert(new_vas->mappings, entry);
 
         ArchUpdateMapping(GetVas(), entry);
@@ -555,6 +582,7 @@ struct vas* CopyVas(void) {
     struct vas* new_vas = CreateVas();
 
     AcquireSpinlockIrql(&vas->lock);
+    // no need to change global - it's already there!
     CopyVasRecursive(AvlTreeGetRootNode(vas->mappings), new_vas);
     ArchFlushTlb(vas);
     ReleaseSpinlockIrql(&vas->lock);
@@ -608,7 +636,7 @@ static void HandleCowFault(struct vas_entry* entry) {
     new_entry->ref_count = 1;
     new_entry->physical = AllocPhys();
     new_entry->allocated = true;
-    AvlTreeDelete(GetVas()->mappings, entry);
+    DeleteFromAvl(GetVas(), entry);
     FreeHeap(entry);
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());

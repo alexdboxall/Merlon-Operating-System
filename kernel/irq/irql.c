@@ -28,7 +28,7 @@ struct irql_deferment {
  * @max_irql IRQL_HIGH
  * 
  */
-void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
+__attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
     if (irql == GetIrql()) {
         handler(context);
 
@@ -51,12 +51,12 @@ void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
  * @return The IRQL.
  * @max_irql IRQL_HIGH
  */
-int GetIrql(void) {
+__attribute__((no_instrument_function)) int GetIrql(void) {
     return GetCpu()->irql;
 }
 
 // Max IRQL: IRQL_HIGH
-int RaiseIrql(int level) {
+__attribute__((no_instrument_function)) int RaiseIrql(int level) {
     ArchDisableInterrupts();
 
     int existing_level = GetIrql();
@@ -72,7 +72,7 @@ int RaiseIrql(int level) {
 }
 
 // Max IRQL: IRQL_HIGH
-void LowerIrql(int target_level) {
+__attribute__((no_instrument_function)) void LowerIrql(int target_level) {
     // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)    
     ArchDisableInterrupts();
 

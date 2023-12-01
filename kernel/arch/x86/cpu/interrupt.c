@@ -9,7 +9,7 @@
 
 static bool ready_for_irqs = false;
 
-static int GetRequiredIrql(int irq_num) {
+__attribute__((no_instrument_function)) static int GetRequiredIrql(int irq_num) {
     if (irq_num == PIC_IRQ_BASE + 0) {
         return IRQL_TIMER;
     } else {
@@ -17,7 +17,7 @@ static int GetRequiredIrql(int irq_num) {
     }
 }
 
-void x86HandleInterrupt(struct x86_regs* r) {
+__attribute__((no_instrument_function)) void x86HandleInterrupt(struct x86_regs* r) {
     int num = r->int_no;
 
     if (num >= PIC_IRQ_BASE && num < PIC_IRQ_BASE + 16) {
@@ -55,11 +55,11 @@ void x86HandleInterrupt(struct x86_regs* r) {
     */
 }
 
-void ArchSendEoi(int irq_num) {
+__attribute__((no_instrument_function)) void ArchSendEoi(int irq_num) {
     SendPicEoi(irq_num);
 }
 
-void ArchSetIrql(int irql) {
+__attribute__((no_instrument_function)) void ArchSetIrql(int irql) {
     if (irql == IRQL_HIGH || irql == IRQL_TIMER || !x86IsReadyForIrqs()) {
         /*
          * Interrupts stay off.
@@ -74,11 +74,11 @@ void ArchSetIrql(int irql) {
     ArchEnableInterrupts();
 }
 
-bool x86IsReadyForIrqs(void) {
+__attribute__((no_instrument_function)) bool x86IsReadyForIrqs(void) {
     return ready_for_irqs;
 }
 
-void x86MakeReadyForIrqs(void) {
+__attribute__((no_instrument_function)) void x86MakeReadyForIrqs(void) {
     ready_for_irqs = true;
     RaiseIrql(GetIrql());
 }

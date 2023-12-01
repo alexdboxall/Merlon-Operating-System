@@ -6,6 +6,7 @@
 #include <virtual.h>
 #include <sys/types.h>
 #include <avl.h>
+#include <panic.h>
 #include <semaphore.h>
 #include <spinlock.h>
 #include <heap.h>
@@ -90,12 +91,10 @@ struct process* GetProcessFromPid(pid_t pid) {
 }
 
 void LockProcess(struct process* prcss) {
-    LogWriteSerial("LOCKING: 0x%X 0x%X\n", prcss, prcss->lock);
     AcquireMutex(prcss->lock, -1);
 }
 
 void UnlockProcess(struct process* prcss) {
-    LogWriteSerial("UNLOCKING: 0x%X 0x%X\n", prcss, prcss->lock);
     ReleaseMutex(prcss->lock);
 }
 
@@ -160,21 +159,18 @@ static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pi
         return 0;
     }
 
-    LogWriteSerial("   : 0x%X, %d\n", node, target);
-
     struct process* child = (struct process*) AvlTreeGetData(node);
-    LogWriteSerial("   about to try locking the child... (plz no deadlock..?)\n");
+
     LockProcess(child);
-    LogWriteSerial("    > terminated %d, pid %d\n", child->terminated, child->pid);
 
     if (child->terminated && (child->pid == target || target == (pid_t) -1)) {
         *status = child->retv;
         pid_t retv = child->pid;
-        LogWriteSerial("Actually reaping!!!\n");
         UnlockProcess(child);       // needed in case someone is waiting on us, before our death
         ReapProcess(child);
         return retv;
     }
+
     UnlockProcess(child);
 
     pid_t left_retv = TryReapProcessAux(parent, AvlTreeGetLeft(node), target, status);
@@ -186,7 +182,6 @@ static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pi
 }
 
 static pid_t TryReapProcess(struct process* parent, pid_t target, int* status) {
-    LogWriteSerial("TryReapProcess, parent->children = 0x%X, rootNode(*) = 0x%X\n", parent->children, AvlTreeGetRootNode(parent->children));
     return TryReapProcessAux(parent, AvlTreeGetRootNode(parent->children), target, status);
 } 
 
@@ -197,28 +192,20 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
 
     struct process* prcss = GetProcess();
     
-    LogWriteSerial("     -> START OF WAIT: the semaphore has count: %d\n", GetSemaphoreCount(prcss->killed_children_semaphore));
-
     pid_t result = 0;
 
     int failed_reaps = 0;
     while (result == 0) {
-        LogWriteSerial("...A\n");
         AcquireSemaphore(prcss->killed_children_semaphore, -1);
-        LogWriteSerial("...B\n");
         LockProcess(prcss);
-        LogWriteSerial("About to start reaping on %d\n", pid);
         result = TryReapProcess(prcss, pid, status);
 
         UnlockProcess(prcss);
 
         if (result == 0 && pid != (pid_t) -1) {
-            LogWriteSerial("got a failed reap! (%d)\n", pid);
             failed_reaps++;
         }
     }
-
-    LogWriteSerial("WaitProcess done for pid %d, with %d fails.\n", pid, failed_reaps);
 
     /*
      * Ensure that the next time we call WaitProcess(), we can immediately retry the reaps that
@@ -227,8 +214,6 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
     while (failed_reaps--) {
         ReleaseSemaphore(prcss->killed_children_semaphore);
     }
-
-    LogWriteSerial("     -> END OF WAIT: the semaphore has count: %d\n", GetSemaphoreCount(prcss->killed_children_semaphore));
 
     return result;
 }
@@ -254,7 +239,6 @@ static void OrphanChildProcesses(struct avl_node* node) {
     AdoptOrphan(GetProcessFromPid(1), AvlTreeGetData(node));
 }
 
-/*
 static void KillRemainingThreads(struct avl_node* node) {
     if (node == NULL) {
         return;
@@ -264,26 +248,26 @@ static void KillRemainingThreads(struct avl_node* node) {
     KillRemainingThreads(AvlTreeGetRight(node));
 
     struct thread* victim = (struct thread*) AvlTreeGetData(node);
+    LogWriteSerial("STACK OF REAPED IS 0x%X\n", victim->kernel_stack_top - victim->kernel_stack_size);
     TerminateThread(victim);
-}*/
+}
 
-void KillProcess(int retv) {
-    MAX_IRQL(IRQL_STANDARD);
+void KillProcessHelper(void* arg) {
+    if (GetProcess() != NULL) {
+        Panic(PANIC_ASSERTION_FAILURE);
+    }
 
-    struct process* prcss = GetProcess();
-    prcss->terminated = true;
-    prcss->retv = retv;
+    struct process* prcss = arg;
 
-    /*
-     * TODO: this needs to be deferred. (we can't destroy the thread we're on!!!)
-     */
-    //KillRemainingThreads(AvlTreeGetRootNode(prcss->threads));
-    //AvlTreeDestroy(prcss->threads);
-
+    KillRemainingThreads(AvlTreeGetRootNode(prcss->threads));
+    AvlTreeDestroy(prcss->threads);
+    
     OrphanChildProcesses(AvlTreeGetRootNode(prcss->children));
     AvlTreeDestroy(prcss->children);
 
     // TODO: delete the VAS when safe to do so
+
+    prcss->terminated = true;
 
     if (prcss->parent == 0) {
         ReapProcess(prcss);
@@ -292,6 +276,26 @@ void KillProcess(int retv) {
         struct process* parent = GetProcessFromPid(prcss->parent);
         ReleaseSemaphore(parent->killed_children_semaphore);
     }
+
+    LogWriteSerial("STACK OF REAPER IS 0x%X\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
+
+    //while (1);
+    TerminateThread(GetThread());
+}
+
+void KillProcess(int retv) {
+    MAX_IRQL(IRQL_STANDARD);
+
+    struct process* prcss = GetProcess();
+    prcss->retv = retv;
+    
+    /**
+     * Must run it in a different thread and process (a NULL process is fine), as it is going to kill all
+     * threads in the process, and the process itself. Obviously, this means we can't be running on said
+     * threads or process. 
+     */
+    // TODO: this is going to eventually want to have a 'GetKernelVas()', so it can kill the VAS too
+    CreateThreadEx(KillProcessHelper, (void*) prcss, GetVas(), "process killer", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 }
 
 struct process* GetProcess(void) {

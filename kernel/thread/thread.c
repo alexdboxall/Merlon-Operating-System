@@ -169,22 +169,25 @@ static int GetNextThreadId(void) {
     return result;
 }
 
-struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name) {
+struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority) {
     struct thread* thr = AllocHeap(sizeof(struct thread));
     thr->argument = argument;
     thr->initial_address = entry_point;
     thr->state = THREAD_STATE_READY;
     thr->time_used = 0;
     thr->name = strdup(name);
-    thr->priority = FIXED_PRIORITY_KERNEL_NORMAL;
-    thr->schedule_policy = SCHEDULE_POLICY_FIXED;
+    thr->priority = priority;
+    thr->death_sentence = false;
+    thr->time_used = false;
+    thr->waiting_on_semaphore = NULL;
+    thr->schedule_policy = policy;
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
     thr->vas = vas;
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr);
 
-    if (GetProcess() != NULL) {
-        AddThreadToProcess(GetProcess(), thr);
+    if (prcss != NULL) {
+        AddThreadToProcess(prcss, thr);
     } else {
         thr->process = NULL;
     }
@@ -194,6 +197,10 @@ struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct va
     UnlockScheduler();
 
     return thr;
+}
+
+struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name) {
+    return CreateThreadEx(entry_point, argument, vas, name, GetProcess(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL);
 }
 
 struct thread* GetThread(void) {
@@ -255,11 +262,11 @@ static void UpdatePriority(bool yielded) {
     }
 }
 
-void LockScheduler(void) {
+void LockSchedulerX(void) {
     AcquireSpinlockIrql(&scheduler_lock);
 }
 
-void UnlockScheduler(void) {
+void UnlockSchedulerX(void) {
     ReleaseSpinlockIrql(&scheduler_lock);
 }
 
@@ -349,6 +356,17 @@ void Schedule(void) {
     LockScheduler();
     ScheduleWithLockHeld();
     UnlockScheduler();
+
+    /**
+     * Used to allow TerminateThread() to kill a foreign process. This is because we can't just yank
+     * a thread off another list if it's blocked, as we don't know what list it's on. This way, we just
+     * signal that it needs terminating next time we allow it to run.
+     */
+    if (GetThread()->death_sentence) {
+        LogWriteSerial("Terminating a thread that was scheduled to die... stack at 0x%X\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
+        TerminateThread(GetThread());
+        Panic(PANIC_IMPOSSIBLE_RETURN);
+    }
 }
 
 void InitScheduler() {

@@ -57,6 +57,7 @@ struct thread {
     int schedule_policy;
     size_t canary_position;
     bool timed_out;
+    bool death_sentence;
     
     struct semaphore* waiting_on_semaphore;
 
@@ -73,8 +74,10 @@ struct thread {
 };
 
 void Schedule(void);
-void LockScheduler(void);
-void UnlockScheduler(void);
+void LockSchedulerX(void);
+void UnlockSchedulerX(void);
+#define LockScheduler() /*LogWriteSerial("LOCKING SCHEDULER: %s, %s, %d\n", __FILE__, __func__, __LINE__);*/ LockSchedulerX()
+#define UnlockScheduler() /*LogWriteSerial("UNLOCKING SCHEDULER: %s, %s, %d\n", __FILE__, __func__, __LINE__);*/ UnlockSchedulerX()
 
 void InitScheduler(void);
 void StartMultitasking(void);
@@ -83,7 +86,10 @@ void AssertSchedulerLockHeld(void);
 
 struct thread* GetThread(void);
 void TerminateThread(struct thread* thr);
+
+struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority);
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);
+
 void BlockThread(int reason);
 void UnblockThread(struct thread* thr);
 int SetThreadPriority(struct thread* thread, int policy, int priority);

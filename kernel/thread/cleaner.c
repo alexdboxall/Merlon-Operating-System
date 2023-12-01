@@ -17,8 +17,28 @@ static void CleanerDestroyThread(struct thread* thr) {
     (void) thr;
 
     // TODO: clean up user stacks if needed...?
-    // @@@@@@@
-    //UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
+
+    /*
+     * TODO: @@@
+     * The issue here: threads come from all different VASes. We need to call UnmapVirt in the vas it was
+     * mapped into, THE PROBLEM BEING that it was actually mapped in using a completely different vas, but
+     * it still works because it's *global* as it's kernel memory. The problem is though that the vas we have
+     * doesn't have those globally mapped pages.
+     * 
+     * Probably need to have vas->global_mappings, or GetCpu()->global_mappings, and make GetVirtEntry check that
+     * if it fails to find it locally. Would have to have a flag in MapPageEx for VM_GLOBAL, which sticks it in
+     * the global one. Every function in virtual.c that looks at the mappings would need to look at both.
+     * I see this as the only proper way of doing it.
+     * 
+     * Probably have AddMapping() and RemoveMapping() helper functions in virtual.c to assist with this.
+     */
+
+    SetVas(thr->vas);
+
+    LogWriteSerial("Cleaning up stack here: 0x%X\n", thr->kernel_stack_top - thr->kernel_stack_size);
+    LogWriteSerial("(Our stack is at 0x%X)\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
+    UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
+    LogWriteSerial("Cleaned up stack!!\n");
     FreeHeap(thr->name);
     FreeHeap(thr);
 }
@@ -66,10 +86,25 @@ static void NotifyCleaner(void* ignored) {
 }
 
 void TerminateThread(struct thread* thr) {
-    LockScheduler();
-    ThreadListInsert(&terminated_list, thr);
-    BlockThread(THREAD_STATE_TERMINATED);
-    DeferUntilIrql(IRQL_STANDARD, NotifyCleaner, NULL);
-    UnlockScheduler();
-    Panic(PANIC_IMPOSSIBLE_RETURN);
+    if (thr == GetThread()) {
+        LogWriteSerial("Properly terminating a thread, with stack at 0x%X\n", thr->kernel_stack_top - thr->kernel_stack_size);
+        LockScheduler();
+        ThreadListInsert(&terminated_list, thr);
+        BlockThread(THREAD_STATE_TERMINATED);
+        DeferUntilIrql(IRQL_STANDARD, NotifyCleaner, NULL);
+        UnlockScheduler();
+        Panic(PANIC_IMPOSSIBLE_RETURN);
+
+    } else {
+        /**
+         * We can't terminate it directly, as it may be on any queue somewhere else,
+         * and it'd be very messy to write special cases for all of them to be terminated
+         * while in a queue. It's much easier to just signal that it needs to be terminated
+         * if it is scheduled to run again.
+         */
+        LockScheduler();
+        LogWriteSerial("Thread is scheduled to die... with stack at 0x%X\n", thr->kernel_stack_top - thr->kernel_stack_size);
+        thr->death_sentence = true;
+        UnlockScheduler();
+    }
 }

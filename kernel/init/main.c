@@ -12,6 +12,26 @@
 #include <stdlib.h>
 #include <process.h>
 
+/*
+ * Next steps:
+ * - uio
+ * - virtual filesystem
+ * - console driver
+ * - IDE driver
+ * - DemoFS driver
+ * - ELF loader
+ * - PS2.SYS, radix trees, drivers that export symbols, etc.
+ * - running any old ring 3 program
+ * - dynamic linker
+ * - system call interface (KRNLAPI.LIB) 
+ * - C standard library
+ * - complete-enough CLI OS
+ *          terminal that supports pipes, redirection and background processes
+ *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, pause, rmtree, rmdir, cls, copytree, link, 
+ *                  ...ttyname, sleep, exit
+ *          port zlib, nasm
+ * - FAT32 driver
+ */
 extern void InitDbgScreen(void);
 
 void MyTestThread(void* str) {
@@ -27,6 +47,7 @@ void MyTestThread(void* str) {
 }
 
 void TfwTestingThread(void*) {
+    SleepMilli(10000);
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
     while (true) {
         Schedule();
@@ -39,6 +60,9 @@ void SecondProcessThread(void* arg) {
     SleepMilli(2000);
     DbgScreenPrintf("The second process is about to terminate with status %d!\n", status);
     KillProcess(status);
+    while (true) {
+        ;
+    }
 }
 
 void InitialProcessThread(void*) {

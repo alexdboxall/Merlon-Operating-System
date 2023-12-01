@@ -31,7 +31,7 @@ int RegisterIrqHandler(int irq_num, irq_handler_t handler) {
  *
  * @param required_irql The IRQL that this device handler needs to run at. Set to 0 if no change is needed.
  */
-void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* context) {
+__attribute__((no_instrument_function)) void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* context) {
     int irql = RaiseIrql(required_irql);
     ArchSendEoi(irq_num);     // must wait until we have raised
 

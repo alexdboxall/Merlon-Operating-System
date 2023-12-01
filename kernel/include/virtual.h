@@ -13,6 +13,7 @@
 #define VM_FILE         32
 #define VM_FIXED_VIRT   64
 #define VM_MAP_HARDWARE 128     /* map a physical page that doesn't live within the physical memoery manager*/
+#define VM_LOCAL        256     /* indicates it's local to the VAS - i.e. not in kernel global memory */
 
 #define VAS_NO_ARCH_INIT    1
 
@@ -30,7 +31,8 @@ struct vas_entry {
 
     uint8_t exec            : 1;
     uint8_t user            : 1;
-    uint8_t                 : 6;
+    uint8_t global          : 1;
+    uint8_t                 : 3;
 
     off_t file_offset;
     void* file_node;

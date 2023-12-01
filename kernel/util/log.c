@@ -2,7 +2,7 @@
 #include <common.h>
 #include <log.h>
 
-static void IntToStr(uint32_t i, char* output, int base)
+__attribute__((no_instrument_function)) static void IntToStr(uint32_t i, char* output, int base)
 {
 	const char* digits = "0123456789ABCDEF";
 
@@ -29,12 +29,12 @@ static void IntToStr(uint32_t i, char* output, int base)
 	} while (i);
 }
 
-static void outb(uint16_t port, uint8_t value)
+__attribute__((no_instrument_function)) static void outb(uint16_t port, uint8_t value)
 {
 	asm volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 
-static uint8_t inb(uint16_t port)
+__attribute__((no_instrument_function)) static uint8_t inb(uint16_t port)
 {
 	uint8_t value;
 	asm volatile ("inb %1, %0"
@@ -43,7 +43,7 @@ static uint8_t inb(uint16_t port)
 	return value;
 }
 
-static void logcnv(char c, bool screen)
+__attribute__((no_instrument_function)) static void logcnv(char c, bool screen)
 {	
 	while ((inb(0x3F8 + 5) & 0x20) == 0) {
 		;
@@ -54,19 +54,19 @@ static void logcnv(char c, bool screen)
 	}
 }
 
-static void logsnv(char* a, bool screen)
+__attribute__((no_instrument_function)) static void logsnv(char* a, bool screen)
 {
 	while (*a) logcnv(*a++, screen);
 }
 
-static void log_intnv(uint32_t i, int base, bool screen)
+__attribute__((no_instrument_function)) static void log_intnv(uint32_t i, int base, bool screen)
 {
 	char str[12];
     IntToStr(i, str, base);
 	logsnv(str, screen);
 }
 
-static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
+__attribute__((no_instrument_function)) static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 	if (format == NULL) {
 		format = "NULL";
 	}
@@ -104,7 +104,7 @@ static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 	}
 }
 
-void LogWriteSerial(const char* format, ...)
+__attribute__((no_instrument_function)) void LogWriteSerial(const char* format, ...)
 {
 	va_list list;
 	va_start(list, format);
@@ -112,7 +112,7 @@ void LogWriteSerial(const char* format, ...)
 	va_end(list);
 }
 
-void LogDeveloperWarning(const char* format, ...) {
+__attribute__((no_instrument_function)) void LogDeveloperWarning(const char* format, ...) {
 	va_list list;
 	va_start(list, format);
 	LogWriteSerial("\n!!!!!!!!!!!!!!!!!!!!\n\n>>> KERNEL DEVELOPER WARNING:\n    ");
@@ -120,9 +120,37 @@ void LogDeveloperWarning(const char* format, ...) {
 	va_end(list);
 }
 
-void DbgScreenPrintf(const char* format, ...) {
+__attribute__((no_instrument_function)) void DbgScreenPrintf(const char* format, ...) {
 	va_list list;
 	va_start(list, format);
 	LogWriteSerialVa(format, list, true);
 	va_end(list);
+}
+
+static size_t call_stack[1024];
+static size_t call_stack_ptr = 0;
+
+#include <irql.h>
+
+__attribute__((no_instrument_function)) void __cyg_profile_func_enter(void *this_fn, void *call_site) {
+	(void) this_fn;
+	(void) call_site;
+	call_stack[call_stack_ptr++] = (size_t) this_fn;
+
+	if (GetIrql() >= IRQL_DRIVER) {
+		return;
+	}
+
+	/*LogWriteSerial("CALL STACK: ");
+	for (size_t i = 0; i < call_stack_ptr; ++i) {
+		LogWriteSerial("0x%X, ", call_stack[i]);
+	}
+	LogWriteSerial("\n");*/
+}
+
+__attribute__((no_instrument_function)) void __cyg_profile_func_exit(void *this_fn, void *call_site) {
+	(void) this_fn;
+	(void) call_site;
+	--call_stack_ptr;
+	//LogWriteSerial("EXIT: 0x%X -> 0x%X\n", this_fn, call_site);
 }
