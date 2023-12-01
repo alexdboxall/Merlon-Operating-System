@@ -35,9 +35,24 @@ backup heap: largest is 0x3000, total is 0x3000
   1076 / 1344 KB used
 
   ...12345154321234515432123451543212345154321234515432list index = 2
-TODO: clean up the thread!
-TODO: clean up the thread!
-TODO: clean up the thread!
-TODO: clean up the thread!
+Cleaning up a thread!
+Pre clean: 1108 / 1344 KB used
+Post clean: 1104 / 1344 KB used
+Done!
+Cleaning up a thread!
+Pre clean: 1104 / 1344 KB used
+Post clean: 1100 / 1344 KB used
+Done!
+Cleaning up a thread!
+Pre clean: 1100 / 1344 KB used
+Post clean: 1096 / 1344 KB used
+Done!
+Cleaning up a thread!
+Pre clean: 1096 / 1344 KB used
+Post clean: 1092 / 1344 KB used
+Done!
 list index = 0
-TODO: clean up the thread!
+Cleaning up a thread!
+Pre clean: 1092 / 1344 KB used
+Post clean: 1088 / 1344 KB used
+Done!

@@ -3,9 +3,11 @@
 #include <virtual.h>
 #include <threadlist.h>
 #include <irql.h>
+#include <heap.h>
 #include <semaphore.h>
 #include <log.h>
 #include <panic.h>
+#include <physical.h>
 #include <assert.h>
 
 static struct thread_list terminated_list;
@@ -13,7 +15,12 @@ static struct semaphore* cleaner_semaphore;
 
 static void CleanerDestroyThread(struct thread* thr) {
     (void) thr;
-    LogWriteSerial("TODO: clean up the thread!\n");
+
+    // TODO: clean up user stacks if needed...?
+
+    UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
+    FreeHeap(thr->name);
+    FreeHeap(thr);
 }
 
 static void CleanerThread(void* ignored) {
