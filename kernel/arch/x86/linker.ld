@@ -19,7 +19,7 @@ SECTIONS
 	
 	.text ALIGN(4096) : AT (ADDR (.text) - 0xC0000000)
 	{
-		*(.text)
+		*(.text .text.*)
 		*(.ctors)
 		*(.dtors)
 	}

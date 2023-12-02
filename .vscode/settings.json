@@ -68,7 +68,9 @@
         "*.inc": "c",
         "*.x": "c",
         "random": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "typeindex": "cpp",
+        "chrono": "cpp"
     },
     "files.exclude": {
         "**/.git": true,
