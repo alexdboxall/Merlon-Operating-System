@@ -1,684 +1,303 @@
 KernelMain: kernel is initialising...
+Reached TFW_SP 0
 memory here: 0x1000 -> 0x80000
-memory here: 0x137000 -> 0x1E0000
-memory here: 0x1E0000 -> 0x200000
+memory here: 0x140000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
 memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
 Grabbing from emo block of size 0x4000, for request 0x1000
-Added to GLOBAL AVL.
+Reached TFW_SP 2
+Reached TFW_SP 3
+Reached TFW_SP 4
+Reached TFW_SP 5
 Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x2000, total is 0x2000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
+Reached TFW_SP 6
 Grabbing from emo block of size 0x2000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x5000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x1000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x4000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x4000, for request 0x1000
 backup heap: largest is 0x3000, total is 0x3000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x6000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x2000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x5000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x1000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x4000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x4000, for request 0x1000
 backup heap: largest is 0x3000, total is 0x3000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x6000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x2000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x5000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x1000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x4000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 Grabbing from emo block of size 0x4000, for request 0x1000
 backup heap: largest is 0x3000, total is 0x3000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
 
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1076 / 1340 KB used
+  1076 / 3352 KB used
 
-  ...Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
+  ...Reached TFW_SP 7
+MarkTfwStartPoint: running test 0
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 0, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x140000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
+Grabbing from emo block of size 0x4000, for request 0x1000
+Reached TFW_SP 2
+Reached TFW_SP 3
+Reached TFW_SP 4
+Reached TFW_SP 5
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x2000, total is 0x2000
+Reached TFW_SP 6
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
 Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x6000
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-Added to GLOBAL AVL.
-This was called by something living within a process.
-Added to GLOBAL AVL.
-The second process is waiting 2 seconds...
-Added to GLOBAL AVL.
-The second process is waiting 2 seconds...
-Added to GLOBAL AVL.
-The second process is waiting 2 seconds...
-The second process is about to terminate with status 111!
-Added to GLOBAL AVL.
-STACK OF REAPED IS 0xD025B000
-Thread is scheduled to die... with stack at 0xD025B000
-list index = 2
-STACK OF REAPER IS 0xD025E000
-Properly terminating a thread, with stack at 0xD025E000
-list index = 2
-Terminating a thread that was scheduled to die... stack at 0xD025B000
-Properly terminating a thread, with stack at 0xD025B000
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+
+  NOS Kernel
+  Copyright Alex Boxall 2022-2023
+
+  1076 / 3352 KB used
+
+  ...Reached TFW_SP 7
+MarkTfwStartPoint: running test 1
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD024AE8C
 list index = 0
-The second process is about to terminate with status 222!
-Added to GLOBAL AVL.
-STACK OF REAPED IS 0xD025C000
-Thread is scheduled to die... with stack at 0xD025C000
-list index = 2
-STACK OF REAPER IS 0xD025F000
-Properly terminating a thread, with stack at 0xD025F000
-list index = 2
-Terminating a thread that was scheduled to die... stack at 0xD025C000
-Properly terminating a thread, with stack at 0xD025C000
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
 list index = 0
-The second process is about to terminate with status 333!
-Added to GLOBAL AVL.
-STACK OF REAPED IS 0xD025D000
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD024A86C
+list index = 0
+Properly terminating a thread, with stack at 0xD025D000
+list index = 2
 Thread is scheduled to die... with stack at 0xD025D000
 list index = 2
-STACK OF REAPER IS 0xD0260000
+Properly terminating a thread, with stack at 0xD0266000
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD024A86C
+trying to lock process 0xD024AE8C
+list index = 0
 Properly terminating a thread, with stack at 0xD0260000
 list index = 2
-Terminating a thread that was scheduled to die... stack at 0xD025D000
+Thread is scheduled to die... with stack at 0xD0260000
+list index = 2
+Properly terminating a thread, with stack at 0xD0269000
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD024A86C
+trying to lock process 0xD024AE8C
+list index = 0
+Properly terminating a thread, with stack at 0xD0263000
+list index = 2
+Thread is scheduled to die... with stack at 0xD0263000
+list index = 2
+Properly terminating a thread, with stack at 0xD026C000
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD024A86C
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD0249174
+trying to lock process 0xD024AE8C
+Properly terminating a thread, with stack at 0xD025A000
+list index = 2
+list index = 0
+list index = 0
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 1, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x140000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
+Grabbing from emo block of size 0x4000, for request 0x1000
+Reached TFW_SP 2
+Reached TFW_SP 3
+Reached TFW_SP 4
+Reached TFW_SP 5
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x2000, total is 0x2000
+Reached TFW_SP 6
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+
+  NOS Kernel
+  Copyright Alex Boxall 2022-2023
+
+  1076 / 3352 KB used
+
+  ...Reached TFW_SP 7
+MarkTfwStartPoint: running test 2
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD024AE8C
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD0249174
+trying to lock process 0xD024A86C
 Properly terminating a thread, with stack at 0xD025D000
-The child process (3) returned with status: 333
-The child process (2) returned with status: 222
-The child process (1) returned with status: 111
+list index = 2
+Thread is scheduled to die... with stack at 0xD025D000
+list index = 2
+Properly terminating a thread, with stack at 0xD0266000
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD024A86C
+trying to lock process 0xD024AE8C
+AAA
+BBB
+list index = 0
+Properly terminating a thread, with stack at 0xD0260000
+list index = 2
+Thread is scheduled to die... with stack at 0xD0260000
+list index = 2
+Properly terminating a thread, with stack at 0xD0269000
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD024A86C
+list index = 0
+Properly terminating a thread, with stack at 0xD0263000
+list index = 2
+Thread is scheduled to die... with stack at 0xD0263000
+list index = 2
+Properly terminating a thread, with stack at 0xD026C000
+list index = 0
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+trying to lock process 0xD024A86C
+CCC (333, 4, 4)
+DDD
+trying to lock process 0xD0249174
+trying to lock process 0xD024AB6C
+EEE
+FFF
+Properly terminating a thread, with stack at 0xD025A000
+list index = 2
+list index = 0
+list index = 0
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 2, expected 3 vs. actual 3
+KernelMain: kernel is initialising...
+Reached TFW_SP 0
+memory here: 0x1000 -> 0x80000
+memory here: 0x140000 -> 0x3E0000
+memory here: 0x3E0000 -> 0x400000
+memory here: 0xFFFC0000 -> 0x0
+Reached TFW_SP 1
+Grabbing from emo block of size 0x4000, for request 0x1000
+Reached TFW_SP 2
+Reached TFW_SP 3
+Reached TFW_SP 4
+Reached TFW_SP 5
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x2000, total is 0x2000
+Reached TFW_SP 6
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+Grabbing from emo block of size 0x2000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x5000
+Grabbing from emo block of size 0x1000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x4000
+Grabbing from emo block of size 0x4000, for request 0x1000
+backup heap: largest is 0x3000, total is 0x3000
+
+  NOS Kernel
+  Copyright Alex Boxall 2022-2023
+
+  1076 / 3352 KB used
+
+  ...Reached TFW_SP 7
+MarkTfwStartPoint: running test 3
+Grabbing from emo block of size 0x3000, for request 0x1000
+backup heap: largest is 0x4000, total is 0x6000
+list index = 0
 list index = 0

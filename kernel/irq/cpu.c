@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <heap.h>
 #include <string.h>
+#include <spinlock.h>
 #include <irql.h>
 
 static int num_cpus = 1;
@@ -18,6 +19,7 @@ static void InitCpuTableEntry(int index) {
     cpu_table[index].current_thread = NULL;
     cpu_table[index].init_irql_done = false;
     cpu_table[index].postponed_task_switch = false;
+    InitSpinlock(&cpu_table[index].global_mappings_lock, "glbl vas map", IRQL_SCHEDULER);
 }
 
 void InitCpuTable(void) {

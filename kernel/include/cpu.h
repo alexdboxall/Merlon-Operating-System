@@ -2,7 +2,7 @@
 
 #include <common.h>
 #include <arch.h>
-#include <avl.h>
+#include <spinlock.h>
 
 struct vas;
 struct thread;
@@ -20,6 +20,7 @@ struct cpu {
     bool postponed_task_switch;
 
     struct avl_tree* global_vas_mappings;
+    struct spinlock global_mappings_lock;
 };
 
 void InitCpuTable(void);

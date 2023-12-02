@@ -91,6 +91,7 @@ struct process* GetProcessFromPid(pid_t pid) {
 }
 
 void LockProcess(struct process* prcss) {
+    LogWriteSerial("trying to lock process 0x%X\n", prcss);
     AcquireMutex(prcss->lock, -1);
 }
 
@@ -151,6 +152,10 @@ static void ReapProcess(struct process* prcss) {
     //       an 'inverse' mode - or check that on deletion it equals what it started on, or just an IGNORE_HELD_ON_DELETE?
 
     RemoveFromProcessTable(prcss->pid);
+    if (prcss->parent != 0) {
+        struct process* parent = GetProcessFromPid(prcss->parent);
+        AvlTreeDelete(parent->children, prcss);
+    }
     FreeHeap(prcss);
 }
 
@@ -165,10 +170,10 @@ static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pi
 
     if (child->terminated && (child->pid == target || target == (pid_t) -1)) {
         *status = child->retv;
-        pid_t retv = child->pid;
+        pid_t pid = child->pid;
         UnlockProcess(child);       // needed in case someone is waiting on us, before our death
         ReapProcess(child);
-        return retv;
+        return pid;
     }
 
     UnlockProcess(child);
@@ -177,7 +182,6 @@ static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pi
     if (left_retv != 0) {
         return left_retv;
     }
-
     return TryReapProcessAux(parent, AvlTreeGetRight(node), target, status);
 }
 
@@ -193,15 +197,12 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
     struct process* prcss = GetProcess();
     
     pid_t result = 0;
-
     int failed_reaps = 0;
     while (result == 0) {
         AcquireSemaphore(prcss->killed_children_semaphore, -1);
         LockProcess(prcss);
         result = TryReapProcess(prcss, pid, status);
-
         UnlockProcess(prcss);
-
         if (result == 0 && pid != (pid_t) -1) {
             failed_reaps++;
         }
@@ -248,7 +249,6 @@ static void KillRemainingThreads(struct avl_node* node) {
     KillRemainingThreads(AvlTreeGetRight(node));
 
     struct thread* victim = (struct thread*) AvlTreeGetData(node);
-    LogWriteSerial("STACK OF REAPED IS 0x%X\n", victim->kernel_stack_top - victim->kernel_stack_size);
     TerminateThread(victim);
 }
 
@@ -277,9 +277,6 @@ void KillProcessHelper(void* arg) {
         ReleaseSemaphore(parent->killed_children_semaphore);
     }
 
-    LogWriteSerial("STACK OF REAPER IS 0x%X\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
-
-    //while (1);
     TerminateThread(GetThread());
 }
 

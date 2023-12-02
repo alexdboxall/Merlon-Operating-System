@@ -8,5 +8,6 @@ void RegisterTfwIrqlTests(void);
 void RegisterTfwAVLTreeTests(void);
 void RegisterTfwPriorityQueueTests(void);
 void RegisterTfwSemaphoreTests(void);
+void RegisterTfwWaitTests(void);
 
 #endif

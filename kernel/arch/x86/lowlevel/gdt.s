@@ -14,7 +14,7 @@ x86LoadGdt:
 	mov ax, 0x10
 	mov ds, ax
 	mov es, ax
-	; Kernel doesn't use gs, and fs stores the CPU number
+	; Kernel doesn't use gs/fs
 	mov ss, ax
 
 	ret

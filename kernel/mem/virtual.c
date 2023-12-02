@@ -14,6 +14,8 @@
 #include <irql.h>
 #include <cpu.h>
 
+// TODO: lots of locks! especially the global cpu one
+
 void AvlPrinter(void* data_) {
     struct vas_entry* data = (struct vas_entry*) data_;
     LogWriteSerial("[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", data->virtual, data->physical, data->allocated, data->cow, data->in_ram, data->lock, data->ref_count);
@@ -146,18 +148,25 @@ void EvictVirt(void) {
 }
 
 static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
+    assert(IsSpinlockHeld(&vas->lock));
+
     if (entry->global) { 
-        LogWriteSerial("Added to GLOBAL AVL.\n");
+        AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
         AvlTreeInsert(GetCpu()->global_vas_mappings, entry);
+        ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+
     } else {        
-        LogWriteSerial("Added to LOCAL AVL.\n");
         AvlTreeInsert(vas->mappings, entry);
     }
 }
 
 static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
+    assert(IsSpinlockHeld(&vas->lock));
     if (entry->global) {
+        AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
         AvlTreeDelete(GetCpu()->global_vas_mappings, entry);
+        ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+
     } else {
         AvlTreeDelete(vas->mappings, entry); 
     }
@@ -381,7 +390,10 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
+        AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
         res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
+        ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+
         assert(res != NULL);
     }
     return res;

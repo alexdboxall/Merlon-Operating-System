@@ -18,22 +18,7 @@ static void CleanerDestroyThread(struct thread* thr) {
 
     // TODO: clean up user stacks if needed...?
 
-    /*
-     * TODO: @@@
-     * The issue here: threads come from all different VASes. We need to call UnmapVirt in the vas it was
-     * mapped into, THE PROBLEM BEING that it was actually mapped in using a completely different vas, but
-     * it still works because it's *global* as it's kernel memory. The problem is though that the vas we have
-     * doesn't have those globally mapped pages.
-     * 
-     * Probably need to have vas->global_mappings, or GetCpu()->global_mappings, and make GetVirtEntry check that
-     * if it fails to find it locally. Would have to have a flag in MapPageEx for VM_GLOBAL, which sticks it in
-     * the global one. Every function in virtual.c that looks at the mappings would need to look at both.
-     * I see this as the only proper way of doing it.
-     * 
-     * Probably have AddMapping() and RemoveMapping() helper functions in virtual.c to assist with this.
-     */
-
-    SetVas(thr->vas);
+    //SetVas(thr->vas);
     UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
     FreeHeap(thr->name);
     FreeHeap(thr);
