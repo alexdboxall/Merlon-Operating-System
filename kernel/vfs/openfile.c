@@ -12,7 +12,7 @@ void ReferenceOpenFile(struct open_file* file) {
     ReleaseSpinlockIrql(&file->reference_count_lock);
 }
 
-void open_file_dereference(struct open_file* file) {
+void DereferenceOpenFile(struct open_file* file) {
     assert(file != NULL);
 
 	AcquireSpinlockIrql(&file->reference_count_lock);
