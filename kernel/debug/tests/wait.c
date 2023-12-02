@@ -46,7 +46,7 @@ static void InitialProcessThread2(void*) {
     SleepMilli(500);
     pid_t c3pid = GetPid(CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333));
     
-    nt retv;
+    int retv;
     pid_t pid = WaitProcess(-1, &retv, 0);
     assert(retv == 111);
     assert(pid == c1pid);
@@ -58,7 +58,7 @@ static void InitialProcessThread2(void*) {
     pid = WaitProcess(-1, &retv, 0);
     assert(retv == 222);
     assert(pid == c2pid);
-    
+
     ok = true;
 }
 
