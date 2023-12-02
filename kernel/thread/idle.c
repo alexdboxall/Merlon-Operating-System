@@ -5,8 +5,7 @@
 #include <assert.h>
 #include <virtual.h>
 
-void IdleThread(void* ignored) {
-    (void) ignored;
+void IdleThread(void*) {
     EXACT_IRQL(IRQL_STANDARD);
 
     SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_IDLE);

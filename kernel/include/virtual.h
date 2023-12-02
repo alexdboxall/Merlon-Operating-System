@@ -53,9 +53,12 @@ size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* f
 void UnmapVirt(size_t virtual, size_t bytes);
 size_t GetPhysFromVirt(size_t virtual);
 
-struct vas* GetVas(void);
+struct vas* GetKernelVas(void);     // a kernel vas
+struct vas* GetVas(void);           // current vas
+
 struct vas* CreateVas(void);
 void CreateVasEx(struct vas* vas, int flags);
+void DestroyVas(struct vas* vas);
 
 struct vas* CopyVas(void);
 void SetVas(struct vas* vas);

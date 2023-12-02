@@ -13,6 +13,7 @@
 */
 
 #include <common.h>
+#include <log.h>
 
 /*
 * Writing to ports

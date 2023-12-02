@@ -14,19 +14,14 @@ static struct thread_list terminated_list;
 static struct semaphore* cleaner_semaphore;
 
 static void CleanerDestroyThread(struct thread* thr) {
-    (void) thr;
-
     // TODO: clean up user stacks if needed...?
 
-    //SetVas(thr->vas);
     UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
     FreeHeap(thr->name);
     FreeHeap(thr);
 }
 
-static void CleanerThread(void* ignored) {
-    (void) ignored;
-
+static void CleanerThread(void*) {
     while (true) {
         /*
          * Block until there is a thread that needs terminating.
@@ -57,9 +52,7 @@ void InitCleaner(void) {
     CreateThread(CleanerThread, NULL, GetVas(), "cleaner");
 }
 
-static void NotifyCleaner(void* ignored) {
-    (void) ignored;
-
+static void NotifyCleaner(void*) {
     /*
      * Unblock the cleaner so it can delete our task.
      */

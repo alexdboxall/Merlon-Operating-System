@@ -14,6 +14,12 @@
 #include <irql.h>
 #include <cpu.h>
 
+/**
+ * Stores a pointer to any kernel VAS. Ensures that when processes are destroyed, we are using a VAS
+ * that is different from the VAS that's being deleted. 
+ */
+static struct vas* kernel_vas;
+
 // TODO: lots of locks! especially the global cpu one
 
 void AvlPrinter(void* data_) {
@@ -340,6 +346,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
         virtual = AllocVirtRange(pages);
 
     } else {
+        // TODO: need to lock here to make the israngeinuse and allocvirtrange to be atomic
         if (IsRangeInUse(vas, virtual, pages)) {
             if (flags & VM_FIXED_VIRT) {
                 return 0;
@@ -457,7 +464,12 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
 int GetVirtPermissions(size_t virtual) {
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
-    struct vas_entry entry = *GetVirtEntry(GetVas(), virtual);
+    struct vas_entry* entry_ptr = GetVirtEntry(GetVas(), virtual);
+    if (entry_ptr == NULL) {
+        ReleaseSpinlockIrql(&vas->lock);
+        return 0;
+    }
+    struct vas_entry entry = *entry_ptr;
     ReleaseSpinlockIrql(&vas->lock);
 
     int permissions = 0;
@@ -616,6 +628,10 @@ void SetVas(struct vas* vas) {
     ArchSetVas(vas);
 }
 
+struct vas* GetKernelVas(void) {
+    return kernel_vas;
+}
+
 void InitVirt(void) {
     // TODO: cpu probably needs to have a lock object in it called current_vas_lock, which needs to be held whenever
     //       someone reads or writes to current_vas;
@@ -624,7 +640,9 @@ void InitVirt(void) {
     GetCpu()->global_vas_mappings = AvlTreeCreate();
     AvlTreeSetComparator(GetCpu()->global_vas_mappings, VirtAvlComparator);
     ArchInitVirt();
-    virt_initialised = true;   
+
+    kernel_vas = GetVas();
+    virt_initialised = true;
 }
 
 static void HandleCowFault(struct vas_entry* entry) {
@@ -760,4 +778,14 @@ bool IsVirtInitialised(void) {
 
 size_t BytesToPages(size_t bytes) {
     return (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+}
+
+void DestroyVas(struct vas* vas) {
+    /*
+     * TODO: implement this
+     */
+    (void) vas;
+
+    // TODO: may need to add reference counting later on (depending on what we need),
+    //       just decrement here, and only delete if got to 0.
 }

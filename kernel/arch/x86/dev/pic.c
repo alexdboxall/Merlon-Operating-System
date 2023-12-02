@@ -121,6 +121,26 @@ static void RemapPic(int offset) {
     outb(PIC2_DATA, mask2);
 }
 
+/**
+ * Set which IRQ numbers are disabled. Overwrites the previous call to this function completely
+ * (i.e. this is an 'equals' operation, not an 'and' or 'or'.)
+ * 
+ * @param irq_bitfield A bitfield of IRQs, where the lowest bit corresponds to IRQ0. For each bit,
+ *                     a zero will enable the interrupt, and a one will disable the interrupt. 
+ *                     To disable all lines, specify 0xFFFF. To enable all lines, specify 0x0000.
+ */
+void DisablePicLines(uint16_t irq_bitfield) {
+    static uint16_t prev = 0xFFFF;      // we initially set it to 0, so this will be different
+
+    if (prev == irq_bitfield) {
+        return;
+    }
+
+    outb(PIC1_DATA, irq_bitfield & 0xFF);
+    outb(PIC2_DATA, irq_bitfield >> 8);
+    prev = irq_bitfield;
+}
+
 /*
 * Initialise the PIC.
 */
@@ -135,6 +155,5 @@ void InitPic(void) {
     /*
     * Now we can disable all masks, allowing interrupts to reach the CPU.
     */
-    outb(PIC1_DATA, 0x00);
-    outb(PIC2_DATA, 0x00);
+    DisablePicLines(0x0000);
 }

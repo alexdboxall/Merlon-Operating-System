@@ -64,7 +64,11 @@
         "span": "c",
         "buffer": "c",
         "internet": "c",
-        "ranges": "c"
+        "ranges": "c",
+        "*.inc": "c",
+        "*.x": "c",
+        "random": "c",
+        "stat.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

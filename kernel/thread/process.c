@@ -265,7 +265,8 @@ void KillProcessHelper(void* arg) {
     OrphanChildProcesses(AvlTreeGetRootNode(prcss->children));
     AvlTreeDestroy(prcss->children);
 
-    // TODO: delete the VAS when safe to do so
+    assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
+    DestroyVas(prcss->vas);
 
     prcss->terminated = true;
 
@@ -291,8 +292,7 @@ void KillProcess(int retv) {
      * threads in the process, and the process itself. Obviously, this means we can't be running on said
      * threads or process. 
      */
-    // TODO: this is going to eventually want to have a 'GetKernelVas()', so it can kill the VAS too
-    CreateThreadEx(KillProcessHelper, (void*) prcss, GetVas(), "process killer", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+    CreateThreadEx(KillProcessHelper, (void*) prcss, GetKernelVas(), "process killer", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 }
 
 struct process* GetProcess(void) {
