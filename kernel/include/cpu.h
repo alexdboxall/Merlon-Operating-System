@@ -2,10 +2,11 @@
 
 #include <common.h>
 #include <arch.h>
-#include <spinlock.h>
+#include <avl.h>
 
 struct vas;
 struct thread;
+struct avl_tree;
 
 struct cpu {
     struct vas* current_vas;
@@ -17,6 +18,8 @@ struct cpu {
     struct priority_queue* deferred_functions;
     bool init_irql_done;
     bool postponed_task_switch;
+
+    struct avl_tree* global_vas_mappings;
 };
 
 void InitCpuTable(void);

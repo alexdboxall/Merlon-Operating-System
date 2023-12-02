@@ -14,6 +14,11 @@
 #include <irql.h>
 #include <cpu.h>
 
+void AvlPrinter(void* data_) {
+    struct vas_entry* data = (struct vas_entry*) data_;
+    LogWriteSerial("[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", data->virtual, data->physical, data->allocated, data->cow, data->in_ram, data->lock, data->ref_count);
+}
+
 /**
  * Whether or not virtual memory is available for use. Can be read with IsVirtInitialised(), and is set when
  * InitVirt() has completed.
@@ -56,7 +61,6 @@ void CreateVasEx(struct vas* vas, int flags) {
     if (!(flags & VAS_NO_ARCH_INIT)) {
         ArchInitVas(vas);
     }
-    
 }
 
 /**
@@ -143,17 +147,17 @@ void EvictVirt(void) {
 
 static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
     if (entry->global) { 
-        // do a sneaky AvlTreeInsert(GetCpu()->global_vas_mappings, entry);
-        Panic(PANIC_NOT_IMPLEMENTED);
-    } else {
+        LogWriteSerial("Added to GLOBAL AVL.\n");
+        AvlTreeInsert(GetCpu()->global_vas_mappings, entry);
+    } else {        
+        LogWriteSerial("Added to LOCAL AVL.\n");
         AvlTreeInsert(vas->mappings, entry);
     }
 }
 
 static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
     if (entry->global) {
-        // TODO: AvlTreeDelete(GetCpu()->global_vas_mappings, entry);
-        Panic(PANIC_NOT_IMPLEMENTED);
+        AvlTreeDelete(GetCpu()->global_vas_mappings, entry);
     } else {
         AvlTreeDelete(vas->mappings, entry); 
     }
@@ -237,6 +241,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
     AcquireSpinlockIrql(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
         // TODO: need to check the global one too
+        LogWriteSerial("checking if range is in use...\n");
         if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
             in_use = true;
             break;
@@ -376,10 +381,8 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
-        // TODO:
-        // res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
-        // assert(res != NULL);
-        Panic(PANIC_NOT_IMPLEMENTED);
+        res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
+        assert(res != NULL);
     }
     return res;
 }
@@ -606,6 +609,8 @@ void InitVirt(void) {
     //       someone reads or writes to current_vas;
 
     assert(!virt_initialised);
+    GetCpu()->global_vas_mappings = AvlTreeCreate();
+    AvlTreeSetComparator(GetCpu()->global_vas_mappings, VirtAvlComparator);
     ArchInitVirt();
     virt_initialised = true;   
 }

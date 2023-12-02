@@ -34,11 +34,7 @@ static void CleanerDestroyThread(struct thread* thr) {
      */
 
     SetVas(thr->vas);
-
-    LogWriteSerial("Cleaning up stack here: 0x%X\n", thr->kernel_stack_top - thr->kernel_stack_size);
-    LogWriteSerial("(Our stack is at 0x%X)\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
     UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
-    LogWriteSerial("Cleaned up stack!!\n");
     FreeHeap(thr->name);
     FreeHeap(thr);
 }

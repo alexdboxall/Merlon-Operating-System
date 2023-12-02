@@ -13,6 +13,7 @@ static void InitCpuTableEntry(int index) {
     cpu_table[index].cpu_number = index;
     cpu_table[index].platform_specific = index != 0 ? AllocHeapZero(sizeof(platform_cpu_data_t)) : &boot_cpu_data;
     cpu_table[index].irql = IRQL_STANDARD;
+    cpu_table[index].global_vas_mappings = NULL;
     cpu_table[index].current_vas = NULL;
     cpu_table[index].current_thread = NULL;
     cpu_table[index].init_irql_done = false;
