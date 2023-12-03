@@ -23,6 +23,20 @@ struct linked_list* LinkedListCreate(void) {
     return list;
 }
 
+void LinkedListInsertStart(struct linked_list* list, void* data) {
+    struct linked_list_node* node = AllocHeap(sizeof(struct linked_list_node));
+    node->data = data;
+    node->next = list->tail;
+    
+    if (list->head == NULL) {
+        assert(list->tail == NULL);
+        list->tail = node;
+    }
+
+    list->head = node;
+    list->size++;
+}
+
 void LinkedListInsertEnd(struct linked_list* list, void* data) {
     if (list->tail == NULL) {
         assert(list->head == NULL);

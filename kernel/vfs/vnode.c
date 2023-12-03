@@ -119,16 +119,19 @@ int VnodeOpCheckOpen(struct vnode* node, const char* name, int flags) {
 
 int VnodeOpRead(struct vnode* node, struct transfer* io) {
     CheckVnode(node);
+    assert(io->direction == TRANSFER_READ);
     return node->ops.read(node, io);
 }
 
 int VnodeOpReaddir(struct vnode* node, struct transfer* io) {
     CheckVnode(node);
+    assert(io->direction == TRANSFER_READ);
     return node->ops.readdir(node, io);
 }
 
 int VnodeOpWrite(struct vnode* node, struct transfer* io) {
     CheckVnode(node);
+    assert(io->direction == TRANSFER_WRITE);
     return node->ops.write(node, io);
 }
 

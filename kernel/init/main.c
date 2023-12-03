@@ -11,11 +11,14 @@
 #include <panic.h>
 #include <stdlib.h>
 #include <process.h>
+#include <dev.h>
+#include <vfs.h>
+#include <transfer.h>
+#include <fcntl.h>
+#include <console.h>
 
 /*
  * Next steps:
- * - uio
- * - virtual filesystem
  * - console driver
  * - IDE driver
  * - DemoFS driver
@@ -46,12 +49,22 @@ void MyTestThread(void* str) {
     }
 }
 
-
 void InitThread(void*) {
+    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 
+    PutsConsole("This is a test of the console driver!\n");
+
+    struct open_file* rand;
+    int status = OpenFile("rand:", O_RDONLY, 0, &rand);
+    LogWriteSerial("Opening rand: gave status of %d\n", status);
+
     while (true) {
-        Schedule();
+        uint32_t data;
+        struct transfer tr = CreateKernelTransfer(&data, 4, 0, TRANSFER_READ);
+        status = ReadFile(rand, &tr);
+        LogWriteSerial("Reading gave status %d, and the data is 0x%X\n", status, data);
+        SleepMilli(1000);
     }
 }
 
@@ -80,9 +93,10 @@ void KernelMain(void) {
      * Allows deferments of functions to actually happen. IRQL is still usable beforehand though.
      */
     InitIrql();
-
+    InitVfs();
     InitTimer();
     InitScheduler();
+
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
     InitBootstrapCpu();
@@ -97,11 +111,12 @@ void KernelMain(void) {
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
-    InitProcess();
+    InitRandomDevice();
+    InitNullDevice();
 
     InitDbgScreen();
-    DbgScreenPrintf("\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
-    
-    CreateThread(InitThread, NULL, GetVas(), "init1");
+    InitConsole();
+    InitProcess();
+    CreateThread(InitThread, NULL, GetVas(), "init");
     StartMultitasking();
 }

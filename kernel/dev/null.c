@@ -1,7 +1,7 @@
 
 #include <heap.h>
 #include <stdlib.h>
-#include <vnode.h>
+#include <vfs.h>
 #include <log.h>
 #include <assert.h>
 #include <errno.h>
@@ -90,7 +90,7 @@ static const struct vnode_operations dev_ops = {
     .stat           = Stat,
 };
 
-struct vnode* CreateNullDevice(void)
+void InitNullDevice(void)
 {
-    return CreateVnode(dev_ops);
+    AddVfsMount(CreateVnode(dev_ops), "null");
 }

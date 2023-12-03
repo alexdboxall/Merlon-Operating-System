@@ -2,10 +2,11 @@
 #include <machine/regs.h>
 #include <machine/interrupt.h>
 #include <machine/pic.h>
-#include <log.h>
+#include <log.h> 
 #include <irq.h>
 #include <irql.h>
 #include <virtual.h>
+#include <console.h>
 
 static bool ready_for_irqs = false;
 

@@ -70,7 +70,13 @@
         "random": "c",
         "stat.h": "c",
         "typeindex": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "fcntl.h": "c",
+        "stackadt.h": "c",
+        "transfer.h": "c",
+        "dirent.h": "c",
+        "pty.h": "c",
+        "vfs.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

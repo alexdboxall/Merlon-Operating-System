@@ -89,7 +89,7 @@ void DereferenceVnode(struct vnode* node);
 /* 
 * Wrapper functions to check the vnode is valid, and then call the driver.
 */
-int VnodeOpCheck_open(struct vnode* node, const char* name, int flags);
+int VnodeOpCheckOpen(struct vnode* node, const char* name, int flags);
 int VnodeOpRead(struct vnode* node, struct transfer* io);
 int VnodeOpReaddir(struct vnode* node, struct transfer* io);
 int VnodeOpWrite(struct vnode* node, struct transfer* io);
