@@ -19,9 +19,8 @@
 
 /*
  * Next steps:
- * - console driver
  * - IDE driver
- * - DemoFS driver
+ * - DemoFS/FAT32 driver
  * - ELF loader
  * - PS2.SYS, radix trees, drivers that export symbols, etc.
  * - running any old ring 3 program
@@ -33,27 +32,12 @@
  *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, pause, rmtree, rmdir, cls, copytree, link, 
  *                  ...ttyname, sleep, exit
  *          port zlib, nasm
- * - FAT32 driver
  */
 extern void InitDbgScreen(void);
-
-void MyTestThread(void* str) {
-    int count = 0;
-    while (1) {
-        (void) str;//DbgScreenPrintf("%s", str);
-        SleepMilli(500);
-        ++count;
-        if (count == 10) {
-            TerminateThread(GetThread());
-        }
-    }
-}
 
 void InitThread(void*) {
     DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
-
-    PutsConsole("This is a test of the console driver!\n");
 
     struct open_file* rand;
     int status = OpenFile("rand:", O_RDONLY, 0, &rand);
@@ -113,10 +97,13 @@ void KernelMain(void) {
 
     InitRandomDevice();
     InitNullDevice();
-
+    extern void InitPs2(void);
+	InitPs2();
     InitDbgScreen();
     InitConsole();
     InitProcess();
+
+
     CreateThread(InitThread, NULL, GetVas(), "init");
     StartMultitasking();
 }

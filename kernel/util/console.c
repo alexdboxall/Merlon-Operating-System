@@ -4,6 +4,7 @@
 #include <vfs.h>
 #include <thread.h>
 #include <virtual.h>
+#include <string.h>
 #include <log.h>
 
 static struct vnode* console_master;
@@ -20,6 +21,8 @@ static bool console_initialised = false;
  */
 
 static void ConsoleDriverThread(void*) {
+	AddVfsMount(console_subordinate, "con");
+
     while (true) {
         char c;
         struct transfer tr = CreateKernelTransfer(&c, 1, 0, TRANSFER_READ);
@@ -28,11 +31,29 @@ static void ConsoleDriverThread(void*) {
     }
 }
 
+static void DummyAppThread(void*) {
+	extern void InitPs2(void);
+	InitPs2();
+	
+	PutsConsole("Write something, then press ENTER: ");
+
+    while (true) {
+        char bf[128];
+		memset(bf, 0, 128);
+        struct transfer tr = CreateKernelTransfer(bf, 127, 0, TRANSFER_READ);
+		ReadFile(open_console_subordinate, &tr);
+		PutsConsole("You wrote: ");
+		PutsConsole(bf);
+		PutsConsole("Write something, then press ENTER: ");
+    }
+}
+
 void InitConsole(void) {
 	CreatePseudoTerminal(&console_master, &console_subordinate);
 	open_console_master = CreateOpenFile(console_master, 0, 0, true, true);
 	open_console_subordinate = CreateOpenFile(console_subordinate, 0, 0, true, true);
     CreateThread(ConsoleDriverThread, NULL, GetVas(), "con");
+    CreateThread(DummyAppThread, NULL, GetVas(), "contest");
 	console_initialised = true;
 }
 

@@ -32,16 +32,17 @@ Grabbing from emo block of size 0x4000, for request 0x1000
 backup heap: largest is 0x3000, total is 0x3000
 Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x6000
+mounting 0xD024AFCC (con, 0xD024ACA4)
+list index = 2
 
 
 
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1092 / 1332 KB used
+  1096 / 1332 KB used
 
-  ...list index = 2
-A
+  ...A
 B
 rand
 C
@@ -62,317 +63,22 @@ Reading gave status 0, and the data is 0x213BFF0F
 list index = 0
 Reading gave status 0, and the data is 0xDCBDB8E5
 list index = 0
+list index = 2
+list index = 2
+list index = 0
+list index = 2
+list index = 2
+list index = 0
+list index = 2
+list index = 2
+list index = 0
+list index = 2
+list index = 2
+list index = 0
+list index = 2
+list index = 2
+list index = 0
 Reading gave status 0, and the data is 0x3234D996
 list index = 0
 Reading gave status 0, and the data is 0x29467947
-list index = 0
-Reading gave status 0, and the data is 0x26B32BF4
-list index = 0
-Reading gave status 0, and the data is 0x111E1C7C
-list index = 0
-Reading gave status 0, and the data is 0x8DB58741
-list index = 0
-Reading gave status 0, and the data is 0x9B7B8657
-list index = 0
-Reading gave status 0, and the data is 0xB766CD57
-list index = 0
-Reading gave status 0, and the data is 0x4EBB229A
-list index = 0
-Reading gave status 0, and the data is 0x95F4B720
-list index = 0
-Reading gave status 0, and the data is 0x77C8CBA
-list index = 0
-Reading gave status 0, and the data is 0x8F975D9D
-list index = 0
-Reading gave status 0, and the data is 0xDEF03BD3
-list index = 0
-Reading gave status 0, and the data is 0x3701A615
-list index = 0
-Reading gave status 0, and the data is 0xFB6A959F
-list index = 0
-Reading gave status 0, and the data is 0xD808BD6F
-list index = 0
-Reading gave status 0, and the data is 0x6BD726B5
-list index = 0
-Reading gave status 0, and the data is 0xF4FFCF6A
-list index = 0
-Reading gave status 0, and the data is 0x314CB818
-list index = 0
-Reading gave status 0, and the data is 0x2D24AF6
-list index = 0
-Reading gave status 0, and the data is 0xD6A53DAA
-list index = 0
-Reading gave status 0, and the data is 0xBF8F3BA3
-list index = 0
-Reading gave status 0, and the data is 0xE5A987C3
-list index = 0
-Reading gave status 0, and the data is 0x8FC33CA7
-list index = 0
-Reading gave status 0, and the data is 0xEFDFF5C7
-list index = 0
-Reading gave status 0, and the data is 0x9683C8AE
-list index = 0
-Reading gave status 0, and the data is 0xBECD6E2C
-list index = 0
-Reading gave status 0, and the data is 0x49CCBD36
-list index = 0
-Reading gave status 0, and the data is 0x7A0CF11E
-list index = 0
-Reading gave status 0, and the data is 0x435FFBEF
-list index = 0
-Reading gave status 0, and the data is 0xD0366966
-list index = 0
-Reading gave status 0, and the data is 0x79F25018
-list index = 0
-Reading gave status 0, and the data is 0x1434005
-list index = 0
-Reading gave status 0, and the data is 0xD325CB9E
-list index = 0
-Reading gave status 0, and the data is 0x29ADA267
-list index = 0
-Reading gave status 0, and the data is 0x7F50E924
-list index = 0
-Reading gave status 0, and the data is 0xFE2938DC
-list index = 0
-Reading gave status 0, and the data is 0x42E4F709
-list index = 0
-Reading gave status 0, and the data is 0x7389708E
-list index = 0
-Reading gave status 0, and the data is 0x679D57CF
-list index = 0
-Reading gave status 0, and the data is 0xDADA79C4
-list index = 0
-Reading gave status 0, and the data is 0xD098562C
-list index = 0
-Reading gave status 0, and the data is 0x289835F9
-list index = 0
-Reading gave status 0, and the data is 0xF1BF637E
-list index = 0
-Reading gave status 0, and the data is 0x33398ADD
-list index = 0
-Reading gave status 0, and the data is 0x97D4B01C
-list index = 0
-Reading gave status 0, and the data is 0xD538A0FF
-list index = 0
-Reading gave status 0, and the data is 0x7DE93B77
-list index = 0
-Reading gave status 0, and the data is 0xFF28A071
-list index = 0
-Reading gave status 0, and the data is 0xC0AF93D9
-list index = 0
-Reading gave status 0, and the data is 0xF517D571
-list index = 0
-Reading gave status 0, and the data is 0x7EC097E7
-list index = 0
-Reading gave status 0, and the data is 0xF93200A1
-list index = 0
-Reading gave status 0, and the data is 0xFC82B1F1
-list index = 0
-Reading gave status 0, and the data is 0xD81AF014
-list index = 0
-Reading gave status 0, and the data is 0xCD0C2886
-list index = 0
-Reading gave status 0, and the data is 0xE719870B
-list index = 0
-Reading gave status 0, and the data is 0xA1EE357F
-list index = 0
-Reading gave status 0, and the data is 0x20F66DD2
-list index = 0
-Reading gave status 0, and the data is 0x7676BF51
-list index = 0
-Reading gave status 0, and the data is 0x2CCDD7E8
-list index = 0
-Reading gave status 0, and the data is 0x5AAA604
-list index = 0
-Reading gave status 0, and the data is 0x4DE9F421
-list index = 0
-Reading gave status 0, and the data is 0x79C4C3E5
-list index = 0
-Reading gave status 0, and the data is 0x2F4F9B23
-list index = 0
-Reading gave status 0, and the data is 0x7E9FC69B
-list index = 0
-Reading gave status 0, and the data is 0xDD260432
-list index = 0
-Reading gave status 0, and the data is 0xF6325BE9
-list index = 0
-Reading gave status 0, and the data is 0x14007AF0
-list index = 0
-Reading gave status 0, and the data is 0xA2C8F206
-list index = 0
-Reading gave status 0, and the data is 0x7E650346
-list index = 0
-Reading gave status 0, and the data is 0x5243E41D
-list index = 0
-Reading gave status 0, and the data is 0x47D92753
-list index = 0
-Reading gave status 0, and the data is 0x2B648617
-list index = 0
-Reading gave status 0, and the data is 0xD21F2AD3
-list index = 0
-Reading gave status 0, and the data is 0xCAA8267F
-list index = 0
-Reading gave status 0, and the data is 0x55090B2D
-list index = 0
-Reading gave status 0, and the data is 0x1CEAC5EF
-list index = 0
-Reading gave status 0, and the data is 0x43F6DDCF
-list index = 0
-Reading gave status 0, and the data is 0xF8A8C904
-list index = 0
-Reading gave status 0, and the data is 0xA182203A
-list index = 0
-Reading gave status 0, and the data is 0x874CBD99
-list index = 0
-Reading gave status 0, and the data is 0x6BC3DBC1
-list index = 0
-Reading gave status 0, and the data is 0xCB9D9077
-list index = 0
-Reading gave status 0, and the data is 0x5CEC6389
-list index = 0
-Reading gave status 0, and the data is 0x9503B583
-list index = 0
-Reading gave status 0, and the data is 0x8CD2D60B
-list index = 0
-Reading gave status 0, and the data is 0x75EFD0E4
-list index = 0
-Reading gave status 0, and the data is 0x61886BF7
-list index = 0
-Reading gave status 0, and the data is 0x3763944A
-list index = 0
-Reading gave status 0, and the data is 0xA0C4E9E9
-list index = 0
-Reading gave status 0, and the data is 0xBF21B22C
-list index = 0
-Reading gave status 0, and the data is 0x5077A118
-list index = 0
-Reading gave status 0, and the data is 0x9BDD363
-list index = 0
-Reading gave status 0, and the data is 0x719E76AC
-list index = 0
-Reading gave status 0, and the data is 0x6064AD26
-list index = 0
-Reading gave status 0, and the data is 0x8BEB9F24
-list index = 0
-Reading gave status 0, and the data is 0xE9C66B22
-list index = 0
-Reading gave status 0, and the data is 0x4C83DFB5
-list index = 0
-Reading gave status 0, and the data is 0xB639C8E3
-list index = 0
-Reading gave status 0, and the data is 0x7EC62A58
-list index = 0
-Reading gave status 0, and the data is 0xC6CD4693
-list index = 0
-Reading gave status 0, and the data is 0xC392A79F
-list index = 0
-Reading gave status 0, and the data is 0x7B972083
-list index = 0
-Reading gave status 0, and the data is 0xB4255252
-list index = 0
-Reading gave status 0, and the data is 0x1137B2B4
-list index = 0
-Reading gave status 0, and the data is 0xFB756E2B
-list index = 0
-Reading gave status 0, and the data is 0xE91D262F
-list index = 0
-Reading gave status 0, and the data is 0x4B4735EA
-list index = 0
-Reading gave status 0, and the data is 0x74C75B87
-list index = 0
-Reading gave status 0, and the data is 0x19185766
-list index = 0
-Reading gave status 0, and the data is 0xD0D02DA6
-list index = 0
-Reading gave status 0, and the data is 0x2D75DE02
-list index = 0
-Reading gave status 0, and the data is 0x29303E7A
-list index = 0
-Reading gave status 0, and the data is 0x33074C82
-list index = 0
-Reading gave status 0, and the data is 0x1DE1ADE2
-list index = 0
-Reading gave status 0, and the data is 0xA33AD0D0
-list index = 0
-Reading gave status 0, and the data is 0x8F7024B0
-list index = 0
-Reading gave status 0, and the data is 0x60F7A3F4
-list index = 0
-Reading gave status 0, and the data is 0x54FED35F
-list index = 0
-Reading gave status 0, and the data is 0xB69EA822
-list index = 0
-Reading gave status 0, and the data is 0x6D751F9D
-list index = 0
-Reading gave status 0, and the data is 0x4BFEA541
-list index = 0
-Reading gave status 0, and the data is 0x7DADC873
-list index = 0
-Reading gave status 0, and the data is 0xE5B56922
-list index = 0
-Reading gave status 0, and the data is 0x65908882
-list index = 0
-Reading gave status 0, and the data is 0xE9EE7A0C
-list index = 0
-Reading gave status 0, and the data is 0x12F444A
-list index = 0
-Reading gave status 0, and the data is 0xAB2BE507
-list index = 0
-Reading gave status 0, and the data is 0x1E28FC40
-list index = 0
-Reading gave status 0, and the data is 0xB35EF7D9
-list index = 0
-Reading gave status 0, and the data is 0xFB70DDEE
-list index = 0
-Reading gave status 0, and the data is 0x5629CF4F
-list index = 0
-Reading gave status 0, and the data is 0x9945E004
-list index = 0
-Reading gave status 0, and the data is 0xFADBC813
-list index = 0
-Reading gave status 0, and the data is 0x78809AF9
-list index = 0
-Reading gave status 0, and the data is 0xB433E4E7
-list index = 0
-Reading gave status 0, and the data is 0x4059E450
-list index = 0
-Reading gave status 0, and the data is 0xC9C883BF
-list index = 0
-Reading gave status 0, and the data is 0x2F134758
-list index = 0
-Reading gave status 0, and the data is 0xC63C2D5
-list index = 0
-Reading gave status 0, and the data is 0x1FD909D9
-list index = 0
-Reading gave status 0, and the data is 0xDC5E1974
-list index = 0
-Reading gave status 0, and the data is 0x22900DA4
-list index = 0
-Reading gave status 0, and the data is 0xF29AD4D6
-list index = 0
-Reading gave status 0, and the data is 0xD71EA8C8
-list index = 0
-Reading gave status 0, and the data is 0x24622C09
-list index = 0
-Reading gave status 0, and the data is 0xB829CCA2
-list index = 0
-Reading gave status 0, and the data is 0x610FF17D
-list index = 0
-Reading gave status 0, and the data is 0xBC12FECA
-list index = 0
-Reading gave status 0, and the data is 0x66FAC478
-list index = 0
-Reading gave status 0, and the data is 0xCA75B04E
-list index = 0
-Reading gave status 0, and the data is 0xB1D50A41
-list index = 0
-Reading gave status 0, and the data is 0xA823B382
-list index = 0
-Reading gave status 0, and the data is 0x6337E586
-list index = 0
-Reading gave status 0, and the data is 0x1824950F
-list index = 0
-Reading gave status 0, and the data is 0xDDBD8914
-list index = 0
-Reading gave status 0, and the data is 0x305EED2
 list index = 0

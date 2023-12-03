@@ -5,6 +5,7 @@
 #include <log.h>
 #include <assert.h>
 #include <errno.h>
+#include <string.h>
 #include <transfer.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -77,6 +78,16 @@ static void FlushSubordinateLineBuffer(struct vnode* node, struct transfer* tr) 
     internal->line_buffer_pos = 0;
 }
 
+static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
+    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
+
+    if (internal->line_buffer_pos == 0) {
+        return;
+    }
+
+    internal->line_buffer[--internal->line_buffer_pos] = 0;
+}
+
 static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
 
@@ -95,8 +106,8 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
-    bool echo = internal->termios.c_lflag & ECHO;
-    bool canon = internal->termios.c_lflag & ICANON;
+    bool echo = true;//internal->termios.c_lflag & ECHO;
+    bool canon = true;//internal->termios.c_lflag & ICANON;
 
     // TODO: handle backspace (how does ICANON / cooked change this?)
     // TODO: handle TAB
@@ -114,11 +125,31 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
             c = BlockingBufferGet(master_internal->keybrd_buffer);
         }
 
-        AddToSubordinateLineBuffer(node, c, 1);
+        /*
+         * This must happen before we modify the line buffer (i.e. to add or backspace a character), as
+         * the backspace code here needs to check for a non-empty line (and so this must be done before we make 
+         * the line empty).
+         */
         if (echo) {
-            // write to our buffer (which the master then reads)
-            BlockingBufferAdd(master_internal->display_buffer, c);
+            if (c == '\b' && canon) {
+                if (internal->line_buffer_pos > 0) {
+                    BlockingBufferAdd(master_internal->display_buffer, '\b');
+                    BlockingBufferAdd(master_internal->display_buffer, ' ');
+                    BlockingBufferAdd(master_internal->display_buffer, '\b');
+                }
+            } else {
+                BlockingBufferAdd(master_internal->display_buffer, c);
+            }
         }
+
+        if (c == '\b' && canon) {
+            RemoveFromSubordinateLineBuffer(node);
+
+        } else {
+            AddToSubordinateLineBuffer(node, c, 1);
+        }
+
+
         if (c == '\n' || c == 3 || !canon) {
             FlushSubordinateLineBuffer(node, tr);     
             flushed_yet = true;
@@ -144,7 +175,7 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
         // current colour), idk.
         BlockingBufferAdd(master_internal->display_buffer, c);
     }
-
+    
     return 0;
 }
 
