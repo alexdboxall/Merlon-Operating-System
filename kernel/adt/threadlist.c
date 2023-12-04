@@ -89,7 +89,7 @@ static void ThreadListDeleteIndex(struct thread_list* list, int index) {
         iter = iter->next[list->index];
     }
 
-    Panic(PANIC_LINKED_LIST);
+    Panic(PANIC_THREAD_LIST);
 }
 
 struct thread* ThreadListDeleteTop(struct thread_list* list) {

@@ -60,7 +60,11 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
 
     struct thread* thr = GetThread();
     if (thr == NULL) {
-        Panic(PANIC_SEM_HOLD_WITHOUT_THREAD);
+        if (sem->current_count < sem->max_count) {
+            sem->current_count++;
+        } else {
+            Panic(PANIC_SEM_BLOCK_WITHOUT_THREAD);
+        }
         return 0;
     }
 
@@ -107,6 +111,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
  */
 void ReleaseSemaphore(struct semaphore* sem) {
     MAX_IRQL(IRQL_SCHEDULER);
+    assert(sem->current_count > 0);
 
     LockScheduler();
     

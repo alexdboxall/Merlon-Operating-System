@@ -141,7 +141,21 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
 struct process* ForkProcess(void) {
     MAX_IRQL(IRQL_STANDARD);
 
-    return NULL;
+    LockProcess(GetProcess());
+
+    struct process* new_process = CreateProcess(GetProcess()->pid);
+    DestroyVas(new_process->vas);
+
+    // TODO: there are probably more things to copy over in the future (e.g. list of open file descriptors, etc.)
+    //       the open files, etc.
+
+    new_process->vas = CopyVas();
+    //TODO: need to grab the first thread (I don't think we've ordered threads by thread id yet in the AVL)
+    //      so will need to fix that first.
+    //CopyThreadToNewProcess(new_process, )
+    UnlockProcess(GetProcess());
+
+    return new_process;
 }
 
 static void ReapProcess(struct process* prcss) {
@@ -253,9 +267,7 @@ static void KillRemainingThreads(struct avl_node* node) {
 }
 
 void KillProcessHelper(void* arg) {
-    if (GetProcess() != NULL) {
-        Panic(PANIC_ASSERTION_FAILURE);
-    }
+    assert(GetProcess() == NULL);
 
     struct process* prcss = arg;
 

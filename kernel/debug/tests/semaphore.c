@@ -159,11 +159,11 @@ TFW_CREATE_TEST(SchedulerHeartAttack) { TFW_IGNORE_UNUSED
 void RegisterTfwSemaphoreTests(void) {
     RegisterTfwTest("Semaphores with timeouts can be woken via timeout", TFW_SP_ALL_CLEAR, SemaphoreTimeout1, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("Semaphores with timeouts can be woken via release", TFW_SP_ALL_CLEAR, SemaphoreTimeout2, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("Scheduler stress test (1)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 15);
-    RegisterTfwTest("Scheduler stress test (2)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 20);
-    RegisterNightlyTfwTest("Scheduler stress test (3)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 80);
-    RegisterNightlyTfwTest("Scheduler stress test (4)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 125);
-    RegisterNightlyTfwTest("Scheduler stress test (5)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 600);
+    RegisterTfwTest("Scheduler stress test with semaphores (1)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 15);
+    RegisterTfwTest("Scheduler stress test with semaphores (2)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 20);
+    RegisterNightlyTfwTest("Scheduler stress test with semaphores (3)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 80);
+    RegisterNightlyTfwTest("Scheduler stress test with semaphores (4)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 125);
+    RegisterNightlyTfwTest("Scheduler stress test with semaphores (5)", TFW_SP_ALL_CLEAR, SchedulerHeartAttack, PANIC_UNIT_TEST_OK, 600);
 }
 
 #endif

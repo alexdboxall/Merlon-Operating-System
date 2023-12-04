@@ -50,7 +50,7 @@ static void* AllocateFromEmergencyBlocks(size_t size) {
     }
 
     if (smallest_block == -1) {
-        Panic(PANIC_OUT_OF_BOOTSTRAP_HEAP);
+        Panic(PANIC_CANNOT_MALLOC_WITHOUT_FAULTING);
     }
 
     void* address = emergency_blocks[smallest_block].address;
