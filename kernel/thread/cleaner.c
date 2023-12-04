@@ -102,10 +102,6 @@ void InitCleaner(void) {
  */
 static void NotifyCleaner(void*) {
     MAX_IRQL(IRQL_SCHEDULER);
-
-    /*
-     * Unblock the cleaner so it can delete our task.
-     */
     ReleaseSemaphore(cleaner_semaphore);    
 }
 
