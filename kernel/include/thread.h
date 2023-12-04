@@ -101,3 +101,14 @@ void SleepMilli(uint32_t delta_ms);
 void HandleSleepWakeups(void* sys_time_ptr); // used internally between timer.c and thread.c
 void InitIdle(void);
 void InitCleaner(void);
+
+/*
+ * A thread can lock itself onto the current cpu. Task switches *STILL OCCUR*, but we ensure that
+ * next time this task runs, it will go back to this cpu.
+ * 
+ * This is not a spinlock nor mutex, it's literally should just set a flag in the thread struct (sure, that
+ * will spin while setting variable, but that's it). Between AssignThreadToCpu and UnassignThreadToCpu we remain
+ * at IRQL_STANDARD.
+ */
+void AssignThreadToCpu(void);
+void UnassignThreadToCpu(void);

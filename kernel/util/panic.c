@@ -24,7 +24,8 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_LINKED_LIST]							= "invalid operation on a linked list",
 	[PANIC_CANARY_DIED]							= "kernel stack overflow detected",
 	[PANIC_SEMAPHORE_DESTROY_WHILE_HELD]		= "tried to destroy a held semaphore",
-	[PANIC_SEM_HOLD_WITHOUT_THREAD] 			= "semaphore acquisition before multithreading has started"
+	[PANIC_SEM_HOLD_WITHOUT_THREAD] 			= "semaphore acquisition before multithreading has started",
+	[PANIC_CANNOT_LOCK_MEMORY]					= "cannot lock virtual memory",
 };
 
 [[noreturn]] void Panic(int code)

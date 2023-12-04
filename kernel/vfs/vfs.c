@@ -185,6 +185,8 @@ static struct open_file* GetMountFromName(const char* name) {
 }
 
 int AddVfsMount(struct vnode* node, const char* name) {
+	EXACT_IRQL(IRQL_STANDARD);
+
     if (name == NULL || node == NULL) {
 		return EINVAL;
 	}
@@ -218,6 +220,8 @@ int AddVfsMount(struct vnode* node, const char* name) {
 }
 
 int RemoveVfsMount(const char* name) {
+	EXACT_IRQL(IRQL_STANDARD);
+
     if (name == NULL) {
 		return EINVAL;
 	}
@@ -296,25 +300,22 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	}
 
 	struct open_file* current_file = GetMountFromName(component_buffer);
-    LogWriteSerial("got a mount: 0x%X\n", current_file);
 
 	/*
 	* No root device found, so we can't continue.
 	*/
 	if (current_file == NULL || current_file->node == NULL) {
-        LogWriteSerial("ENODEV\n");
 		return ENODEV;
 	}
 
 	struct vnode* current_vnode = current_file->node;
-    LogWriteSerial("current vnode = 0x%X\n", current_vnode);
+
 	/*
 	* This will be dereferenced either as we go through the loop, or
 	* after a call to vfs_close (this function should only be called 
 	* by vfs_open).
 	*/
 	ReferenceVnode(current_vnode);
-    LogWriteSerial("ReferenceVnode\n");
 
 	char component[MAX_COMPONENT_LENGTH + 1];
 
@@ -329,9 +330,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	/*
 	* Iterate over the rest of the path.
 	*/
-    LogWriteSerial("got to top of loop\n");
 	while (path_ptr < (int) strlen(path)) {
-        LogWriteSerial("going loopy!\n");
 		if (VnodeOpDirentType(current_vnode) != DT_DIR) {
 			DereferenceVnode(current_vnode);
 			CleanupVnodeStack(previous_components);
@@ -394,7 +393,6 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 		StackAdtPush(previous_components, current_vnode);
 		current_vnode = next_vnode;
 	}
-    LogWriteSerial("got to bottom of loop!\n");
 
 	int status = 0;
 
@@ -418,19 +416,18 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 }
 
 int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
+	EXACT_IRQL(IRQL_STANDARD);
+
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
 		return EINVAL;
 	}
 
     int status;
     char name[MAX_COMPONENT_LENGTH + 1];
-    LogWriteSerial("A\n");
 	status = GetFinalPathComponent(path, name, MAX_COMPONENT_LENGTH);
 	if (status) {
 		return status;
 	}
-    LogWriteSerial("B\n");
-    LogWriteSerial("%s\n", name);
 
     /*
 	* Grab the vnode from the path.
@@ -440,9 +437,7 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
     /*
     * Lookup a (hopefully) existing file.
     */
-    LogWriteSerial("C\n");
     status = GetVnodeFromPath(path, &node, false);
-    LogWriteSerial("D\n");
 
     if (status == ENOENT && (flags & O_CREAT)) {
         /*
@@ -470,9 +465,8 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
     } else if (status != 0) {
         return status;
     }
-    LogWriteSerial("E\n");
+
 	status = VnodeOpCheckOpen(node, name, flags & O_ACCMODE);
-	LogWriteSerial("F\n");
     if (status) {
 		DereferenceVnode(node);
 		return status;
@@ -494,7 +488,6 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 
 	bool can_read = (flags & O_ACCMODE) != O_WRONLY;
 	bool can_write = (flags & O_ACCMODE) != O_RDONLY;
-    LogWriteSerial("G\n");
 
 	if (VnodeOpDirentType(node) == DT_DIR && can_write) {
 		/*
@@ -504,8 +497,6 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 		return EISDIR;
 	}
 	
-    LogWriteSerial("H\n");
-
 	if (flags & O_TRUNC) {
 		if (can_write) {
 			// TODO: status = vnode_truncate(node)
@@ -517,15 +508,13 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 
     /* TODO: clear out the flags that don't normally get saved */
 
-    LogWriteSerial("I\n");
-
 	*out = CreateOpenFile(node, mode, flags, can_read, can_write);
-    LogWriteSerial("J\n");
-
     return 0;
 }
 
 int ReadFile(struct open_file* file, struct transfer* io) {
+	EXACT_IRQL(IRQL_STANDARD);
+
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
 	}
@@ -541,7 +530,9 @@ int ReadFile(struct open_file* file, struct transfer* io) {
 }
 
 int ReadDirectory(struct open_file* file, struct transfer* io) {
-    if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
+    EXACT_IRQL(IRQL_STANDARD);
+
+	if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
 	}
     if (!file->can_read) {
@@ -556,6 +547,8 @@ int ReadDirectory(struct open_file* file, struct transfer* io) {
 }
 
 int WriteFile(struct open_file* file, struct transfer* io) {
+	EXACT_IRQL(IRQL_STANDARD);
+
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
 	}
@@ -572,6 +565,8 @@ int WriteFile(struct open_file* file, struct transfer* io) {
 }
 
 int CloseFile(struct open_file* file) {
+	EXACT_IRQL(IRQL_STANDARD);
+
     if (file == NULL || file->node == NULL) {
 		return EINVAL;
 	}

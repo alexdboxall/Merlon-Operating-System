@@ -13,6 +13,9 @@
 #include <sys/types.h>
 #include <irql.h>
 #include <cpu.h>
+#include <transfer.h>
+#include <vfs.h>
+#include <errno.h>
 
 /**
  * Stores a pointer to any kernel VAS. Ensures that when processes are destroyed, we are using a VAS
@@ -86,6 +89,43 @@ struct vas* CreateVas() {
     return vas;
 }
 
+struct defer_disk_access {
+    struct open_file* file;
+    off_t offset;
+    size_t address;
+    int direction;
+};
+
+static void PerformDeferredAccess(void* data) {
+    struct defer_disk_access* access = (struct defer_disk_access*) data;
+
+    if (access->direction == TRANSFER_WRITE) {
+        struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
+        WriteFile(access->file, &tr);
+        UnmapVirt(access->address, ARCH_PAGE_SIZE);
+        FreeHeap(access);
+
+    } else {
+        Panic(PANIC_NOT_IMPLEMENTED);
+    }
+}
+
+/**
+ * Given a virtual page, it defers a write to disk. It creates a copy of the virtual page, so that it may be safely
+ * deleted as soon as this gets called.
+ */
+static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset) {
+    size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE, NULL, 0);
+    memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
+
+    struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
+    access->address = new_addr;
+    access->file = file;
+    access->direction = TRANSFER_WRITE;
+    access->offset = offset;
+    DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
+}
+
 /**
  * Evicts a particular page mapping from virtual memory, freeing up its physical page (if it had one).
  * This will often involve accessing the disk to put it on swapfile (or save modifications to a file-backed
@@ -97,7 +137,7 @@ struct vas* CreateVas() {
  * @maxirql IRQL_SCHEDULER
  */
 void EvictPage(struct vas* vas, struct vas_entry* entry) {
-    MAX_IRQL(IRQL_SCHEDULER);
+    MAX_IRQL(IRQL_STANDARD);
 
     assert(!entry->lock);
     assert(!entry->cow);
@@ -114,9 +154,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
          * We will just reload it from disk next time.
          */
 
-        // TODO: write entry->virtual back to file.
-        //       this will probably want to be deferred (i.e. copy the data to get rid of to a 
-        //       new AllocPhys() page, then give that to the defer handler.
+        DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
 
         entry->in_ram = false;
         DeallocPhys(entry->physical);
@@ -129,10 +167,14 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
          */
         entry->in_ram = false;
         entry->swapfile = true;
+        entry->allocated = false;
+        assert(!entry->allocated);
 
         // TODO: put it on the swapfile!
         //       this will probably want to be deferred (i.e. copy the data to get rid of to a 
         //       new AllocPhys() page, then give that to the defer handler.
+
+        //       DeferDiskWrite(entry->virtual, swapfile_node, swapfile_offset);
 
         ArchUnmap(vas, entry);
         DeallocPhys(entry->physical);
@@ -146,10 +188,10 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
  * Searches through virtual memory (that doesn't necessarily have to be in the current virtual address space),
  * and finds and evicts a page of virtual memory, to try free up physical memory. 
  * 
- * @maxirql IRQL_SCHEDULER
+ * @maxirql IRQL_STANDARD
  */
 void EvictVirt(void) {
-    MAX_IRQL(IRQL_SCHEDULER);
+    MAX_IRQL(IRQL_STANDARD);
 
 }
 
@@ -201,7 +243,7 @@ static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
  * 
  * @maxirql IRQL_SCHEDULER
  */
-static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, void* file, off_t pos) {
+static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
@@ -236,6 +278,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->ref_count = 1;
     entry->file_offset = pos;
     entry->file_node = file;
+    entry->swapfile = false;
 
     /*
      * TODO: later on, check if shared, and add phys->virt entry if needed
@@ -253,34 +296,68 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
     struct vas_entry dummy;
     dummy.virtual = virtual;
 
+    /*
+     * We have to loop over the local one, and if it isn't there, the global one. We do this
+     * in separate loops to prevent the need to acquire both spinlocks at once, which could lead
+     * to a deadlock.
+     */
+
     AcquireSpinlockIrql(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
-        // TODO: need to check the global one too
-        LogWriteSerial("checking if range is in use...\n");
         if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
             in_use = true;
             break;
         }
         dummy.virtual += ARCH_PAGE_SIZE;
     }
-
     ReleaseSpinlockIrql(&vas->lock);
+
+    if (in_use) {
+        return true;
+    }
+
+    AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
+    dummy.virtual = virtual;
+    for (size_t i = 0; i < pages; ++i) {
+        if (AvlTreeContains(GetCpu()->global_vas_mappings, (void*) &dummy)) {
+            in_use = true;
+            break;
+        }
+        dummy.virtual += ARCH_PAGE_SIZE;
+    }
+    ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+
     return in_use;
 }
 
-static size_t AllocVirtRange(size_t pages) {
+static size_t AllocVirtRange(struct vas* vas, size_t pages, int flags) {
     /*
      * TODO: make this deallocatable, and not x86 specific (with that memory address)
-     * TODO: this probably needs a global lock of some sort.
      */
-    static size_t hideous_allocator = 0xD0000000U;
-    size_t retv = hideous_allocator;
-    hideous_allocator += pages * ARCH_PAGE_SIZE;
-    return retv;
+    if (flags & VM_LOCAL) {
+        /*
+         * Also needs to use the vas to work out what's allocated in that vas
+         */
+        (void) vas;
+        static size_t hideous_allocator = 0x20000000U;
+        size_t retv = hideous_allocator;
+        hideous_allocator += pages * ARCH_PAGE_SIZE;
+        return retv;
+
+    } else {
+        /*
+         * TODO: this probably needs a global lock of some sort.
+         */
+        static size_t hideous_allocator = 0xD0000000U;
+        size_t retv = hideous_allocator;
+        hideous_allocator += pages * ARCH_PAGE_SIZE;
+        return retv;
+    }
 }
 
-static void FreeVirtRange(size_t virtual, size_t pages) {
+static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
     (void) virtual;
+    (void) vas;
     (void) pages;
 }
 
@@ -312,7 +389,7 @@ static void FreeVirtRange(size_t virtual, size_t pages) {
  * 
  * @maxirql IRQL_SCHEDULER
  */
-static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, void* file, off_t pos) {
+static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     /*
@@ -343,7 +420,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
      * Get a virtual memory range that is not currently in use.
      */
     if (virtual == 0) {
-        virtual = AllocVirtRange(pages);
+        virtual = AllocVirtRange(vas, pages, flags & VM_LOCAL);
 
     } else {
         // TODO: need to lock here to make the israngeinuse and allocvirtrange to be atomic
@@ -352,7 +429,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
                 return 0;
             }
 
-            virtual = AllocVirtRange(pages);
+            virtual = AllocVirtRange(vas, pages, flags & VM_LOCAL);
         }
     }
     
@@ -379,7 +456,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
  * 
  * @maxirql IRQL_SCHEDULER
  */
-size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos) {
+size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
@@ -414,6 +491,91 @@ size_t GetPhysFromVirt(size_t virtual) {
     return result;
 }
 
+static void BringIntoMemoryFromCow(struct vas_entry* entry) {
+    /*
+    * If someone deallocates a COW page in another process to get the ref
+    * count back to 1 already, then we just have the page to ourselves again.
+    */
+    if (entry->ref_count == 1) {
+        entry->cow = false;
+        ArchUpdateMapping(GetVas(), entry);
+        ArchFlushTlb(GetVas());
+        return;
+    }
+
+    uint8_t page_data[ARCH_PAGE_SIZE];
+    memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
+
+    entry->ref_count--;
+
+    if (entry->ref_count == 1) {
+        entry->cow = false;
+    }
+        
+    struct vas_entry* new_entry = AllocHeap(sizeof(struct vas_entry));
+    *new_entry = *entry;
+    new_entry->ref_count = 1;
+    new_entry->physical = AllocPhys();
+    new_entry->allocated = true;
+    DeleteFromAvl(GetVas(), entry);
+    FreeHeap(entry);
+    ArchUpdateMapping(GetVas(), entry);
+    ArchFlushTlb(GetVas());
+    memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
+}
+
+static void BringIntoMemoryFromFile(struct vas_entry* entry) {
+    (void) entry;
+}
+
+static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
+    assert(!entry->file);
+    entry->physical = AllocPhys();
+    entry->allocated = true;
+    entry->in_ram = true;
+    entry->swapfile = false;
+    ArchUpdateMapping(GetVas(), entry);
+    ArchFlushTlb(GetVas());
+
+    // TODO: read into entry->virtual from swapfile
+}
+
+static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {
+    (void) vas;
+    assert(IsSpinlockHeld(&vas->lock));
+
+    if (entry->cow && allow_cow) {
+        BringIntoMemoryFromCow(entry);
+        return 0;
+    }
+
+    if (entry->file && !entry->in_ram) {
+        BringIntoMemoryFromFile(entry);
+        return 0;
+    }
+
+    if (entry->swapfile) {
+        BringIntoMemoryFromSwapfile(entry);
+        return 0;
+    }
+
+    // TODO: otherwise, as an entry exists, it just needs to be allocated-on-read/write (the default) and cleared to zero
+    //       (it's not a non-paged area, as an entry for it exists)
+    if (!entry->in_ram) {
+        entry->physical = AllocPhys();
+        entry->allocated = true;
+        entry->in_ram = true;
+        assert(!entry->swapfile);
+        ArchUpdateMapping(GetVas(), entry);
+        ArchFlushTlb(GetVas());
+        memset((void*) entry->virtual, 0, ARCH_PAGE_SIZE);
+        return 0;
+    }
+
+    return EINVAL;
+}
+
+
 void LockVirt(size_t virtual) {
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
@@ -421,8 +583,11 @@ void LockVirt(size_t virtual) {
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
 
     if (!entry->in_ram) {
-        // TODO: probably need to make HandleVirtFault call a subfunction 'BringIntoRAM', and then have
-        //       that be called here too.
+        int res = BringIntoMemory(vas, entry, true);
+        if (res != 0) {
+            Panic(PANIC_CANNOT_LOCK_MEMORY);
+        }
+        assert(entry->in_ram);
     }
 
     entry->lock = true;
@@ -501,6 +666,7 @@ void UnmapVirt(size_t virtual, size_t bytes) {
                 needs_tlb_flush = true;
             }
             if (entry->swapfile) {
+                assert(!entry->allocated);
                 /*
                  * TODO: there will eventually something that indicates where on the swapfile
                  *       things are free/allocated. basically here, we just have to mark it as
@@ -510,20 +676,17 @@ void UnmapVirt(size_t virtual, size_t bytes) {
                  */
             }
             if (entry->file) { 
-                /*
-                 * TODO: write to the file
-                 *
-                 *       remember to defer it
-                 */
+                DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
             }
             if (entry->allocated) {
+                assert(!entry->swapfile);
                 // TODO: what if it's on the swapfile?
                 DeallocPhys(entry->physical);
             }
 
             DeleteFromAvl(vas, entry);
             FreeHeap(entry);
-            FreeVirtRange(virtual + i * ARCH_PAGE_SIZE, 1);
+            FreeVirtRange(vas, virtual + i * ARCH_PAGE_SIZE, 1);
         }
     }
 
@@ -619,7 +782,7 @@ struct vas* CopyVas(void) {
 
 struct vas* GetVas(void) {
     // TODO: cpu probably needs to have a lock object in it called current_vas_lock, which needs to be held whenever
-    //       someone reads or writes to current_vas;
+    //       someone reads or writes to  current_vas;
     return GetCpu()->current_vas;
 }
 
@@ -645,53 +808,6 @@ void InitVirt(void) {
     virt_initialised = true;
 }
 
-static void HandleCowFault(struct vas_entry* entry) {
-    /*
-    * If someone deallocates a COW page in another process to get the ref
-    * count back to 1 already, then we just have the page to ourselves again.
-    */
-    if (entry->ref_count == 1) {
-        entry->cow = false;
-        ArchUpdateMapping(GetVas(), entry);
-        ArchFlushTlb(GetVas());
-        return;
-    }
-
-    uint8_t page_data[ARCH_PAGE_SIZE];
-    memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
-
-    entry->ref_count--;
-
-    if (entry->ref_count == 1) {
-        entry->cow = false;
-    }
-        
-    struct vas_entry* new_entry = AllocHeap(sizeof(struct vas_entry));
-    *new_entry = *entry;
-    new_entry->ref_count = 1;
-    new_entry->physical = AllocPhys();
-    new_entry->allocated = true;
-    DeleteFromAvl(GetVas(), entry);
-    FreeHeap(entry);
-    ArchUpdateMapping(GetVas(), entry);
-    ArchFlushTlb(GetVas());
-    memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
-}
-
-static void HandleFileBackedFault(struct vas_entry* entry) {
-    (void) entry;
-}
-
-static void HandleSwapfileFault(struct vas_entry* entry) {
-    entry->physical = AllocPhys();
-    entry->allocated = true;
-    entry->in_ram = true;
-    entry->swapfile = false;
-    ArchUpdateMapping(GetVas(), entry);
-    ArchFlushTlb(GetVas());
-
-    // TODO: read into entry->virtual from swapfile
-}
 
 /**
  * Handles a page fault. Only to be called by the low-level, platform specific interrupt handler when a page
@@ -711,7 +827,8 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     (void) fault_type;
 
-    struct vas_entry* entry = GetVirtEntry(GetVas(), faulting_virt);
+    struct vas* vas = GetVas();
+    struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
     if (entry == NULL) {
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
     }
@@ -729,39 +846,12 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     // TODO: check for access violations (e.g. user using a supervisor page)
     //          (read / write is not necessarily a problem, e.g. COW)
 
-    if (entry->cow && (fault_type & VM_WRITE)) {
-        HandleCowFault(entry);
-        LowerIrql(irql);
-        return;
+    int result = BringIntoMemory(vas, entry, fault_type & VM_WRITE);
+    if (result != 0) {
+        Panic(PANIC_UNKNOWN);
     }
 
-    if (entry->file && !entry->in_ram) {
-        HandleFileBackedFault(entry);
-        LowerIrql(irql);
-        return;
-    }
-
-    if (entry->swapfile) {
-        HandleSwapfileFault(entry);
-        LowerIrql(irql);
-        return;
-    }
-
-    // TODO: otherwise, as an entry exists, it just needs to be allocated-on-read/write (the default) and cleared to zero
-    //       (it's not a non-paged area, as an entry for it exists)
-    if (!entry->in_ram) {
-        entry->physical = AllocPhys();
-        entry->allocated = true;
-        entry->in_ram = true;
-        ArchUpdateMapping(GetVas(), entry);
-        ArchFlushTlb(GetVas());
-        memset((void*) entry->virtual, 0, ARCH_PAGE_SIZE);
-
-        LowerIrql(irql);
-        return;
-    }
-
-    Panic(PANIC_UNKNOWN);
+    LowerIrql(irql);
 }
 
 /**

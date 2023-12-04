@@ -16,6 +16,7 @@
 #include <transfer.h>
 #include <fcntl.h>
 #include <console.h>
+#include <string.h>
 
 /*
  * Next steps:
@@ -36,7 +37,7 @@
 extern void InitDbgScreen(void);
 
 void InitThread(void*) {
-    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n  ...", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
+    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 
     struct open_file* rand;
@@ -49,6 +50,26 @@ void InitThread(void*) {
         status = ReadFile(rand, &tr);
         LogWriteSerial("Reading gave status %d, and the data is 0x%X\n", status, data);
         SleepMilli(1000);
+    }
+}
+
+static void DummyAppThread(void*) {
+	extern void InitPs2(void);
+	InitPs2();
+	
+	PutsConsole("  C:/> ");
+
+    struct open_file* con;
+    OpenFile("con:", O_RDONLY, 0, &con);
+
+    while (true) {
+        char bf[128];
+		memset(bf, 0, 128);
+        struct transfer tr = CreateKernelTransfer(bf, 127, 0, TRANSFER_READ);
+		ReadFile(con, &tr);
+		PutsConsole("  Command not found: ");
+		PutsConsole(bf);
+		PutsConsole("\n  C:/> ");
     }
 }
 
@@ -103,6 +124,7 @@ void KernelMain(void) {
     InitConsole();
     InitProcess();
 
+    CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
 
     CreateThread(InitThread, NULL, GetVas(), "init");
     StartMultitasking();

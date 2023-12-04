@@ -32,7 +32,7 @@ Grabbing from emo block of size 0x4000, for request 0x1000
 backup heap: largest is 0x3000, total is 0x3000
 Grabbing from emo block of size 0x3000, for request 0x1000
 backup heap: largest is 0x4000, total is 0x6000
-mounting 0xD024AFCC (con, 0xD024ACA4)
+mounting 0xD024AF84 (con, 0xD024ACAC)
 list index = 2
 
 
@@ -42,22 +42,6 @@ list index = 2
 
   1096 / 1332 KB used
 
-  ...A
-B
-rand
-C
-got a mount: 0xC010E2A4
-current vnode = 0xC010E2E4
-ReferenceVnode
-got to top of loop
-got to bottom of loop!
-D
-E
-F
-G
-H
-I
-J
 Opening rand: gave status of 0
 Reading gave status 0, and the data is 0x213BFF0F
 list index = 0
@@ -78,7 +62,18 @@ list index = 0
 list index = 2
 list index = 2
 list index = 0
+list index = 2
+list index = 2
 Reading gave status 0, and the data is 0x3234D996
+list index = 0
+list index = 2
+list index = 2
+list index = 0
+list index = 2
+list index = 2
+list index = 0
+list index = 2
+list index = 2
 list index = 0
 Reading gave status 0, and the data is 0x29467947
 list index = 0

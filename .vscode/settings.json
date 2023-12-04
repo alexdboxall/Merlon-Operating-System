@@ -77,7 +77,9 @@
         "dirent.h": "c",
         "pty.h": "c",
         "vfs.h": "c",
-        "blockingbuffer.h": "c"
+        "blockingbuffer.h": "c",
+        "console.h": "c",
+        "coroutine": "c"
     },
     "files.exclude": {
         "**/.git": true,

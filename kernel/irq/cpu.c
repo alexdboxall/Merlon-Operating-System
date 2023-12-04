@@ -56,3 +56,4 @@ struct cpu* GetCpuAtIndex(int index) {
 __attribute__((no_instrument_function)) struct cpu* GetCpu(void) {
     return cpu_table + ArchGetCurrentCpuIndex();
 }
+

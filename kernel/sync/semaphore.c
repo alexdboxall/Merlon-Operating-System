@@ -24,10 +24,10 @@ struct semaphore {
  * @param initial_count The initial number of holders of the semaphore. Should normally be 0.
  * @returns The initialised semaphore. 
  * 
- * @maxirql IRQL_STANDARD
+ * @maxirql IRQL_SCHEDULER
  */
 struct semaphore* CreateSemaphore(int max_count, int initial_count) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_SCHEDULER);
 
     struct semaphore* sem = AllocHeap(sizeof(struct semaphore));
     sem->max_count = max_count;

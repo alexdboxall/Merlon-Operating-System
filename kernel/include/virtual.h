@@ -17,6 +17,8 @@
 
 #define VAS_NO_ARCH_INIT    1
 
+struct open_file;
+
 struct vas_entry {
     size_t virtual;
     
@@ -35,7 +37,7 @@ struct vas_entry {
     uint8_t                 : 3;
 
     off_t file_offset;
-    void* file_node;
+    struct open_file* file_node;
     size_t physical;
 
     int ref_count;
@@ -49,7 +51,7 @@ void LockVirt(size_t virtual);
 void UnlockVirt(size_t virtual);
 void SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
-size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, void* file, off_t pos);
+size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos);
 void UnmapVirt(size_t virtual, size_t bytes);
 size_t GetPhysFromVirt(size_t virtual);
 

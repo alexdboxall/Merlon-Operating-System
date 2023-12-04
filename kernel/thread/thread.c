@@ -432,3 +432,11 @@ int SetThreadPriority(struct thread* thr, int policy, int priority) {
 
     return 0;
 }
+
+void AssignThreadToCpu(void) {
+    // NO-OP UNTIL SMP IMPLEMENTED
+}
+
+void UnassignThreadToCpu(void) {
+    // NO-OP UNTIL SMP IMPLEMENTED
+}
