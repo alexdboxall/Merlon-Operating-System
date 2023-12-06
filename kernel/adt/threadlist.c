@@ -100,7 +100,6 @@ struct thread* ThreadListDeleteTop(struct thread_list* list) {
     list->head = list->head->next[list->index];
 
     if (list->head == NULL) {
-        LogWriteSerial("list index = %d\n", list->index);
         assert(list->tail == NULL);
     }
 

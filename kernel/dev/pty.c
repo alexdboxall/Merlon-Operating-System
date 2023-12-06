@@ -13,9 +13,11 @@
 #include <thread.h>
 #include <termios.h>
 #include <blockingbuffer.h>
+#include <virtual.h>
 
-#define INTERNAL_BUFFER_SIZE 100
-#define LINE_BUFFER_SIZE 400
+#define INTERNAL_BUFFER_SIZE 256        // used to communicate with master and sub. can have any length - but lower means both input AND **PRINTING** will incur more semaphore trashing
+#define LINE_BUFFER_SIZE 300            // maximum length of a typed line
+#define FLUSHED_BUFFER_SIZE 500         // used to store any leftover after pressing '\n' that the program has yet to read
 
 /*
  * How PTYs work:
@@ -34,6 +36,8 @@ struct pty_master_internal_data {
     struct vnode* subordinate;
     struct blocking_buffer* display_buffer;
     struct blocking_buffer* keybrd_buffer;
+    struct blocking_buffer* flushed_buffer;
+    struct thread* line_processing_thread;
 };
 
 struct pty_subordinate_internal_data {
@@ -50,7 +54,9 @@ struct pty_subordinate_internal_data {
 static int MasterRead(struct vnode* node, struct transfer* tr) {    
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
     while (tr->length_remaining > 0) {
+        LogWriteSerial("Trying to get a character to display...\n");
         char c = BlockingBufferGet(internal->display_buffer);
+        LogWriteSerial("About to 'display' the charcater: '%c'\n", c);
         PerformTransfer(&c, tr, 1);
     }
 
@@ -66,15 +72,20 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     while (tr->length_remaining > 0) {
         char c;
         PerformTransfer(&c, tr, 1);
-        BlockingBufferAdd(internal->keybrd_buffer, c);
+        BlockingBufferAdd(internal->keybrd_buffer, c, true);
     }
 
     return 0;
 }
 
-static void FlushSubordinateLineBuffer(struct vnode* node, struct transfer* tr) {
+static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
-    PerformTransfer(internal->line_buffer, tr, internal->line_buffer_pos);
+    struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
+
+    for (int i = 0; i < internal->line_buffer_pos; ++i) {
+        BlockingBufferAdd(master_internal->flushed_buffer, internal->line_buffer[i], true);
+    }
+
     internal->line_buffer_pos = 0;
 }
 
@@ -101,29 +112,16 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
     internal->line_buffer_pos++;
 }
 
-// "THE STDIN LINE BUFFER"
-static int SubordinateRead(struct vnode* node, struct transfer* tr) {    
+static void LineProcessor(void* sub_) {
+    struct vnode* node = (struct vnode*) sub_;
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
-    bool echo = true;//internal->termios.c_lflag & ECHO;
-    bool canon = true;//internal->termios.c_lflag & ICANON;
-
-    // TODO: handle backspace (how does ICANON / cooked change this?)
-    // TODO: handle TAB
-    // TODO: handle control codes
-    bool flushed_yet = false;
     while (true) {
-        char c;
-        if (flushed_yet) {
-            int res = BlockingBufferTryGet(master_internal->keybrd_buffer, (uint8_t*) &c);
-            if (res != 0) {
-                return 0;
-            }
+        bool echo = internal->termios.c_lflag & ECHO;
+        bool canon = internal->termios.c_lflag & ICANON;
 
-        } else {
-            c = BlockingBufferGet(master_internal->keybrd_buffer);
-        }
+        char c = BlockingBufferGet(master_internal->keybrd_buffer);
 
         /*
          * This must happen before we modify the line buffer (i.e. to add or backspace a character), as
@@ -133,12 +131,12 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
         if (echo) {
             if (c == '\b' && canon) {
                 if (internal->line_buffer_pos > 0) {
-                    BlockingBufferAdd(master_internal->display_buffer, '\b');
-                    BlockingBufferAdd(master_internal->display_buffer, ' ');
-                    BlockingBufferAdd(master_internal->display_buffer, '\b');
+                    BlockingBufferAdd(master_internal->display_buffer, '\b', true);
+                    BlockingBufferAdd(master_internal->display_buffer, ' ', true);
+                    BlockingBufferAdd(master_internal->display_buffer, '\b', true);
                 }
             } else {
-                BlockingBufferAdd(master_internal->display_buffer, c);
+                BlockingBufferAdd(master_internal->display_buffer, c, true);
             }
         }
 
@@ -149,11 +147,27 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
             AddToSubordinateLineBuffer(node, c, 1);
         }
 
-
         if (c == '\n' || c == 3 || !canon) {
-            FlushSubordinateLineBuffer(node, tr);     
-            flushed_yet = true;
+            FlushSubordinateLineBuffer(node);
         }
+    }
+}
+
+// "THE STDIN LINE BUFFER"
+static int SubordinateRead(struct vnode* node, struct transfer* tr) {    
+    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
+    struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
+
+    if (tr->length_remaining == 0) {
+        return 0;
+    }
+
+    char c = BlockingBufferGet(master_internal->flushed_buffer);
+    PerformTransfer(&c, tr, 1);
+
+    int res = 0;
+    while (tr->length_remaining > 0 && !(res = BlockingBufferTryGet(master_internal->flushed_buffer, (uint8_t*) &c))) {
+        PerformTransfer(&c, tr, 1);
     }
 
     return 0;
@@ -173,14 +187,12 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
 
         // probably handle ANSI codes here too. how you let the master know about all that (e.g.
         // current colour), idk.
-        BlockingBufferAdd(master_internal->display_buffer, c);
+        LogWriteSerial("About to 'print' the charcater: '%c'\n", c);
+        BlockingBufferAdd(master_internal->display_buffer, c, true);
     }
     
     return 0;
 }
-
-
-
 
 
 static int MasterCheckOpen(struct vnode*, const char*, int) {
@@ -339,6 +351,8 @@ void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
     m_data->subordinate = s;
     m_data->display_buffer = BlockingBufferCreate(INTERNAL_BUFFER_SIZE);
     m_data->keybrd_buffer = BlockingBufferCreate(INTERNAL_BUFFER_SIZE);
+    m_data->flushed_buffer = BlockingBufferCreate(FLUSHED_BUFFER_SIZE);
+    m_data->line_processing_thread = CreateThread(LineProcessor, (void*) s, GetVas(), "line processor");
 
     s_data->master = m;
     s_data->termios.c_lflag = ICANON | ECHO;

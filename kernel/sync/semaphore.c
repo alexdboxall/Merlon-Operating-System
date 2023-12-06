@@ -20,8 +20,10 @@ struct semaphore {
 /**
  * Creates a semaphore object with a specified limit on the number of concurrent holders.
  * 
- * @param max_count The maximum number of concurrent holders of the semaphore
- * @param initial_count The initial number of holders of the semaphore. Should normally be 0.
+ * @param max_count         The maximum number of concurrent holders of the semaphore
+ * @param initial_count     The initial number of holders of the semaphore. Should usually either be 0,
+ *                              which is a 'acquire until full' state, or equal to `max_count`, which is
+ *                              a `it's full until released` state.
  * @returns The initialised semaphore. 
  * 
  * @maxirql IRQL_SCHEDULER
@@ -134,7 +136,7 @@ void ReleaseSemaphore(struct semaphore* sem) {
                 /*
                  * Change the state to prevent UnblockThread from seeing it's in the timeout state and calling CancelSemaphoreOfThread.
                  * If CancelSemaphoreOfThread were called, then it would attempt to delete it from the queue - but it's already been
-                 * deleted by this point.
+                 * deleted by this point and so would crash.
                  */
                 top->state = THREAD_STATE_READY;
                 UnblockThread(top);

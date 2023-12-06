@@ -169,21 +169,35 @@ next_sector:
 
 
     ; Get video mode information
+	xor bp, bp
+.retry_modes:
     mov ax, 0x100 
     mov es, ax
     mov ax, 0x4F01
-    mov cx, 0x4118
+    ;mov cl, [preferred_modes_table + bp]
+	;mov ch, 0x01
+	mov cx, 0x105
     xor di, di
+	push cx
+	push bp
+	push es
     int 0x10
+	pop es
+	pop bp
+	pop cx
+	inc bp
+	test ah, ah
+	jnz short .retry_modes
+	test [es:0], byte 0x80
+	jz short .retry_modes
 
+.found_good_mode:
     ; Set video mode
+    mov bx, 0x4105 ;cx
     mov ax, 0x4F02
-    mov bx, 0x4118
     int 0x10
 
-	
-
-	; Jump to 32 bit mode.
+.no_vesa:
 	lgdt [gdtr]
 	mov eax, cr0
 	or al, 1
@@ -191,6 +205,25 @@ next_sector:
 	jmp 0x08:start_protected_mode
 
 
+preferred_modes_table:
+	;db 0x3F
+	db 0x07
+	db 0x05
+
+	db 0x1A
+	db 0x19
+	db 0x17
+	db 0x16
+	db 0x15
+	db 0x14
+	db 0x13
+	db 0x05
+	db 0x03
+	db 0x12
+	db 0x11
+	db 0x10
+	db 0x01
+	
 ; The number of entries will be stored at 0x500, the map will be put at 0x504
 ; From here:
 ;		https://wiki.osdev.org/Detecting_Memory_(x86)
@@ -253,6 +286,7 @@ read_sector:
 	mov dl, byte [boot_drive_number]
 	mov ah, 0x42
 	mov si, disk_io_packet
+	mov [disk_io_packet], byte 0x10
 	mov [io_offset], di
 	mov [io_count], cx
 	int 0x13
@@ -343,21 +377,6 @@ gdtr:
 	dw gdt_end - gdt_start - 1
 	dd gdt_start
 
-
-; A data packet we use to interface with the BIOS extended disk functions.
-align 16
-disk_io_packet:
-	db 0x10
-	db 0x00
-io_count:
-	dw 0x0001
-io_offset:
-	dw 0x0000
-io_segment:
-	dw 0x0000
-io_lba:
-	dd 0
-	dd 0
 	
 times 0x1BE - ($-$$) db 0
 
@@ -373,9 +392,23 @@ db 0x01
 dd 1					; start sector (we put a dummy VBR here)
 dd 131072 * 16			; total sectors in partition
 
-times 16 * 3 db 0x00
+; A data packet we use to interface with the BIOS extended disk functions.
+; We'll borrow the memory from the partition table
+align 16
+disk_io_packet:
+	db 0x00
+	db 0x00
+io_count:
+	dw 0x0000
+io_offset:
+	dw 0x0000
+io_segment:
+	dw 0x0000
+io_lba:
+	dd 0
+	dd 0
 
-
+times 0x1FE - ($-$$) db 0
 dw 0xAA55
 
 ; Pretend to be a FAT32 partition by having a 'valid enough' VBR
@@ -450,8 +483,12 @@ start_protected_mode:
 	call create_multiboot_tables
 	call load_elf
 		
+
 	; Point the kernel to the multiboot table
 	mov ebx, 0x7E000
+
+	mov eax, 0xB8500	
+	mov [eax     ], word 0x7000 | 'B'
 
 	mov eax, [0x10000 + 24]
 	push eax

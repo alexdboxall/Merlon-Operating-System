@@ -14,8 +14,8 @@
 * access to the framebuffer via the video interface.
 */
 
-int SCREEN_WIDTH = 128;
-int SCREEN_HEIGHT = 48;
+int SCREEN_WIDTH = 80;//128;
+int SCREEN_HEIGHT = 25;//48;
 
 /*
 * Additional data that is stored within the device interface.
@@ -33,7 +33,12 @@ struct vesa_data {
     int depth_in_bits;
 };
 
-static struct vesa_data* data;
+/*static struct vesa_data ad = {
+    .cursor_x = 0,
+    .cursor_y = 0
+};
+static struct vesa_data* data = &ad;*/
+static struct vesa_data* data = NULL;
 
 /*
 * Moves the cursor position to a newline, handling the case where
@@ -50,6 +55,10 @@ static void vesa_newline() {
         * back and clear the final line.
         */
 
+        /*uint16_t* vgamem = (uint16_t*) (0xC00B8000);
+        memmove((void*) vgamem, (void*) (vgamem + 80), 160 * 24);
+        memset((void*) (vgamem + 80 * 24), 0, 160);*/
+
         memmove((void*) data->framebuffer_virtual, (void*) (data->framebuffer_virtual + data->pitch * 16), data->pitch * (16 * SCREEN_HEIGHT - 16));
         memset((void*) (data->framebuffer_virtual + data->pitch * (16 * SCREEN_HEIGHT - 16)), 0, data->pitch * 16);
 
@@ -58,22 +67,93 @@ static void vesa_newline() {
     }
 }
 
+static uint32_t ConvertToColourDepth(uint32_t colour, int bits) {
+    if (bits > 16) return colour;
+
+    uint8_t r = (colour >> 16) & 0xFF;
+    uint8_t g = (colour >> 8) & 0xFF;
+    uint8_t b = (colour >> 0) & 0xFF;
+
+    if (bits == 16) {
+        uint32_t nr = r >> 3;
+        uint32_t ng = g >> 2;
+        uint32_t nb = b >> 3;
+        return (nr << 11) | (ng << 5) | nb;
+
+    } else if (bits == 15) {
+        uint32_t nr = r >> 3;
+        uint32_t ng = g >> 3;
+        uint32_t nb = b >> 3;
+        return (nr << 10) | (ng << 5) | nb;
+
+    } else {
+        // TODO: do this better, for now, I'll just map to the 16 greyscale entrise
+        int grey = ((r + g + b) / 3) >> 4;
+        return 0x10 + grey;
+    }
+}
+
 static void vesa_render_character(char c) {
     // TODO: this assumes 24bpp
 
+    /*uint16_t* vgamem = (uint16_t*) (0xC00B8000);
+    vgamem += data->cursor_y * 80 + data->cursor_x;
+    *vgamem = 0x0700 | c;
+    return;*/
+    
     for (int i = 0; i < 16; ++i) {
-        uint8_t* position = data->framebuffer_virtual + (data->cursor_y * 16 + i) * data->pitch + data->cursor_x * 8 * 3;
-        uint8_t font_char = terminal_font[((uint8_t) c) * 16 + i];
+        if (data->depth_in_bits == 24) {
+            uint8_t* position = data->framebuffer_virtual + (data->cursor_y * 16 + i) * data->pitch + data->cursor_x * 8 * 3;
+            uint8_t font_char = terminal_font[((uint8_t) c) * 16 + i];
 
-        for (int j = 0; j < 8; ++j) {
-            uint32_t colour = (font_char & 0x80) ? data->fg_colour : data->bg_colour;
-            font_char <<= 1;
+            for (int j = 0; j < 8; ++j) {
+                uint32_t colour = (font_char & 0x80) ? data->fg_colour : data->bg_colour;
+                font_char <<= 1;
 
-            *position++ = (colour >> 0) & 0xFF;
-            *position++ = (colour >> 8) & 0xFF;
-            *position++ = (colour >> 16) & 0xFF;
+                *position++ = (colour >> 0) & 0xFF;
+                *position++ = (colour >> 8) & 0xFF;
+                *position++ = (colour >> 16) & 0xFF;
+            }
+
+        } else if (data->depth_in_bits == 32) {
+            uint8_t* position = data->framebuffer_virtual + (data->cursor_y * 16 + i) * data->pitch + data->cursor_x * 8 * 4;
+            uint8_t font_char = terminal_font[((uint8_t) c) * 16 + i];
+
+            for (int j = 0; j < 8; ++j) {
+                uint32_t colour = (font_char & 0x80) ? data->fg_colour : data->bg_colour;
+                font_char <<= 1;
+
+                *position++ = (colour >> 0) & 0xFF;
+                *position++ = (colour >> 8) & 0xFF;
+                *position++ = (colour >> 16) & 0xFF;
+                position++;
+            }
+
+        } else if (data->depth_in_bits == 15 || data->depth_in_bits == 16) {
+            uint8_t* position = data->framebuffer_virtual + (data->cursor_y * 16 + i) * data->pitch + data->cursor_x * 8 * 2;
+            uint8_t font_char = terminal_font[((uint8_t) c) * 16 + i];
+
+            for (int j = 0; j < 8; ++j) {
+                uint32_t colour = ConvertToColourDepth((font_char & 0x80) ? data->fg_colour : data->bg_colour, data->depth_in_bits);
+                font_char <<= 1;
+
+                *position++ = (colour >> 0) & 0xFF;
+                *position++ = (colour >> 8) & 0xFF;
+            }
+
+        } else {
+            uint8_t* position = data->framebuffer_virtual + (data->cursor_y * 16 + i) * data->pitch + data->cursor_x * 8;
+            uint8_t font_char = terminal_font[((uint8_t) c) * 16 + i];
+
+            for (int j = 0; j < 8; ++j) {
+                uint32_t colour = ConvertToColourDepth((font_char & 0x80) ? data->fg_colour : data->bg_colour, data->depth_in_bits);
+                font_char <<= 1;
+
+                *position++ = (colour >> 0) & 0xFF;
+            }
         }
     }
+    
 }
 
 /*
@@ -153,7 +233,7 @@ void InitDbgScreen(void) {
     SCREEN_HEIGHT = data->height / 16;
 
     data->framebuffer_virtual = (uint8_t*) MapVirt(data->framebuffer_physical, 0, data->pitch * data->height, VM_LOCK | VM_MAP_HARDWARE | VM_READ | VM_WRITE, NULL, 0);
-    
+
     /*
     * Clear the screen.
     */

@@ -19,7 +19,6 @@ struct process {
     struct vas* vas;
     pid_t parent;
     struct avl_tree* children;
-    struct avl_tree* dead_children;
     struct avl_tree* threads;
     struct semaphore* lock;
     struct semaphore* killed_children_semaphore;
@@ -44,6 +43,7 @@ static int ProcessTableComparator(void* a_, void* b_) {
     if (a->pid == b->pid) {
         return 0;
     }
+    
     return a->pid < b->pid ? -1 : 1;
 }
 
@@ -91,7 +91,6 @@ struct process* GetProcessFromPid(pid_t pid) {
 }
 
 void LockProcess(struct process* prcss) {
-    LogWriteSerial("trying to lock process 0x%X\n", prcss);
     AcquireMutex(prcss->lock, -1);
 }
 
@@ -139,7 +138,7 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
 }
 
 struct process* ForkProcess(void) {
-    MAX_IRQL(IRQL_STANDARD);
+    EXACT_IRQL(IRQL_STANDARD);
 
     LockProcess(GetProcess());
 
@@ -233,6 +232,10 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
     return result;
 }
 
+/**
+ * Changes the parent of a parentless process. Used to ensure the initial process can always reap orphaned
+ * processes.
+ */
 static void AdoptOrphan(struct process* adopter, struct process* ophan) {
     LockProcess(adopter);
 
@@ -243,7 +246,15 @@ static void AdoptOrphan(struct process* adopter, struct process* ophan) {
     UnlockProcess(adopter);
 }
 
+/**
+ * Recursively converts all child processes in a process' thread tree into zombie processes.
+ * 
+ * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
+ * @note EXACT_IRQL(IRQL_STANDARD)
+ */
 static void OrphanChildProcesses(struct avl_node* node) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     if (node == NULL) {
         return;
     }
@@ -254,7 +265,15 @@ static void OrphanChildProcesses(struct avl_node* node) {
     AdoptOrphan(GetProcessFromPid(1), AvlTreeGetData(node));
 }
 
+/**
+ * Recursively terminates all threads in a process' thread tree.
+ * 
+ * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
+ * @note EXACT_IRQL(IRQL_STANDARD)
+ */
 static void KillRemainingThreads(struct avl_node* node) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     if (node == NULL) {
         return;
     }
@@ -263,11 +282,29 @@ static void KillRemainingThreads(struct avl_node* node) {
     KillRemainingThreads(AvlTreeGetRight(node));
 
     struct thread* victim = (struct thread*) AvlTreeGetData(node);
-    TerminateThread(victim);
+
+    /*
+     * We have already called terminate on the calling thread within `KillProcess`, 
+     * so no need to do it again.
+     */
+    assert(!victim->death_sentence);
+    if (victim->state != THREAD_STATE_TERMINATED) {
+        TerminateThread(victim);
+    }
 }
 
-void KillProcessHelper(void* arg) {
+/**
+ * Does all of the required operations to kill a process. This is run in its own thread, without an owning
+ * process, so that a process doesn't try to delete itself (and therefore delete its stack).
+ * 
+ * @param arg The process to kill (needs to be cast to struct process*)
+ * @note EXACT_IRQL(IRQL_STANDARD)
+ */
+static void KillProcessHelper(void* arg) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     assert(GetProcess() == NULL);
+    assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
 
     struct process* prcss = arg;
 
@@ -277,7 +314,6 @@ void KillProcessHelper(void* arg) {
     OrphanChildProcesses(AvlTreeGetRootNode(prcss->children));
     AvlTreeDestroy(prcss->children);
 
-    assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
     DestroyVas(prcss->vas);
 
     prcss->terminated = true;
@@ -293,6 +329,18 @@ void KillProcessHelper(void* arg) {
     TerminateThread(GetThread());
 }
 
+/**
+ * Deletes the process holding the thread currently running on this CPU, and all threads within that process.
+ * If the process being deleted has child processes that still exist, their parent will change to the process with 
+ * pid 1. If the process being deleted has a parent, then it becomes a zombie process until the parent reaps it
+ * by calling `WaitProcess`. If the process being deleted has no parent, it will be reaped and deallocated immediately.
+ * 
+ * This function does not return.
+ * 
+ * @param retv The return value the process being deleted will give.
+ * 
+ * @note MAX_IRQL(IRQL_STANDARD)
+ */
 void KillProcess(int retv) {
     MAX_IRQL(IRQL_STANDARD);
 
@@ -305,9 +353,22 @@ void KillProcess(int retv) {
      * threads or process. 
      */
     CreateThreadEx(KillProcessHelper, (void*) prcss, GetKernelVas(), "process killer", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+
+    TerminateThread(GetThread());
 }
 
+/**
+ * Returns a pointer to the process that the thread currently running on this CPU belongs to. If there is no
+ * running thread (i.e. multitasking hasn't started yet), or the thread does not belong to a process, NULL
+ * is returned.
+ * 
+ * @return The process of the current thread, if it exists, or NULL otherwise.
+ * 
+ * @note MAX_IRQL(IRQL_HIGH) 
+ */
 struct process* GetProcess(void) {
+    MAX_IRQL(IRQL_HIGH);
+    
     struct thread* thr = GetThread();
     if (thr == NULL) {
         return NULL;
@@ -315,13 +376,36 @@ struct process* GetProcess(void) {
     return thr->process;
 }
 
+/**
+ * Creates a new process and an initial thread within the process.
+ * 
+ * @param parent        The process id (pid) of the process which will become the parent of the newly created process.
+ *                          To create process without a parent, set to zero.
+ * @param entry_point   The address to a function where the thread will begin execution from. `args` will be passed into
+ *                          this function as an argument.
+ * @param args          The argument to call the entry_point function with when the thread starts executing
+ * 
+ * @return The newly created process
+ * 
+ * @note MAX_IRQL(IRQL_STANDARD)
+ */
 struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* args) {
+    MAX_IRQL(IRQL_STANDARD);
     struct process* prcss = CreateProcess(parent);
     struct thread* thr = CreateThread(entry_point, args, prcss->vas, "init");
     AddThreadToProcess(prcss, thr);
     return prcss;
 }
 
+/**
+ * Returns the process id (pid) of a given process.
+ * 
+ * @param prcss The process to get the pid of
+ * @return The process id
+ * 
+ * @note MAX_IRQL(IRQL_HIGH) 
+ */
 pid_t GetPid(struct process* prcss) {
+    MAX_IRQL(IRQL_HIGH);
     return prcss->pid;
 }

@@ -39,18 +39,6 @@ extern void InitDbgScreen(void);
 void InitThread(void*) {
     DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
-
-    struct open_file* rand;
-    int status = OpenFile("rand:", O_RDONLY, 0, &rand);
-    LogWriteSerial("Opening rand: gave status of %d\n", status);
-
-    while (true) {
-        uint32_t data;
-        struct transfer tr = CreateKernelTransfer(&data, 4, 0, TRANSFER_READ);
-        status = ReadFile(rand, &tr);
-        LogWriteSerial("Reading gave status %d, and the data is 0x%X\n", status, data);
-        SleepMilli(1000);
-    }
 }
 
 static void DummyAppThread(void*) {
@@ -72,6 +60,8 @@ static void DummyAppThread(void*) {
 		PutsConsole("\n  C:/> ");
     }
 }
+
+#include <machine/portio.h>
 
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");

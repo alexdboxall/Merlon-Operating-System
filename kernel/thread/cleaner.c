@@ -109,8 +109,8 @@ static void NotifyCleaner(void*) {
  * Terminates a thread. If the thread to terminate is the calling thread, this function will not return.
  * This does not cause the thread to immediately be deallocated, as it cannot do that while it is still 
  * executing (as it would lose its stack). If the thread being terminated is not the current thread, then
- * that thread will be terminated the next time it is scheduled to run. This function must not be called
- * until after `InitCleaner` has been called.
+ * that thread will be terminated the next time it is scheduled to run (but may continue executing or sitting
+ * on a blocked list until then). This function must not be called until after `InitCleaner` has been called.
  * 
  * @param thr The thread to terminated.
  * @return This function does not return if thr == GetThread(), and returns void otherwise.

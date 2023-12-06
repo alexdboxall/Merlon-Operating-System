@@ -5,6 +5,8 @@
 #include <spinlock.h>
 #include <semaphore.h>
 #include <errno.h>
+#include <panic.h>
+#include <log.h>
 #include <irql.h>
 
 struct blocking_buffer {
@@ -14,6 +16,7 @@ struct blocking_buffer {
     int start_pos;
     int end_pos;
     struct semaphore* sem;
+    struct semaphore* reverse_sem;
     struct spinlock lock;
 };
 
@@ -27,6 +30,7 @@ struct blocking_buffer* BlockingBufferCreate(int size) {
     buffer->start_pos = 0;
     buffer->end_pos = 0;
     buffer->sem = CreateSemaphore(size, size);
+    buffer->reverse_sem = CreateSemaphore(size, 0);
     InitSpinlock(&buffer->lock, "blocking buffer", IRQL_SCHEDULER);
     
     return buffer;
@@ -38,13 +42,15 @@ void BlockingBufferDestroy(struct blocking_buffer* buffer) {
     FreeHeap(buffer);
 }
 
-int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c) {
-    AcquireSpinlockIrql(&buffer->lock);
-
-    if (buffer->used_size == buffer->total_size) {
-        ReleaseSpinlockIrql(&buffer->lock);
+int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c, bool block) {
+    int res = AcquireSemaphore(buffer->reverse_sem, block ? -1 : 0);
+    if (block && res != 0) {
         return ENOBUFS;
     }
+
+    AcquireSpinlockIrql(&buffer->lock);
+
+    assert(buffer->used_size != buffer->total_size);
 
     buffer->buffer[buffer->end_pos] = c;
     buffer->end_pos = (buffer->end_pos + 1) % buffer->total_size;
@@ -68,6 +74,7 @@ static uint8_t BlockingBufferGetAfterAcquisition(struct blocking_buffer* buffer)
     buffer->used_size--;
 
     ReleaseSpinlockIrql(&buffer->lock);
+    ReleaseSemaphore(buffer->reverse_sem);
 
     return c;
 }

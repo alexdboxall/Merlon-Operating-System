@@ -29,6 +29,7 @@ __attribute__((no_instrument_function)) static void IntToStr(uint32_t i, char* o
 	} while (i);
 }
 
+
 __attribute__((no_instrument_function)) static void outb(uint16_t port, uint8_t value)
 {
 	asm volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
@@ -45,13 +46,13 @@ __attribute__((no_instrument_function)) static uint8_t inb(uint16_t port)
 
 __attribute__((no_instrument_function)) static void logcnv(char c, bool screen)
 {	
+	if (screen) {
+		DbgScreenPutchar(c);
+	}
 	while ((inb(0x3F8 + 5) & 0x20) == 0) {
 		;
 	}
 	outb(0x3F8, c);
-	if (screen) {
-		DbgScreenPutchar(c);
-	}
 }
 
 __attribute__((no_instrument_function)) static void logsnv(char* a, bool screen)

@@ -175,7 +175,7 @@ KernelEntryPoint:
 	; Set it correctly now.
 	xor eax, eax
 	mov dr3, eax
-	
+
 	; Set the stack to the one we defined
 	mov esp, stack_top
 

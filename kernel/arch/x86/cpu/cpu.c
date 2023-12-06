@@ -19,7 +19,7 @@ void ArchInitBootstrapCpu(struct cpu* cpu) {
     x86InitTss();
     
     InitPic();
-    InitPit(100);
+    InitPit(30);
 
     ArchEnableInterrupts();
     x86MakeReadyForIrqs();

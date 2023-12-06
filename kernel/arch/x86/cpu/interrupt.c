@@ -69,14 +69,14 @@ void ArchSetIrql(int irql) {
     }
     
     if (irql >= IRQL_DRIVER) {
-        int irq_num = irql - IRQL_DRIVER;
+        //int irq_num = irql - IRQL_DRIVER;
 
         /*
          * We want to disable all higher IRQs (as the PIC puts the lowest priority interrupts at 
          * high numbers), as well as our self. Allow IRQ2 to stay enabled as it is used internally.
          */
-        uint16_t mask = (0xFFFF ^ ((1 << irq_num) - 1)) & ~(1 << 2);
-        DisablePicLines(mask);
+        //uint16_t mask = (0xFFFF ^ ((1 << irq_num) - 1)) & ~(1 << 2);
+        //DisablePicLines(mask);
 
         /*
          * e.g. lets say we got IRQ6 - floppy disk.
@@ -105,7 +105,7 @@ void ArchSetIrql(int irql) {
         /*
          * Allow everything to go through.
          */
-        DisablePicLines(0x0000);
+        //DisablePicLines(0x0000);
     }
 
     ArchEnableInterrupts();
