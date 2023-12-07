@@ -16,6 +16,7 @@
 #include <transfer.h>
 #include <fcntl.h>
 #include <console.h>
+#include <radixtrie.h>
 #include <string.h>
 
 /*
@@ -41,6 +42,8 @@ void InitThread(void*) {
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 }
 
+#define RADIX_INSERT(k, v) key = RadixTrieCreateBoolListFromData64(k); RadixTrieInsert(trie, &key, v)
+#define RADIX_GET_AND_PRINT(k) key = RadixTrieCreateBoolListFromData64(k); PutsConsole("Key: "); PutsConsole(k); PutsConsole(" Value: "); LogWriteSerial("RADIX TREE GET: 0x%X\n", RadixTrieGet(trie, &key)); PutsConsole(RadixTrieGet(trie, &key) == NULL ? "NULL" : RadixTrieGet(trie, &key)); PutsConsole("\n")
 static void DummyAppThread(void*) {
 	extern void InitPs2(void);
 	InitPs2();
@@ -51,13 +54,33 @@ static void DummyAppThread(void*) {
     OpenFile("con:", O_RDONLY, 0, &con);
 
     while (true) {
-        char bf[128];
-		memset(bf, 0, 128);
-        struct transfer tr = CreateKernelTransfer(bf, 127, 0, TRANSFER_READ);
+        char bf[302];
+		memset(bf, 0, 302);
+        struct transfer tr = CreateKernelTransfer(bf, 301, 0, TRANSFER_READ);
 		ReadFile(con, &tr);
 		PutsConsole("  Command not found: ");
 		PutsConsole(bf);
 		PutsConsole("\n  C:/> ");
+
+        struct radix_trie* trie = RadixTrieCreate();
+        struct long_bool_list key;
+        RADIX_INSERT("test", "test");
+        RADIX_INSERT("water", "water");
+        RADIX_INSERT("slow", "slow");
+        RADIX_INSERT("slower", "slower");
+        RADIX_INSERT("team", "team");
+        RADIX_INSERT("tester", "tester");
+        RADIX_INSERT("t", "t");
+        RADIX_INSERT("toast", "toast");
+
+        RADIX_GET_AND_PRINT("test");
+        RADIX_GET_AND_PRINT("water");
+        RADIX_GET_AND_PRINT("slow");
+        RADIX_GET_AND_PRINT("slower");
+        RADIX_GET_AND_PRINT("team");
+        RADIX_GET_AND_PRINT("tester");
+        RADIX_GET_AND_PRINT("t");
+        RADIX_GET_AND_PRINT("toast");
     }
 }
 

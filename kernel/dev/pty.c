@@ -54,9 +54,7 @@ struct pty_subordinate_internal_data {
 static int MasterRead(struct vnode* node, struct transfer* tr) {    
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
     while (tr->length_remaining > 0) {
-        LogWriteSerial("Trying to get a character to display...\n");
         char c = BlockingBufferGet(internal->display_buffer);
-        LogWriteSerial("About to 'display' the charcater: '%c'\n", c);
         PerformTransfer(&c, tr, 1);
     }
 
@@ -82,6 +80,8 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
+    // TODO: this should try to be atomic (reduces no. of sem wakeups). maybe put a mutex around the flushed buffer (but I guess it can block
+    // so it might be able to deadlock..?)
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
         BlockingBufferAdd(master_internal->flushed_buffer, internal->line_buffer[i], true);
     }
@@ -113,6 +113,8 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
 }
 
 static void LineProcessor(void* sub_) {
+    SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+
     struct vnode* node = (struct vnode*) sub_;
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
@@ -185,9 +187,6 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
             return err;
         }
 
-        // probably handle ANSI codes here too. how you let the master know about all that (e.g.
-        // current colour), idk.
-        LogWriteSerial("About to 'print' the charcater: '%c'\n", c);
         BlockingBufferAdd(master_internal->display_buffer, c, true);
     }
     

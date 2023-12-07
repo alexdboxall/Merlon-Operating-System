@@ -79,7 +79,11 @@
         "vfs.h": "c",
         "blockingbuffer.h": "c",
         "console.h": "c",
-        "coroutine": "c"
+        "coroutine": "c",
+        "list": "c",
+        "radixtrie.h": "c",
+        "__node_handle": "c",
+        "*.in": "c"
     },
     "files.exclude": {
         "**/.git": true,

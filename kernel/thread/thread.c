@@ -141,6 +141,9 @@ void UnblockThread(struct thread* thr) {
         CancelSemaphoreOfThread(thr);
     }
     ThreadListInsert(&ready_list, thr);
+    if (thr->priority < GetThread()->priority) {
+        PostponeScheduleUntilStandardIrql();
+    }
 }
 
 void UpdateThreadTimeUsed(void) {

@@ -2,6 +2,8 @@
 #include <common.h>
 #include <log.h>
 
+#define REAL_HW 0
+
 __attribute__((no_instrument_function)) static void IntToStr(uint32_t i, char* output, int base)
 {
 	const char* digits = "0123456789ABCDEF";
@@ -29,7 +31,7 @@ __attribute__((no_instrument_function)) static void IntToStr(uint32_t i, char* o
 	} while (i);
 }
 
-
+#if REAL_HW == 0
 __attribute__((no_instrument_function)) static void outb(uint16_t port, uint8_t value)
 {
 	asm volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
@@ -43,16 +45,19 @@ __attribute__((no_instrument_function)) static uint8_t inb(uint16_t port)
 		: "Nd"(port));
 	return value;
 }
+#endif
 
 __attribute__((no_instrument_function)) static void logcnv(char c, bool screen)
 {	
 	if (screen) {
 		DbgScreenPutchar(c);
 	}
+#if REAL_HW == 0
 	while ((inb(0x3F8 + 5) & 0x20) == 0) {
 		;
 	}
 	outb(0x3F8, c);
+#endif
 }
 
 __attribute__((no_instrument_function)) static void logsnv(char* a, bool screen)
