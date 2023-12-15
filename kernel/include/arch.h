@@ -45,6 +45,7 @@ struct arch_memory_range
 struct vas;
 struct vas_entry;
 struct thread;
+struct open_file;
 struct cpu;
 
 struct arch_driver_t;
@@ -90,7 +91,8 @@ void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUnmap(struct vas* vas, struct vas_entry* entry);
 void ArchSetVas(struct vas* vas);
 
-
+// responsible for loading all symbols. should not close the file!
+int ArchLoadDriver(size_t* relocation_point, struct open_file* file);
 
 void ArchSwitchThread(struct thread* old, struct thread* new);
 size_t ArchPrepareStack(size_t addr);

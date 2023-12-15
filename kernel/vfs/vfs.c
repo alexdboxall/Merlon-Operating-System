@@ -211,8 +211,6 @@ int AddVfsMount(struct vnode* node, const char* name) {
 	mount->name = strdup(name);
     mount->node = CreateOpenFile(node, 0, 0, true, true);
 
-    LogWriteSerial("mounting 0x%X (%s, 0x%X)\n", mount, mount->name, mount->node);
-
     AvlTreeInsert(mount_points, (void*) mount);
 
     ReleaseSpinlockIrql(&vfs_lock);

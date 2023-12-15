@@ -75,8 +75,8 @@ int GetFatShortFilename(char* lfn, char* output, char* directory) {
     char stripped_name[7];
     char stripped_extension[4];
     int stripped_index = 0;
-    memset(stripped_name, 0, 7);
-    memset(stripped_extension, 0, 4);
+    inline_memset(stripped_name, 0, 7);
+    inline_memset(stripped_extension, 0, 4);
 
     int final_dot = -1;
 
@@ -122,7 +122,7 @@ int GetFatShortFilename(char* lfn, char* output, char* directory) {
             return LFN_ERROR;
         }
 
-        memset(output, 0, 13);
+        inline_memset(output, 0, 13);
         strncpy(output, stripped_name, 7 - digits);
         int len = strlen(output);
         output[len] = '~';
@@ -138,7 +138,7 @@ int GetFatShortFilename(char* lfn, char* output, char* directory) {
 }
 
 void FormatFatShortName(char* with_dot, char* without_dot) {
-    memset(without_dot, ' ', 11);
+    inline_memset(without_dot, ' ', 11);
     without_dot[11] = 0;
 
     int i;

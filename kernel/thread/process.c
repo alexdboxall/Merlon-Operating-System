@@ -303,10 +303,10 @@ static void KillRemainingThreads(struct avl_node* node) {
 static void KillProcessHelper(void* arg) {
     EXACT_IRQL(IRQL_STANDARD);
 
+    struct process* prcss = arg;
+
     assert(GetProcess() == NULL);
     assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
-
-    struct process* prcss = arg;
 
     KillRemainingThreads(AvlTreeGetRootNode(prcss->threads));
     AvlTreeDestroy(prcss->threads);

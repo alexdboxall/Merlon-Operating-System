@@ -82,7 +82,7 @@ void PriorityQueueInsert(struct priority_queue* queue, void* elem, uint64_t prio
 
     int i = queue->size++;
     queue->array[i * queue->qwords_per_element] = priority;
-    memcpy(queue->array + i * queue->qwords_per_element + 1, elem, queue->element_width);
+    inline_memcpy(queue->array + i * queue->qwords_per_element + 1, elem, queue->element_width);
 
     if (queue->max) {
         while (i != 0 && queue->array[((i - 1) / 2) * queue->qwords_per_element] < queue->array[i * queue->qwords_per_element]) {

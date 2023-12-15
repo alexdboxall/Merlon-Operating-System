@@ -354,8 +354,6 @@ void InitPhys(void) {
 			* Round conservatively (i.e., round the first page up, and the last page down)
 			* so we don't accidentally allow non-existant memory to be allocated.
 			*/
-            LogWriteSerial("memory here: 0x%X -> 0x%X\n", range->start, range->length + range->start);
-
 			size_t first_page = (range->start + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
 			size_t last_page = (range->start + range->length) / ARCH_PAGE_SIZE;
 

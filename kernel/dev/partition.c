@@ -216,7 +216,7 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
     if (mem[0xFF] != 0x55) return NULL;
 
     struct open_file** partitions = AllocHeap(sizeof(struct open_file) * 5);
-    memset(partitions, 0, sizeof(struct open_file) * 5);
+    inline_memset(partitions, 0, sizeof(struct open_file) * 5);
 
     int partitions_found = 0;
     for (int i = 0; i < 4; ++i) {

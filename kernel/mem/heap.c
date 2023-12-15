@@ -8,6 +8,7 @@
 #include <spinlock.h>
 #include <heap.h>
 #include <log.h>
+#include <voidptr.h>
 #include <irql.h>
 
 #define BOOTSTRAP_AREA_SIZE (1024 * 16)
@@ -54,8 +55,6 @@ static void* AllocateFromEmergencyBlocks(size_t size) {
     }
 
     void* address = emergency_blocks[smallest_block].address;
-
-    LogWriteSerial("Grabbing from emo block of size 0x%X, for request 0x%X\n", emergency_blocks[smallest_block].size, size);
 
     emergency_blocks[smallest_block].address += size;
     emergency_blocks[smallest_block].size -= size;
@@ -278,22 +277,6 @@ static int GetInsertionIndex(size_t size_without_metadata) {
 }
 
 /**
- * Adding to a void pointer is undefined behaviour, so this gets around that by
- * casting to a byte pointer.
- */
-static void* AddVoidPtr(void* ptr, size_t offset) {
-    return (void*) (((uint8_t*) ptr) + offset);
-}
-
-/**
- * Subtracting from a void pointer is undefined behaviour, so this gets around that by
- * casting to a byte pointer.
- */
-static void* SubVoidPointer(void* ptr, size_t offset) {
-    return (void*) (((uint8_t*) ptr) - offset);
-}
-
-/**
  * Rounds up a user-supplied allocation size to the alignment. If the value is smaller than
  * the minimum request size that is internally supported, it will round it up to that size.
  */
@@ -510,18 +493,6 @@ static void RemoveBlock(int free_list_index, struct block* block) {
         block->next->prev = block->prev;
     }
 }
-
-
-/*static void DbgCheckNeighbours(struct block* block) {
-    size_t size = GetBlockSize(block);
-    LogWriteSerial("    Block @ 0x%X is of size %d, and %s\n", block, size, IsAllocated(block) ? "allocated" : "free");
-    size_t prev_block_size = *(((size_t*) block) - 1);
-    struct block* prev_block = (struct block*) (((size_t*) block) - prev_block_size / sizeof(size_t));
-    struct block* next_block = (struct block*) (((size_t*) block) + size / sizeof(size_t));
-
-    LogWriteSerial("    Prev @ 0x%X is of size %d, and %s\n", prev_block, GetBlockSize(prev_block), IsAllocated(prev_block) ? "allocated" : "free");
-    LogWriteSerial("    Next @ 0x%X is of size %d, and %s\n\n", next_block, GetBlockSize(next_block), IsAllocated(next_block) ? "allocated" : "free");
-}*/
 
 /**
  * Adds a block to its appropriate free list. It also coalesces the block with surrounding free blocks
@@ -749,7 +720,7 @@ void* AllocHeapEx(size_t size, int flags) {
     }
 
     if (size >= WARNING_LARGE_REQUEST_SIZE) {
-        LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should seriously consider using MapVirt.\n", size);
+        LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should consider using MapVirt.\n", size);
     }
 
     size = RoundUpSize(size);
@@ -771,10 +742,8 @@ void* AllocHeapEx(size_t size, int flags) {
 
     void* ptr = AddVoidPtr(block, METADATA_LEADING_AMOUNT);
     if (flags & HEAP_ZERO) {
-        memset(ptr, 0, size);
+        inline_memset(ptr, 0, size);
     }
-
-    //DbgPrintListStats();
 
     return ptr;
 }
@@ -799,7 +768,7 @@ void FreeHeap(void* ptr) {
         return;
     }
     
-    struct block* block = SubVoidPointer(ptr, METADATA_LEADING_AMOUNT);
+    struct block* block = SubVoidPtr(ptr, METADATA_LEADING_AMOUNT);
     block->prev = NULL;
     block->next = NULL;
 
@@ -823,7 +792,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
         return NULL;
     }
 
-    struct block* block = SubVoidPointer(ptr, METADATA_LEADING_AMOUNT);
+    struct block* block = SubVoidPtr(ptr, METADATA_LEADING_AMOUNT);
     size_t old_size = GetBlockSize(block);
     new_size += METADATA_TOTAL_AMOUNT;
 
@@ -891,7 +860,7 @@ void* ReallocHeap(void* ptr, size_t new_size) {
 
         } else {
             void* new_ptr = AllocHeap(new_size - METADATA_TOTAL_AMOUNT);
-            memcpy(ptr, new_ptr, new_size - METADATA_TOTAL_AMOUNT);
+            inline_memcpy(ptr, new_ptr, new_size - METADATA_TOTAL_AMOUNT);
             FreeHeap(ptr);
             return new_ptr;
         }

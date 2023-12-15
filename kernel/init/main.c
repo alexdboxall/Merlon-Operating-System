@@ -16,12 +16,13 @@
 #include <transfer.h>
 #include <fcntl.h>
 #include <console.h>
-#include <radixtrie.h>
+#include <diskutil.h>
 #include <string.h>
+#include <driver.h>
 
 /*
  * Next steps:
- * - IDE driver
+ * - IDE/floppy driver
  * - DemoFS/FAT32 driver
  * - ELF loader
  * - PS2.SYS, radix trees, drivers that export symbols, etc.
@@ -37,17 +38,7 @@
  */
 extern void InitDbgScreen(void);
 
-void InitThread(void*) {
-    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
-    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
-}
-
-#define RADIX_INSERT(k, v) key = RadixTrieCreateBoolListFromData64(k); RadixTrieInsert(trie, &key, v)
-#define RADIX_GET_AND_PRINT(k) key = RadixTrieCreateBoolListFromData64(k); PutsConsole("Key: "); PutsConsole(k); PutsConsole(" Value: "); LogWriteSerial("RADIX TREE GET: 0x%X\n", RadixTrieGet(trie, &key)); PutsConsole(RadixTrieGet(trie, &key) == NULL ? "NULL" : RadixTrieGet(trie, &key)); PutsConsole("\n")
 static void DummyAppThread(void*) {
-	extern void InitPs2(void);
-	InitPs2();
-	
 	PutsConsole("  C:/> ");
 
     struct open_file* con;
@@ -55,36 +46,21 @@ static void DummyAppThread(void*) {
 
     while (true) {
         char bf[302];
-		memset(bf, 0, 302);
+		inline_memset(bf, 0, 302);
         struct transfer tr = CreateKernelTransfer(bf, 301, 0, TRANSFER_READ);
 		ReadFile(con, &tr);
 		PutsConsole("  Command not found: ");
 		PutsConsole(bf);
 		PutsConsole("\n  C:/> ");
-
-        struct radix_trie* trie = RadixTrieCreate();
-        struct long_bool_list key;
-        RADIX_INSERT("test", "test");
-        RADIX_INSERT("water", "water");
-        RADIX_INSERT("slow", "slow");
-        RADIX_INSERT("slower", "slower");
-        RADIX_INSERT("team", "team");
-        RADIX_INSERT("tester", "tester");
-        RADIX_INSERT("t", "t");
-        RADIX_INSERT("toast", "toast");
-
-        RADIX_GET_AND_PRINT("test");
-        RADIX_GET_AND_PRINT("water");
-        RADIX_GET_AND_PRINT("slow");
-        RADIX_GET_AND_PRINT("slower");
-        RADIX_GET_AND_PRINT("team");
-        RADIX_GET_AND_PRINT("tester");
-        RADIX_GET_AND_PRINT("t");
-        RADIX_GET_AND_PRINT("toast");
     }
 }
 
-#include <machine/portio.h>
+void InitThread(void*) {
+    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
+    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
+
+    CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
+}
 
 void KernelMain(void) {
     LogWriteSerial("KernelMain: kernel is initialising...\n");
@@ -114,6 +90,7 @@ void KernelMain(void) {
     InitVfs();
     InitTimer();
     InitScheduler();
+    InitDiskUtil();
 
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
@@ -129,6 +106,7 @@ void KernelMain(void) {
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 
+    InitSymbolTable();
     InitRandomDevice();
     InitNullDevice();
     extern void InitPs2(void);
@@ -136,8 +114,6 @@ void KernelMain(void) {
     InitDbgScreen();
     InitConsole();
     InitProcess();
-
-    CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
 
     CreateThread(InitThread, NULL, GetVas(), "init");
     StartMultitasking();

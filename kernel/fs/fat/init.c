@@ -8,7 +8,7 @@ int DetectFatPartition(void* partition) {
 
     uint8_t buffer[512];
     /* TODO: raw disk read into the buffer instead of calling memset */
-    memset(buffer, 0, 512);
+    inline_memset(buffer, 0, 512);
 
     /*
      * TODO: we'd want to check the partition data to see if there is a filesystem ID.

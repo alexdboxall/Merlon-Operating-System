@@ -77,7 +77,7 @@ static int CopyIntoKernel(void* kernel_addr, const void* user_addr, size_t size)
         return status;
     }
 
-    memcpy(kernel_addr, user_addr, size);
+    inline_memcpy(kernel_addr, user_addr, size);
     return 0;
 }
 
@@ -87,7 +87,7 @@ static int CopyOutOfKernel(const void* kernel_addr, void* user_addr, size_t size
         return status;
     }
 
-    memcpy(user_addr, kernel_addr, size);
+    inline_memcpy(user_addr, kernel_addr, size);
     return 0;
 }
 

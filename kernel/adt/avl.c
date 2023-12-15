@@ -19,7 +19,7 @@ struct avl_tree {
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
-static struct avl_node* AvlCreateNode(void* data, struct avl_node* left, struct avl_node* right) {
+static struct avl_node* AvlCreateNode(void* data, struct avl_node* restrict left, struct avl_node* restrict right) {
     struct avl_node* tree = AllocHeap(sizeof(struct avl_node));
     tree->left = left;
     tree->right = right;
@@ -122,38 +122,20 @@ static struct avl_node* AvlDelete(struct avl_node* tree, void* data, avl_compara
     struct avl_node* to_free = NULL;
 
     if (comparator(data, tree->data) < 0) {
-        /*
-         * Recurse down the left side until we find the right element.
-         */
         tree->left = AvlDelete(tree->left, data, comparator);
 
     } else if (comparator(data, tree->data) > 0) {
-        /*
-         * Recurse down the right side until we find the right element.
-         */
         tree->right = AvlDelete(tree->right, data, comparator);
 
     } else if (tree->left == NULL) {
-        /*
-         * Right child only, so bring that child up.
-         */
         to_free = tree;
         tree = tree->right;
 
     } else if (tree->right == NULL) {
-        /*
-         * Left child only, so bring that child up.
-         */
         to_free = tree;
         tree = tree->left;
         
     } else {
-        /*
-         * Two children, so swap value with our successor, and then that value
-         * again now that we've moved it to be deeper down into the tree). 
-         * This will continue until we reach a different case.
-         */
-        
         struct avl_node* node = tree->right;
         while (node->left != NULL) {
             node = node->left;
@@ -164,14 +146,17 @@ static struct avl_node* AvlDelete(struct avl_node* tree, void* data, avl_compara
     }
 
     /* 
-     * If NULL is passed in, nothing happens (which is want we want).
+     * If NULL is passed in to FreeHeap, nothing happens (which is want we want).
      */
-
     FreeHeap(to_free);
 
     return AvlBalance(tree);
 }
 
+/**
+ * Given an object, find it in the AVL tree and return it. This is useful if the comparator only compares
+ * part of the object, and so the entire object can be retrieved by searching for only part of it.
+ */
 static void* AvlGet(struct avl_node* tree, void* data, avl_comparator comparator) {
     if (tree == NULL) {
         return NULL;
@@ -179,7 +164,7 @@ static void* AvlGet(struct avl_node* tree, void* data, avl_comparator comparator
 
     if (comparator(tree->data, data) == 0) {
         /*
-         * Must return tree->data, as tree->data != data if there is a custom comparator.
+         * Must return `tree->data`, (and not `data`), as tree->data != data if there is a custom comparator.
          */
         return tree->data;
     }

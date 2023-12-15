@@ -54,7 +54,7 @@ static void GetHostState() {
         if (size < 1024 && type == DBGPKT_TFW) {
             if (packet_buffer[0] == 0x55) {
                 test_state.test_num = 0;
-                memset(test_state.test_results, 0, sizeof(test_state.test_results));
+                inline_memset(test_state.test_results, 0, sizeof(test_state.test_results));
                 break;
             }
             if (packet_buffer[0] == 0x66 || packet_buffer[0] == 0x67) {
@@ -91,9 +91,9 @@ static void SetHostState(int code) {
 
     assert(sizeof(struct host_state) < 4096 - 8);
 
-    memset(packet_buffer, 0, sizeof(test_state) + 8 + (code == 0x33 ? MAX_NAME_LENGTH : 0));
+    inline_memset(packet_buffer, 0, sizeof(test_state) + 8 + (code == 0x33 ? MAX_NAME_LENGTH : 0));
     packet_buffer[0] = code;
-    memcpy(packet_buffer + 8, &test_state, sizeof(test_state));
+    inline_memcpy(packet_buffer + 8, &test_state, sizeof(test_state));
 
     if (code == 0x33) {
         strncpy((char*) (packet_buffer + 8 + sizeof(test_state)), registered_tests[test_state.test_num].name, MAX_NAME_LENGTH);
@@ -121,7 +121,7 @@ bool IsInTfwTest(void) {
 
 void RegisterTfwTest(const char* name, int start_point, void (*code)(struct tfw_test*, size_t), int expected_panic, size_t context) {
     struct tfw_test test;
-    memset(test.name, 0, MAX_NAME_LENGTH);
+    inline_memset(test.name, 0, MAX_NAME_LENGTH);
     strncpy(test.name, name, MAX_NAME_LENGTH - 1);
     test.code = code;
     test.expected_panic_code = expected_panic;

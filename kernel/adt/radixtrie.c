@@ -36,7 +36,7 @@ static struct short_bool_list CreateShortListByTruncatingLong(const struct long_
     assert(list->length <= DATA_BYTES_IN_SHORT);
     struct short_bool_list s;
     s.length = list->length;
-    memcpy((void*) s.data, (const void*) list->data, DATA_BYTES_IN_SHORT);
+    inline_memcpy((void*) s.data, (const void*) list->data, DATA_BYTES_IN_SHORT);
     return s;
 }
 
@@ -149,7 +149,7 @@ static struct edge* CreateEdgeFromData(const struct long_bool_list* label, void*
     return edge;
 }
 
-static void AddEdgeToNodeFromLabel(struct node* node, struct node* next, const struct short_bool_list* label) {
+static void AddEdgeToNodeFromLabel(struct node* restrict node, struct node* restrict next, const struct short_bool_list* label) {
     AddEdgeToNode(node, CreateEdgeFromNodeShort(label, next), GetBitOfShortList(label, 0));
 }
 
@@ -182,24 +182,6 @@ static int GetFirstMismatchedBit(const struct long_bool_list* word, const struct
 
     return -1;
 }
-
-/*
-static void PrintShort(const struct short_bool_list* key) {
-    LogWriteSerial("S: ");
-    for (int i = 0; i < key->length; ++i) {
-        LogWriteSerial("%d, ", GetBitOfShortList(key, i));
-    }
-    LogWriteSerial("\n");
-}
-
-static void PrintLong(const struct long_bool_list* key) {
-    LogWriteSerial("L: ");
-    for (int i = 0; i < key->length; ++i) {
-        LogWriteSerial("%d, ", GetBitOfLongList(key, i));
-    }
-    LogWriteSerial("\n");
-}
-*/
 
 void RadixTrieInsert(struct radix_trie* trie, const struct long_bool_list* key, void* value) {
     struct node* current = trie->root;

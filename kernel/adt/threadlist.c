@@ -8,7 +8,7 @@
 #include <string.h>
 
 void ThreadListInit(struct thread_list* list, int index) {
-    memset(list, 0, sizeof(struct thread_list));
+    inline_memset(list, 0, sizeof(struct thread_list));
     list->index = index;
 }
 

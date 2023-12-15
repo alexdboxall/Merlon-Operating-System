@@ -30,7 +30,7 @@ static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 	size_t page_dir_phys = AllocPhys();
 	page_dir[table_num] = page_dir_phys | x86_PAGE_PRESENT | x86_PAGE_WRITE;
 	ArchFlushTlb(vas);
-	memset((void*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE), 0, ARCH_PAGE_SIZE);
+	inline_memset((void*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE), 0, ARCH_PAGE_SIZE);
 }
 
 static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int flags) {
@@ -101,8 +101,8 @@ void ArchInitVirt(void) {
 	vas->arch_data = &vas_data_table[0];
 	CreateVasEx(vas, VAS_NO_ARCH_INIT);
 
-	memset(kernel_page_directory, 0, ARCH_PAGE_SIZE);
-	memset(first_page_table, 0, ARCH_PAGE_SIZE);
+	inline_memset(kernel_page_directory, 0, ARCH_PAGE_SIZE);
+	inline_memset(first_page_table, 0, ARCH_PAGE_SIZE);
 
 	extern size_t _kernel_end;
 	size_t max_kernel_addr = (((size_t) &_kernel_end) + 0xFFF) & ~0xFFF;

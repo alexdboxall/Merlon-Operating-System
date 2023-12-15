@@ -116,7 +116,7 @@ static void PerformDeferredAccess(void* data) {
  */
 static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset) {
     size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE, NULL, 0);
-    memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
+    inline_memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
 
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
@@ -504,7 +504,7 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
     }
 
     uint8_t page_data[ARCH_PAGE_SIZE];
-    memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
+    inline_memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
 
     entry->ref_count--;
 
@@ -521,7 +521,7 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
     FreeHeap(entry);
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
-    memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
+    inline_memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
 }
 
 static void BringIntoMemoryFromFile(struct vas_entry* entry) {
@@ -568,7 +568,7 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
         assert(!entry->swapfile);
         ArchUpdateMapping(GetVas(), entry);
         ArchFlushTlb(GetVas());
-        memset((void*) entry->virtual, 0, ARCH_PAGE_SIZE);
+        inline_memset((void*) entry->virtual, 0, ARCH_PAGE_SIZE);
         return 0;
     }
 
@@ -722,12 +722,12 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
             * as the copy.
             */
             uint8_t page_data[ARCH_PAGE_SIZE];
-            memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
+            inline_memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
             size_t new_physical = entry->physical;
             entry->physical = AllocPhys();
             ArchUpdateMapping(GetVas(), entry);
             ArchFlushTlb(GetVas());
-            memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
+            inline_memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
 
             struct vas_entry* new_entry = AllocHeap(sizeof(struct vas_entry));
             *new_entry = *entry;

@@ -55,14 +55,14 @@ void* memset(void* addr, int c, size_t n)
     * Use the compiler's platform-specific optimised version.
     * If that doesn't work for your system or compiler, use the below implementation.
     */
-    //return __builtin_memset(addr, c, n);
+    return __builtin_memset(addr, c, n);
 
-	uint8_t* ptr = (uint8_t*) addr;
+	/*uint8_t* ptr = (uint8_t*) addr;
 	for (size_t i = 0; i < n; ++i) {
 		ptr[i] = c;
 	}
 
-	return addr;
+	return addr;*/
 }
 
 void* memcpy(void* restrict dst, const void* restrict src, size_t n)
@@ -71,16 +71,16 @@ void* memcpy(void* restrict dst, const void* restrict src, size_t n)
     * Use the compiler's platform-specific optimised version.
     * If that doesn't work for your system, use the below implementation.
     */
-    //return __builtin_memcpy(dst, src, n);
+    return __builtin_memcpy(dst, src, n);
 
-	uint8_t* a = (uint8_t*) dst;
+	/*uint8_t* a = (uint8_t*) dst;
 	const uint8_t* b = (const uint8_t*) src;
 
 	for (size_t i = 0; i < n; ++i) {
 		a[i] = b[i];
 	}
 
-	return dst;
+	return dst;*/
 }
 
 #pragma GCC pop_options
@@ -165,6 +165,15 @@ char* strncpy(char* restrict dst, const char* restrict src, size_t n)
 
 	return ret;
 }
+
+#ifdef COMPILE_KERNEL
+char* strdup_pageable(const char* str){
+	char* copy = (char*) AllocHeapEx(strlen(str) + 1, 0);
+	strcpy(copy, str);
+	return copy;
+}
+
+#endif
 
 char* strdup(const char* str)
 {

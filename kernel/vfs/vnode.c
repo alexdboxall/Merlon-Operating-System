@@ -159,6 +159,11 @@ int VnodeOpClose(struct vnode* node) {
     return node->ops.close(node);
 }
 
+int VnodeOpCreate(struct vnode* node, struct vnode** out, const char* name, int flags, mode_t mode) {
+    CheckVnode(node);
+    return node->ops.create(node, out, name, flags, mode);
+}
+
 int VnodeOpFollow(struct vnode* node, struct vnode** new_node, const char* name) {
     CheckVnode(node);
     return node->ops.follow(node, new_node, name);

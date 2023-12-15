@@ -49,7 +49,7 @@ TFW_CREATE_TEST(BasicDeallocationTest) { TFW_IGNORE_UNUSED
 
 TFW_CREATE_TEST(StressTest) { TFW_IGNORE_UNUSED
     size_t frames[512];
-    memset(frames, 0, sizeof(frames));
+    inline_memset(frames, 0, sizeof(frames));
     int allocated = 0;
 
     srand(context * 1234 + 12);

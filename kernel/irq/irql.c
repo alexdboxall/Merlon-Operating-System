@@ -59,13 +59,15 @@ __attribute__((no_instrument_function)) int GetIrql(void) {
 __attribute__((no_instrument_function)) int RaiseIrql(int level) {
     ArchDisableInterrupts();
 
-    int existing_level = GetIrql();
+    struct cpu* cpu = GetCpu();
+
+    int existing_level = cpu->irql;
 
     if (level < existing_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    GetCpu()->irql = level;
+    cpu->irql = level;
     ArchSetIrql(level);
 
     return existing_level;
@@ -74,16 +76,18 @@ __attribute__((no_instrument_function)) int RaiseIrql(int level) {
 // Max IRQL: IRQL_HIGH
 __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
     // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)    
-    ArchDisableInterrupts();
 
-    int current_level = GetIrql();
+    struct cpu* cpu = GetCpu();
+    struct priority_queue* deferred_functions = cpu->deferred_functions;
+
+    int current_level = cpu->irql;
 
     if (target_level > current_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    while (GetCpu()->init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(GetCpu()->deferred_functions) > 0) {
-        struct priority_queue_result next = PriorityQueuePeek(GetCpu()->deferred_functions);
+    while (cpu->init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(deferred_functions) > 0) {
+        struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
         assert((int) next.priority <= current_level);
 
         if ((int) next.priority >= target_level) {
@@ -99,12 +103,12 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
             void* context = deferred_call->context;
             void (*handler)(void*) = deferred_call->handler;
             if (handler == NULL) {
-                GetCpu()->irql = current_level;
+                cpu->irql = current_level;
                 ArchSetIrql(current_level);
                 continue;
             }
-            PriorityQueuePop(GetCpu()->deferred_functions);
-            GetCpu()->irql = current_level;
+            PriorityQueuePop(deferred_functions);
+            cpu->irql = current_level;
             ArchSetIrql(current_level);
             handler(context);
 
@@ -114,11 +118,11 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
     }
 
     current_level = target_level;
-    GetCpu()->irql = current_level;
+    cpu->irql = current_level;
     ArchSetIrql(current_level);
 
-    if (current_level == IRQL_STANDARD && GetCpu()->postponed_task_switch) {
-        GetCpu()->postponed_task_switch = false;
+    if (current_level == IRQL_STANDARD && cpu->postponed_task_switch) {
+        cpu->postponed_task_switch = false;
         Schedule();
     }
 }

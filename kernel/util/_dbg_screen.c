@@ -60,7 +60,7 @@ static void vesa_newline() {
         memset((void*) (vgamem + 80 * 24), 0, 160);*/
 
         memmove((void*) data->framebuffer_virtual, (void*) (data->framebuffer_virtual + data->pitch * 16), data->pitch * (16 * SCREEN_HEIGHT - 16));
-        memset((void*) (data->framebuffer_virtual + data->pitch * (16 * SCREEN_HEIGHT - 16)), 0, data->pitch * 16);
+        inline_memset((void*) (data->framebuffer_virtual + data->pitch * (16 * SCREEN_HEIGHT - 16)), 0, data->pitch * 16);
 
     } else {
         data->cursor_y++;

@@ -36,7 +36,8 @@ void ReceivedTimer(uint64_t nanos) {
      * Preempt the current thread if it has used up its timeslice. 
      * TODO: check if this still is correct for SMP. 
      */
-    if (GetThread() != NULL && GetThread()->timeslice_expiry != 0 && GetThread()->timeslice_expiry <= system_time) {
+    struct thread* thr = GetThread();
+    if (thr != NULL && thr->timeslice_expiry != 0 && thr->timeslice_expiry <= system_time) {
         PostponeScheduleUntilStandardIrql();
     }
 
