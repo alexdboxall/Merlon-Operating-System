@@ -50,9 +50,6 @@ struct cpu;
 
 struct arch_driver_t;
 
-void ArchInitDevicesNoFs(void);
-void ArchInitDevicesWithFs(void);
-
 /*
 * Only to be called in very specific places, e.g. turning interrupts
 * on for the first time, the panic handler.
@@ -96,6 +93,8 @@ int ArchLoadDriver(size_t* relocation_point, struct open_file* file);
 
 void ArchSwitchThread(struct thread* old, struct thread* new);
 size_t ArchPrepareStack(size_t addr);
+
+void ArchInitDev(void);
 
 
 /*

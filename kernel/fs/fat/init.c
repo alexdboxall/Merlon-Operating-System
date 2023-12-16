@@ -17,7 +17,7 @@ int DetectFatPartition(void* partition) {
     /*
      * Check that it's a boot sector at all.
      */
-    if (buffer[0xFE] != 0x55 || buffer[0xFF] != 0xAA) {
+    if (buffer[0x1FE] != 0x55 || buffer[0x1FF] != 0xAA) {
         return ENOTSUP;
     }
 

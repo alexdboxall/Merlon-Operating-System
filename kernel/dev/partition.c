@@ -138,6 +138,8 @@ static const struct vnode_operations dev_ops = {
 struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64_t length, int id, int sector_size, int media_type, bool boot) {
     struct partition_data* data = AllocHeap(sizeof(struct partition_data));
 
+    LogWriteSerial("found a partition! 0x%X -> 0x%X\n", (int) start, (int) length);
+
     data->disk = disk;
     data->disk_bytes_per_sector = sector_size;
     data->id = id;
@@ -207,13 +209,13 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
         return NULL;
     }
 
-    uint8_t* mem = (uint8_t*) MapVirt(0, 0, st.st_blksize, VM_FILE | VM_READ, disk, 0);
+    uint8_t* mem = (uint8_t*) MapVirt(0, 0, st.st_blksize, VM_READ | VM_FILE, disk, 0);
     if (mem == NULL) {
         return NULL;
     }
 
-    if (mem[0xFE] != 0x55) return NULL;
-    if (mem[0xFF] != 0x55) return NULL;
+    if (mem[0x1FE] != 0x55) return NULL;
+    if (mem[0x1FF] != 0xAA) return NULL;
 
     struct open_file** partitions = AllocHeap(sizeof(struct open_file) * 5);
     inline_memset(partitions, 0, sizeof(struct open_file) * 5);

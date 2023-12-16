@@ -56,6 +56,10 @@ static void DummyAppThread(void*) {
 }
 
 void InitThread(void*) {
+    extern void InitPs2(void);
+    ArchInitDev();
+	InitPs2();
+
     DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 
@@ -105,12 +109,9 @@ void KernelMain(void) {
 
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
-
     InitSymbolTable();
     InitRandomDevice();
     InitNullDevice();
-    extern void InitPs2(void);
-	InitPs2();
     InitDbgScreen();
     InitConsole();
     InitProcess();

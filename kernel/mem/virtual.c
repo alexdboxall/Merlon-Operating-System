@@ -99,15 +99,18 @@ struct defer_disk_access {
 static void PerformDeferredAccess(void* data) {
     struct defer_disk_access* access = (struct defer_disk_access*) data;
 
+    struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
+
     if (access->direction == TRANSFER_WRITE) {
-        struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
         WriteFile(access->file, &tr);
         UnmapVirt(access->address, ARCH_PAGE_SIZE);
-        FreeHeap(access);
 
     } else {
-        Panic(PANIC_NOT_IMPLEMENTED);
+        ReadFile(access->file, &tr);
+        ArchFlushTlb(GetVas());
     }
+
+    FreeHeap(access);
 }
 
 /**
@@ -122,6 +125,16 @@ static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset
     access->address = new_addr;
     access->file = file;
     access->direction = TRANSFER_WRITE;
+    access->offset = offset;
+    DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
+}
+
+static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset) {
+    LogWriteSerial("Deferring a virt disk read to virtual 0x%X, file 0x%X, offset 0x%X\n", new_addr, file, offset);
+    struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
+    access->address = new_addr;
+    access->file = file;
+    access->direction = TRANSFER_READ;
     access->offset = offset;
     DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
 }
@@ -246,6 +259,8 @@ static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
+    assert(!(file != NULL && (flags & VM_FILE) == 0));
+
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
     entry->allocated = false;
 
@@ -271,7 +286,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->read = flags & VM_READ;
     entry->write = flags & VM_WRITE;
     entry->exec = flags & VM_EXEC;
-    entry->file = flags & VM_FILE;
+    entry->file = (flags & VM_FILE) ? 1 : 0;
     entry->user = flags & VM_USER;
     entry->global = !(flags & VM_LOCAL);
     entry->physical = physical;
@@ -284,6 +299,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      * TODO: later on, check if shared, and add phys->virt entry if needed
      */
     
+    LogWriteSerial("adding mapping at virt 0x%X. global = %d, file = %d 0x%X\n", (int) virtual, (int) entry->global, (int)  entry->file, (int) entry->file_node);
     AcquireSpinlockIrql(&vas->lock);
     InsertIntoAvl(vas, entry);
     ArchAddMapping(vas, entry);
@@ -392,6 +408,8 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
+    LogWriteSerial("mapvirtex: flags %d, file = 0x%X\n", flags, file);
+
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
@@ -404,7 +422,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
         return 0;
     }
 
-    if ((flags & VM_MAP_HARDWARE) && !(flags & VM_LOCK)) {
+    if ((flags & VM_MAP_HARDWARE) && (flags & VM_LOCK) == 0) {
         return 0;
     }
 
@@ -412,7 +430,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
         return 0;
     }
     
-    if (!(flags & VM_FILE) && (file != NULL || pos != 0)) {
+    if ((flags & VM_FILE) == 0 && (file != NULL || pos != 0)) {
         return 0;
     }
 
@@ -468,16 +486,17 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 #ifndef NDEBUG   
     dummy.physical = 0xBAADC0DE;
 #endif
-    dummy.virtual = virtual;
+    dummy.virtual = virtual & ~(ARCH_PAGE_SIZE - 1);
 
     assert(IsSpinlockHeld(&vas->lock));
 
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
+        LogWriteSerial("looking in global for 0x%X\n", dummy.virtual);
         AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
         res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
         ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
-
+        LogWriteSerial("found 0x%X\n", res);
         assert(res != NULL);
     }
     return res;
@@ -525,7 +544,16 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
 }
 
 static void BringIntoMemoryFromFile(struct vas_entry* entry) {
-    (void) entry;
+    LogWriteSerial("bringing into memory from file...\n");
+
+    entry->physical = AllocPhys();
+    entry->allocated = true;
+    entry->in_ram = true;
+    entry->swapfile = false;
+    ArchUpdateMapping(GetVas(), entry);
+    ArchFlushTlb(GetVas());
+
+    DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset);
 }
 
 static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
@@ -543,6 +571,8 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {
     (void) vas;
     assert(IsSpinlockHeld(&vas->lock));
+
+    LogWriteSerial("bringing into memory...\n");
 
     if (entry->cow && allow_cow) {
         BringIntoMemoryFromCow(entry);
@@ -826,13 +856,20 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     int irql = RaiseIrql(IRQL_PAGE_FAULT);
 
     (void) fault_type;
+    LogWriteSerial("A\n");
 
     struct vas* vas = GetVas();
+    LogWriteSerial("B\n");
+    LogWriteSerial("need to get entry for 0x%X\n", faulting_virt);
+    AcquireSpinlockIrql(&vas->lock);
     struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
+
+    LogWriteSerial("C -> 0x%X\n", entry);
+
     if (entry == NULL) {
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
     }
-    LogWriteSerial("\nentry: v 0x%X, p 0x%X. aclr = %d%d%d%d\n", entry->virtual, entry->physical, entry->allocated, entry->cow, entry->lock, entry->in_ram);
+    LogWriteSerial("\nentry: v 0x%X, p 0x%X. aclrf = %d%d%d%d%d\n", entry->virtual, entry->physical, entry->allocated, entry->cow, entry->lock, entry->in_ram, entry->file);
     LogWriteSerial("HandleVirtFault B\n");
 
     /*
@@ -851,7 +888,9 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
         Panic(PANIC_UNKNOWN);
     }
 
+    ReleaseSpinlockIrql(&vas->lock);
     LowerIrql(irql);
+    LogWriteSerial("Page fault totally done.\n");
 }
 
 /**

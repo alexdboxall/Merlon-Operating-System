@@ -1,15 +1,273 @@
 KernelMain: kernel is initialising...
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD0000000. global = 1, file = 0 0x0
 backup heap: largest is 0x2000, total is 0x2000
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD0001000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0002000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0003000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0004000. global = 1, file = 0 0x0
+mapvirtex: flags 147, file = 0x0
+adding mapping at virt 0xD0005000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0006000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0007000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0008000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0009000. global = 1, file = 0 0x0
+adding mapping at virt 0xD000A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD000B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD000C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD000D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD000E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD000F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0010000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0011000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0012000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0013000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0014000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0015000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0016000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0017000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0018000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0019000. global = 1, file = 0 0x0
+adding mapping at virt 0xD001A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD001B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD001C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD001D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD001E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD001F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0020000. global = 1, file = 0 0x0
 backup heap: largest is 0x4000, total is 0x5000
+adding mapping at virt 0xD0021000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0022000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0023000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0024000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0025000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0026000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0027000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0028000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0029000. global = 1, file = 0 0x0
+adding mapping at virt 0xD002A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD002B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD002C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD002D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD002E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD002F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0030000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0031000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0032000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0033000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0034000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0035000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0036000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0037000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0038000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0039000. global = 1, file = 0 0x0
+adding mapping at virt 0xD003A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD003B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD003C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD003D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD003E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD003F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0040000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0041000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0042000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0043000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0044000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0045000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0046000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0047000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0048000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0049000. global = 1, file = 0 0x0
+adding mapping at virt 0xD004A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD004B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD004C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD004D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD004E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD004F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0050000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0051000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0052000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0053000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0054000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0055000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0056000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0057000. global = 1, file = 0 0x0
 backup heap: largest is 0x4000, total is 0x4000
+adding mapping at virt 0xD0058000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0059000. global = 1, file = 0 0x0
+adding mapping at virt 0xD005A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD005B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD005C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD005D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD005E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD005F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0060000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0061000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0062000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0063000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0064000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0065000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0066000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0067000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0068000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0069000. global = 1, file = 0 0x0
+adding mapping at virt 0xD006A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD006B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD006C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD006D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD006E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD006F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0070000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0071000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0072000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0073000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0074000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0075000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0076000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0077000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0078000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0079000. global = 1, file = 0 0x0
+adding mapping at virt 0xD007A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD007B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD007C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD007D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD007E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD007F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0080000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0081000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0082000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0083000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0084000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0085000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0086000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0087000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0088000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0089000. global = 1, file = 0 0x0
+adding mapping at virt 0xD008A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD008B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD008C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD008D000. global = 1, file = 0 0x0
 backup heap: largest is 0x3000, total is 0x3000
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00C5000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C6000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C7000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C8000. global = 1, file = 0 0x0
+adding mapping at virt 0xD008E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD008F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0090000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0091000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0092000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0093000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0094000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0095000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0096000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0097000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0098000. global = 1, file = 0 0x0
+adding mapping at virt 0xD0099000. global = 1, file = 0 0x0
+adding mapping at virt 0xD009A000. global = 1, file = 0 0x0
+adding mapping at virt 0xD009B000. global = 1, file = 0 0x0
+adding mapping at virt 0xD009C000. global = 1, file = 0 0x0
+adding mapping at virt 0xD009D000. global = 1, file = 0 0x0
+adding mapping at virt 0xD009E000. global = 1, file = 0 0x0
+adding mapping at virt 0xD009F000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A0000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A1000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A2000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A3000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A4000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A5000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A6000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A7000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A8000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00A9000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00AA000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00AB000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00AC000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00AD000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00AE000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00AF000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B0000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B1000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B2000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B3000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B4000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B5000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B6000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B7000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B8000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00B9000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00BA000. global = 1, file = 0 0x0
 backup heap: largest is 0x4000, total is 0x6000
+adding mapping at virt 0xD00BB000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00BC000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00BD000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00BE000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00BF000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C0000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C1000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C2000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C3000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00C4000. global = 1, file = 0 0x0
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00C9000. global = 1, file = 0 0x0
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00CA000. global = 1, file = 0 0x0
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00CB000. global = 1, file = 0 0x0
 backup heap: largest is 0x4000, total is 0x5000
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00CC000. global = 1, file = 0 0x0
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00CD000. global = 1, file = 0 0x0
+INIT IDE -3
+INIT IDE -2
+INIT IDE -1
+INIT IDE -0.5
+IdeGetNumSectors A
+IdeGetNumSectors B
+IdeGetNumSectors C
+IdeGetNumSectors D
+IdeGetNumSectors E
+IdeGetNumSectors F
+IdeGetNumSectors G
+INIT IDE -0.3
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00CE000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00CF000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00D0000. global = 1, file = 0 0x0
+adding mapping at virt 0xD00D1000. global = 1, file = 0 0x0
+INIT IDE 0
+INIT IDE 1
+INIT IDE 2
+mapvirtex: flags 33, file = 0xD0003ADC
+adding mapping at virt 0xD00D2000. global = 1, file = 1 0xD0003ADC
+Page fault: cr2 0xD00D21FE, eip 0xC010299A, nos-err 0x0
+HandleVirtFault A, 0xD00D21FE, 0
+A
+B
+need to get entry for 0xD00D21FE
+looking in global for 0xD00D2000
+found 0xD0003DEC
+C -> 0xD0003DEC
+
+entry: v 0xD00D2000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00D2000, file 0xD0003ADC, offset 0x0
+Page fault totally done.
+found a partition! 0x200 -> 0x40000000
+INIT IDE 3
 
 
 
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1064 / 1324 KB used
+  1084 / 1320 KB used
 
+mapvirtex: flags 19, file = 0x0
+adding mapping at virt 0xD00D3000. global = 1, file = 0 0x0
+looking in global for 0xD00CB000
+found 0xD000208C

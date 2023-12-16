@@ -86,7 +86,7 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
         Panic(PANIC_INVALID_IRQL);
     }
 
-    while (cpu->init_irql_done && current_level != target_level && PriorityQueueGetUsedSize(deferred_functions) > 0) {
+    while (cpu->init_irql_done && PriorityQueueGetUsedSize(deferred_functions) > 0) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
         assert((int) next.priority <= current_level);
 
