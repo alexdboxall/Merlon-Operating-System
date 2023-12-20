@@ -47,6 +47,20 @@ int memcmp(const void* s1, const void* s2, size_t n)
 	return 0;
 }
 
+int strncmp(const char* s1, const char* s2, size_t n)
+{
+	while (n && *s1 && (*s1 == *s2)) {
+		++s1;
+		++s2;
+		--n;
+	}
+	if (n == 0) {
+		return 0;
+	} else {
+		return (*(unsigned char*) s1 - *(unsigned char*) s2);
+	}
+}
+
 #pragma GCC push_options
 #pragma GCC optimize ("Os")
 void* memset(void* addr, int c, size_t n)
@@ -180,20 +194,6 @@ char* strdup(const char* str)
 	char* copy = (char*) malloc(strlen(str) + 1);
 	strcpy(copy, str);
 	return copy;
-}
-
-int strncmp(const char* s1, const char* s2, size_t n)
-{
-	while (n && *s1 && (*s1 == *s2)) {
-		++s1;
-		++s2;
-		--n;
-	}
-	if (n == 0) {
-		return 0;
-	} else {
-		return (*(unsigned char*) s1 - *(unsigned char*) s2);
-	}
 }
 
 #ifndef COMPILE_KERNEL

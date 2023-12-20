@@ -23,7 +23,7 @@ struct loaded_driver {
     size_t relocation_point;
 };
 
-static int DriverTableComparator(void* a_, void* b_) {
+static int PAGEABLE_CODE_SECTION DriverTableComparator(void* a_, void* b_) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct loaded_driver* a = a_;
@@ -32,7 +32,7 @@ static int DriverTableComparator(void* a_, void* b_) {
     return strcmp(a->filename, b->filename);
 }
 
-static size_t GetDriverAddressWithLockHeld(const char* name) {
+static size_t PAGEABLE_CODE_SECTION GetDriverAddressWithLockHeld(const char* name) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct loaded_driver dummy;
@@ -45,7 +45,7 @@ static size_t GetDriverAddressWithLockHeld(const char* name) {
     return res->relocation_point;
 }
 
-size_t GetDriverAddress(const char* name) {
+size_t PAGEABLE_CODE_SECTION GetDriverAddress(const char* name) {
     EXACT_IRQL(IRQL_STANDARD);
 
     AcquireMutex(driver_table_lock, -1);
@@ -54,7 +54,7 @@ size_t GetDriverAddress(const char* name) {
     return res;
 }
 
-void InitSymbolTable(void) {
+void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
     EXACT_IRQL(IRQL_STANDARD);
 
     driver_table_lock = CreateMutex();
@@ -68,7 +68,7 @@ void InitSymbolTable(void) {
     // TODO: load the kernel symbols.
 }
 
-void AddSymbol(const char* symbol, size_t address) {
+void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
@@ -78,7 +78,7 @@ void AddSymbol(const char* symbol, size_t address) {
     ReleaseMutex(symbol_table_lock);
 }
 
-size_t GetSymbolAddress(const char* symbol) {
+size_t PAGEABLE_CODE_SECTION GetSymbolAddress(const char* symbol) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
@@ -90,7 +90,7 @@ size_t GetSymbolAddress(const char* symbol) {
     return (size_t) result;
 }
 
-static int LoadDriver(const char* name) {
+static int PAGEABLE_CODE_SECTION LoadDriver(const char* name) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct open_file* file;
@@ -110,7 +110,7 @@ static int LoadDriver(const char* name) {
     return 0;
 }
 
-int RequireDriver(const char* name) {
+int PAGEABLE_CODE_SECTION RequireDriver(const char* name) {
     EXACT_IRQL(IRQL_STANDARD);
 
     AcquireMutex(driver_table_lock, -1);

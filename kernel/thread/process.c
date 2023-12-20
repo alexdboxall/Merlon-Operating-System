@@ -47,7 +47,9 @@ static int ProcessTableComparator(void* a_, void* b_) {
     return a->pid < b->pid ? -1 : 1;
 }
 
-static int InsertIntoProcessTable(struct process* prcss) {
+static int PAGEABLE_CODE_SECTION InsertIntoProcessTable(struct process* prcss) {
+    MAX_IRQL(IRQL_STANDARD);
+
     AcquireSpinlockIrql(&pid_lock);
     pid_t pid = next_pid++;
     ReleaseSpinlockIrql(&pid_lock);
@@ -76,7 +78,7 @@ static void RemoveFromProcessTable(pid_t pid) {
     ReleaseMutex(process_table_mutex);
 }
 
-struct process* GetProcessFromPid(pid_t pid) {
+struct process* PAGEABLE_CODE_SECTION GetProcessFromPid(pid_t pid) {
     MAX_IRQL(IRQL_STANDARD);
 
     AcquireMutex(process_table_mutex, -1);
@@ -105,7 +107,7 @@ void InitProcess(void) {
     AvlTreeSetComparator(process_table, ProcessTableComparator);
 }
 
-struct process* CreateProcess(pid_t parent_pid) {
+struct process* PAGEABLE_CODE_SECTION CreateProcess(pid_t parent_pid) {
     MAX_IRQL(IRQL_STANDARD);
 
     struct process* prcss = AllocHeap(sizeof(struct process));
@@ -137,7 +139,7 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
     UnlockProcess(prcss);
 }
 
-struct process* ForkProcess(void) {
+struct process* PAGEABLE_CODE_SECTION ForkProcess(void) {
     EXACT_IRQL(IRQL_STANDARD);
 
     LockProcess(GetProcess());
@@ -157,7 +159,9 @@ struct process* ForkProcess(void) {
     return new_process;
 }
 
-static void ReapProcess(struct process* prcss) {
+static void PAGEABLE_CODE_SECTION ReapProcess(struct process* prcss) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     // TOOD: there's more cleanup to be done here..., e.g. VAS()
 
     // TODO: need to destroy semaphore, but of course it started at some huge number (e.g. 1 << 30), 
@@ -172,7 +176,9 @@ static void ReapProcess(struct process* prcss) {
     FreeHeap(prcss);
 }
 
-static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pid_t target, int* status) {
+static pid_t PAGEABLE_CODE_SECTION TryReapProcessAux(struct process* parent, struct avl_node* node, pid_t target, int* status) {
+    EXACT_IRQL(IRQL_STANDARD);
+    
     if (node == NULL) {
         return 0;
     }
@@ -198,12 +204,13 @@ static pid_t TryReapProcessAux(struct process* parent, struct avl_node* node, pi
     return TryReapProcessAux(parent, AvlTreeGetRight(node), target, status);
 }
 
-static pid_t TryReapProcess(struct process* parent, pid_t target, int* status) {
+static pid_t PAGEABLE_CODE_SECTION TryReapProcess(struct process* parent, pid_t target, int* status) {
+    EXACT_IRQL(IRQL_STANDARD);
     return TryReapProcessAux(parent, AvlTreeGetRootNode(parent->children), target, status);
 } 
 
-pid_t WaitProcess(pid_t pid, int* status, int flags) {
-    MAX_IRQL(IRQL_STANDARD);
+pid_t PAGEABLE_CODE_SECTION WaitProcess(pid_t pid, int* status, int flags) {
+    EXACT_IRQL(IRQL_STANDARD);
 
     (void) flags;
 
@@ -236,7 +243,9 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
  * Changes the parent of a parentless process. Used to ensure the initial process can always reap orphaned
  * processes.
  */
-static void AdoptOrphan(struct process* adopter, struct process* ophan) {
+static void PAGEABLE_CODE_SECTION AdoptOrphan(struct process* adopter, struct process* ophan) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     LockProcess(adopter);
 
     ophan->parent = adopter->pid;
@@ -252,7 +261,7 @@ static void AdoptOrphan(struct process* adopter, struct process* ophan) {
  * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
-static void OrphanChildProcesses(struct avl_node* node) {
+static void PAGEABLE_CODE_SECTION OrphanChildProcesses(struct avl_node* node) {
     EXACT_IRQL(IRQL_STANDARD);
 
     if (node == NULL) {
@@ -271,7 +280,7 @@ static void OrphanChildProcesses(struct avl_node* node) {
  * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
-static void KillRemainingThreads(struct avl_node* node) {
+static void PAGEABLE_CODE_SECTION KillRemainingThreads(struct avl_node* node) {
     EXACT_IRQL(IRQL_STANDARD);
 
     if (node == NULL) {
@@ -300,7 +309,7 @@ static void KillRemainingThreads(struct avl_node* node) {
  * @param arg The process to kill (needs to be cast to struct process*)
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
-static void KillProcessHelper(void* arg) {
+static void PAGEABLE_CODE_SECTION KillProcessHelper(void* arg) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct process* prcss = arg;
@@ -341,7 +350,7 @@ static void KillProcessHelper(void* arg) {
  * 
  * @note MAX_IRQL(IRQL_STANDARD)
  */
-void KillProcess(int retv) {
+void PAGEABLE_CODE_SECTION KillProcess(int retv) {
     MAX_IRQL(IRQL_STANDARD);
 
     struct process* prcss = GetProcess();

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <irql.h>
 #include <diskutil.h>
 
 #define MAX_TRANSFER_SIZE (1024 * 16)

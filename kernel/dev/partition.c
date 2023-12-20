@@ -10,15 +10,18 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <virtual.h>
+#include <filesystem.h>
 
 /*
- * OR: TODO! do we made partitions 'files' underneath raw drives
- * e.g. ide0:/partition0
- * and then the FS version gets mounted as something like ide0:/partition0/fs
- * but then remapped to hd0:/ to look nicer
+ * rawhd0:/
+ * rawhd0:/part0
+ * rawhd0:/part0/fs
+ * rawhd0:/part1
+ * rawhd0:/part1/fs
  */
 
 struct partition_data {
+    struct open_file* fs;
     struct open_file* disk;
     int id;
     uint64_t start_byte;
@@ -80,8 +83,14 @@ static int IsTty(struct vnode*) {
     return false;
 }
 
-static int Create(struct vnode*, struct vnode**, const char*, int, mode_t) {
-    return false;
+static int Create(struct vnode* node, struct vnode** fs, const char*, int flags, mode_t mode) {
+    struct partition_data* partition = node->data;
+    if (partition->fs != NULL) {
+        return EALREADY;
+    }
+
+    partition->fs = CreateOpenFile(*fs, flags, mode, true, true);
+    return 0;
 }
 
 static uint8_t DirentType(struct vnode*) {
@@ -147,11 +156,14 @@ struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64
     data->start_byte = start;
     data->media_type = media_type;
     data->boot = boot;
+    data->fs = NULL;
 
     struct vnode* node = CreateVnode(dev_ops);
     node->data = data;
 
-    return CreateOpenFile(node, 0, 0, true, true);
+    struct open_file* partition = CreateOpenFile(node, 0, 0, true, true);
+    MountFilesystemForDisk(partition);
+    return partition;
 }
 
 struct open_file* CreateMbrPartitionIfExists(struct open_file* disk, uint8_t* mem, int index, int sector_size) {

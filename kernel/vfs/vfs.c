@@ -184,7 +184,7 @@ static struct open_file* GetMountFromName(const char* name) {
     return mount->node;
 }
 
-int AddVfsMount(struct vnode* node, const char* name) {
+int PAGEABLE_CODE_SECTION AddVfsMount(struct vnode* node, const char* name) {
 	EXACT_IRQL(IRQL_STANDARD);
 
     if (name == NULL || node == NULL) {
@@ -213,11 +213,13 @@ int AddVfsMount(struct vnode* node, const char* name) {
 
     AvlTreeInsert(mount_points, (void*) mount);
 
+	LogWriteSerial("MOUNTED TO THE VFS: %s\n", name);
+
     ReleaseSpinlockIrql(&vfs_lock);
     return 0;
 }
 
-int RemoveVfsMount(const char* name) {
+int PAGEABLE_CODE_SECTION RemoveVfsMount(const char* name) {
 	EXACT_IRQL(IRQL_STANDARD);
 
     if (name == NULL) {
@@ -413,7 +415,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	return status;
 }
 
-int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
+int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 	EXACT_IRQL(IRQL_STANDARD);
 
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
@@ -437,28 +439,33 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
     */
     status = GetVnodeFromPath(path, &node, false);
 
-    if (status == ENOENT && (flags & O_CREAT)) {
-        /*
-		* Process O_CREAT and O_EXCL, set node
-		* TODO: call vnode_create(parent, ..., is_excl, mode)
-		*/
-	
-		(void) mode;
+    if (flags & O_CREAT) {
+		if (status == ENOENT) {
+			/*
+			* Get the parent folder.
+			*/
+			status = GetVnodeFromPath(path, &node, true);
+			if (status) {
+				return status;
+			}
+			
+			struct vnode* child;
+			status = VnodeOpCreate(node, &child, name, flags, mode);
+			DereferenceVnode(node);
 
-		/*
-		* Get the parent folder.
-		*/
-		status = GetVnodeFromPath(path, &node, true);
-		if (status) {
-			return status;
+			if (status) {
+				return status;
+			}
+
+			node = child;
+
+		} else if (flags & O_EXCL) {
+			/*
+			 * The file already exists (as we didn't get ENOENT), but we were passed O_EXCL so we
+			 * must give an error. If O_EXCL isn't passed, then O_CREAT will just open the existing file.
+			 */
+			return EEXIST;
 		}
-
-		/*
-		status = vnode_create(..., name);
-		vnode_dereference(parent);
-		if (status) {
-			return status;
-		}*/
 
     } else if (status != 0) {
         return status;
@@ -486,8 +493,9 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 
 	bool can_read = (flags & O_ACCMODE) != O_WRONLY;
 	bool can_write = (flags & O_ACCMODE) != O_RDONLY;
+	uint8_t dirent_type = VnodeOpDirentType(node);
 
-	if (VnodeOpDirentType(node) == DT_DIR && can_write) {
+	if (dirent_type == DT_DIR && can_write) {
 		/*
 		* You cannot write to a directory. This also prevents truncation.
 		*/
@@ -495,10 +503,13 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 		return EISDIR;
 	}
 	
-	if (flags & O_TRUNC) {
+	if ((flags & O_TRUNC) && dirent_type == DT_REG) {
 		if (can_write) {
-			// TODO: status = vnode_truncate(node)
-			// if (status) { return status; }
+			status = VnodeOpTruncate(node, 0);
+			if (status) {
+				return status;
+			}
+			return ENOSYS;
 		} else {
 			return EINVAL;
 		}
@@ -527,7 +538,7 @@ int ReadFile(struct open_file* file, struct transfer* io) {
 	return VnodeOpRead(file->node, io);
 }
 
-int ReadDirectory(struct open_file* file, struct transfer* io) {
+int PAGEABLE_CODE_SECTION ReadDirectory(struct open_file* file, struct transfer* io) {
     EXACT_IRQL(IRQL_STANDARD);
 
 	if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
@@ -562,7 +573,7 @@ int WriteFile(struct open_file* file, struct transfer* io) {
 	return VnodeOpWrite(file->node, io);
 }
 
-int CloseFile(struct open_file* file) {
+int PAGEABLE_CODE_SECTION CloseFile(struct open_file* file) {
 	EXACT_IRQL(IRQL_STANDARD);
 
     if (file == NULL || file->node == NULL) {

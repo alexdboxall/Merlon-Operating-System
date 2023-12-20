@@ -9,6 +9,7 @@
 
 static int type_table[__DISKUTIL_NUM_TYPES];
 static struct spinlock type_table_lock;
+static int next_mounted_disk_num = 0;
 
 void InitDiskUtil(void) {
     InitSpinlock(&type_table_lock, "diskutil", IRQL_SCHEDULER);
@@ -49,11 +50,25 @@ static int AppendNumberToString(char* str, int num) {
     return 0;
 }
 
+char* GenerateNewMountedDiskName() {
+    MAX_IRQL(IRQL_SCHEDULER);
+
+    char name[16];
+    strcpy(name, "drv");
+
+    AcquireSpinlockIrql(&type_table_lock);
+    int disk_num = next_mounted_disk_num++;
+    ReleaseSpinlockIrql(&type_table_lock);
+
+    AppendNumberToString(name, disk_num);
+    return strdup(name);
+}
+
 char* GenerateNewRawDiskName(int type) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     char name[16];
-    strcpy(name, "raw");
+    strcpy(name, "raw-");
 
     if (type >= __DISKUTIL_NUM_TYPES || type < 0) {
         type = DISKUTIL_TYPE_OTHER;

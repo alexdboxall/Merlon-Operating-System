@@ -26,6 +26,7 @@ struct disk_partition_helper {
 
 void InitDiskUtil(void);
 char* GenerateNewRawDiskName(int type);
+char* GenerateNewMountedDiskName();
 void CreateDiskPartitions(struct open_file* disk);
 void InitDiskPartitionHelper(struct disk_partition_helper* helper);
 

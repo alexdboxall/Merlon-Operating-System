@@ -32,7 +32,7 @@ static struct semaphore* cleaner_semaphore;
  * 
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
-static void CleanerDestroyThread(struct thread* thr) {
+static void PAGEABLE_CODE_SECTION CleanerDestroyThread(struct thread* thr) {
     EXACT_IRQL(IRQL_STANDARD);
 
     /*
@@ -53,7 +53,7 @@ static void CleanerDestroyThread(struct thread* thr) {
  * 
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
-static void CleanerThread(void*) {
+static void PAGEABLE_CODE_SECTION CleanerThread(void*) {
     EXACT_IRQL(IRQL_STANDARD);
 
     while (true) {

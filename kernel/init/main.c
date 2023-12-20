@@ -18,11 +18,12 @@
 #include <console.h>
 #include <diskutil.h>
 #include <string.h>
+#include <filesystem.h>
 #include <driver.h>
 
 /*
  * Next steps:
- * - IDE/floppy driver
+ * - floppy driver
  * - DemoFS/FAT32 driver
  * - ELF loader
  * - PS2.SYS, radix trees, drivers that export symbols, etc.
@@ -55,15 +56,17 @@ static void DummyAppThread(void*) {
     }
 }
 
-void InitThread(void*) {
-    extern void InitPs2(void);
-    ArchInitDev();
-	InitPs2();
-
+void InitUserspace(void) {
     DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 
     CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
+}
+
+void InitThread(void*) {
+    InitFilesystemTable();
+    ArchInitDev();
+    InitUserspace();
 }
 
 void KernelMain(void) {

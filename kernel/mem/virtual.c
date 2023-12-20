@@ -299,7 +299,6 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      * TODO: later on, check if shared, and add phys->virt entry if needed
      */
     
-    LogWriteSerial("adding mapping at virt 0x%X. global = %d, file = %d 0x%X\n", (int) virtual, (int) entry->global, (int)  entry->file, (int) entry->file_node);
     AcquireSpinlockIrql(&vas->lock);
     InsertIntoAvl(vas, entry);
     ArchAddMapping(vas, entry);
@@ -408,8 +407,6 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    LogWriteSerial("mapvirtex: flags %d, file = 0x%X\n", flags, file);
-
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
@@ -492,11 +489,9 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
-        LogWriteSerial("looking in global for 0x%X\n", dummy.virtual);
         AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
         res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
         ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
-        LogWriteSerial("found 0x%X\n", res);
         assert(res != NULL);
     }
     return res;

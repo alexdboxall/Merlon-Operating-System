@@ -32,7 +32,7 @@ struct radix_trie {
     struct node* root;
 };
 
-static struct short_bool_list CreateShortListByTruncatingLong(const struct long_bool_list* list) {
+static struct short_bool_list PAGEABLE_CODE_SECTION CreateShortListByTruncatingLong(const struct long_bool_list* list) {
     assert(list->length <= DATA_BYTES_IN_SHORT);
     struct short_bool_list s;
     s.length = list->length;
@@ -40,7 +40,7 @@ static struct short_bool_list CreateShortListByTruncatingLong(const struct long_
     return s;
 }
 
-static void SetBitOfLongList(struct long_bool_list* list, int index, bool b) {
+static void PAGEABLE_CODE_SECTION SetBitOfLongList(struct long_bool_list* list, int index, bool b) {
     if (b) {
         list->data[index / 8] |= (1 << (index % 8));
     } else {
@@ -48,7 +48,7 @@ static void SetBitOfLongList(struct long_bool_list* list, int index, bool b) {
     }
 }
 
-static void SetBitOfShortList(struct short_bool_list* list, int index, bool b) {
+static void PAGEABLE_CODE_SECTION SetBitOfShortList(struct short_bool_list* list, int index, bool b) {
     if (b) {
         list->data[index / 8] |= (1 << (index % 8));
     } else {
@@ -56,15 +56,15 @@ static void SetBitOfShortList(struct short_bool_list* list, int index, bool b) {
     }
 }
 
-static bool GetBitOfShortList(const struct short_bool_list* list, int index) {
+static bool PAGEABLE_CODE_SECTION GetBitOfShortList(const struct short_bool_list* list, int index) {
     return (list->data[index / 8] >> (index % 8)) & 1;
 }
 
-static bool GetBitOfLongList(const struct long_bool_list* list, int index) {
+static bool PAGEABLE_CODE_SECTION GetBitOfLongList(const struct long_bool_list* list, int index) {
     return (list->data[index / 8] >> (index % 8)) & 1;
 }
 
-static struct short_bool_list RemoveStartOfShortList(const struct short_bool_list* list, int num_to_remove) {
+static struct short_bool_list PAGEABLE_CODE_SECTION RemoveStartOfShortList(const struct short_bool_list* list, int num_to_remove) {
     struct short_bool_list out;
 
     int out_bits = list->length - num_to_remove;
@@ -80,7 +80,7 @@ static struct short_bool_list RemoveStartOfShortList(const struct short_bool_lis
     return out;
 } 
 
-static struct long_bool_list RemoveStartOfLongList(const struct long_bool_list* list, int num_to_remove) {
+static struct long_bool_list PAGEABLE_CODE_SECTION RemoveStartOfLongList(const struct long_bool_list* list, int num_to_remove) {
     struct long_bool_list out;
 
     int out_bits = list->length - num_to_remove;
@@ -96,11 +96,11 @@ static struct long_bool_list RemoveStartOfLongList(const struct long_bool_list* 
     return out;
 } 
 
-static struct edge* GetEdgeFromNode(struct node* node, bool right) {
+static struct edge* PAGEABLE_CODE_SECTION GetEdgeFromNode(struct node* node, bool right) {
     return right ? node->right : node->left;
 }
 
-static void AddEdgeToNode(struct node* node, struct edge* edge, bool right) {
+static void PAGEABLE_CODE_SECTION AddEdgeToNode(struct node* node, struct edge* edge, bool right) {
     if (right) {
         node->right = edge;
     } else {
@@ -109,16 +109,16 @@ static void AddEdgeToNode(struct node* node, struct edge* edge, bool right) {
 }
 
 
-static struct node* CreateNode(void) {
-    struct node* node = AllocHeap(sizeof(struct node));
+static struct node* PAGEABLE_CODE_SECTION CreateNode(void) {
+    struct node* node = AllocHeapEx(sizeof(struct node), 0);
     node->left = NULL;
     node->right = NULL;
     node->data = NULL;
     return node;
 }
 
-static struct edge* CreateEdgeInternal(struct long_bool_list label) {
-    struct edge* edge = AllocHeap(sizeof(struct edge));
+static struct edge* PAGEABLE_CODE_SECTION CreateEdgeInternal(struct long_bool_list label) {
+    struct edge* edge = AllocHeapEx(sizeof(struct edge), 0);
     
     while (label.length >= MAX_BITS_PER_EDGE) {
         struct node* new_node = CreateNode();
@@ -127,7 +127,7 @@ static struct edge* CreateEdgeInternal(struct long_bool_list label) {
 
         bool right = GetBitOfLongList(&label, MAX_BITS_PER_EDGE - 1);
         label = RemoveStartOfLongList(&label, MAX_BITS_PER_EDGE - 1);
-        edge = AllocHeap(sizeof(struct edge));
+        edge = AllocHeapEx(sizeof(struct edge), 0);
         AddEdgeToNode(new_node, edge, right);
     }
 
@@ -135,31 +135,31 @@ static struct edge* CreateEdgeInternal(struct long_bool_list label) {
     return edge;
 }
 
-static struct edge* CreateEdgeFromNodeShort(const struct short_bool_list* label, struct node* node) {
-    struct edge* edge = AllocHeap(sizeof(struct edge));
+static struct edge* PAGEABLE_CODE_SECTION CreateEdgeFromNodeShort(const struct short_bool_list* label, struct node* node) {
+    struct edge* edge = AllocHeapEx(sizeof(struct edge), 0);
     edge->label = *label;
     edge->next = node;
     return edge;
 }
 
-static struct edge* CreateEdgeFromData(const struct long_bool_list* label, void* data) {
+static struct edge* PAGEABLE_CODE_SECTION CreateEdgeFromData(const struct long_bool_list* label, void* data) {
     struct edge* edge = CreateEdgeInternal(*label);
     edge->next = CreateNode();
     edge->next->data = data;
     return edge;
 }
 
-static void AddEdgeToNodeFromLabel(struct node* restrict node, struct node* restrict next, const struct short_bool_list* label) {
+static void PAGEABLE_CODE_SECTION AddEdgeToNodeFromLabel(struct node* restrict node, struct node* restrict next, const struct short_bool_list* label) {
     AddEdgeToNode(node, CreateEdgeFromNodeShort(label, next), GetBitOfShortList(label, 0));
 }
 
-struct radix_trie* RadixTrieCreate(void) {
-    struct radix_trie* trie = AllocHeap(sizeof(struct radix_trie));
+struct radix_trie* PAGEABLE_CODE_SECTION RadixTrieCreate(void) {
+    struct radix_trie* trie = AllocHeapEx(sizeof(struct radix_trie), 0);
     trie->root = CreateNode();
     return trie;
 }
 
-static bool StartsWith(const struct long_bool_list* l, const struct short_bool_list* s) {
+static bool PAGEABLE_CODE_SECTION StartsWith(const struct long_bool_list* l, const struct short_bool_list* s) {
     if (l->length < s->length) return false;
 
     for (int i = 0; i < s->length; ++i) {
@@ -171,7 +171,7 @@ static bool StartsWith(const struct long_bool_list* l, const struct short_bool_l
     return true;
 }
 
-static int GetFirstMismatchedBit(const struct long_bool_list* word, const struct short_bool_list* edge_word) {
+static int PAGEABLE_CODE_SECTION GetFirstMismatchedBit(const struct long_bool_list* word, const struct short_bool_list* edge_word) {
     int len = word->length < edge_word->length ? word->length : edge_word->length;
 
     for (int i = 1; i < len; ++i) {
@@ -183,7 +183,7 @@ static int GetFirstMismatchedBit(const struct long_bool_list* word, const struct
     return -1;
 }
 
-void RadixTrieInsert(struct radix_trie* trie, const struct long_bool_list* key, void* value) {
+void PAGEABLE_CODE_SECTION RadixTrieInsert(struct radix_trie* trie, const struct long_bool_list* key, void* value) {
     struct node* current = trie->root;
     int current_index = 0;
 
@@ -233,7 +233,7 @@ void RadixTrieInsert(struct radix_trie* trie, const struct long_bool_list* key, 
     }
 }
 
-void* RadixTrieGet(struct radix_trie* trie, const struct long_bool_list* key) {
+void* PAGEABLE_CODE_SECTION RadixTrieGet(struct radix_trie* trie, const struct long_bool_list* key) {
     struct node* current = trie->root;
     int current_index = 0;
 
@@ -255,7 +255,7 @@ void* RadixTrieGet(struct radix_trie* trie, const struct long_bool_list* key) {
     return current->data;
 }
 
-struct long_bool_list RadixTrieCreateBoolListFromData(uint8_t* data, int num_bytes) {
+struct long_bool_list PAGEABLE_CODE_SECTION RadixTrieCreateBoolListFromData(uint8_t* data, int num_bytes) {
     struct long_bool_list l;
     l.length = num_bytes * 8;
 
@@ -270,14 +270,14 @@ struct long_bool_list RadixTrieCreateBoolListFromData(uint8_t* data, int num_byt
     return l;
 }
 
-static int MapCharacter(char c) {
+static int PAGEABLE_CODE_SECTION MapCharacter(char c) {
     if (c >= 'A' && c <= 'Z') return c - 'A';
     if (c >= 'a' && c <= 'z') return c - 'a' + 26;
     if (c >= '0' && c <= '9') return c - '0' + 52;
     return 62;
 }
 
-struct long_bool_list RadixTrieCreateBoolListFromData64(char* data) {
+struct long_bool_list PAGEABLE_CODE_SECTION RadixTrieCreateBoolListFromData64(char* data) {
     struct long_bool_list l;
     l.length = 0;
 

@@ -12,7 +12,7 @@
 #include <machine/elf.h>
 #include <panic.h>
 
-static bool IsElfValid(struct Elf32_Ehdr* header) {
+static bool PAGEABLE_CODE_SECTION IsElfValid(struct Elf32_Ehdr* header) {
     if (header->e_ident[EI_MAG0] != ELFMAG0) return false;
     if (header->e_ident[EI_MAG1] != ELFMAG1) return false;
     if (header->e_ident[EI_MAG2] != ELFMAG2) return false;
@@ -23,7 +23,7 @@ static bool IsElfValid(struct Elf32_Ehdr* header) {
     return true;
 }
 
-static size_t ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
+static size_t PAGEABLE_CODE_SECTION ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -53,7 +53,7 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
     return (total_size + ARCH_PAGE_SIZE - 1) & (~ARCH_PAGE_SIZE);
 }
 
-static size_t ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate) {
+static size_t PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -83,7 +83,7 @@ static size_t ElfLoadProgramHeaders(void* data, size_t relocation_point, bool re
     return sbrk_address;
 }
 
-static char* ElfLookupString(void* data, int offset) {
+static char* PAGEABLE_CODE_SECTION ElfLookupString(void* data, int offset) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 
 	if (elf_header->e_shstrndx == SHN_UNDEF) {
@@ -100,7 +100,7 @@ static char* ElfLookupString(void* data, int offset) {
 	return string_table + offset;
 }
 
-static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error, size_t relocation_point, size_t base_address) {
+static size_t PAGEABLE_CODE_SECTION ElfGetSymbolValue(void* data, int table, size_t index, bool* error, size_t relocation_point, size_t base_address) {
     *error = false;
 
 	if (table == SHN_UNDEF || index == SHN_UNDEF) {
@@ -143,7 +143,7 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 	}
 }
 
-static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table)
+static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table)
 {
 	size_t base_address = 0xD0000000U;
 
@@ -176,7 +176,7 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	return true;
 }
 
-static bool ElfPerformRelocations(void* data, size_t relocation_point) {
+static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t relocation_point) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr(data, elf_header->e_shoff);
 
@@ -208,7 +208,7 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point) {
 	return true;
 }
 
-static int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* entry_point) {
+static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* entry_point) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
@@ -254,7 +254,7 @@ static int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* 
     }
 }
 
-int ArchLoadDriver(size_t* relocation_point, struct open_file* file) {
+int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_file* file) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct stat st;

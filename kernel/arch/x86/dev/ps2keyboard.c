@@ -5,15 +5,17 @@
 #include <string.h>
 #include <irq.h>
 #include <irql.h>
+#include <assert.h>
 #include <errno.h>
 #include <machine/pic.h>
 #include <machine/portio.h>
 #include <machine/interrupt.h>
+#include <machine/ps2controller.h>
 
-static const char set1_map_lower_norm[] = "  1234567890-=  qwertyuiop[]  asdfghjkl;'` \\zxcvbnm,./ *               789-456+1230.                                            ";
-static const char set1_map_upper_norm[] = "  !@#$%^&*()_+  QWERTYUIOP{}  ASDFGHJKL:\"~ |ZXCVBNM<>? *               789-456+1230.                                            ";
-static const char set1_map_lower_caps[] = "  1234567890-=  QWERTYUIOP[]  ASDFGHJKL;'` \\ZXCVBNM,./ *               789-456+1230.                                            ";
-static const char set1_map_upper_caps[] = "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *               789-456+1230.                                            ";
+static const char set1_map_lower_norm[] PAGEABLE_DATA_SECTION = "  1234567890-=  qwertyuiop[]  asdfghjkl;'` \\zxcvbnm,./ *               789-456+1230.                                           ";
+static const char set1_map_upper_norm[] PAGEABLE_DATA_SECTION = "  !@#$%^&*()_+  QWERTYUIOP{}  ASDFGHJKL:\"~ |ZXCVBNM<>? *               789-456+1230.                                           ";
+static const char set1_map_lower_caps[] PAGEABLE_DATA_SECTION = "  1234567890-=  QWERTYUIOP[]  ASDFGHJKL;'` \\ZXCVBNM,./ *               789-456+1230.                                           ";
+static const char set1_map_upper_caps[] PAGEABLE_DATA_SECTION = "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *               789-456+1230.                                           ";
 
 #if 0
 static const char set2_map_lower_norm[] = "              `      q1   zsaw2  cxde43   vftr5  nbhgy6   mju78  ,kio09  ./l;p-   ' [=     ] \\           1 47   0.2568   +3-*9             -";
@@ -61,79 +63,16 @@ bool shift_held = false;
 bool shift_r_held = false;
 bool caps_lock_on = false;
 
-#define PS2_STATUS_BIT_OUT_FULL		1
-#define PS2_STATUS_BIT_IN_FULL		2
-#define PS2_STATUS_BIT_SYSFLAG		4
-#define PS2_STATUS_BIT_CONTROLLER	8
-#define PS2_STATUS_BIT_TIMEOUT		64
-#define PS2_STATUS_BIT_PARITY		128
-
-static int ps2_wait(bool writing) {
-    int timeout = 0;
-    while (true) {
-        uint8_t status = inb(0x64);
-
-        if (writing) {
-            if (!(status & PS2_STATUS_BIT_IN_FULL)) {
-                break;
-            }
-        } else {
-            if (status & PS2_STATUS_BIT_OUT_FULL) {
-                break;
-            }
-        }
-
-        if (++timeout >= 2000 || (status & PS2_STATUS_BIT_TIMEOUT) || (status & PS2_STATUS_BIT_PARITY)) {
-            return EIO;
-        }
-    } 
-
-    return 0;
-}
-
-
-/*
-* For all of these, we are going to ignore error checking and proceed
-* regardless, as the error detection can be a bit unreliable on real
-* hardware and between different emulators. (This is thanks to the
-* various quality of USB to PS/2 emulation implementations.)
-*/
-static void ps2_controller_write(uint8_t data) {
-    outb(0x64, data);
-}
-
-static uint8_t ps2_controller_read(void) {
-    ps2_wait(false);
-    return inb(0x60);
-}
-
-static void ps2_device_write(uint8_t data, bool port2) {
-    if (port2) {
-        ps2_controller_write(0xD4);
-    }
-    ps2_wait(true);
-    outb(0x60, data);
-}
-
-static uint8_t ps2_device_read(void) {
-    return ps2_controller_read();
-}
-
-static void ps2_set_leds(void) {
+static void PAGEABLE_CODE_SECTION Ps2KeyboardSetLEDs(void) {
     uint8_t data = caps_lock_on << 2;
 
-    ps2_device_write(0xED, false);
-    ps2_device_read();
-    ps2_device_write(data, false);
-    ps2_device_read();
+    Ps2DeviceWrite(0xED, false);
+    Ps2DeviceWrite(data, false);
 }
 
-static void GiveCharacter(void* ctxt) {
-    char c = (char) (size_t) ctxt;
-    SendKeystrokeConsole(c);
-}
+static void PAGEABLE_CODE_SECTION Ps2KeyboardTranslateSet1(uint8_t scancode) {
+    EXACT_IRQL(IRQL_STANDARD);
 
-static void ps2_translate_set_1(uint8_t scancode) {
     if (scancode & 0x80) {
         release_mode = true;
         scancode &= 0x7F;
@@ -172,7 +111,7 @@ static void ps2_translate_set_1(uint8_t scancode) {
     case SET1_CAPS_LOCK:
         if (!release_mode) {
             caps_lock_on = !caps_lock_on;
-            ps2_set_leds();
+            Ps2KeyboardSetLEDs();
         }
         break;
 
@@ -197,33 +136,97 @@ static void ps2_translate_set_1(uint8_t scancode) {
     }
 
     if (received_character != 0 && !release_mode) {
-        //console_received_character(received_character, control_held);
-        DeferUntilIrql(IRQL_STANDARD, GiveCharacter, (void*) (size_t) received_character);
+        SendKeystrokeConsole(received_character);
     }
 
     release_mode = false;
 }
 
-static int ps2_keyboard_handler(struct x86_regs*) {
-	uint8_t scancode = inb(0x60);
-    ps2_translate_set_1(scancode);
-
-    return 0;
+void PAGEABLE_CODE_SECTION HandleCharacter(void* scancode) {
+    EXACT_IRQL(IRQL_STANDARD);
+    Ps2KeyboardTranslateSet1((size_t) scancode);
 }
 
-void InitPs2(void) {
+// THIS IS THE ONLY PART THAT MUSTN'T BE PAGED OUT
+static int Ps2KeyboardIrqHandler(struct x86_regs*) {
+	uint8_t scancode = inb(0x60);
+    DeferUntilIrql(IRQL_STANDARD, HandleCharacter, (void*) (size_t) scancode);
+    return 0;
+}
+// END NON-PAGEABLE PART
 
-    /*
-    * Follow the mantra: 
-    *
-    *   "assume the BIOS set it up correctly, and don't bother initialising it yourself"
-    * 
-    * This is a bad idea, but as we only need the keyboard to work, the BIOS should
-    * have initialised at least that much. (Trusting the BIOS for the mouse is a bit iffier).
-    * 
-    * Set up the keyboard after the mouse so the initialisation sequence above doesn't get
-    * misinterpreted as a keyboard input.
-    */
-    ps2_controller_read();
-    RegisterIrqHandler(PIC_IRQ_BASE + 1, ps2_keyboard_handler);
+static int PAGEABLE_CODE_SECTION Ps2KeyboardGetScancodeSet(void) {
+    Ps2DeviceWrite(0xF0, false);
+    Ps2DeviceWrite(0, false);
+
+    uint8_t scancode_set = Ps2DeviceRead();
+    if (scancode_set == 0x43 || scancode_set == 1) {
+        return 1;
+    } else if (scancode_set == 0x41 || scancode_set == 2) {
+        return 2;
+    } else if (scancode_set == 0x3F || scancode_set == 3) {
+        return 3;
+    } else {
+        return -1;
+    }
+}
+
+static int PAGEABLE_CODE_SECTION Ps2KeyboardSetScancodeSet(int num) {
+    Ps2DeviceWrite(0xF0, false);
+    Ps2DeviceWrite(num, false);
+
+    if (num == Ps2KeyboardGetScancodeSet()) {
+        return 0;
+    } else {
+        return EIO;
+    }
+}
+
+static void PAGEABLE_CODE_SECTION Ps2KeyboardSetTranslation(bool enable) {
+    uint8_t config = Ps2ControllerGetConfiguration();
+    if (enable) {
+        config |= 1 << 6;
+    } else {
+        config &= ~(1 << 6);
+    }
+    Ps2ControllerSetConfiguration(config);
+}
+
+void PAGEABLE_CODE_SECTION InitPs2Keyboard(void) {
+    Ps2KeyboardSetTranslation(true);
+    Ps2KeyboardSetScancodeSet(1);
+
+    int res = Ps2ControllerTestPort(false);
+    if (res != 0) {
+        return;
+    }
+
+    bool translation_on = Ps2ControllerGetConfiguration() & (1 << 6);
+    int scancode_set = Ps2KeyboardGetScancodeSet();
+
+    if (scancode_set == 3 || scancode_set == -1) {
+        int res = Ps2KeyboardSetScancodeSet(translation_on ? 2 : 1);
+        if (res != 0) {
+            LogDeveloperWarning("PS/2 keyboard: could not switch out of scancode set %d!\n", scancode_set);
+        }
+
+    } else if (scancode_set == 1 && translation_on) {
+        int res = Ps2KeyboardSetScancodeSet(2);
+        if (res != 0) {
+            Ps2KeyboardSetScancodeSet(1);
+            Ps2KeyboardSetTranslation(false);
+        }
+
+    } else if (scancode_set == 2 && !translation_on) {
+        int res = Ps2KeyboardSetScancodeSet(1);
+        if (res != 0) {
+            Ps2KeyboardSetScancodeSet(2);
+            Ps2KeyboardSetTranslation(true);
+        }
+
+    }
+
+    RegisterIrqHandler(PIC_IRQ_BASE + 1, Ps2KeyboardIrqHandler);
+    Ps2ControllerEnableDevice(false);
+    Ps2ControllerSetIrqEnable(true, false);
 }

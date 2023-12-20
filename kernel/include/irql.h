@@ -44,6 +44,7 @@
 #define IRQL_HIGH           41
 
 #include <common.h>
+#include <assert.h>
 
 void PostponeScheduleUntilStandardIrql(void);
 void DeferUntilIrql(int irql, void(*handler)(void*), void* context);

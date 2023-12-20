@@ -29,11 +29,19 @@ SECTIONS
 		*(.rodata)
 	}
 
+
+	. = ALIGN(4096);
+	.pageablek ALIGN(4096) : AT (ADDR (.data) + SIZEOF(.data) - 0xC0000000)
+	{
+		*(.pageablektext)
+		*(.pageablekdata)
+	}
+	
 	.data ALIGN(4096) : AT (ADDR (.data) - 0xC0000000)
 	{
 		*(.data)
 	}
-	
+
 	.bss ALIGN(4096) : AT (ADDR (.bss) - 0xC0000000)
 	{
 		*(COMMON)

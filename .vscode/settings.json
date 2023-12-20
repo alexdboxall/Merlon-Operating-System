@@ -108,7 +108,9 @@
         "stacktrace": "c",
         "dynamic_bitset": "c",
         "__bit_reference": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "interrupt.h": "c",
+        "filesystem.h": "c"
     },
     "files.exclude": {
         "**/.git": true,
