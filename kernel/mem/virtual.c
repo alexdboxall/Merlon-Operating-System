@@ -17,6 +17,8 @@
 #include <vfs.h>
 #include <errno.h>
 
+// TODO: we need recursive VAS locks
+
 /**
  * Stores a pointer to any kernel VAS. Ensures that when processes are destroyed, we are using a VAS
  * that is different from the VAS that's being deleted. 
@@ -206,6 +208,8 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
 void EvictVirt(void) {
     MAX_IRQL(IRQL_STANDARD);
 
+    LogDeveloperWarning("we would be evicting here...\n");
+    //PanicEx(PANIC_NOT_IMPLEMENTED, "EvictVirt");
 }
 
 static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
@@ -674,6 +678,7 @@ int GetVirtPermissions(size_t virtual) {
 }
 
 void UnmapVirt(size_t virtual, size_t bytes) {
+    LogWriteSerial("UnmapVirt A\n");
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     bool needs_tlb_flush = false;
 
@@ -700,7 +705,7 @@ void UnmapVirt(size_t virtual, size_t bytes) {
                  *       remember to defer it
                  */
             }
-            if (entry->file) { 
+            if (entry->file && entry->write) { 
                 DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
             }
             if (entry->allocated) {

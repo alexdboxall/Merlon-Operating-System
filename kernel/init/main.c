@@ -65,7 +65,20 @@ void InitUserspace(void) {
 
 void InitThread(void*) {
     InitFilesystemTable();
-    ArchInitDev();
+    ArchInitDev(false);
+
+    struct open_file* sys_folder;
+    int res = OpenFile("drv0:/System", O_RDONLY, 0, &sys_folder);
+    if (res != 0) {
+        Panic(PANIC_NO_FILESYSTEM);
+    }
+    res = AddVfsMount(sys_folder->node, "sys");
+    if (res != 0) {
+        Panic(PANIC_NO_FILESYSTEM);
+    }
+
+    InitSymbolTable();
+    ArchInitDev(true);
     InitUserspace();
 }
 
@@ -112,7 +125,6 @@ void KernelMain(void) {
 
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
-    InitSymbolTable();
     InitRandomDevice();
     InitNullDevice();
     InitDbgScreen();

@@ -24,6 +24,11 @@
 #define HEAP_ALLOW_PAGING   4   
 #define HEAP_FORCE_PAGING   8
 
+/*
+ * Allocates to yet another pool where metadata is not kept. Cannot call FreeHeap or ReallocHeap on this memory.
+ */
+#define HEAP_UNFREEABLE     16
+
 void* AllocHeap(size_t size);
 void* AllocHeapEx(size_t size, int flags);
 void* ReallocHeap(void* ptr, size_t size);

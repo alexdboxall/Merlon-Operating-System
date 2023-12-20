@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <heap.h>
 #include <panic.h>
+#include <log.h>
 #include <virtual.h>
 #include <radixtrie.h>
 #include <fcntl.h>
@@ -65,14 +66,22 @@ void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
 
     symbol_table = RadixTrieCreate();
 
-    // TODO: load the kernel symbols.
+    struct open_file* kernel_file;
+    int res = OpenFile("sys:/kernel.exe", O_RDONLY, 0, &kernel_file);
+    if (res != 0) {
+        Panic(PANIC_NO_FILESYSTEM);
+    }
+    LogWriteSerial("about to load the kernel symbols...\n");
+    ArchLoadKernelSymbols(kernel_file);
+    CloseFile(kernel_file);
 }
 
 void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
     EXACT_IRQL(IRQL_STANDARD);
 
-    struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
+    LogWriteSerial("Found a kernel symbol: %s for address 0x%X... ", symbol, address);
 
+    struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
     AcquireMutex(symbol_table_lock, -1);
     RadixTrieInsert(symbol_table, &b, (void*) address);
     ReleaseMutex(symbol_table_lock);

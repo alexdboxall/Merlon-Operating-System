@@ -1,15 +1,13 @@
 KernelMain: kernel is initialising...
-backup heap: largest is 0x2000, total is 0x2000
+backup heap: largest is 0x3000, total is 0x3000
 MOUNTED TO THE VFS: rand
 MOUNTED TO THE VFS: null
 backup heap: largest is 0x4000, total is 0x5000
 backup heap: largest is 0x4000, total is 0x4000
 backup heap: largest is 0x3000, total is 0x3000
 backup heap: largest is 0x4000, total is 0x6000
-backup heap: largest is 0x4000, total is 0x5000
+backup heap: largest is 0x4000, total is 0x6000
 MOUNTED TO THE VFS: con
-A
-B
 INIT IDE -3
 INIT IDE -2
 INIT IDE -1
@@ -24,25 +22,218 @@ HandleVirtFault A, 0xD00D21FE, 0
 A
 B
 need to get entry for 0xD00D21FE
-C -> 0xD0003DEC
+C -> 0xD0003EEC
 
 entry: v 0xD00D2000, p 0x0. aclrf = 00001
 HandleVirtFault B
 bringing into memory...
 bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00D2000, file 0xD0003ABC, offset 0x0
+Deferring a virt disk read to virtual 0xD00D2000, file 0xD0003B9C, offset 0x0
 Page fault totally done.
-found a partition! 0x200 -> 0x40000000
-Trying to mount partition as filesystem: demofs... success!
+found a partition! 0x0 -> 0x3FFFE00
 MOUNTED TO THE VFS: drv0
-Added mount point...
 INIT IDE 3
 we have a second PS/2 port
+MOUNTED TO THE VFS: sys
+Page fault: cr2 0xD00D3004, eip 0xC010C155, nos-err 0x2
+HandleVirtFault A, 0xD00D3004, 2
+A
+B
+need to get entry for 0xD00D3004
+C -> 0xD00035DC
+
+entry: v 0xD00D3000, p 0x0. aclrf = 00000
+HandleVirtFault B
+bringing into memory...
+Page fault totally done.
+about to load the kernel symbols...
+backup heap: largest is 0x4000, total is 0x4000
+Page fault: cr2 0xD00D7000, eip 0xC010D6FA, nos-err 0x0
+HandleVirtFault A, 0xD00D7000, 0
+A
+B
+need to get entry for 0xD00D7000
+C -> 0xD000338C
+
+entry: v 0xD00D7000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00D7000, file 0xD00033AC, offset 0x0
+Page fault totally done.
+Page fault: cr2 0xD00ED3DC, eip 0xC010D742, nos-err 0x0
+HandleVirtFault A, 0xD00ED3DC, 0
+A
+B
+need to get entry for 0xD00ED3DC
+C -> 0xD0004DAC
+
+entry: v 0xD00ED000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00ED000, file 0xD00033AC, offset 0x16000
+Page fault totally done.
+Page fault: cr2 0xD00E826C, eip 0xC010D7F2, nos-err 0x0
+HandleVirtFault A, 0xD00E826C, 0
+A
+B
+need to get entry for 0xD00E826C
+C -> 0xD0004F1C
+
+entry: v 0xD00E8000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00E8000, file 0xD00033AC, offset 0x11000
+Page fault totally done.
+Page fault: cr2 0xD00EADA0, eip 0xC0101284, nos-err 0x0
+HandleVirtFault A, 0xD00EADA0, 0
+A
+B
+need to get entry for 0xD00EADA0
+C -> 0xD0004E2C
+
+entry: v 0xD00EA000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00EA000, file 0xD00033AC, offset 0x13000
+Page fault totally done.
+Found a kernel symbol: AvlGetHeight for address 0xC010130A... Found a kernel symbol: AvlGet for address 0xC0101345... Found a kernel symbol: AvlContains for address 0xC0101382... Found a kernel symbol: AvlDefaultComparator for address 0xC01013D3... Found a kernel symbol: AvlDestroy for address 0xC01013E5... Found a kernel symbol: AvlPrint for address 0xC0101420... Found a kernel symbol: AvlGetBalance for address 0xC010145D... Found a kernel symbol: AvlBalance for address 0xC0101484... Found a kernel symbol: AvlDelete for address 0xC01014EC... Found a kernel symbol: AvlInsert for address 0xC010157F... Found a kernel symbol: BlockingBufferGetAfterAcquisition for address 0xC010176A... Found a kernel symbol: SwapElements for address 0xC0101AD5... Found a kernel symbol: CreateShortListByTruncatingLong for address 0xC010C000... Found a kernel symbol: SetBitOfLongList for address 0xC010C016... Found a kernel symbol: RemoveStartOfShortList for address 0xC010C046... Found a kernel symbol: RemoveStartOfLongList for address 0xC010C0DC... Found a kernel symbol: CreateNode for address 0xC010C147... Found a kernel symbol: CheckOpen for address 0xC0101FC5... Found a kernel symbol: Ioctl for address 0xC0101FC8... Found a kernel symbol: DirentType for address 0xC0101FCE... Found a kernel symbol: Stat for address 0xC0101FD1... Found a kernel symbol: dev_ops for address 0xC010A000... Found a kernel symbol: IsSeekable for address 0xC0102055... Found a kernel symbol: DirentType for address 0xC0102058... Found a kernel symbol: Stat for address 0xC010205B... Found a kernel symbol: Create for address 0xC01020DD... Found a kernel symbol: Access.isra.0 for address 0xC0102118... Found a kernel symbol: Write for address 0xC010221C... Found a kernel symbol: Read for address 0xC0102231... Found a kernel symbol: dev_ops for address 0xC010A040... Found a kernel symbol: SubordinateIsTty for address 0xC010249C... Found a kernel symbol: SubordinateStat for address 0xC01024A2... Found a kernel symbol: SubordinateWrite for address 0xC01024A7... Found a kernel symbol: MasterWrite for address 0xC01024FC... Found a kernel symbol: MasterRead for address 0xC0102547... Found a kernel symbol: SubordinateRead for address 0xC010258E... Found a kernel symbol: LineProcessor for address 0xC0102608... Found a kernel symbol: master_operations for address 0xC010A0C0... Found a kernel symbol: subordinate_operations for address 0xC010A080... Found a kernel symbol: Read for address 0xC0102820... Found a kernel symbol: dev_ops for address 0xC010A100... Page fault: cr2 0xD00EB012, eip 0xC0101284, nos-err 0x0
+HandleVirtFault A, 0xD00EB012, 0
+A
+B
+need to get entry for 0xD00EB012
+C -> 0xD0004E5C
+
+entry: v 0xD00EB000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00EB000, file 0xD00033AC, offset 0x14000
+Page fault totally done.
+Found a kernel symbol: fs_table_lock for address 0xC0110000... Found a kernel symbol: num_filesystems for address 0xC0110004... Found a kernel symbol: registered_filesystems for address 0xC0110020... Found a kernel symbol: DummyAppThread for address 0xC0102A0C... Found a kernel symbol: InitCpuTableEntry for address 0xC0102BBA... Found a kernel symbol: cpu_table for address 0xC0110900... Found a kernel symbol: boot_cpu_data for address 0xC0110060... Found a kernel symbol: num_cpus for address 0xC010E000... Found a kernel symbol: irq_table for address 0xC0110D00... Found a kernel symbol: SetSizeTags for address 0xC0102F22... Found a kernel symbol: MarkSwappability for address 0xC0102F35... Found a kernel symbol: GetInsertionIndex for address 0xC0102F4C... Found a kernel symbol: free_list_block_sizes for address 0xC010A140... Found a kernel symbol: RestoreEmergencyPages for address 0xC0102F73... Found a kernel symbol: emergency_blocks for address 0xC010E020... Found a kernel symbol: RemoveBlock for address 0xC0103076... Found a kernel symbol: _head_block_swappable for address 0xC0112020... Found a kernel symbol: _head_block for address 0xC01120C0... Found a kernel symbol: AddBlock.isra.0 for address 0xC01030BE... Found a kernel symbol: AllocateBlock for address 0xC01031E6... Found a kernel symbol: unfreeable_pageable_area for address 0xC0112008... Found a kernel symbol: unfreeable_nonpageable_area for address 0xC0112004... Found a kernel symbol: entry_thread for address 0xC0112000... Found a kernel symbol: heap_lock for address 0xC0112160... Found a kernel symbol: bootstrap_memory_area for address 0xC0113000... Found a kernel symbol: IsBitmapEntryFree for address 0xC0103845... Found a kernel symbol: allocation_bitmap for address 0xC0117040... Found a kernel symbol: AllocateBitmapEntry for address 0xC010385C... Found a kernel symbol: DeallocateBitmapEntry for address 0xC0103872... Page fault: cr2 0xD00D4000, eip 0xC010C3E7, nos-err 0x2
+HandleVirtFault A, 0xD00D4000, 2
+A
+B
+need to get entry for 0xD00D4000
+C -> 0xD0003B34
+
+entry: v 0xD00D4000, p 0x0. aclrf = 00000
+HandleVirtFault B
+bringing into memory...
+Page fault totally done.
+Found a kernel symbol: EvictPagesIfNeeded for address 0xC0103888... Found a kernel symbol: pages_left for address 0xC0117028... Found a kernel symbol: phys_lock for address 0xC0117000... Found a kernel symbol: allocation_stack for address 0xC0117030... Found a kernel symbol: allocation_stack_pointer for address 0xC011702C... Found a kernel symbol: highest_valid_page_index for address 0xC0117020... Found a kernel symbol: total_pages for address 0xC0117024... Found a kernel symbol: VirtAvlComparator for address 0xC0103C07... Found a kernel symbol: DeleteFromAvl for address 0xC0103C1D... Found a kernel symbol: GetVirtEntry.isra.0 for address 0xC0103C6E... Found a kernel symbol: hideous_allocator.1 for address 0xC010E0E4... Found a kernel symbol: hideous_allocator.0 for address 0xC010E0E0... Found a kernel symbol: DeferDiskWrite for address 0xC0104080... Found a kernel symbol: PerformDeferredAccess for address 0xC0104512... Found a kernel symbol: BringIntoMemoryFromCow for address 0xC0104198... Found a kernel symbol: CopyVasRecursive for address 0xC0104587... Found a kernel symbol: BringIntoMemory.isra.0 for address 0xC01046E9... Found a kernel symbol: kernel_vas for address 0xC0137044... Found a kernel symbol: virt_initialised for address 0xC0137040... Found a kernel symbol: rand_seed for address 0xC010E0E8... Found a kernel symbol: CleanerThread for address 0xC010C5B1... Found a kernel symbol: cleaner_semaphore for address 0xC0137048... Found a kernel symbol: terminated_list for address 0xC013704C... Found a kernel symbol: NotifyCleaner for address 0xC0104CCF... Found a kernel symbol: IdleThread for address 0xC0104D80... Found a kernel symbol: KillRemainingThreads for address 0xC010C606... Found a kernel symbol: process_table_mutex for address 0xC0137060... Found a kernel symbol: process_table for address 0xC0137064... Found a kernel symbol: ReapProcess for address 0xC010C68C... Found a kernel symbol: OrphanChildProcesses for address 0xC010C70C... Found a kernel symbol: KillProcessHelper for address 0xC010C777... Found a kernel symbol: TryReapProcessAux.isra.0 for address 0xC010C7F3... Found a kernel symbol: pid_lock for address 0xC0137080... Found a kernel symbol: next_pid for address 0xC010E0F0... Found a kernel symbol: GetMinPriorityValueForPolicy for address 0xC0104E99... Found a kernel symbol: prev_time.3 for address 0xC01370E8... Found a kernel symbol: UpdateTimesliceExpiry for address 0xC0104F65... Found a kernel symbol: SwitchToNewTask for address 0xC0104FB5... Found a kernel symbol: ready_list for address 0xC0137140... Found a kernel symbol: innermost_lock for address 0xC0137100... Found a kernel symbol: scheduler_lock for address 0xC0137120... Found a kernel symbol: initialised.2 for address 0xC01370E0... Found a kernel symbol: thread_id_lock.1 for address 0xC01370C0... Found a kernel symbol: next_thread_id.0 for address 0xC01370A0... Found a kernel symbol: sleep_queue for address 0xC0137174... Found a kernel symbol: sleep_overflow_list for address 0xC0137168... Found a kernel symbol: timer_lock for address 0xC0137180... Found a kernel symbol: system_time for address 0xC0137160... Found a kernel symbol: vesa_newline for address 0xC010571A... Found a kernel symbol: data for address 0xC01371A0... Found a kernel symbol: ConvertToColourDepth.part.0 for address 0xC0105783... Found a kernel symbol: ConsoleDriverThread for address 0xC0105AAE... Found a kernel symbol: console_subordinate for address 0xC01371B0... Found a kernel symbol: open_console_master for address 0xC01371AC... Found a kernel symbol: console_master for address 0xC01371B4... backup heap: largest is 0x3000, total is 0x3000
+Found a kernel symbol: open_console_subordinate for address 0xC01371A8... Found a kernel symbol: console_initialised for address 0xC01371A4... Found a kernel symbol: DriverTableComparator for address 0xC010CA7D... Found a kernel symbol: driver_table_lock for address 0xC01371C4... Found a kernel symbol: loaded_drivers for address 0xC01371BC... Found a kernel symbol: symbol_table_lock for address 0xC01371C0... Page fault: cr2 0xD00D5000, eip 0xC010C00E, nos-err 0x2
+HandleVirtFault A, 0xD00D5000, 2
+A
+B
+need to get entry for 0xD00D5000
+C -> 0xD0003C8C
+
+entry: v 0xD00D5000, p 0x0. aclrf = 00000
+HandleVirtFault B
+bringing into memory...
+Page fault totally done.
+Found a kernel symbol: symbol_table for address 0xC01371B8... Found a kernel symbol: logcnv for address 0xC0105C5B... Found a kernel symbol: log_intnv for address 0xC0105C8B... Found a kernel symbol: LogWriteSerialVa for address 0xC0105CE3... Found a kernel symbol: call_stack_ptr for address 0xC01371C8... Found a kernel symbol: message_table for address 0xC010A1E0... Found a kernel symbol: AppendNumberToString.isra.0 for address 0xC010622A... Found a kernel symbol: type_table_lock for address 0xC0137200... Found a kernel symbol: type_table for address 0xC0137220... Found a kernel symbol: next_mounted_disk_num for address 0xC01371E0... Found a kernel symbol: type_strings for address 0xC010A260... Found a kernel symbol: ValidateCopy for address 0xC01065C9... Found a kernel symbol: CleanupVnodeStack for address 0xC01068EA... Found a kernel symbol: CheckValidComponentName for address 0xC0106924... Found a kernel symbol: GetPathComponent.constprop.0 for address 0xC0106960... Found a kernel symbol: GetVnodeFromPath.part.0 for address 0xC01069B2... Found a kernel symbol: mount_points for address 0xC0137240... Found a kernel symbol: GetVnodeFromPath for address 0xC0106B82... Found a kernel symbol: vfs_lock for address 0xC0137260... Found a kernel symbol: CheckVnode for address 0xC0106CBB... Found a kernel symbol: Write for address 0xC0107432... Found a kernel symbol: DirentType for address 0xC0107438... Found a kernel symbol: Stat for address 0xC0107444... Found a kernel symbol: Follow for address 0xC01074B3... Found a kernel symbol: dev_ops for address 0xC010A280... Found a kernel symbol: Close for address 0xC0107551... Found a kernel symbol: Readdir for address 0xC0107566... Found a kernel symbol: Read for address 0xC0107592... Found a kernel symbol: CheckOpen for address 0xC01075C0... Found a kernel symbol: DoesFileExist for address 0xC01078AC... Page fault: cr2 0xD00E900C, eip 0xC010D7F2, nos-err 0x0
+HandleVirtFault A, 0xD00E900C, 0
+A
+B
+need to get entry for 0xD00E900C
+C -> 0xD0003234
+
+entry: v 0xD00E9000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00E9000, file 0xD00033AC, offset 0x12000
+Page fault totally done.
+Found a kernel symbol: ready_for_irqs for address 0xC0137280... Found a kernel symbol: Stat for address 0xC0107CF4... Found a kernel symbol: Follow for address 0xC0107D64... Found a kernel symbol: Create for address 0xC0107DA7... Found a kernel symbol: IdeIo for address 0xC0107EA0... Found a kernel symbol: Write for address 0xC01081DD... Found a kernel symbol: Read for address 0xC01081F9... Found a kernel symbol: dev_ops for address 0xC010A2C0... Found a kernel symbol: prev.0 for address 0xC010F120... Found a kernel symbol: HandlePit for address 0xC0108497... Found a kernel symbol: pit_nanos for address 0xC0137288... Found a kernel symbol: Ps2Wait.isra.0 for address 0xC0108501... Found a kernel symbol: Ps2ControllerRead for address 0xC0108523... Found a kernel symbol: set1_map_lower_norm for address 0xC010D9C0... Found a kernel symbol: set1_map_upper_caps for address 0xC010D840... Found a kernel symbol: set1_map_lower_caps for address 0xC010D8C0... Found a kernel symbol: set1_map_upper_norm for address 0xC010D940... Found a kernel symbol: Ps2KeyboardIrqHandler for address 0xC01086D6... Found a kernel symbol: Ps2KeyboardGetScancodeSet for address 0xC010D227... Found a kernel symbol: Ps2KeyboardSetScancodeSet for address 0xC010D27D... Found a kernel symbol: Ps2KeyboardSetTranslation for address 0xC010D2AF... Found a kernel symbol: x86SetIdtEntry for address 0xC0108798... Found a kernel symbol: memory_table for address 0xC01372A8... Found a kernel symbol: table_length.2 for address 0xC01372A4... Found a kernel symbol: bytes_used.1 for address 0xC01372A0... Found a kernel symbol: range.0 for address 0xC0137298... Found a kernel symbol: x86AllocatePageTable for address 0xC0108A63... Found a kernel symbol: x86MapPage for address 0xC0108A9F... Found a kernel symbol: kernel_page_directory for address 0xC0139000... Found a kernel symbol: vas_data_table for address 0xC013A000... Found a kernel symbol: vas_table for address 0xC013A080... Found a kernel symbol: first_page_table for address 0xC0138000... Found a kernel symbol: MBALIGN for address 0x1... Found a kernel symbol: MEMINFO for address 0x2... Found a kernel symbol: FLAGS for address 0x3... Found a kernel symbol: MAGIC for address 0x1BADB002... Found a kernel symbol: CHECKSUM for address 0xE4524FFB... Found a kernel symbol: stack_bottom for address 0xC013B000... Found a kernel symbol: stack_top for address 0xC013C000... Found a kernel symbol: _start.mapNextPage for address 0x100035... Found a kernel symbol: _start.keep for address 0x100040... Found a kernel symbol: _start.incrementPage for address 0x100042... Found a kernel symbol: _start.endMapping for address 0x10004D... Found a kernel symbol: _start.end for address 0x10007D... Found a kernel symbol: KernelEntryPoint for address 0xC0108C7F... Found a kernel symbol: x86LoadGdt.reloadSegments for address 0xC0108CEE... Found a kernel symbol: int_common_handler for address 0xC0108E3F... Found a kernel symbol: ArchSpinlockAcquire.try_acquire for address 0xC0108E94... Page fault: cr2 0xD00D6008, eip 0xC010C155, nos-err 0x2
+HandleVirtFault A, 0xD00D6008, 2
+A
+B
+need to get entry for 0xD00D6008
+C -> 0xD0003B64
+
+entry: v 0xD00D6000, p 0x0. aclrf = 00000
+HandleVirtFault B
+bringing into memory...
+Page fault totally done.
+Found a kernel symbol: ArchSpinlockAcquire.spin_wait for address 0xC0108E9C... Found a kernel symbol: __udivdi3 for address 0xC0108EF8... Found a kernel symbol: __udivmoddi4 for address 0xC0109004... Found a kernel symbol: _kernel_start for address 0x100000... Found a kernel symbol: x86AreCpusOn for address 0xC0108D1D... Found a kernel symbol: ArchReadTimestamp for address 0xC0108D14... Found a kernel symbol: _start for address 0x10000C... Found a kernel symbol: boot_page_table1 for address 0xC013D000... Found a kernel symbol: boot_page_directory for address 0xC013C000... Found a kernel symbol: x86SetCr3 for address 0xC0108E84... Found a kernel symbol: _kernel_end for address 0xC013E000... Found a kernel symbol: x86KernelMemoryToPhysical for address 0xC01089FE... Found a kernel symbol: x86_grub_table for address 0xC0108C7B... Found a kernel symbol: x86LoadTss for address 0xC0108E70... Found a kernel symbol: x86LoadIdt for address 0xC0108D00... Found a kernel symbol: isr96 for address 0xC0108DD9... Found a kernel symbol: irq15 for address 0xC0108E39... Found a kernel symbol: irq14 for address 0xC0108E33... Found a kernel symbol: irq13 for address 0xC0108E2D... Found a kernel symbol: irq12 for address 0xC0108E27... Found a kernel symbol: irq11 for address 0xC0108E21... Found a kernel symbol: irq10 for address 0xC0108E1B... Found a kernel symbol: irq9 for address 0xC0108E15... Found a kernel symbol: irq8 for address 0xC0108E0F... Found a kernel symbol: irq7 for address 0xC0108E09... Found a kernel symbol: irq6 for address 0xC0108E03... Found a kernel symbol: irq5 for address 0xC0108DFD... Found a kernel symbol: irq4 for address 0xC0108DF7... Found a kernel symbol: irq3 for address 0xC0108DF1... Found a kernel symbol: irq2 for address 0xC0108DEB... Found a kernel symbol: irq1 for address 0xC0108DE5... Found a kernel symbol: irq0 for address 0xC0108DDF... Found a kernel symbol: isr21 for address 0xC0108DD3... Found a kernel symbol: isr20 for address 0xC0108DCD... Found a kernel symbol: isr19 for address 0xC0108DC7... Found a kernel symbol: isr18 for address 0xC0108DC1... Found a kernel symbol: isr17 for address 0xC0108DBD... Found a kernel symbol: isr16 for address 0xC0108DB4... Found a kernel symbol: isr15 for address 0xC0108DAB... Found a kernel symbol: isr14 for address 0xC0108DA4... Found a kernel symbol: isr13 for address 0xC0108D9D... Found a kernel symbol: isr12 for address 0xC0108D96... Found a kernel symbol: isr11 for address 0xC0108D8F... Found a kernel symbol: isr10 for address 0xC0108D88... Found a kernel symbol: isr9 for address 0xC0108D7F... Found a kernel symbol: isr8 for address 0xC0108D78... Found a kernel symbol: isr7 for address 0xC0108D6F... Found a kernel symbol: isr6 for address 0xC0108D66... Found a kernel symbol: isr5 for address 0xC0108D5D... Found a kernel symbol: isr4 for address 0xC0108D54... Found a kernel symbol: isr3 for address 0xC0108D4B... Found a kernel symbol: isr2 for address 0xC0108D42... Found a kernel symbol: isr1 for address 0xC0108D39... Found a kernel symbol: isr0 for address 0xC0108D30... Found a kernel symbol: x86AddTssToGdt for address 0xC0108760... Found a kernel symbol: x86LoadGdt for address 0xC0108CE0... Found a kernel symbol: caps_lock_on for address 0xC0137290... Found a kernel symbol: control_held for address 0xC0137293... Found a kernel symbol: shift_r_held for address 0xC0137291... Found a kernel symbol: shift_held for address 0xC0137292... Found a kernel symbol: release_mode for address 0xC0137294... Found a kernel symbol: HandleCharacter for address 0xC010D0CE... Found a kernel symbol: InitPs2Keyboard for address 0xC010D2D9... Found a kernel symbol: Ps2ControllerSetIrqEnable for address 0xC0108612... Found a kernel symbol: Ps2ControllerTestPort for address 0xC01085F4... Found a kernel symbol: Ps2ControllerEnableDevice for address 0xC01085E2... Found a kernel symbol: Ps2ControllerDisableDevice for address 0xC01085D0... Found a kernel symbol: Ps2DeviceWrite for address 0xC0108554... Found a kernel symbol: Ps2DeviceRead for address 0xC010854F... Found a kernel symbol: Ps2ControllerSetConfiguration for address 0xC0108536... Found a kernel symbol: Ps2ControllerGetConfiguration for address 0xC010852D... Found a kernel symbol: DisablePicLines for address 0xC0108443... Found a kernel symbol: IsPicIrqSpurious for address 0xC01083E9... Found a kernel symbol: InitPs2 for address 0xC0108640... Found a kernel symbol: InitIde for address 0xC0108215... Found a kernel symbol: IdePoll for address 0xC0107E41... Found a kernel symbol: IdeCheckError for address 0xC0107DEA... Found a kernel symbol: ide_lock for address 0xC0137284... Found a kernel symbol: x86IsReadyForIrqs for address 0xC0107CD2... Found a kernel symbol: SendPicEoi for address 0xC0108433... Found a kernel symbol: x86GetCr2 for address 0xC0108E80... Found a kernel symbol: x86HandleInterrupt for address 0xC0107C38... Found a kernel symbol: ArchSetPowerState for address 0xC0107BE0... Page fault: cr2 0xD00EC000, eip 0xC0101284, nos-err 0x0
+HandleVirtFault A, 0xD00EC000, 0
+A
+B
+need to get entry for 0xD00EC000
+C -> 0xD0004D24
+
+entry: v 0xD00EC000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00EC000, file 0xD00033AC, offset 0x15000
+Page fault totally done.
+Found a kernel symbol: x86MakeReadyForIrqs for address 0xC0107CD8... Found a kernel symbol: ArchEnableInterrupts for address 0xC0108D17... Found a kernel symbol: InitPit for address 0xC01084B1... Found a kernel symbol: InitPic for address 0xC0108462... Found a kernel symbol: x86InitTss for address 0xC010887F... Found a kernel symbol: x86InitIdt for address 0xC01087D9... Found a kernel symbol: x86InitGdt for address 0xC01086F1... Found a kernel symbol: UnformatFatShortName for address 0xC0107B6E... Found a kernel symbol: FormatFatShortName for address 0xC0107B20... Found a kernel symbol: GetFatShortFilename for address 0xC01078FA... Found a kernel symbol: DetectFatPartition for address 0xC01078A6... Found a kernel symbol: WriteFatEntry for address 0xC0107773... Found a kernel symbol: ReadFatEntry for address 0xC01076AB... Found a kernel symbol: WriteFatCluster for address 0xC010767F... Found a kernel symbol: ReadFatCluster for address 0xC0107654... Found a kernel symbol: demofs_read_directory_entry for address 0xC01072B8... Found a kernel symbol: demofs_follow for address 0xC0107174... Found a kernel symbol: demofs_read_file for address 0xC0106FA8... Found a kernel symbol: demofs_read_inode for address 0xC0106F6E... Found a kernel symbol: VnodeOpClose for address 0xC0106E40... Found a kernel symbol: VnodeOpIsTty for address 0xC0106E24... Found a kernel symbol: VnodeOpIsSeekable for address 0xC0106E08... Found a kernel symbol: VnodeOpIoctl for address 0xC0106DDE... Found a kernel symbol: VnodeOpWrite for address 0xC0106DBC... Found a kernel symbol: VnodeOpReaddir for address 0xC0106D9A... Found a kernel symbol: ReadDirectory for address 0xC010D03C... backup heap: largest is 0x4000, total is 0x6000
+Found a kernel symbol: VnodeOpRead for address 0xC0106D78... Found a kernel symbol: VnodeOpTruncate for address 0xC0106EE4... Found a kernel symbol: VnodeOpCheckOpen for address 0xC0106D4F... Found a kernel symbol: RemoveVfsMount for address 0xC010CDB3... Found a kernel symbol: VnodeOpFollow for address 0xC0106F06... Found a kernel symbol: VnodeOpDirentType for address 0xC0106F30... Found a kernel symbol: ReferenceVnode for address 0xC0106D2C... Found a kernel symbol: DereferenceVnode for address 0xC0106E47... Found a kernel symbol: MountedDeviceComparator for address 0xC01068CF... Found a kernel symbol: CreateTransferReadingFromUser for address 0xC0106898... Found a kernel symbol: CreateTransferWritingToUser for address 0xC0106863... Found a kernel symbol: ReadStringFromUsermode for address 0xC01067B2... Found a kernel symbol: WriteStringToUsermode for address 0xC010671D... Found a kernel symbol: DereferenceOpenFile for address 0xC0106586... Found a kernel symbol: ReferenceOpenFile for address 0xC0106563... Found a kernel symbol: DiskCreateHelper for address 0xC01064DB... Found a kernel symbol: DiskFollowHelper for address 0xC010649E... Found a kernel symbol: InitDiskPartitionHelper for address 0xC0106494... Found a kernel symbol: CreateDiskPartitions for address 0xC01063AC... Found a kernel symbol: GenerateNewRawDiskName for address 0xC0106337... Found a kernel symbol: CodepointsToUtf8 for address 0xC010614A... Found a kernel symbol: CodepointsToUtf16 for address 0xC01060B9... Found a kernel symbol: Utf8ToCodepoints for address 0xC0105F64... Found a kernel symbol: Utf16ToCodepoints for address 0xC0105EC9... Found a kernel symbol: __cyg_profile_func_exit for address 0xC0105E4F... Found a kernel symbol: __cyg_profile_func_enter for address 0xC0105E44... Found a kernel symbol: ArchLoadDriver for address 0xC010D3C0... Found a kernel symbol: RequireDriver for address 0xC010CC13... Found a kernel symbol: GetSymbolAddress for address 0xC010CBC7... Found a kernel symbol: AddSymbol for address 0xC010CB6D... Found a kernel symbol: CloseFile for address 0xC010D09B... Found a kernel symbol: ArchLoadKernelSymbols for address 0xC010D6B0... Found a kernel symbol: GetDriverAddress for address 0xC010CA96... Found a kernel symbol: PutcharConsole for address 0xC0105BF2... Found a kernel symbol: GetcharConsole for address 0xC0105BB1... Found a kernel symbol: SendKeystrokeConsole for address 0xC0105B6C... Found a kernel symbol: AssertionFail for address 0xC0105A7F... Found a kernel symbol: vesa_framebuffer for address 0xC0108C71... Found a kernel symbol: vesa_depth for address 0xC0108C70... Found a kernel symbol: vesa_height for address 0xC0108C77... Found a kernel symbol: vesa_width for address 0xC0108C75... Found a kernel symbol: vesa_pitch for address 0xC0108C79... Found a kernel symbol: DbgScreenPuts for address 0xC010599E... Found a kernel symbol: terminal_font for address 0xC010E120... Found a kernel symbol: SCREEN_WIDTH for address 0xC010E104... Found a kernel symbol: DbgScreenPutchar for address 0xC01057E9... Found a kernel symbol: SCREEN_HEIGHT for address 0xC010E100... Found a kernel symbol: SleepMilli for address 0xC0105703... Found a kernel symbol: SleepNano for address 0xC01056DF... Found a kernel symbol: SleepUntil for address 0xC010568F... Found a kernel symbol: ReceivedTimer for address 0xC01054C3... Found a kernel symbol: HandleSleepWakeups for address 0xC01053F8... Page fault: cr2 0xD00D8000, eip 0xC010C3ED, nos-err 0x2
+HandleVirtFault A, 0xD00D8000, 2
+A
+B
+need to get entry for 0xD00D8000
+C -> 0xD0003484
+
+entry: v 0xD00D8000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00D8000, file 0xD00033AC, offset 0x1000
+Page fault totally done.
+Found a kernel symbol: UnassignThreadToCpu for address 0xC0104A01... Found a kernel symbol: AssignThreadToCpu for address 0xC0104A01... Found a kernel symbol: ThreadInitialisationHandler for address 0xC01051EA... Found a kernel symbol: ArchPrepareStack for address 0xC0108EC0... Found a kernel symbol: ArchSwitchThread for address 0xC0108ECF... Found a kernel symbol: UpdateThreadTimeUsed for address 0xC0104F1A... Found a kernel symbol: CreateUserStack for address 0xC0104EBF... Found a kernel symbol: GetPid for address 0xC0101708... Found a kernel symbol: CreateProcessWithEntryPoint for address 0xC0104E64... Found a kernel symbol: CreateThreadEx for address 0xC0105084... Found a kernel symbol: KillProcess for address 0xC010CA3B... Found a kernel symbol: WaitProcess for address 0xC010C9CB... Found a kernel symbol: ForkProcess for address 0xC010C985... Found a kernel symbol: GetProcess for address 0xC0104E51... Found a kernel symbol: AddThreadToProcess for address 0xC0104E22... Found a kernel symbol: CreateProcess for address 0xC010C894... Found a kernel symbol: UnlockProcess for address 0xC0104DD3... Found a kernel symbol: LockProcess for address 0xC0104DBE... Found a kernel symbol: GetProcessFromPid for address 0xC010C64B... Found a kernel symbol: InitIdle for address 0xC0104DA0... Found a kernel symbol: ArchStallProcessor for address 0xC0108D1B... Found a kernel symbol: TerminateThread for address 0xC0104D1D... Found a kernel symbol: InitCleaner for address 0xC0104CDD... Found a kernel symbol: IsSpinlockHeld for address 0xC0104C5F... Found a kernel symbol: ArchSpinlockRelease for address 0xC0108EA8... Found a kernel symbol: ReleaseSpinlockDirect for address 0xC0104C5A... Found a kernel symbol: ArchSpinlockAcquire for address 0xC0108E90... Found a kernel symbol: AcquireSpinlockDirect for address 0xC0104C2A... Found a kernel symbol: GetSemaphoreCount for address 0xC010172F... Found a kernel symbol: AssertSchedulerLockHeld for address 0xC0104A01... Found a kernel symbol: CancelSemaphoreOfThread for address 0xC0104BD6... Found a kernel symbol: DestroySemaphore for address 0xC0104BA7... Found a kernel symbol: UnblockThread for address 0xC010501D... Found a kernel symbol: TryDequeueForSleep for address 0xC0105606... Found a kernel symbol: UnlockSchedulerX for address 0xC0105073... Found a kernel symbol: BlockThread for address 0xC0104EEF... Found a kernel symbol: QueueForSleep for address 0xC01055AD... Found a kernel symbol: GetSystemTimer for address 0xC0105543... Found a kernel symbol: LockSchedulerX for address 0xC0105062... Found a kernel symbol: srand for address 0xC0104A40... Found a kernel symbol: DestroyVas for address 0xC0104A01... Found a kernel symbol: BytesToPages for address 0xC01049F4... Found a kernel symbol: HandleVirtFault for address 0xC01048D6... Found a kernel symbol: ArchInitVirt for address 0xC0108B79... Found a kernel symbol: GetKernelVas for address 0xC010488E... Found a kernel symbol: ArchSetVas for address 0xC0108A51... Found a kernel symbol: SetVas for address 0xC0104872... Found a kernel symbol: LockVirt for address 0xC010481C... Found a kernel symbol: CopyVas for address 0xC01046A4... Found a kernel symbol: UnmapVirt for address 0xC0104433... Found a kernel symbol: GetVirtPermissions for address 0xC010439C... Found a kernel symbol: SetVirtPermissions for address 0xC010428F... Found a kernel symbol: UnlockVirt for address 0xC0104259... Found a kernel symbol: ArchUpdateMapping for address 0xC0108AFC... Found a kernel symbol: GetPhysFromVirt for address 0xC0104161... Found a kernel symbol: ArchUnmap for address 0xC0108B36... Found a kernel symbol: EvictPage for address 0xC01040E3... Found a kernel symbol: ArchFlushTlb for address 0xC0108B4D... Found a kernel symbol: ArchAddMapping for address 0xC0108B31... Found a kernel symbol: CreateVas for address 0xC0103D56... Found a kernel symbol: ArchInitVas for address 0xC0108B52... Found a kernel symbol: CreateVasEx for address 0xC0103D0D... Found a kernel symbol: AvlPrinter for address 0xC0103CCF... Found a kernel symbol: ArchVirtualToPhysical for address 0xC0108A05... Found a kernel symbol: ArchGetMemory for address 0xC01088CB... Found a kernel symbol: AllocPhysContiguous for address 0xC01039C1... Found a kernel symbol: AllocPhys for address 0xC010394E... Found a kernel symbol: DeallocPhysContiguous for address 0xC0103919... Found a kernel symbol: DeallocPhys for address 0xC01038C8... Found a kernel symbol: EvictVirt for address 0xC0103D76... Found a kernel symbol: ReallocHeap for address 0xC01036CB... Page fault: cr2 0xD00D9000, eip 0xC010C157, nos-err 0x2
+HandleVirtFault A, 0xD00D9000, 2
+A
+B
+need to get entry for 0xD00D9000
+C -> 0xD00034FC
+
+entry: v 0xD00D9000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00D9000, file 0xD00033AC, offset 0x2000
+Page fault totally done.
+Found a kernel symbol: IsVirtInitialised for address 0xC01049EE... Found a kernel symbol: DbgPrintListStats for address 0xC0103255... Found a kernel symbol: PostponeScheduleUntilStandardIrql for address 0xC0102EE7... Found a kernel symbol: Schedule for address 0xC010522E... Found a kernel symbol: ArchSetIrql for address 0xC0107CB7... Found a kernel symbol: ArchDisableInterrupts for address 0xC0108D19... Found a kernel symbol: DeferUntilIrql for address 0xC0102D73... Found a kernel symbol: GetIrql for address 0xC0102D64... Found a kernel symbol: LowerIrql for address 0xC0102E1B... Found a kernel symbol: ArchSendEoi for address 0xC0107CB2... Found a kernel symbol: RaiseIrql for address 0xC0102DE5... Found a kernel symbol: RespondToIrq for address 0xC0102CED... Found a kernel symbol: RegisterIrqHandler for address 0xC0102CA1... Found a kernel symbol: ArchGetCurrentCpuIndex for address 0xC0108D10... Found a kernel symbol: GetCpu for address 0xC0102C8D... Found a kernel symbol: GetCpuAtIndex for address 0xC0102C80... Found a kernel symbol: GetCpuCount for address 0xC0102C7A... Found a kernel symbol: ArchInitNextCpu for address 0xC0101FC5... Found a kernel symbol: ArchInitBootstrapCpu for address 0xC0107BB2... Found a kernel symbol: AllocHeapZero for address 0xC0103616... Found a kernel symbol: StartMultitasking for address 0xC0105373... Found a kernel symbol: InitProcess for address 0xC0104DE3... Found a kernel symbol: InitConsole for address 0xC0105AFD... Found a kernel symbol: InitDbgScreen for address 0xC01059C2... Found a kernel symbol: InitOtherCpu for address 0xC0102C3F... Found a kernel symbol: ReinitPhys for address 0xC0103B58... Found a kernel symbol: InitVirt for address 0xC0104894... Found a kernel symbol: InitBootstrapCpu for address 0xC0102C2E... Found a kernel symbol: InitDiskUtil for address 0xC01062BD... backup heap: largest is 0x4000, total is 0x5000
+Found a kernel symbol: InitScheduler for address 0xC0105338... Found a kernel symbol: InitTimer for address 0xC0105574... Found a kernel symbol: InitVfs for address 0xC0106BCF... Found a kernel symbol: InitIrql for address 0xC0102EF7... Found a kernel symbol: InitHeap for address 0xC010382D... Found a kernel symbol: InitPhys for address 0xC0103AF7... Found a kernel symbol: InitCpuTable for address 0xC0102C27... Found a kernel symbol: KernelMain for address 0xC0102B39... Found a kernel symbol: InitSymbolTable for address 0xC010CAE2... Found a kernel symbol: ArchInitDev for address 0xC01083CE... Found a kernel symbol: InitThread for address 0xC0102AD1... Found a kernel symbol: DbgScreenPrintf for address 0xC0105E2B... Found a kernel symbol: GetFreePhysKilobytes for address 0xC0103BFE... Found a kernel symbol: GetTotalPhysKilobytes for address 0xC0103BF5... Found a kernel symbol: InitUserspace for address 0xC0102A8F... Found a kernel symbol: CreateKernelTransfer for address 0xC010682E... Found a kernel symbol: OpenFile for address 0xC010CE67... Found a kernel symbol: PutsConsole for address 0xC0105C37... Found a kernel symbol: GenerateNewMountedDiskName for address 0xC01062E6... Found a kernel symbol: VnodeOpCreate for address 0xC0106E9A... Found a kernel symbol: DemofsMountCreator for address 0xC01075EF... Found a kernel symbol: InitFilesystemTable for address 0xC0102937... Found a kernel symbol: RegisterFilesystem for address 0xC0102888... Found a kernel symbol: InitRandomDevice for address 0xC010285C... Found a kernel symbol: rand for address 0xC0104A02... Found a kernel symbol: CreateThread for address 0xC01051C3... Found a kernel symbol: GetVas for address 0xC0103D87... Found a kernel symbol: CreatePseudoTerminal for address 0xC010276A... Found a kernel symbol: SetThreadPriority for address 0xC010538F... Found a kernel symbol: GetThread for address 0xC0104F0B... Found a kernel symbol: PerformTransfer for address 0xC010664D... Found a kernel symbol: GetPartitionsForDisk for address 0xC0102497... Found a kernel symbol: MapVirt for address 0xC0103D95... Found a kernel symbol: VnodeOpStat for address 0xC0106F4C... Found a kernel symbol: GetMbrPartitions for address 0xC01023E2... Found a kernel symbol: CreateMbrPartitionIfExists for address 0xC01022F4... Found a kernel symbol: MountFilesystemForDisk for address 0xC0102964... Found a kernel symbol: CreatePartition for address 0xC0102243... Found a kernel symbol: WriteFile for address 0xC0106C5C... Page fault: cr2 0xD00DA004, eip 0xC010C155, nos-err 0x2
+HandleVirtFault A, 0xD00DA004, 2
+A
+B
+need to get entry for 0xD00DA004
+C -> 0xD00032C4
+
+entry: v 0xD00DA000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00DA000, file 0xD00033AC, offset 0x3000
+Page fault totally done.
+Found a kernel symbol: ReadFile for address 0xC0106BFE... Found a kernel symbol: CreateOpenFile for address 0xC0106506... Found a kernel symbol: AddVfsMount for address 0xC010CCC0... Found a kernel symbol: CreateVnode for address 0xC0106CE8... Found a kernel symbol: InitNullDevice for address 0xC0102029... Found a kernel symbol: ThreadListDelete for address 0xC0101F54... Found a kernel symbol: ThreadListDeleteTop for address 0xC0101F38... Found a kernel symbol: ThreadListContains for address 0xC0101F12... Found a kernel symbol: ThreadListInsert for address 0xC0101EE9... Found a kernel symbol: ThreadListInit for address 0xC0101ED0... Found a kernel symbol: StackAdtSize for address 0xC0101EC1... Found a kernel symbol: StackAdtPop for address 0xC0101E9D... Found a kernel symbol: StackAdtPeek for address 0xC0101E83... Found a kernel symbol: StackAdtPush for address 0xC0101E74... Found a kernel symbol: StackAdtDestroy for address 0xC0101E58... Found a kernel symbol: StackAdtCreate for address 0xC0101E3D... Found a kernel symbol: RadixTrieCreateBoolListFromData64 for address 0xC010C523... Found a kernel symbol: RadixTrieCreateBoolListFromData for address 0xC010C4C4... Found a kernel symbol: RadixTrieGet for address 0xC010C418... Found a kernel symbol: LogDeveloperWarning for address 0xC0105E0B... Found a kernel symbol: RadixTrieInsert for address 0xC010C17E... Found a kernel symbol: RadixTrieCreate for address 0xC010C161... Found a kernel symbol: PriorityQueueGetUsedSize for address 0xC010172F... Found a kernel symbol: PriorityQueueGetCapacity for address 0xC0101708... Found a kernel symbol: PriorityQueuePop for address 0xC0101CD5... Found a kernel symbol: PriorityQueuePeek for address 0xC0101C99... Found a kernel symbol: PanicEx for address 0xC0105E56... Found a kernel symbol: PriorityQueueInsert for address 0xC0101BA3... Found a kernel symbol: PriorityQueueDestroy for address 0xC0101B86... Found a kernel symbol: PriorityQueueCreate for address 0xC0101B36... Found a kernel symbol: LinkedListGetDataFromNode for address 0xC0101ABA... Found a kernel symbol: LinkedListGetNextNode for address 0xC0101A9E... Found a kernel symbol: LinkedListGetFirstNode for address 0xC0101A9E... Found a kernel symbol: LinkedListDestroy for address 0xC0101A75... Found a kernel symbol: LinkedListSize for address 0xC0101708... Found a kernel symbol: LinkedListDeleteData for address 0xC0101A59... Found a kernel symbol: LinkedListDeleteIndex for address 0xC01019ED... Found a kernel symbol: Panic for address 0xC0105EA8... Found a kernel symbol: LinkedListGetData for address 0xC01019BF... Found a kernel symbol: LinkedListContains for address 0xC01019AB... Found a kernel symbol: LinkedListGetIndex for address 0xC010198C... Found a kernel symbol: LinkedListInsertEnd for address 0xC010193C... Found a kernel symbol: LinkedListInsertStart for address 0xC010190B... Found a kernel symbol: LinkedListCreate for address 0xC01018F3... Found a kernel symbol: BlockingBufferTryGet for address 0xC01018C2... Found a kernel symbol: BlockingBufferGet for address 0xC01018A5... Found a kernel symbol: AcquireSemaphore for address 0xC0104A7F... Found a kernel symbol: BlockingBufferAdd for address 0xC010182C... Found a kernel symbol: BlockingBufferDestroy for address 0xC0101807... Found a kernel symbol: InitSpinlock for address 0xC0104BF7... Found a kernel symbol: CreateSemaphore for address 0xC0104A51... Found a kernel symbol: BlockingBufferCreate for address 0xC01017A9... Found a kernel symbol: ReleaseSemaphore for address 0xC0104B4C... Found a kernel symbol: ReleaseSpinlockIrql for address 0xC0104CB1... Found a kernel symbol: AcquireSpinlockIrql for address 0xC0104C6A... Found a kernel symbol: AvlTreePrint for address 0xC010175A... Found a kernel symbol: AvlTreeGetData for address 0xC010174E... Found a kernel symbol: AvlTreeGetRight for address 0xC0101742... Found a kernel symbol: AvlTreeGetLeft for address 0xC0101737... Found a kernel symbol: AvlTreeGetRootNode for address 0xC010172F... Found a kernel symbol: AvlTreeDestroy for address 0xC010170F... Found a kernel symbol: AvlTreeSize for address 0xC0101708... Found a kernel symbol: AvlTreeGet for address 0xC01016F5... Found a kernel symbol: AvlTreeContains for address 0xC01016E2... Found a kernel symbol: AvlTreeDelete for address 0xC01016C1... Found a kernel symbol: AvlTreeInsert for address 0xC010167F... Found a kernel symbol: AvlTreeSetComparator for address 0xC0101670... Found a kernel symbol: AvlTreeSetDeletionHandler for address 0xC0101661... Found a kernel symbol: AvlTreeCreate for address 0xC0101642... Found a kernel symbol: LogWriteSerial for address 0xC0105DF5... Found a kernel symbol: FreeHeap for address 0xC0103628... Page fault: cr2 0xD00DB000, eip 0xC010C3E7, nos-err 0x2
+HandleVirtFault A, 0xD00DB000, 2
+A
+B
+need to get entry for 0xD00DB000
+C -> 0xD00034BC
+
+entry: v 0xD00DB000, p 0x0. aclrf = 00001
+HandleVirtFault B
+bringing into memory...
+bringing into memory from file...
+Deferring a virt disk read to virtual 0xD00DB000, file 0xD00033AC, offset 0x4000
+Page fault totally done.
+Found a kernel symbol: AllocHeap for address 0xC0103604... Found a kernel symbol: strdup for address 0xC01012E1... Found a kernel symbol: AllocHeapEx for address 0xC01032CF... Found a kernel symbol: strdup_pageable for address 0xC01012B7... Found a kernel symbol: strncpy for address 0xC010128E... Found a kernel symbol: strlen for address 0xC010127E... Found a kernel symbol: strcpy for address 0xC0101266... Found a kernel symbol: strcmp for address 0xC0101248... Found a kernel symbol: strcat for address 0xC0101223... Found a kernel symbol: memmove for address 0xC01011F4... Found a kernel symbol: memcpy for address 0xC01011DF... Found a kernel symbol: memset for address 0xC01011CA... Found a kernel symbol: strncmp for address 0xC010119C... Found a kernel symbol: memcmp for address 0xC0101169... Found a kernel symbol: memchr for address 0xC010114D... Found a kernel symbol: isxdigit for address 0xC010112B... Found a kernel symbol: isupper for address 0xC010111A... Found a kernel symbol: ispunct for address 0xC01010EC... Found a kernel symbol: isspace for address 0xC01010D3... Found a kernel symbol: isgraph for address 0xC01010B7... Found a kernel symbol: isprint for address 0xC01010A4... Found a kernel symbol: islower for address 0xC0101093... Found a kernel symbol: isdigit for address 0xC0101082... Found a kernel symbol: isblank for address 0xC010106C... Found a kernel symbol: iscntrl for address 0xC0101056... Found a kernel symbol: isalnum for address 0xC0101034... Found a kernel symbol: isalpha for address 0xC0101020... Found a kernel symbol: tolower for address 0xC0101010... Found a kernel symbol: toupper for address 0xC0101000... UnmapVirt A
 
 
 
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1084 / 1320 KB used
+  1116 / 1312 KB used
 
+UnmapVirt A

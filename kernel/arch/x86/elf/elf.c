@@ -267,3 +267,70 @@ int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_f
 
     return res;
 }
+
+void PAGEABLE_CODE_SECTION ArchLoadKernelSymbols(struct open_file* kernel_file) {
+	struct stat st;
+	int res = VnodeOpStat(kernel_file->node, &st);
+	if (res != 0) {
+		Panic(PANIC_BAD_KERNEL);
+	}
+
+	size_t mem = MapVirt(0, 0, st.st_size, VM_READ | VM_FILE, kernel_file, 0);
+
+    struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) mem;
+
+    /*
+    * These should never happen - otherwise our kernel shouldn't be running!
+    */
+    if (!IsElfValid(elf_header) || elf_header->e_shoff == 0) {
+		Panic(PANIC_BAD_KERNEL);
+    }
+
+    struct Elf32_Shdr* section_headers = (struct Elf32_Shdr*) (size_t) (mem + elf_header->e_shoff);
+    size_t symbol_table_offset = 0;
+    size_t symbol_table_length = 0;
+    size_t string_table_offset = 0;
+    size_t string_table_length = 0;
+
+    /*
+    * Find the address and size of the symbol and string tables.
+    */
+    for (int i = 0; i < elf_header->e_shnum; ++i) {
+        size_t file_offset = (section_headers + i)->sh_offset;
+        size_t address = (section_headers + elf_header->e_shstrndx)->sh_offset + (section_headers + i)->sh_name;
+
+        char* name_buffer = (char*) (mem + address);
+
+        if (!strcmp(name_buffer, ".symtab")) {
+            symbol_table_offset = file_offset;
+            symbol_table_length = (section_headers + i)->sh_size;
+
+        } else if (!strcmp(name_buffer, ".strtab")) {
+            string_table_offset = file_offset;
+            string_table_length = (section_headers + i)->sh_size;
+        }
+    }
+    
+    if (symbol_table_offset == 0 || string_table_offset == 0 || symbol_table_length == 0 || string_table_length == 0) {
+        Panic(PANIC_BAD_KERNEL);
+    }
+
+    struct Elf32_Sym* symbol_table = (struct Elf32_Sym*) (mem + symbol_table_offset);
+    const char* string_table = (const char*) (mem + string_table_offset);
+
+    /*
+    * Register all of the symbols we find.
+    */
+    for (size_t i = 0; i < symbol_table_length / sizeof(struct Elf32_Sym); ++i) {
+        struct Elf32_Sym symbol = symbol_table[i];
+
+        if (symbol.st_value == 0) { 
+            continue;
+        }
+
+        char* name = strdup(string_table + symbol.st_name);
+        AddSymbol(name, symbol.st_value);
+    }
+
+	UnmapVirt(mem, st.st_size);
+}

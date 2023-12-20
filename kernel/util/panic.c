@@ -28,6 +28,8 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_CANNOT_LOCK_MEMORY]					= "cannot lock virtual memory",
 	[PANIC_THREAD_LIST]							= "invalid operation on a thread list",
 	[PANIC_CANNOT_MALLOC_WITHOUT_FAULTING]		= "heap allocation cannot be completed without faulting",
+	[PANIC_NO_FILESYSTEM]						= "no driver can access the boot filesystem",
+	[PANIC_BAD_KERNEL]							= "kernel executable file is corrupted"
 };
 
 [[noreturn]] void Panic(int code)

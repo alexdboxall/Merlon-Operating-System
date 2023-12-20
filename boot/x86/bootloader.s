@@ -389,7 +389,7 @@ db 0x0C					; pretend to be FAT32
 db 0x01
 db 0x01
 db 0x01
-dd 1					; start sector (we put a dummy VBR here)
+dd 0					; start sector (we put a dummy VBR here)
 dd 131072 * 16			; total sectors in partition
 
 ; A data packet we use to interface with the BIOS extended disk functions.

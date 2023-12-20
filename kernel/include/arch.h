@@ -90,11 +90,11 @@ void ArchSetVas(struct vas* vas);
 
 // responsible for loading all symbols. should not close the file!
 int ArchLoadDriver(size_t* relocation_point, struct open_file* file);
-
+void ArchLoadKernelSymbols(struct open_file* kernel_file);
 void ArchSwitchThread(struct thread* old, struct thread* new);
 size_t ArchPrepareStack(size_t addr);
 
-void ArchInitDev(void);
+void ArchInitDev(bool fs);
 
 
 /*

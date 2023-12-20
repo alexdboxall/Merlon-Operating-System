@@ -6,6 +6,7 @@
 #include <vfs.h>
 #include <errno.h>
 #include <partition.h>
+#include <sys/stat.h>
 
 static int type_table[__DISKUTIL_NUM_TYPES];
 static struct spinlock type_table_lock;
@@ -94,7 +95,14 @@ static char* GetPartitionNameString(int index) {
 void CreateDiskPartitions(struct open_file* disk) {
     struct vnode** partitions = GetPartitionsForDisk(disk);
 
-    if (partitions == NULL) {
+    if (partitions == NULL || partitions[0] == NULL) {
+        struct stat st;
+        int res = VnodeOpStat(disk->node, &st);
+        if (res != 0) {
+            return;
+        }
+        struct vnode* whole_disk_partition = CreatePartition(disk, 0, st.st_size, -1)->node;
+        VnodeOpCreate(disk->node, &whole_disk_partition, GetPartitionNameString(0), 0, 0);
         return;
     }
 

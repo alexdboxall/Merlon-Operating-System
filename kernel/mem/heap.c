@@ -10,6 +10,8 @@
 #include <log.h>
 #include <voidptr.h>
 #include <irql.h>
+#include <thread.h>
+
 
 #define BOOTSTRAP_AREA_SIZE (1024 * 16)
 #define MAX_EMERGENCY_BLOCKS 16
@@ -703,6 +705,47 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     return AllocateBlock(head_list[sys_index], sys_index, user_requested_size);
 }
 
+
+static size_t unfreeable_pageable_area = 0;
+static size_t unfreeable_nonpageable_area = 0;
+static size_t unfreeable_pageable_ptr = 0;
+static size_t unfreeable_nonpageable_ptr = 0;
+
+#define MAX_UNFREEABLE_REGION_VIRT_SIZE (1024 * 16)
+
+static void* AllocUnfreeableMemory(size_t size, int flags) {
+    if (flags & HEAP_ALLOW_PAGING) {
+        if (unfreeable_pageable_area == 0) {
+            unfreeable_pageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE, VM_READ | VM_WRITE, NULL, 0);
+        }
+
+        if (size + unfreeable_pageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+            LogDeveloperWarning("exhausted the more efficient unfreeable memory - will use normal memory instead\n");
+            return NULL;
+        }
+
+        void* retv = (void*) (unfreeable_pageable_area + unfreeable_pageable_ptr);
+        unfreeable_pageable_area += size;
+        return retv;
+
+    } else {
+        if (unfreeable_nonpageable_area == 0) {
+            unfreeable_nonpageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+        }
+
+        if (size + unfreeable_nonpageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+            LogDeveloperWarning("exhausted the more efficient unfreeable memory - will use normal memory instead\n");
+            return NULL;
+        }
+
+        void* retv = (void*) (unfreeable_nonpageable_area + unfreeable_nonpageable_ptr);
+        unfreeable_nonpageable_area += size;
+        return retv;
+    }
+}
+
+static struct thread* entry_thread = NULL;
+
 /**
  * Allocates memory on the heap. Unless you *really* know what you're doing, you should always
  * pass HEAP_NO_FAULT. AllocHeap passes this automatically, but this one doesn't (in case you
@@ -723,20 +766,40 @@ void* AllocHeapEx(size_t size, int flags) {
         LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should consider using MapVirt.\n", size);
     }
 
+    if ((flags & HEAP_UNFREEABLE) && IsVirtInitialised()) {
+        void* res = AllocUnfreeableMemory(size, flags);
+        if (res != NULL) {
+            return res;
+        }
+    }
+
     size = RoundUpSize(size);
 
     if (flags & HEAP_FORCE_PAGING) {
         flags |= HEAP_ALLOW_PAGING;
     }
 
-    AcquireSpinlockIrql(&heap_lock);
+    /*
+     * If they're the same, the lock is held, no so need for this to be atomic.
+     * If GetThread() == NULL, then no-one is going to bother us anyway.
+     * This is needed as with fault-able heaps, allocating a new block can cause it to jump back into the
+     * heap (for a non-fault-able block, so the recursion ends there).
+     */
+    bool acquired = false;
+    if (entry_thread != GetThread()) {
+        AcquireSpinlockIrql(&heap_lock);
+        acquired = true;
+        entry_thread = GetThread();
+    }
     struct block* block = FindBlock(size, flags);
 
 #ifndef NDEBUG
     outstanding_allocations++;
 #endif
-
-    ReleaseSpinlockIrql(&heap_lock);
+    if (acquired) {
+        entry_thread = NULL;
+        ReleaseSpinlockIrql(&heap_lock);
+    }
 
     assert(((size_t) block & (ALIGNMENT - 1)) == 0);
 
@@ -767,18 +830,37 @@ void FreeHeap(void* ptr) {
     if (ptr == NULL) {
         return;
     }
+
+    size_t addr = (size_t) ptr;
+    if (addr >= unfreeable_pageable_area && addr < unfreeable_pageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+        LogDeveloperWarning("attempt to free non-freeable memory!\n");
+        return;
+    }
+    if (addr >= unfreeable_nonpageable_area && addr < unfreeable_nonpageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+        LogDeveloperWarning("attempt to free non-freeable memory!\n");
+        return;
+    }
     
     struct block* block = SubVoidPtr(ptr, METADATA_LEADING_AMOUNT);
     block->prev = NULL;
     block->next = NULL;
 
-    AcquireSpinlockIrql(&heap_lock);
+    bool acquired = false;
+    if (entry_thread != GetThread()) {
+        AcquireSpinlockIrql(&heap_lock);
+        acquired = true;
+        entry_thread = GetThread();
+    }
     AddBlock(block);
 
 #ifndef NDEBUG
     outstanding_allocations--;
 #endif
-    ReleaseSpinlockIrql(&heap_lock);
+
+    if (acquired) {
+        entry_thread = NULL;
+        ReleaseSpinlockIrql(&heap_lock);
+    }
 }
 
 /*

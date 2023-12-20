@@ -235,12 +235,11 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
     int partitions_found = 0;
     for (int i = 0; i < 4; ++i) {
         struct open_file* partition = CreateMbrPartitionIfExists(disk, mem, i, st.st_blksize);
-
         if (partition != NULL) {
             partitions[partitions_found++] = partition;
         }
     }
-
+    
     return partitions;
 }
 

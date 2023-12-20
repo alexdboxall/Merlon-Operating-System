@@ -110,7 +110,7 @@ static void PAGEABLE_CODE_SECTION AddEdgeToNode(struct node* node, struct edge* 
 
 
 static struct node* PAGEABLE_CODE_SECTION CreateNode(void) {
-    struct node* node = AllocHeapEx(sizeof(struct node), 0);
+    struct node* node = AllocHeapEx(sizeof(struct node), HEAP_UNFREEABLE | HEAP_ALLOW_PAGING);
     node->left = NULL;
     node->right = NULL;
     node->data = NULL;
@@ -118,7 +118,7 @@ static struct node* PAGEABLE_CODE_SECTION CreateNode(void) {
 }
 
 static struct edge* PAGEABLE_CODE_SECTION CreateEdgeInternal(struct long_bool_list label) {
-    struct edge* edge = AllocHeapEx(sizeof(struct edge), 0);
+    struct edge* edge = AllocHeapEx(sizeof(struct edge), HEAP_UNFREEABLE | HEAP_ALLOW_PAGING);
     
     while (label.length >= MAX_BITS_PER_EDGE) {
         struct node* new_node = CreateNode();
@@ -127,7 +127,7 @@ static struct edge* PAGEABLE_CODE_SECTION CreateEdgeInternal(struct long_bool_li
 
         bool right = GetBitOfLongList(&label, MAX_BITS_PER_EDGE - 1);
         label = RemoveStartOfLongList(&label, MAX_BITS_PER_EDGE - 1);
-        edge = AllocHeapEx(sizeof(struct edge), 0);
+        edge = AllocHeapEx(sizeof(struct edge), HEAP_UNFREEABLE | HEAP_ALLOW_PAGING);
         AddEdgeToNode(new_node, edge, right);
     }
 
@@ -136,7 +136,7 @@ static struct edge* PAGEABLE_CODE_SECTION CreateEdgeInternal(struct long_bool_li
 }
 
 static struct edge* PAGEABLE_CODE_SECTION CreateEdgeFromNodeShort(const struct short_bool_list* label, struct node* node) {
-    struct edge* edge = AllocHeapEx(sizeof(struct edge), 0);
+    struct edge* edge = AllocHeapEx(sizeof(struct edge), HEAP_UNFREEABLE | HEAP_ALLOW_PAGING);
     edge->label = *label;
     edge->next = node;
     return edge;
@@ -154,7 +154,7 @@ static void PAGEABLE_CODE_SECTION AddEdgeToNodeFromLabel(struct node* restrict n
 }
 
 struct radix_trie* PAGEABLE_CODE_SECTION RadixTrieCreate(void) {
-    struct radix_trie* trie = AllocHeapEx(sizeof(struct radix_trie), 0);
+    struct radix_trie* trie = AllocHeapEx(sizeof(struct radix_trie), HEAP_UNFREEABLE | HEAP_ALLOW_PAGING);
     trie->root = CreateNode();
     return trie;
 }
@@ -173,10 +173,9 @@ static bool PAGEABLE_CODE_SECTION StartsWith(const struct long_bool_list* l, con
 
 static int PAGEABLE_CODE_SECTION GetFirstMismatchedBit(const struct long_bool_list* word, const struct short_bool_list* edge_word) {
     int len = word->length < edge_word->length ? word->length : edge_word->length;
-
     for (int i = 1; i < len; ++i) {
         if (GetBitOfLongList(word, i) != GetBitOfShortList(edge_word, i)) {
-            return 1;
+            return i;
         }
     }
 
@@ -207,6 +206,11 @@ void PAGEABLE_CODE_SECTION RadixTrieInsert(struct radix_trie* trie, const struct
             } else if (current_str.length < current_edge->label.length) {
                 struct short_bool_list suffix = RemoveStartOfShortList(&current_edge->label, current_str.length);
                 // TODO: may be overflow here if very long shared chunk...
+
+                if (current_str.length >= 88) {
+                    LogDeveloperWarning("dicey radix tree truncation from %d\n", current_str.length);
+                }
+
                 current_edge->label = CreateShortListByTruncatingLong(&current_str);
                 struct node* new_next = CreateNode();
                 struct node* after_next = current_edge->next;
@@ -285,8 +289,8 @@ struct long_bool_list PAGEABLE_CODE_SECTION RadixTrieCreateBoolListFromData64(ch
         int c = MapCharacter(data[i]);
         
         for (int j = 0; j < 6; ++j) {
-            SetBitOfLongList(&l, i * 6 + j, c & 1);
-            c >>= 1;
+            SetBitOfLongList(&l, i * 6 + j, c & 64);
+            c <<= 1;
         }
 
         l.length += 6;

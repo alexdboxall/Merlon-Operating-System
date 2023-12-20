@@ -29,9 +29,7 @@ void InitFilesystemTable(void) {
     num_filesystems = 0;
     fs_table_lock = CreateMutex();
 
-    LogWriteSerial("A\n");
     RegisterFilesystem("demofs", DemofsMountCreator);
-    LogWriteSerial("B\n");
 }
 
 int RegisterFilesystem(char* fs_name, fs_mount_creator mount) {
@@ -67,30 +65,24 @@ int MountFilesystemForDisk(struct open_file* partition) {
     struct open_file* fs = NULL;
 
     for (int i = 0; i < num_filesystems; ++i) {
-        LogWriteSerial("Trying to mount partition as filesystem: %s... ", registered_filesystems[i].name);
         fs = NULL;
         int res = registered_filesystems[i].mount_creator(partition, &fs);
         if (res == 0) {
-            LogWriteSerial("success!\n");
             break;
         }
-        LogWriteSerial("nope...\n");
     }
 
     ReleaseMutex(fs_table_lock);
 
     if (fs == NULL) {
-        LogWriteSerial("no fs\n");
         return ENODEV;
     }
 
     int res = VnodeOpCreate(partition->node, &fs->node, "fs", 0, 0);
     if (res != 0) {
-        LogWriteSerial("creating the fs node gave res = %d\n", res);
         return res;
     }
 
     AddVfsMount(fs->node, GenerateNewMountedDiskName());
-    LogWriteSerial("Added mount point...\n");
     return 0;
 }
