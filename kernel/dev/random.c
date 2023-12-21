@@ -75,7 +75,7 @@ static int Close(struct vnode*) {
 }
 
 static int Follow(struct vnode*, struct vnode**, const char*) {
-    return EINVAL;
+    return ENOTDIR;
 }
 
 static int Readdir(struct vnode*, struct transfer*) {

@@ -5,6 +5,7 @@
 #include <spinlock.h>
 #include <vfs.h>
 #include <errno.h>
+#include <log.h>
 #include <partition.h>
 #include <sys/stat.h>
 
@@ -93,7 +94,7 @@ static char* GetPartitionNameString(int index) {
 }
 
 void CreateDiskPartitions(struct open_file* disk) {
-    struct vnode** partitions = GetPartitionsForDisk(disk);
+    struct open_file** partitions = GetPartitionsForDisk(disk);
 
     if (partitions == NULL || partitions[0] == NULL) {
         struct stat st;
@@ -107,8 +108,9 @@ void CreateDiskPartitions(struct open_file* disk) {
     }
 
     for (int i = 0; partitions[i]; ++i) {
-        struct vnode* partition = partitions[i];
-        VnodeOpCreate(disk->node, &partition, GetPartitionNameString(i), 0, 0);
+        struct vnode* partition = partitions[i]->node;
+        char* str = GetPartitionNameString(i);
+        VnodeOpCreate(disk->node, &partition, str, 0, 0);
     }
 }
 

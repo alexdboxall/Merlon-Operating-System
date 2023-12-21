@@ -124,6 +124,7 @@ void HandleSleepWakeups(void* sys_time_ptr) {
             thr->timed_out = true;
             PriorityQueuePop(sleep_queue);
             UnblockThread(thr);
+
         } else {
             /*
              * If this one doesn't need waking, none of the others will either.

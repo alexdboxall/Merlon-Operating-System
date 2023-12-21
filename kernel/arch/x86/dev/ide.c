@@ -356,15 +356,11 @@ static const struct vnode_operations dev_ops = {
 };
 
 void InitIde(void) {
-    LogWriteSerial("INIT IDE -3\n");
-
     ide_lock = CreateMutex();
 
     for (int i = 0; i < 1; ++i) {
-         LogWriteSerial("INIT IDE -2\n");
         struct vnode* node = CreateVnode(dev_ops);
         struct ide_data* ide = AllocHeap(sizeof(struct ide_data));
-        LogWriteSerial("INIT IDE -1\n");
 
         ide->disk_num               = 0;
         ide->primary_base           = 0x1F0;
@@ -373,18 +369,12 @@ void InitIde(void) {
         ide->secondary_alternative  = 0x376;
         ide->busmaster_base         = 0x0;
         ide->sector_size            = 512;
-        LogWriteSerial("INIT IDE -0.5\n");
         ide->total_num_sectors      = IdeGetNumSectors(ide);
-        LogWriteSerial("INIT IDE -0.3\n");
         ide->transfer_buffer        = (uint16_t*) MapVirt(0, 0, MAX_TRANSFER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
-        LogWriteSerial("INIT IDE 0\n");
         InitDiskPartitionHelper(&ide->partitions);
 
         node->data = ide;
-        LogWriteSerial("INIT IDE 1\n");
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FIXED));
-        LogWriteSerial("INIT IDE 2\n");
         CreateDiskPartitions(CreateOpenFile(node, 0, 0, true, true));
-        LogWriteSerial("INIT IDE 3\n");
     }
 }

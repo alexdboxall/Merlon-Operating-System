@@ -16,6 +16,7 @@
 #include <transfer.h>
 #include <fcntl.h>
 #include <console.h>
+#include <swapfile.h>
 #include <diskutil.h>
 #include <string.h>
 #include <filesystem.h>
@@ -23,10 +24,10 @@
 
 /*
  * Next steps:
- * - floppy driver
- * - DemoFS/FAT32 driver
  * - ELF loader
- * - PS2.SYS, radix trees, drivers that export symbols, etc.
+ * - PS2.SYS, drivers that export symbols, etc.
+ * - floppy driver
+ * - FAT32 driver
  * - running any old ring 3 program
  * - dynamic linker
  * - system call interface (KRNLAPI.LIB) 
@@ -40,7 +41,7 @@
 extern void InitDbgScreen(void);
 
 static void DummyAppThread(void*) {
-	PutsConsole("  C:/> ");
+	PutsConsole("  drv0:/> ");
 
     struct open_file* con;
     OpenFile("con:", O_RDONLY, 0, &con);
@@ -52,14 +53,12 @@ static void DummyAppThread(void*) {
 		ReadFile(con, &tr);
 		PutsConsole("  Command not found: ");
 		PutsConsole(bf);
-		PutsConsole("\n  C:/> ");
+		PutsConsole("\n  drv0:/> ");
     }
 }
 
 void InitUserspace(void) {
     DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
-    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
-
     CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
 }
 
@@ -70,16 +69,29 @@ void InitThread(void*) {
     struct open_file* sys_folder;
     int res = OpenFile("drv0:/System", O_RDONLY, 0, &sys_folder);
     if (res != 0) {
-        Panic(PANIC_NO_FILESYSTEM);
+        PanicEx(PANIC_NO_FILESYSTEM, "sys A");
     }
     res = AddVfsMount(sys_folder->node, "sys");
     if (res != 0) {
-        Panic(PANIC_NO_FILESYSTEM);
+        PanicEx(PANIC_NO_FILESYSTEM, "sys B");
     }
 
+    struct open_file* swapfile;
+    res = OpenFile("raw-hd0:/part1", O_RDWR, 0, &swapfile);
+    if (res != 0) {
+        PanicEx(PANIC_NO_FILESYSTEM, "swapfile A");
+    }
+    res = AddVfsMount(swapfile->node, "swap");
+    if (res != 0) {
+        PanicEx(PANIC_NO_FILESYSTEM, "swapfile B");
+    }
+
+    InitSwapfile();
     InitSymbolTable();
     ArchInitDev(true);
     InitUserspace();
+
+    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 }
 
 void KernelMain(void) {

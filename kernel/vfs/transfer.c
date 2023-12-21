@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <virtual.h>
 #include <arch.h>
+#include <log.h>
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 

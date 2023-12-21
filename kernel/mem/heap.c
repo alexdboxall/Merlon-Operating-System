@@ -711,35 +711,38 @@ static size_t unfreeable_nonpageable_area = 0;
 static size_t unfreeable_pageable_ptr = 0;
 static size_t unfreeable_nonpageable_ptr = 0;
 
-#define MAX_UNFREEABLE_REGION_VIRT_SIZE (1024 * 16)
+#define MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED (1024 * 4)
+#define MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED (1024 * 128)
 
 static void* AllocUnfreeableMemory(size_t size, int flags) {
     if (flags & HEAP_ALLOW_PAGING) {
         if (unfreeable_pageable_area == 0) {
-            unfreeable_pageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE, VM_READ | VM_WRITE, NULL, 0);
+            unfreeable_pageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED, VM_READ | VM_WRITE, NULL, 0);
         }
 
-        if (size + unfreeable_pageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+        if (size + unfreeable_pageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED) {
             LogDeveloperWarning("exhausted the more efficient unfreeable memory - will use normal memory instead\n");
             return NULL;
         }
 
         void* retv = (void*) (unfreeable_pageable_area + unfreeable_pageable_ptr);
-        unfreeable_pageable_area += size;
+        LogWriteSerial("unfreeable 0x%X\n", retv);
+        unfreeable_pageable_ptr += size;
         return retv;
 
     } else {
         if (unfreeable_nonpageable_area == 0) {
-            unfreeable_nonpageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+            unfreeable_nonpageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
         }
 
-        if (size + unfreeable_nonpageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+        if (size + unfreeable_nonpageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED) {
             LogDeveloperWarning("exhausted the more efficient unfreeable memory - will use normal memory instead\n");
             return NULL;
         }
 
         void* retv = (void*) (unfreeable_nonpageable_area + unfreeable_nonpageable_ptr);
-        unfreeable_nonpageable_area += size;
+        LogWriteSerial("unfreeable 0x%X\n", retv);
+        unfreeable_nonpageable_ptr += size;
         return retv;
     }
 }
@@ -766,9 +769,26 @@ void* AllocHeapEx(size_t size, int flags) {
         LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should consider using MapVirt.\n", size);
     }
 
+    /*
+     * If they're the same, the lock is held, no so need for this to be atomic.
+     * If GetThread() == NULL, then no-one is going to bother us anyway.
+     * This is needed as with fault-able heaps, allocating a new block can cause it to jump back into the
+     * heap (for a non-fault-able block, so the recursion ends there).
+     */
+    bool acquired = false;
+    if (entry_thread != GetThread() || entry_thread == NULL) {
+        AcquireSpinlockIrql(&heap_lock);
+        acquired = true;
+        entry_thread = GetThread();
+    }
+    
     if ((flags & HEAP_UNFREEABLE) && IsVirtInitialised()) {
         void* res = AllocUnfreeableMemory(size, flags);
         if (res != NULL) {
+            if (acquired) {
+                entry_thread = NULL;
+                ReleaseSpinlockIrql(&heap_lock);
+            }
             return res;
         }
     }
@@ -779,18 +799,7 @@ void* AllocHeapEx(size_t size, int flags) {
         flags |= HEAP_ALLOW_PAGING;
     }
 
-    /*
-     * If they're the same, the lock is held, no so need for this to be atomic.
-     * If GetThread() == NULL, then no-one is going to bother us anyway.
-     * This is needed as with fault-able heaps, allocating a new block can cause it to jump back into the
-     * heap (for a non-fault-able block, so the recursion ends there).
-     */
-    bool acquired = false;
-    if (entry_thread != GetThread()) {
-        AcquireSpinlockIrql(&heap_lock);
-        acquired = true;
-        entry_thread = GetThread();
-    }
+
     struct block* block = FindBlock(size, flags);
 
 #ifndef NDEBUG
@@ -832,11 +841,11 @@ void FreeHeap(void* ptr) {
     }
 
     size_t addr = (size_t) ptr;
-    if (addr >= unfreeable_pageable_area && addr < unfreeable_pageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+    if (addr >= unfreeable_pageable_area && addr < unfreeable_pageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED) {
         LogDeveloperWarning("attempt to free non-freeable memory!\n");
         return;
     }
-    if (addr >= unfreeable_nonpageable_area && addr < unfreeable_nonpageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE) {
+    if (addr >= unfreeable_nonpageable_area && addr < unfreeable_nonpageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED) {
         LogDeveloperWarning("attempt to free non-freeable memory!\n");
         return;
     }
@@ -846,7 +855,7 @@ void FreeHeap(void* ptr) {
     block->next = NULL;
 
     bool acquired = false;
-    if (entry_thread != GetThread()) {
+    if (entry_thread != GetThread() || entry_thread == NULL) {
         AcquireSpinlockIrql(&heap_lock);
         acquired = true;
         entry_thread = GetThread();

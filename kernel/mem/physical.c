@@ -205,7 +205,6 @@ static void EvictPagesIfNeeded(void* context) {
     // TODO: probs needs lock on pages_left
     int timeout = 0;
     while (pages_left < NUM_EMERGENCY_PAGES && timeout < 10) {
-        LogWriteSerial("Evicting virt... (got %d pages left)\n", pages_left);
         EvictVirt();
         ++timeout;
     }

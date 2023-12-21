@@ -331,12 +331,6 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	* Iterate over the rest of the path.
 	*/
 	while (path_ptr < (int) strlen(path)) {
-		if (VnodeOpDirentType(current_vnode) != DT_DIR) {
-			DereferenceVnode(current_vnode);
-			CleanupVnodeStack(previous_components);
-			return ENOTDIR;
-		}
-
 		int status = GetPathComponent(path, &path_ptr, component, MAX_COMPONENT_LENGTH, '/');
 		if (status != 0) {
 			DereferenceVnode(current_vnode);
@@ -502,7 +496,7 @@ int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, str
 		DereferenceVnode(node);
 		return EISDIR;
 	}
-	
+
 	if ((flags & O_TRUNC) && dirent_type == DT_REG) {
 		if (can_write) {
 			status = VnodeOpTruncate(node, 0);
@@ -522,7 +516,7 @@ int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, str
 }
 
 int ReadFile(struct open_file* file, struct transfer* io) {
-	EXACT_IRQL(IRQL_STANDARD);
+	EXACT_IRQL(IRQL_PAGE_FAULT);
 
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
@@ -556,7 +550,7 @@ int PAGEABLE_CODE_SECTION ReadDirectory(struct open_file* file, struct transfer*
 }
 
 int WriteFile(struct open_file* file, struct transfer* io) {
-	EXACT_IRQL(IRQL_STANDARD);
+	EXACT_IRQL(IRQL_PAGE_FAULT);
 
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;

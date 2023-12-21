@@ -120,7 +120,18 @@ static int Truncate(struct vnode*, off_t) {
     return EINVAL;
 }
 
-static int Follow(struct vnode*, struct vnode**, const char*) {
+static int Follow(struct vnode* node, struct vnode** out, const char* name) {
+    struct partition_data* partition = node->data;
+
+    if (!strcmp(name, "fs")) {
+        if (partition->fs == NULL) {
+            return EINVAL;
+        }
+        
+        *out = partition->fs->node;
+        return 0;
+    }
+
     return EINVAL;
 }
 
@@ -192,11 +203,7 @@ struct open_file* CreateMbrPartitionIfExists(struct open_file* disk, uint8_t* me
     total_sectors <<= 8;
     total_sectors |= mem[offset + 12];
 
-    if (start_sector == 0) {
-        return NULL;
-    }
-
-    if (total_sectors == 0) {
+    if (start_sector == 0 && total_sectors == 0) {
         return NULL;
     }
 
@@ -221,13 +228,19 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
         return NULL;
     }
 
+	LogWriteSerial("VM_FILE C\n");
     uint8_t* mem = (uint8_t*) MapVirt(0, 0, st.st_blksize, VM_READ | VM_FILE, disk, 0);
+    LogWriteSerial("mem = 0x%X\n", mem);
     if (mem == NULL) {
         return NULL;
     }
 
-    if (mem[0x1FE] != 0x55) return NULL;
-    if (mem[0x1FF] != 0xAA) return NULL;
+    if (mem[0x1FE] != 0x55) {
+        return NULL;
+    }
+    if (mem[0x1FF] != 0xAA) {
+        return NULL;
+    }
 
     struct open_file** partitions = AllocHeap(sizeof(struct open_file) * 5);
     inline_memset(partitions, 0, sizeof(struct open_file) * 5);
@@ -239,6 +252,9 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
             partitions[partitions_found++] = partition;
         }
     }
+
+	LogWriteSerial("UnmapVirt C\n");
+    UnmapVirt((size_t) mem, st.st_blksize);
     
     return partitions;
 }
@@ -248,6 +264,7 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
  * e.g. {vnode_ptr_1, vnode_ptr_2, vnode_ptr_3, NULL}
  */
 struct open_file** GetPartitionsForDisk(struct open_file* disk) {
+    LogWriteSerial("Finding partitions...\n");
     struct open_file** partitions = GetMbrPartitions(disk);
     
     if (partitions == NULL) {

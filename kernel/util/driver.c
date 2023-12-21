@@ -12,6 +12,7 @@
 #include <virtual.h>
 #include <radixtrie.h>
 #include <fcntl.h>
+#include <ctype.h>
 #include <assert.h>
 
 static struct semaphore* driver_table_lock;
@@ -76,11 +77,23 @@ void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
     CloseFile(kernel_file);
 }
 
+static bool PAGEABLE_CODE_SECTION DoesSymbolContainIllegalCharacters(const char* symbol) {
+    for (int i = 0; symbol[i]; ++i) {
+        if (!isalnum(symbol[i]) && symbol[i] != '_') {
+            return true;
+        }
+    }
+    return false;
+}
+
 void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
     EXACT_IRQL(IRQL_STANDARD);
 
-    LogWriteSerial("Found a kernel symbol: %s for address 0x%X... ", symbol, address);
+    if (DoesSymbolContainIllegalCharacters(symbol)) {
+        return;
+    }
 
+    LogWriteSerial("inserting symbol %s -> 0x%X\n", symbol, address);
     struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
     AcquireMutex(symbol_table_lock, -1);
     RadixTrieInsert(symbol_table, &b, (void*) address);

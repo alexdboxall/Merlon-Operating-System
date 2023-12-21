@@ -14,6 +14,7 @@
 #define VM_FIXED_VIRT   64
 #define VM_MAP_HARDWARE 128     /* map a physical page that doesn't live within the physical memoery manager*/
 #define VM_LOCAL        256     /* indicates it's local to the VAS - i.e. not in kernel global memory */
+#define VM_RECURSIVE    512     /* assumes the VAS is already locked, so won't lock or unlock it */
 
 #define VAS_NO_ARCH_INIT    1
 
@@ -34,11 +35,12 @@ struct vas_entry {
     uint8_t exec            : 1;
     uint8_t user            : 1;
     uint8_t global          : 1;
-    uint8_t                 : 3;
+    uint8_t times_swapped   : 3;
 
     off_t file_offset;
     struct open_file* file_node;
     size_t physical;
+    size_t swapfile_offset;
 
     int ref_count;
 };
@@ -49,10 +51,14 @@ size_t BytesToPages(size_t bytes);
 
 void LockVirt(size_t virtual);
 void UnlockVirt(size_t virtual);
+void LockVirtEx(struct vas* vas, size_t virtual);
+void UnlockVirtEx(struct vas* vas, size_t virtual);
+
 void SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos);
 void UnmapVirt(size_t virtual, size_t bytes);
+void UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages);
 size_t GetPhysFromVirt(size_t virtual);
 
 struct vas* GetKernelVas(void);     // a kernel vas

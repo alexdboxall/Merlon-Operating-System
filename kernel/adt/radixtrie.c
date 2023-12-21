@@ -33,7 +33,6 @@ struct radix_trie {
 };
 
 static struct short_bool_list PAGEABLE_CODE_SECTION CreateShortListByTruncatingLong(const struct long_bool_list* list) {
-    assert(list->length <= DATA_BYTES_IN_SHORT);
     struct short_bool_list s;
     s.length = list->length;
     inline_memcpy((void*) s.data, (const void*) list->data, DATA_BYTES_IN_SHORT);

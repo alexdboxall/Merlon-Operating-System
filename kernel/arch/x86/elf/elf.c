@@ -260,9 +260,11 @@ int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_f
     struct stat st;
     size_t file_size = VnodeOpStat(file->node, &st);
 
+	LogWriteSerial("VM_FILE A\n");
     size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
 
     int res = ElfLoad((void*) file_rgn, relocation_point, true, NULL);
+	LogWriteSerial("UnmapVirt A\n");
     UnmapVirt(file_rgn, file_size);
 
     return res;
@@ -275,6 +277,7 @@ void PAGEABLE_CODE_SECTION ArchLoadKernelSymbols(struct open_file* kernel_file) 
 		Panic(PANIC_BAD_KERNEL);
 	}
 
+	LogWriteSerial("VM_FILE B\n");
 	size_t mem = MapVirt(0, 0, st.st_size, VM_READ | VM_FILE, kernel_file, 0);
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) mem;
@@ -328,9 +331,12 @@ void PAGEABLE_CODE_SECTION ArchLoadKernelSymbols(struct open_file* kernel_file) 
             continue;
         }
 
-        char* name = strdup(string_table + symbol.st_name);
-        AddSymbol(name, symbol.st_value);
+		/*
+		 * No need for strdup, as it gets converted to the weird radix trie format.
+		 */
+        AddSymbol(string_table + symbol.st_name, symbol.st_value);
     }
 
+	LogWriteSerial("UnmapVirt B\n");
 	UnmapVirt(mem, st.st_size);
 }

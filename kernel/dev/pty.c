@@ -244,7 +244,7 @@ static int MasterClose(struct vnode*) {
 }
 
 static int MasterFollow(struct vnode*, struct vnode**, const char*) {
-    return EINVAL;
+    return ENOTDIR;
 }
 
 static int MasterReaddir(struct vnode*, struct transfer*) {
@@ -301,7 +301,7 @@ static int SubordinateClose(struct vnode*) {
 }
 
 static int SubordinateFollow(struct vnode*, struct vnode**, const char*) {
-    return EINVAL;
+    return ENOTDIR;
 }
 
 static int SubordinateReaddir(struct vnode*, struct transfer*) {

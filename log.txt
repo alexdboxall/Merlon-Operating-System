@@ -1,239 +1,3434 @@
 KernelMain: kernel is initialising...
-backup heap: largest is 0x3000, total is 0x3000
+Adding mapping at 0xD0000000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x13C000
+backup heap: largest is 0x2000, total is 0x2000
+Adding mapping at 0xD0001000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x136000
+Adding mapping at 0xD0002000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x135000
+Adding mapping at 0xD0003000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x134000
+Adding mapping at 0xD0004000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x133000
 MOUNTED TO THE VFS: rand
 MOUNTED TO THE VFS: null
+Adding mapping at 0xD0005000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD000000
+Adding mapping at 0xD0006000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD001000
+Adding mapping at 0xD0007000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD002000
+Adding mapping at 0xD0008000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD003000
+Adding mapping at 0xD0009000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD004000
+Adding mapping at 0xD000A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD005000
+Adding mapping at 0xD000B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD006000
+Adding mapping at 0xD000C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD007000
+Adding mapping at 0xD000D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD008000
+Adding mapping at 0xD000E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD009000
+Adding mapping at 0xD000F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD00A000
+Adding mapping at 0xD0010000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD00B000
+Adding mapping at 0xD0011000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD00C000
+Adding mapping at 0xD0012000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD00D000
+Adding mapping at 0xD0013000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD00E000
+Adding mapping at 0xD0014000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD00F000
+Adding mapping at 0xD0015000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD010000
+Adding mapping at 0xD0016000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD011000
+Adding mapping at 0xD0017000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD012000
+Adding mapping at 0xD0018000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD013000
+Adding mapping at 0xD0019000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD014000
+Adding mapping at 0xD001A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD015000
+Adding mapping at 0xD001B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD016000
+Adding mapping at 0xD001C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD017000
+Adding mapping at 0xD001D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD018000
+Adding mapping at 0xD001E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD019000
+Adding mapping at 0xD001F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD01A000
 backup heap: largest is 0x4000, total is 0x5000
+Adding mapping at 0xD0020000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD01B000
+Adding mapping at 0xD0021000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD01C000
+Adding mapping at 0xD0022000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD01D000
+Adding mapping at 0xD0023000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD01E000
+Adding mapping at 0xD0024000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD01F000
+Adding mapping at 0xD0025000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD020000
+Adding mapping at 0xD0026000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD021000
+Adding mapping at 0xD0027000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD022000
+Adding mapping at 0xD0028000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD023000
+Adding mapping at 0xD0029000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD024000
+Adding mapping at 0xD002A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD025000
+Adding mapping at 0xD002B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD026000
+Adding mapping at 0xD002C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD027000
+Adding mapping at 0xD002D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD028000
+Adding mapping at 0xD002E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD029000
+Adding mapping at 0xD002F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD02A000
+Adding mapping at 0xD0030000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD02B000
+Adding mapping at 0xD0031000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD02C000
+Adding mapping at 0xD0032000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD02D000
+Adding mapping at 0xD0033000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD02E000
+Adding mapping at 0xD0034000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD02F000
+Adding mapping at 0xD0035000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD030000
+Adding mapping at 0xD0036000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD031000
+Adding mapping at 0xD0037000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD032000
+Adding mapping at 0xD0038000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD033000
+Adding mapping at 0xD0039000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD034000
+Adding mapping at 0xD003A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD035000
+Adding mapping at 0xD003B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD036000
+Adding mapping at 0xD003C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD037000
+Adding mapping at 0xD003D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD038000
+Adding mapping at 0xD003E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD039000
+Adding mapping at 0xD003F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD03A000
+Adding mapping at 0xD0040000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD03B000
+Adding mapping at 0xD0041000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD03C000
+Adding mapping at 0xD0042000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD03D000
+Adding mapping at 0xD0043000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD03E000
+Adding mapping at 0xD0044000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD03F000
+Adding mapping at 0xD0045000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD040000
+Adding mapping at 0xD0046000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD041000
+Adding mapping at 0xD0047000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD042000
+Adding mapping at 0xD0048000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD043000
+Adding mapping at 0xD0049000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD044000
+Adding mapping at 0xD004A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD045000
+Adding mapping at 0xD004B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD046000
+Adding mapping at 0xD004C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD047000
+Adding mapping at 0xD004D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD048000
+Adding mapping at 0xD004E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD049000
+Adding mapping at 0xD004F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD04A000
 backup heap: largest is 0x4000, total is 0x4000
+Adding mapping at 0xD0050000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD04B000
+Adding mapping at 0xD0051000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD04C000
+Adding mapping at 0xD0052000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD04D000
+Adding mapping at 0xD0053000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD04E000
+Adding mapping at 0xD0054000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD04F000
+Adding mapping at 0xD0055000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD050000
+Adding mapping at 0xD0056000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD051000
+Adding mapping at 0xD0057000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD052000
+Adding mapping at 0xD0058000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD053000
+Adding mapping at 0xD0059000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD054000
+Adding mapping at 0xD005A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD055000
+Adding mapping at 0xD005B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD056000
+Adding mapping at 0xD005C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD057000
+Adding mapping at 0xD005D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD058000
+Adding mapping at 0xD005E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD059000
+Adding mapping at 0xD005F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD05A000
+Adding mapping at 0xD0060000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD05B000
+Adding mapping at 0xD0061000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD05C000
+Adding mapping at 0xD0062000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD05D000
+Adding mapping at 0xD0063000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD05E000
+Adding mapping at 0xD0064000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD05F000
+Adding mapping at 0xD0065000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD060000
+Adding mapping at 0xD0066000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD061000
+Adding mapping at 0xD0067000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD062000
+Adding mapping at 0xD0068000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD063000
+Adding mapping at 0xD0069000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD064000
+Adding mapping at 0xD006A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD065000
+Adding mapping at 0xD006B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD066000
+Adding mapping at 0xD006C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD067000
+Adding mapping at 0xD006D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD068000
+Adding mapping at 0xD006E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD069000
+Adding mapping at 0xD006F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD06A000
+Adding mapping at 0xD0070000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD06B000
+Adding mapping at 0xD0071000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD06C000
+Adding mapping at 0xD0072000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD06D000
+Adding mapping at 0xD0073000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD06E000
+Adding mapping at 0xD0074000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD06F000
+Adding mapping at 0xD0075000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD070000
+Adding mapping at 0xD0076000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD071000
+Adding mapping at 0xD0077000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD072000
+Adding mapping at 0xD0078000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD073000
+Adding mapping at 0xD0079000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD074000
+Adding mapping at 0xD007A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD075000
+Adding mapping at 0xD007B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD076000
+Adding mapping at 0xD007C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD077000
+Adding mapping at 0xD007D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD078000
+Adding mapping at 0xD007E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD079000
+Adding mapping at 0xD007F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD07A000
+Adding mapping at 0xD0080000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD07B000
+Adding mapping at 0xD0081000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD07C000
 backup heap: largest is 0x3000, total is 0x3000
+Adding mapping at 0xD00C5000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x132000
+Adding mapping at 0xD00C6000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x131000
+Adding mapping at 0xD00C7000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x130000
+Adding mapping at 0xD00C8000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1FF000
+Adding mapping at 0xD0082000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD07D000
+Adding mapping at 0xD0083000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD07E000
+Adding mapping at 0xD0084000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD07F000
+Adding mapping at 0xD0085000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD080000
+Adding mapping at 0xD0086000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD081000
+Adding mapping at 0xD0087000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD082000
+Adding mapping at 0xD0088000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD083000
+Adding mapping at 0xD0089000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD084000
+Adding mapping at 0xD008A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD085000
+Adding mapping at 0xD008B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD086000
+Adding mapping at 0xD008C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD087000
+Adding mapping at 0xD008D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD088000
+Adding mapping at 0xD008E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD089000
+Adding mapping at 0xD008F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD08A000
+Adding mapping at 0xD0090000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD08B000
+Adding mapping at 0xD0091000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD08C000
+Adding mapping at 0xD0092000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD08D000
+Adding mapping at 0xD0093000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD08E000
+Adding mapping at 0xD0094000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD08F000
+Adding mapping at 0xD0095000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD090000
+Adding mapping at 0xD0096000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD091000
+Adding mapping at 0xD0097000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD092000
+Adding mapping at 0xD0098000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD093000
+Adding mapping at 0xD0099000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD094000
+Adding mapping at 0xD009A000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD095000
+Adding mapping at 0xD009B000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD096000
+Adding mapping at 0xD009C000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD097000
+Adding mapping at 0xD009D000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD098000
+Adding mapping at 0xD009E000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD099000
+Adding mapping at 0xD009F000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD09A000
+Adding mapping at 0xD00A0000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD09B000
+Adding mapping at 0xD00A1000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD09C000
+Adding mapping at 0xD00A2000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD09D000
+Adding mapping at 0xD00A3000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD09E000
+Adding mapping at 0xD00A4000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD09F000
+Adding mapping at 0xD00A5000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A0000
+Adding mapping at 0xD00A6000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A1000
+Adding mapping at 0xD00A7000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A2000
+Adding mapping at 0xD00A8000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A3000
+Adding mapping at 0xD00A9000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A4000
+Adding mapping at 0xD00AA000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A5000
+Adding mapping at 0xD00AB000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A6000
+Adding mapping at 0xD00AC000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A7000
+Adding mapping at 0xD00AD000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A8000
+Adding mapping at 0xD00AE000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0A9000
+Adding mapping at 0xD00AF000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0AA000
 backup heap: largest is 0x4000, total is 0x6000
-backup heap: largest is 0x4000, total is 0x6000
+Adding mapping at 0xD00B0000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0AB000
+Adding mapping at 0xD00B1000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0AC000
+Adding mapping at 0xD00B2000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0AD000
+Adding mapping at 0xD00B3000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0AE000
+Adding mapping at 0xD00B4000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0AF000
+Adding mapping at 0xD00B5000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B0000
+Adding mapping at 0xD00B6000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B1000
+Adding mapping at 0xD00B7000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B2000
+Adding mapping at 0xD00B8000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B3000
+Adding mapping at 0xD00B9000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B4000
+Adding mapping at 0xD00BA000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B5000
+Adding mapping at 0xD00BB000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B6000
+Adding mapping at 0xD00BC000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B7000
+Adding mapping at 0xD00BD000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B8000
+Adding mapping at 0xD00BE000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0B9000
+Adding mapping at 0xD00BF000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0BA000
+Adding mapping at 0xD00C0000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0BB000
+Adding mapping at 0xD00C1000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0BC000
+Adding mapping at 0xD00C2000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0BD000
+Adding mapping at 0xD00C3000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0BE000
+Adding mapping at 0xD00C4000. flags = 0x93, rwxgu'lfia = 10010'1010. p 0xFD0BF000
+backup heap: largest is 0x4000, total is 0x5000
+Adding mapping at 0xD00C9000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1FE000
+Adding mapping at 0xD00CA000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1FD000
+Adding mapping at 0xD00CB000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1FC000
+Adding mapping at 0xD00CC000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1FB000
+Adding mapping at 0xD00CD000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1FA000
 MOUNTED TO THE VFS: con
-INIT IDE -3
-INIT IDE -2
-INIT IDE -1
-INIT IDE -0.5
-INIT IDE -0.3
-INIT IDE 0
-INIT IDE 1
+Adding mapping at 0xD00CE000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F9000
+Adding mapping at 0xD00CF000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F8000
+Adding mapping at 0xD00D0000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F7000
+Adding mapping at 0xD00D1000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F6000
 MOUNTED TO THE VFS: raw-hd0
-INIT IDE 2
-Page fault: cr2 0xD00D21FE, eip 0xC010243C, nos-err 0x0
+Finding partitions...
+VM_FILE C
+Adding mapping at 0xD00D2000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+mem = 0xD00D2000
+Page fault: cr2 0xD00D21FE, eip 0xC0102490, nos-err 0x0
 HandleVirtFault A, 0xD00D21FE, 0
-A
-B
-need to get entry for 0xD00D21FE
-C -> 0xD0003EEC
 
 entry: v 0xD00D2000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00D2000, file 0xD0003B9C, offset 0x0
 Page fault totally done.
-found a partition! 0x0 -> 0x3FFFE00
+found a partition! 0x0 -> 0x800000
 MOUNTED TO THE VFS: drv0
-INIT IDE 3
+found a partition! 0x800000 -> 0x2000000
+MOUNTED TO THE VFS: drv1
+UnmapVirt C
+Removing mapping at 0xD00D2000
 we have a second PS/2 port
+backup heap: largest is 0x4000, total is 0x4000
 MOUNTED TO THE VFS: sys
+MOUNTED TO THE VFS: swap
+Adding mapping at 0xD00D3000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00D4000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00D5000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00D6000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00D7000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00D8000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00D9000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00DA000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00DB000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00DC000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00DD000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00DE000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00DF000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E0000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E1000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E2000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E3000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E4000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E5000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E6000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E7000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E8000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00E9000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00EA000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00EB000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00EC000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00ED000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00EE000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00EF000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00F0000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00F1000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xD00F2000. flags = 0x3, rwxgu'lfia = 10010'0000. p 0x0
+unfreeable 0xD00D3000
+unfreeable 0xD00D3004
 Page fault: cr2 0xD00D3004, eip 0xC010C155, nos-err 0x2
 HandleVirtFault A, 0xD00D3004, 2
-A
-B
-need to get entry for 0xD00D3004
-C -> 0xD00035DC
 
 entry: v 0xD00D3000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
 Page fault totally done.
 about to load the kernel symbols...
-backup heap: largest is 0x4000, total is 0x4000
-Page fault: cr2 0xD00D7000, eip 0xC010D6FA, nos-err 0x0
-HandleVirtFault A, 0xD00D7000, 0
-A
-B
-need to get entry for 0xD00D7000
-C -> 0xD000338C
+VM_FILE B
+Adding mapping at 0xD00F3000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00F4000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00F5000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00F6000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00F7000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00F8000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00F9000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+backup heap: largest is 0x3000, total is 0x3000
+Adding mapping at 0xD010A000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F4000
+Adding mapping at 0xD010B000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F3000
+Adding mapping at 0xD010C000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F2000
+Adding mapping at 0xD010D000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1F1000
+Adding mapping at 0xD00FA000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00FB000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00FC000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00FD000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00FE000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD00FF000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0100000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0101000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0102000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0103000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0104000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0105000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0106000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0107000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0108000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xD0109000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Page fault: cr2 0xD00F3000, eip 0xC010D744, nos-err 0x0
+HandleVirtFault A, 0xD00F3000, 0
 
-entry: v 0xD00D7000, p 0x0. aclrf = 00001
+entry: v 0xD00F3000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00D7000, file 0xD00033AC, offset 0x0
 Page fault totally done.
-Page fault: cr2 0xD00ED3DC, eip 0xC010D742, nos-err 0x0
-HandleVirtFault A, 0xD00ED3DC, 0
-A
-B
-need to get entry for 0xD00ED3DC
-C -> 0xD0004DAC
+Page fault: cr2 0xD01096B0, eip 0xC010D78C, nos-err 0x0
+HandleVirtFault A, 0xD01096B0, 0
 
-entry: v 0xD00ED000, p 0x0. aclrf = 00001
+entry: v 0xD0109000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00ED000, file 0xD00033AC, offset 0x16000
 Page fault totally done.
-Page fault: cr2 0xD00E826C, eip 0xC010D7F2, nos-err 0x0
-HandleVirtFault A, 0xD00E826C, 0
-A
-B
-need to get entry for 0xD00E826C
-C -> 0xD0004F1C
+Page fault: cr2 0xD01042AC, eip 0xC010D833, nos-err 0x0
+HandleVirtFault A, 0xD01042AC, 0
 
-entry: v 0xD00E8000, p 0x0. aclrf = 00001
+entry: v 0xD0104000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00E8000, file 0xD00033AC, offset 0x11000
 Page fault totally done.
-Page fault: cr2 0xD00EADA0, eip 0xC0101284, nos-err 0x0
-HandleVirtFault A, 0xD00EADA0, 0
-A
-B
-need to get entry for 0xD00EADA0
-C -> 0xD0004E2C
+Page fault: cr2 0xD0106F30, eip 0xC010CB7D, nos-err 0x0
+HandleVirtFault A, 0xD0106F30, 0
 
-entry: v 0xD00EA000, p 0x0. aclrf = 00001
+entry: v 0xD0106000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00EA000, file 0xD00033AC, offset 0x13000
 Page fault totally done.
-Found a kernel symbol: AvlGetHeight for address 0xC010130A... Found a kernel symbol: AvlGet for address 0xC0101345... Found a kernel symbol: AvlContains for address 0xC0101382... Found a kernel symbol: AvlDefaultComparator for address 0xC01013D3... Found a kernel symbol: AvlDestroy for address 0xC01013E5... Found a kernel symbol: AvlPrint for address 0xC0101420... Found a kernel symbol: AvlGetBalance for address 0xC010145D... Found a kernel symbol: AvlBalance for address 0xC0101484... Found a kernel symbol: AvlDelete for address 0xC01014EC... Found a kernel symbol: AvlInsert for address 0xC010157F... Found a kernel symbol: BlockingBufferGetAfterAcquisition for address 0xC010176A... Found a kernel symbol: SwapElements for address 0xC0101AD5... Found a kernel symbol: CreateShortListByTruncatingLong for address 0xC010C000... Found a kernel symbol: SetBitOfLongList for address 0xC010C016... Found a kernel symbol: RemoveStartOfShortList for address 0xC010C046... Found a kernel symbol: RemoveStartOfLongList for address 0xC010C0DC... Found a kernel symbol: CreateNode for address 0xC010C147... Found a kernel symbol: CheckOpen for address 0xC0101FC5... Found a kernel symbol: Ioctl for address 0xC0101FC8... Found a kernel symbol: DirentType for address 0xC0101FCE... Found a kernel symbol: Stat for address 0xC0101FD1... Found a kernel symbol: dev_ops for address 0xC010A000... Found a kernel symbol: IsSeekable for address 0xC0102055... Found a kernel symbol: DirentType for address 0xC0102058... Found a kernel symbol: Stat for address 0xC010205B... Found a kernel symbol: Create for address 0xC01020DD... Found a kernel symbol: Access.isra.0 for address 0xC0102118... Found a kernel symbol: Write for address 0xC010221C... Found a kernel symbol: Read for address 0xC0102231... Found a kernel symbol: dev_ops for address 0xC010A040... Found a kernel symbol: SubordinateIsTty for address 0xC010249C... Found a kernel symbol: SubordinateStat for address 0xC01024A2... Found a kernel symbol: SubordinateWrite for address 0xC01024A7... Found a kernel symbol: MasterWrite for address 0xC01024FC... Found a kernel symbol: MasterRead for address 0xC0102547... Found a kernel symbol: SubordinateRead for address 0xC010258E... Found a kernel symbol: LineProcessor for address 0xC0102608... Found a kernel symbol: master_operations for address 0xC010A0C0... Found a kernel symbol: subordinate_operations for address 0xC010A080... Found a kernel symbol: Read for address 0xC0102820... Found a kernel symbol: dev_ops for address 0xC010A100... Page fault: cr2 0xD00EB012, eip 0xC0101284, nos-err 0x0
-HandleVirtFault A, 0xD00EB012, 0
-A
-B
-need to get entry for 0xD00EB012
-C -> 0xD0004E5C
+inserting symbol AvlGetHeight -> 0xC010130A
+unfreeable 0xD00D3010
+unfreeable 0xD00D3020
+inserting symbol AvlGet -> 0xC0101345
+unfreeable 0xD00D302C
+unfreeable 0xD00D3038
+inserting symbol AvlContains -> 0xC0101382
+unfreeable 0xD00D3048
+unfreeable 0xD00D3054
+unfreeable 0xD00D3064
+unfreeable 0xD00D3074
+inserting symbol AvlDefaultComparator -> 0xC01013D3
+unfreeable 0xD00D3080
+unfreeable 0xD00D308C
+unfreeable 0xD00D309C
+unfreeable 0xD00D30AC
+unfreeable 0xD00D30B8
+unfreeable 0xD00D30C8
+inserting symbol AvlDestroy -> 0xC01013E5
+unfreeable 0xD00D30D4
+unfreeable 0xD00D30E0
+unfreeable 0xD00D30F0
+unfreeable 0xD00D3100
+inserting symbol AvlPrint -> 0xC0101420
+unfreeable 0xD00D310C
+unfreeable 0xD00D3118
+unfreeable 0xD00D3128
+unfreeable 0xD00D3138
+inserting symbol AvlGetBalance -> 0xC010145D
+unfreeable 0xD00D3144
+unfreeable 0xD00D3150
+unfreeable 0xD00D3160
+unfreeable 0xD00D3170
+inserting symbol AvlBalance -> 0xC0101484
+unfreeable 0xD00D317C
+unfreeable 0xD00D3188
+unfreeable 0xD00D3198
+unfreeable 0xD00D31A8
+inserting symbol AvlDelete -> 0xC01014EC
+unfreeable 0xD00D31B4
+unfreeable 0xD00D31C0
+unfreeable 0xD00D31D0
+unfreeable 0xD00D31E0
+inserting symbol AvlInsert -> 0xC010157F
+unfreeable 0xD00D31EC
+unfreeable 0xD00D31F8
+unfreeable 0xD00D3208
+unfreeable 0xD00D3218
+inserting symbol BlockingBufferGetAfterAcquisition -> 0xC010176A
+unfreeable 0xD00D3224
+unfreeable 0xD00D3230
+unfreeable 0xD00D3240
+unfreeable 0xD00D3250
+unfreeable 0xD00D325C
+unfreeable 0xD00D326C
+unfreeable 0xD00D3278
+unfreeable 0xD00D3288
+Page fault: cr2 0xD0107000, eip 0xC010CB7D, nos-err 0x0
+HandleVirtFault A, 0xD0107000, 0
 
-entry: v 0xD00EB000, p 0x0. aclrf = 00001
+entry: v 0xD0107000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00EB000, file 0xD00033AC, offset 0x14000
 Page fault totally done.
-Found a kernel symbol: fs_table_lock for address 0xC0110000... Found a kernel symbol: num_filesystems for address 0xC0110004... Found a kernel symbol: registered_filesystems for address 0xC0110020... Found a kernel symbol: DummyAppThread for address 0xC0102A0C... Found a kernel symbol: InitCpuTableEntry for address 0xC0102BBA... Found a kernel symbol: cpu_table for address 0xC0110900... Found a kernel symbol: boot_cpu_data for address 0xC0110060... Found a kernel symbol: num_cpus for address 0xC010E000... Found a kernel symbol: irq_table for address 0xC0110D00... Found a kernel symbol: SetSizeTags for address 0xC0102F22... Found a kernel symbol: MarkSwappability for address 0xC0102F35... Found a kernel symbol: GetInsertionIndex for address 0xC0102F4C... Found a kernel symbol: free_list_block_sizes for address 0xC010A140... Found a kernel symbol: RestoreEmergencyPages for address 0xC0102F73... Found a kernel symbol: emergency_blocks for address 0xC010E020... Found a kernel symbol: RemoveBlock for address 0xC0103076... Found a kernel symbol: _head_block_swappable for address 0xC0112020... Found a kernel symbol: _head_block for address 0xC01120C0... Found a kernel symbol: AddBlock.isra.0 for address 0xC01030BE... Found a kernel symbol: AllocateBlock for address 0xC01031E6... Found a kernel symbol: unfreeable_pageable_area for address 0xC0112008... Found a kernel symbol: unfreeable_nonpageable_area for address 0xC0112004... Found a kernel symbol: entry_thread for address 0xC0112000... Found a kernel symbol: heap_lock for address 0xC0112160... Found a kernel symbol: bootstrap_memory_area for address 0xC0113000... Found a kernel symbol: IsBitmapEntryFree for address 0xC0103845... Found a kernel symbol: allocation_bitmap for address 0xC0117040... Found a kernel symbol: AllocateBitmapEntry for address 0xC010385C... Found a kernel symbol: DeallocateBitmapEntry for address 0xC0103872... Page fault: cr2 0xD00D4000, eip 0xC010C3E7, nos-err 0x2
+inserting symbol SwapElements -> 0xC0101AD5
+unfreeable 0xD00D3294
+unfreeable 0xD00D32A0
+unfreeable 0xD00D32B0
+unfreeable 0xD00D32C0
+inserting symbol CreateShortListByTruncatingLong -> 0xC010C000
+unfreeable 0xD00D32CC
+unfreeable 0xD00D32D8
+unfreeable 0xD00D32E8
+unfreeable 0xD00D32F8
+unfreeable 0xD00D3304
+unfreeable 0xD00D3314
+unfreeable 0xD00D3320
+unfreeable 0xD00D3330
+inserting symbol SetBitOfLongList -> 0xC010C016
+unfreeable 0xD00D333C
+unfreeable 0xD00D3348
+unfreeable 0xD00D3358
+unfreeable 0xD00D3368
+unfreeable 0xD00D3374
+unfreeable 0xD00D3384
+inserting symbol RemoveStartOfShortList -> 0xC010C046
+unfreeable 0xD00D3390
+unfreeable 0xD00D339C
+unfreeable 0xD00D33AC
+unfreeable 0xD00D33BC
+unfreeable 0xD00D33C8
+unfreeable 0xD00D33D8
+inserting symbol RemoveStartOfLongList -> 0xC010C0DC
+unfreeable 0xD00D33E4
+unfreeable 0xD00D33F0
+unfreeable 0xD00D3400
+unfreeable 0xD00D3410
+unfreeable 0xD00D341C
+unfreeable 0xD00D342C
+inserting symbol CreateNode -> 0xC010C147
+unfreeable 0xD00D3438
+unfreeable 0xD00D3444
+unfreeable 0xD00D3454
+unfreeable 0xD00D3464
+inserting symbol CheckOpen -> 0xC0101FC5
+unfreeable 0xD00D3470
+unfreeable 0xD00D3480
+inserting symbol Ioctl -> 0xC0101FC8
+unfreeable 0xD00D348C
+unfreeable 0xD00D3498
+unfreeable 0xD00D34A8
+unfreeable 0xD00D34B8
+inserting symbol DirentType -> 0xC0101FCE
+unfreeable 0xD00D34C4
+unfreeable 0xD00D34D0
+unfreeable 0xD00D34E0
+unfreeable 0xD00D34F0
+inserting symbol Stat -> 0xC0101FD1
+unfreeable 0xD00D34FC
+unfreeable 0xD00D3508
+unfreeable 0xD00D3518
+unfreeable 0xD00D3528
+inserting symbol dev_ops -> 0xC010A000
+unfreeable 0xD00D3534
+unfreeable 0xD00D3540
+unfreeable 0xD00D3550
+unfreeable 0xD00D3560
+inserting symbol IsSeekable -> 0xC0102055
+unfreeable 0xD00D356C
+unfreeable 0xD00D3578
+unfreeable 0xD00D3588
+unfreeable 0xD00D3598
+inserting symbol DirentType -> 0xC0102058
+inserting symbol Stat -> 0xC010205B
+inserting symbol Create -> 0xC01020DD
+unfreeable 0xD00D35A4
+unfreeable 0xD00D35B0
+inserting symbol Follow -> 0xC0102118
+unfreeable 0xD00D35C0
+unfreeable 0xD00D35CC
+unfreeable 0xD00D35DC
+unfreeable 0xD00D35EC
+inserting symbol Write -> 0xC0102257
+unfreeable 0xD00D35F8
+unfreeable 0xD00D3604
+unfreeable 0xD00D3614
+unfreeable 0xD00D3624
+inserting symbol Read -> 0xC010226C
+unfreeable 0xD00D3630
+unfreeable 0xD00D363C
+unfreeable 0xD00D364C
+unfreeable 0xD00D365C
+inserting symbol dev_ops -> 0xC010A040
+inserting symbol MasterFollow -> 0xC0102526
+unfreeable 0xD00D3668
+unfreeable 0xD00D3674
+unfreeable 0xD00D3684
+unfreeable 0xD00D3694
+inserting symbol SubordinateIsTty -> 0xC010252C
+unfreeable 0xD00D36A0
+unfreeable 0xD00D36AC
+unfreeable 0xD00D36BC
+unfreeable 0xD00D36CC
+inserting symbol SubordinateStat -> 0xC0102532
+unfreeable 0xD00D36D8
+unfreeable 0xD00D36E4
+unfreeable 0xD00D36F4
+unfreeable 0xD00D3704
+inserting symbol SubordinateWrite -> 0xC0102537
+unfreeable 0xD00D3710
+unfreeable 0xD00D371C
+unfreeable 0xD00D372C
+unfreeable 0xD00D373C
+inserting symbol MasterWrite -> 0xC010258C
+unfreeable 0xD00D3748
+unfreeable 0xD00D3754
+unfreeable 0xD00D3764
+unfreeable 0xD00D3774
+inserting symbol MasterRead -> 0xC01025D7
+unfreeable 0xD00D3780
+unfreeable 0xD00D378C
+unfreeable 0xD00D379C
+unfreeable 0xD00D37AC
+inserting symbol SubordinateRead -> 0xC010261E
+unfreeable 0xD00D37B8
+unfreeable 0xD00D37C4
+unfreeable 0xD00D37D4
+unfreeable 0xD00D37E4
+inserting symbol LineProcessor -> 0xC0102698
+unfreeable 0xD00D37F0
+unfreeable 0xD00D37FC
+unfreeable 0xD00D380C
+unfreeable 0xD00D381C
+inserting symbol master_operations -> 0xC010A0C0
+unfreeable 0xD00D3828
+unfreeable 0xD00D3834
+unfreeable 0xD00D3844
+unfreeable 0xD00D3854
+unfreeable 0xD00D3860
+unfreeable 0xD00D3870
+inserting symbol subordinate_operations -> 0xC010A080
+unfreeable 0xD00D387C
+unfreeable 0xD00D3888
+unfreeable 0xD00D3898
+unfreeable 0xD00D38A8
+unfreeable 0xD00D38B4
+unfreeable 0xD00D38C4
+inserting symbol Read -> 0xC01028B0
+inserting symbol dev_ops -> 0xC010A100
+inserting symbol fs_table_lock -> 0xC0110000
+unfreeable 0xD00D38D0
+unfreeable 0xD00D38DC
+unfreeable 0xD00D38EC
+unfreeable 0xD00D38FC
+inserting symbol num_filesystems -> 0xC0110004
+unfreeable 0xD00D3908
+unfreeable 0xD00D3914
+unfreeable 0xD00D3924
+unfreeable 0xD00D3934
+inserting symbol registered_filesystems -> 0xC0110020
+unfreeable 0xD00D3940
+unfreeable 0xD00D394C
+unfreeable 0xD00D395C
+unfreeable 0xD00D396C
+unfreeable 0xD00D3978
+unfreeable 0xD00D3988
+inserting symbol DummyAppThread -> 0xC0102A9C
+unfreeable 0xD00D3994
+unfreeable 0xD00D39A0
+unfreeable 0xD00D39B0
+unfreeable 0xD00D39C0
+inserting symbol InitCpuTableEntry -> 0xC0102CA2
+unfreeable 0xD00D39CC
+unfreeable 0xD00D39D8
+unfreeable 0xD00D39E8
+unfreeable 0xD00D39F8
+unfreeable 0xD00D3A04
+unfreeable 0xD00D3A14
+inserting symbol cpu_table -> 0xC0110900
+unfreeable 0xD00D3A20
+unfreeable 0xD00D3A2C
+unfreeable 0xD00D3A3C
+unfreeable 0xD00D3A4C
+inserting symbol boot_cpu_data -> 0xC0110060
+unfreeable 0xD00D3A58
+unfreeable 0xD00D3A64
+unfreeable 0xD00D3A74
+unfreeable 0xD00D3A84
+inserting symbol num_cpus -> 0xC010E000
+unfreeable 0xD00D3A90
+unfreeable 0xD00D3A9C
+unfreeable 0xD00D3AAC
+unfreeable 0xD00D3ABC
+inserting symbol irq_table -> 0xC0110D00
+unfreeable 0xD00D3AC8
+unfreeable 0xD00D3AD4
+unfreeable 0xD00D3AE4
+unfreeable 0xD00D3AF4
+inserting symbol SetSizeTags -> 0xC010300A
+unfreeable 0xD00D3B00
+unfreeable 0xD00D3B0C
+unfreeable 0xD00D3B1C
+unfreeable 0xD00D3B2C
+inserting symbol MarkSwappability -> 0xC010301D
+unfreeable 0xD00D3B38
+unfreeable 0xD00D3B44
+unfreeable 0xD00D3B54
+unfreeable 0xD00D3B64
+inserting symbol GetInsertionIndex -> 0xC0103034
+unfreeable 0xD00D3B70
+unfreeable 0xD00D3B7C
+unfreeable 0xD00D3B8C
+unfreeable 0xD00D3B9C
+unfreeable 0xD00D3BA8
+unfreeable 0xD00D3BB8
+inserting symbol free_list_block_sizes -> 0xC010A140
+unfreeable 0xD00D3BC4
+unfreeable 0xD00D3BD0
+unfreeable 0xD00D3BE0
+unfreeable 0xD00D3BF0
+unfreeable 0xD00D3BFC
+unfreeable 0xD00D3C0C
+inserting symbol RestoreEmergencyPages -> 0xC010305B
+unfreeable 0xD00D3C18
+unfreeable 0xD00D3C24
+unfreeable 0xD00D3C34
+unfreeable 0xD00D3C44
+unfreeable 0xD00D3C50
+unfreeable 0xD00D3C60
+inserting symbol emergency_blocks -> 0xC010E020
+unfreeable 0xD00D3C6C
+unfreeable 0xD00D3C78
+unfreeable 0xD00D3C88
+unfreeable 0xD00D3C98
+inserting symbol RemoveBlock -> 0xC010315E
+unfreeable 0xD00D3CA4
+unfreeable 0xD00D3CB0
+unfreeable 0xD00D3CC0
+unfreeable 0xD00D3CD0
+inserting symbol _head_block_swappable -> 0xC0112020
+unfreeable 0xD00D3CDC
+unfreeable 0xD00D3CE8
+unfreeable 0xD00D3CF8
+unfreeable 0xD00D3D08
+unfreeable 0xD00D3D14
+unfreeable 0xD00D3D24
+inserting symbol _head_block -> 0xC01120C0
+unfreeable 0xD00D3D30
+unfreeable 0xD00D3D3C
+unfreeable 0xD00D3D4C
+unfreeable 0xD00D3D5C
+inserting symbol AllocateBlock -> 0xC01032CE
+unfreeable 0xD00D3D68
+unfreeable 0xD00D3D74
+unfreeable 0xD00D3D84
+unfreeable 0xD00D3D94
+inserting symbol entry_thread -> 0xC0112000
+unfreeable 0xD00D3DA0
+unfreeable 0xD00D3DAC
+unfreeable 0xD00D3DBC
+unfreeable 0xD00D3DCC
+inserting symbol heap_lock -> 0xC0112160
+unfreeable 0xD00D3DD8
+unfreeable 0xD00D3DE4
+unfreeable 0xD00D3DF4
+unfreeable 0xD00D3E04
+inserting symbol unfreeable_pageable_area -> 0xC0112010
+unfreeable 0xD00D3E10
+unfreeable 0xD00D3E1C
+unfreeable 0xD00D3E2C
+unfreeable 0xD00D3E3C
+unfreeable 0xD00D3E48
+unfreeable 0xD00D3E58
+inserting symbol unfreeable_pageable_ptr -> 0xC0112008
+unfreeable 0xD00D3E64
+unfreeable 0xD00D3E70
+unfreeable 0xD00D3E80
+unfreeable 0xD00D3E90
+unfreeable 0xD00D3E9C
+unfreeable 0xD00D3EAC
+inserting symbol unfreeable_nonpageable_area -> 0xC011200C
+unfreeable 0xD00D3EB8
+unfreeable 0xD00D3EC4
+unfreeable 0xD00D3ED4
+unfreeable 0xD00D3EE4
+unfreeable 0xD00D3EF0
+unfreeable 0xD00D3F00
+inserting symbol unfreeable_nonpageable_ptr -> 0xC0112004
+unfreeable 0xD00D3F0C
+unfreeable 0xD00D3F18
+unfreeable 0xD00D3F28
+unfreeable 0xD00D3F38
+unfreeable 0xD00D3F44
+unfreeable 0xD00D3F54
+inserting symbol bootstrap_memory_area -> 0xC0113000
+unfreeable 0xD00D3F60
+unfreeable 0xD00D3F6C
+unfreeable 0xD00D3F7C
+unfreeable 0xD00D3F8C
+unfreeable 0xD00D3F98
+unfreeable 0xD00D3FA8
+inserting symbol IsBitmapEntryFree -> 0xC010398D
+unfreeable 0xD00D3FB4
+unfreeable 0xD00D3FC0
+unfreeable 0xD00D3FD0
+unfreeable 0xD00D3FE0
+unfreeable 0xD00D3FEC
+unfreeable 0xD00D3FFC
+Page fault: cr2 0xD00D4000, eip 0xC010C157, nos-err 0x2
 HandleVirtFault A, 0xD00D4000, 2
-A
-B
-need to get entry for 0xD00D4000
-C -> 0xD0003B34
 
 entry: v 0xD00D4000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
 Page fault totally done.
-Found a kernel symbol: EvictPagesIfNeeded for address 0xC0103888... Found a kernel symbol: pages_left for address 0xC0117028... Found a kernel symbol: phys_lock for address 0xC0117000... Found a kernel symbol: allocation_stack for address 0xC0117030... Found a kernel symbol: allocation_stack_pointer for address 0xC011702C... Found a kernel symbol: highest_valid_page_index for address 0xC0117020... Found a kernel symbol: total_pages for address 0xC0117024... Found a kernel symbol: VirtAvlComparator for address 0xC0103C07... Found a kernel symbol: DeleteFromAvl for address 0xC0103C1D... Found a kernel symbol: GetVirtEntry.isra.0 for address 0xC0103C6E... Found a kernel symbol: hideous_allocator.1 for address 0xC010E0E4... Found a kernel symbol: hideous_allocator.0 for address 0xC010E0E0... Found a kernel symbol: DeferDiskWrite for address 0xC0104080... Found a kernel symbol: PerformDeferredAccess for address 0xC0104512... Found a kernel symbol: BringIntoMemoryFromCow for address 0xC0104198... Found a kernel symbol: CopyVasRecursive for address 0xC0104587... Found a kernel symbol: BringIntoMemory.isra.0 for address 0xC01046E9... Found a kernel symbol: kernel_vas for address 0xC0137044... Found a kernel symbol: virt_initialised for address 0xC0137040... Found a kernel symbol: rand_seed for address 0xC010E0E8... Found a kernel symbol: CleanerThread for address 0xC010C5B1... Found a kernel symbol: cleaner_semaphore for address 0xC0137048... Found a kernel symbol: terminated_list for address 0xC013704C... Found a kernel symbol: NotifyCleaner for address 0xC0104CCF... Found a kernel symbol: IdleThread for address 0xC0104D80... Found a kernel symbol: KillRemainingThreads for address 0xC010C606... Found a kernel symbol: process_table_mutex for address 0xC0137060... Found a kernel symbol: process_table for address 0xC0137064... Found a kernel symbol: ReapProcess for address 0xC010C68C... Found a kernel symbol: OrphanChildProcesses for address 0xC010C70C... Found a kernel symbol: KillProcessHelper for address 0xC010C777... Found a kernel symbol: TryReapProcessAux.isra.0 for address 0xC010C7F3... Found a kernel symbol: pid_lock for address 0xC0137080... Found a kernel symbol: next_pid for address 0xC010E0F0... Found a kernel symbol: GetMinPriorityValueForPolicy for address 0xC0104E99... Found a kernel symbol: prev_time.3 for address 0xC01370E8... Found a kernel symbol: UpdateTimesliceExpiry for address 0xC0104F65... Found a kernel symbol: SwitchToNewTask for address 0xC0104FB5... Found a kernel symbol: ready_list for address 0xC0137140... Found a kernel symbol: innermost_lock for address 0xC0137100... Found a kernel symbol: scheduler_lock for address 0xC0137120... Found a kernel symbol: initialised.2 for address 0xC01370E0... Found a kernel symbol: thread_id_lock.1 for address 0xC01370C0... Found a kernel symbol: next_thread_id.0 for address 0xC01370A0... Found a kernel symbol: sleep_queue for address 0xC0137174... Found a kernel symbol: sleep_overflow_list for address 0xC0137168... Found a kernel symbol: timer_lock for address 0xC0137180... Found a kernel symbol: system_time for address 0xC0137160... Found a kernel symbol: vesa_newline for address 0xC010571A... Found a kernel symbol: data for address 0xC01371A0... Found a kernel symbol: ConvertToColourDepth.part.0 for address 0xC0105783... Found a kernel symbol: ConsoleDriverThread for address 0xC0105AAE... Found a kernel symbol: console_subordinate for address 0xC01371B0... Found a kernel symbol: open_console_master for address 0xC01371AC... Found a kernel symbol: console_master for address 0xC01371B4... backup heap: largest is 0x3000, total is 0x3000
-Found a kernel symbol: open_console_subordinate for address 0xC01371A8... Found a kernel symbol: console_initialised for address 0xC01371A4... Found a kernel symbol: DriverTableComparator for address 0xC010CA7D... Found a kernel symbol: driver_table_lock for address 0xC01371C4... Found a kernel symbol: loaded_drivers for address 0xC01371BC... Found a kernel symbol: symbol_table_lock for address 0xC01371C0... Page fault: cr2 0xD00D5000, eip 0xC010C00E, nos-err 0x2
+inserting symbol allocation_bitmap -> 0xC0117040
+unfreeable 0xD00D4008
+unfreeable 0xD00D4014
+unfreeable 0xD00D4024
+unfreeable 0xD00D4034
+unfreeable 0xD00D4040
+unfreeable 0xD00D4050
+inserting symbol AllocateBitmapEntry -> 0xC01039A4
+unfreeable 0xD00D405C
+unfreeable 0xD00D4068
+unfreeable 0xD00D4078
+unfreeable 0xD00D4088
+inserting symbol DeallocateBitmapEntry -> 0xC01039BA
+unfreeable 0xD00D4094
+unfreeable 0xD00D40A0
+unfreeable 0xD00D40B0
+unfreeable 0xD00D40C0
+unfreeable 0xD00D40CC
+unfreeable 0xD00D40DC
+inserting symbol EvictPagesIfNeeded -> 0xC01039D0
+unfreeable 0xD00D40E8
+unfreeable 0xD00D40F4
+unfreeable 0xD00D4104
+unfreeable 0xD00D4114
+unfreeable 0xD00D4120
+unfreeable 0xD00D4130
+inserting symbol pages_left -> 0xC0117028
+unfreeable 0xD00D413C
+unfreeable 0xD00D4148
+unfreeable 0xD00D4158
+unfreeable 0xD00D4168
+inserting symbol phys_lock -> 0xC0117000
+unfreeable 0xD00D4174
+unfreeable 0xD00D4180
+unfreeable 0xD00D4190
+unfreeable 0xD00D41A0
+inserting symbol allocation_stack -> 0xC0117030
+unfreeable 0xD00D41AC
+unfreeable 0xD00D41B8
+unfreeable 0xD00D41C8
+unfreeable 0xD00D41D8
+inserting symbol allocation_stack_pointer -> 0xC011702C
+unfreeable 0xD00D41E4
+unfreeable 0xD00D41F4
+inserting symbol highest_valid_page_index -> 0xC0117020
+unfreeable 0xD00D4200
+unfreeable 0xD00D420C
+unfreeable 0xD00D421C
+unfreeable 0xD00D422C
+unfreeable 0xD00D4238
+unfreeable 0xD00D4248
+inserting symbol total_pages -> 0xC0117024
+unfreeable 0xD00D4254
+unfreeable 0xD00D4260
+unfreeable 0xD00D4270
+unfreeable 0xD00D4280
+inserting symbol VirtAvlComparator -> 0xC0103DA2
+unfreeable 0xD00D428C
+unfreeable 0xD00D4298
+unfreeable 0xD00D42A8
+unfreeable 0xD00D42B8
+unfreeable 0xD00D42C4
+unfreeable 0xD00D42D4
+inserting symbol DeleteFromAvl -> 0xC0103DB8
+unfreeable 0xD00D42E0
+unfreeable 0xD00D42EC
+unfreeable 0xD00D42FC
+unfreeable 0xD00D430C
+inserting symbol DeferDiskWrite -> 0xC0104499
+unfreeable 0xD00D4318
+unfreeable 0xD00D4324
+unfreeable 0xD00D4334
+unfreeable 0xD00D4344
+inserting symbol PerformDeferredAccess -> 0xC0104A95
+unfreeable 0xD00D4350
+unfreeable 0xD00D435C
+unfreeable 0xD00D436C
+unfreeable 0xD00D437C
+unfreeable 0xD00D4388
+unfreeable 0xD00D4398
+inserting symbol BringIntoMemoryFromCow -> 0xC01047B8
+unfreeable 0xD00D43A4
+unfreeable 0xD00D43B0
+unfreeable 0xD00D43C0
+unfreeable 0xD00D43D0
+unfreeable 0xD00D43DC
+unfreeable 0xD00D43EC
+inserting symbol CopyVasRecursive -> 0xC0104B2D
+unfreeable 0xD00D43F8
+unfreeable 0xD00D4404
+unfreeable 0xD00D4414
+unfreeable 0xD00D4424
+inserting symbol DeferDiskRead -> 0xC0104DF6
+unfreeable 0xD00D4430
+unfreeable 0xD00D443C
+unfreeable 0xD00D444C
+unfreeable 0xD00D445C
+inserting symbol kernel_vas -> 0xC01370A4
+unfreeable 0xD00D4468
+unfreeable 0xD00D4474
+unfreeable 0xD00D4484
+unfreeable 0xD00D4494
+inserting symbol virt_initialised -> 0xC01370A1
+unfreeable 0xD00D44A0
+unfreeable 0xD00D44AC
+unfreeable 0xD00D44BC
+unfreeable 0xD00D44CC
+inserting symbol rand_seed -> 0xC010E0E8
+unfreeable 0xD00D44D8
+unfreeable 0xD00D44E4
+unfreeable 0xD00D44F4
+unfreeable 0xD00D4504
+inserting symbol CleanerThread -> 0xC010C5B1
+unfreeable 0xD00D4510
+unfreeable 0xD00D451C
+unfreeable 0xD00D452C
+unfreeable 0xD00D453C
+inserting symbol cleaner_semaphore -> 0xC01370A8
+unfreeable 0xD00D4548
+unfreeable 0xD00D4554
+unfreeable 0xD00D4564
+unfreeable 0xD00D4574
+unfreeable 0xD00D4580
+unfreeable 0xD00D4590
+inserting symbol terminated_list -> 0xC01370AC
+unfreeable 0xD00D459C
+unfreeable 0xD00D45A8
+unfreeable 0xD00D45B8
+unfreeable 0xD00D45C8
+inserting symbol NotifyCleaner -> 0xC010529B
+unfreeable 0xD00D45D4
+unfreeable 0xD00D45E0
+unfreeable 0xD00D45F0
+unfreeable 0xD00D4600
+inserting symbol IdleThread -> 0xC010534C
+unfreeable 0xD00D460C
+unfreeable 0xD00D4618
+unfreeable 0xD00D4628
+unfreeable 0xD00D4638
+inserting symbol KillRemainingThreads -> 0xC010C606
+unfreeable 0xD00D4644
+unfreeable 0xD00D4650
+unfreeable 0xD00D4660
+unfreeable 0xD00D4670
+unfreeable 0xD00D467C
+unfreeable 0xD00D468C
+inserting symbol process_table_mutex -> 0xC01370C0
+unfreeable 0xD00D4698
+unfreeable 0xD00D46A4
+unfreeable 0xD00D46B4
+unfreeable 0xD00D46C4
+unfreeable 0xD00D46D0
+unfreeable 0xD00D46E0
+inserting symbol process_table -> 0xC01370C4
+unfreeable 0xD00D46EC
+unfreeable 0xD00D46F8
+unfreeable 0xD00D4708
+unfreeable 0xD00D4718
+inserting symbol ReapProcess -> 0xC010C68C
+unfreeable 0xD00D4724
+unfreeable 0xD00D4730
+unfreeable 0xD00D4740
+unfreeable 0xD00D4750
+inserting symbol OrphanChildProcesses -> 0xC010C70C
+unfreeable 0xD00D475C
+unfreeable 0xD00D4768
+unfreeable 0xD00D4778
+unfreeable 0xD00D4788
+unfreeable 0xD00D4794
+unfreeable 0xD00D47A4
+inserting symbol KillProcessHelper -> 0xC010C777
+unfreeable 0xD00D47B0
+unfreeable 0xD00D47BC
+unfreeable 0xD00D47CC
+unfreeable 0xD00D47DC
+inserting symbol pid_lock -> 0xC01370E0
+unfreeable 0xD00D47E8
+unfreeable 0xD00D47F4
+unfreeable 0xD00D4804
+unfreeable 0xD00D4814
+inserting symbol next_pid -> 0xC010E0F0
+unfreeable 0xD00D4820
+unfreeable 0xD00D482C
+unfreeable 0xD00D483C
+unfreeable 0xD00D484C
+inserting symbol GetMinPriorityValueForPolicy -> 0xC0105465
+unfreeable 0xD00D4858
+unfreeable 0xD00D4864
+unfreeable 0xD00D4874
+unfreeable 0xD00D4884
+unfreeable 0xD00D4890
+unfreeable 0xD00D48A0
+inserting symbol UpdateTimesliceExpiry -> 0xC0105531
+unfreeable 0xD00D48AC
+unfreeable 0xD00D48B8
+unfreeable 0xD00D48C8
+unfreeable 0xD00D48D8
+unfreeable 0xD00D48E4
+unfreeable 0xD00D48F4
+inserting symbol SwitchToNewTask -> 0xC0105581
+unfreeable 0xD00D4900
+unfreeable 0xD00D490C
+unfreeable 0xD00D491C
+unfreeable 0xD00D492C
+inserting symbol ready_list -> 0xC01371A0
+unfreeable 0xD00D4938
+unfreeable 0xD00D4944
+unfreeable 0xD00D4954
+unfreeable 0xD00D4964
+inserting symbol innermost_lock -> 0xC0137160
+unfreeable 0xD00D4970
+unfreeable 0xD00D497C
+unfreeable 0xD00D498C
+unfreeable 0xD00D499C
+inserting symbol scheduler_lock -> 0xC0137180
+unfreeable 0xD00D49A8
+unfreeable 0xD00D49B4
+unfreeable 0xD00D49C4
+unfreeable 0xD00D49D4
+inserting symbol sleep_queue -> 0xC01371D4
+unfreeable 0xD00D49E0
+unfreeable 0xD00D49EC
+unfreeable 0xD00D49FC
+unfreeable 0xD00D4A0C
+inserting symbol sleep_overflow_list -> 0xC01371C8
+unfreeable 0xD00D4A18
+unfreeable 0xD00D4A24
+unfreeable 0xD00D4A34
+unfreeable 0xD00D4A44
+inserting symbol timer_lock -> 0xC01371E0
+unfreeable 0xD00D4A50
+unfreeable 0xD00D4A5C
+unfreeable 0xD00D4A6C
+unfreeable 0xD00D4A7C
+inserting symbol system_time -> 0xC01371C0
+unfreeable 0xD00D4A88
+unfreeable 0xD00D4A94
+unfreeable 0xD00D4AA4
+unfreeable 0xD00D4AB4
+inserting symbol vesa_newline -> 0xC0105CE6
+unfreeable 0xD00D4AC0
+unfreeable 0xD00D4ACC
+unfreeable 0xD00D4ADC
+unfreeable 0xD00D4AEC
+inserting symbol data -> 0xC0137200
+unfreeable 0xD00D4AF8
+unfreeable 0xD00D4B04
+unfreeable 0xD00D4B14
+unfreeable 0xD00D4B24
+inserting symbol ConsoleDriverThread -> 0xC010607A
+unfreeable 0xD00D4B30
+unfreeable 0xD00D4B3C
+unfreeable 0xD00D4B4C
+unfreeable 0xD00D4B5C
+unfreeable 0xD00D4B68
+unfreeable 0xD00D4B78
+inserting symbol console_subordinate -> 0xC0137210
+unfreeable 0xD00D4B84
+unfreeable 0xD00D4B90
+unfreeable 0xD00D4BA0
+unfreeable 0xD00D4BB0
+unfreeable 0xD00D4BBC
+unfreeable 0xD00D4BCC
+inserting symbol open_console_master -> 0xC013720C
+unfreeable 0xD00D4BD8
+unfreeable 0xD00D4BE4
+unfreeable 0xD00D4BF4
+unfreeable 0xD00D4C04
+unfreeable 0xD00D4C10
+unfreeable 0xD00D4C20
+inserting symbol console_master -> 0xC0137214
+unfreeable 0xD00D4C2C
+unfreeable 0xD00D4C38
+unfreeable 0xD00D4C48
+unfreeable 0xD00D4C58
+inserting symbol open_console_subordinate -> 0xC0137208
+unfreeable 0xD00D4C64
+unfreeable 0xD00D4C70
+unfreeable 0xD00D4C80
+unfreeable 0xD00D4C90
+unfreeable 0xD00D4C9C
+unfreeable 0xD00D4CAC
+inserting symbol console_initialised -> 0xC0137204
+unfreeable 0xD00D4CB8
+unfreeable 0xD00D4CC4
+unfreeable 0xD00D4CD4
+unfreeable 0xD00D4CE4
+inserting symbol DriverTableComparator -> 0xC010CA7D
+unfreeable 0xD00D4CF0
+unfreeable 0xD00D4CFC
+unfreeable 0xD00D4D0C
+unfreeable 0xD00D4D1C
+unfreeable 0xD00D4D28
+unfreeable 0xD00D4D38
+inserting symbol driver_table_lock -> 0xC0137224
+unfreeable 0xD00D4D44
+unfreeable 0xD00D4D50
+unfreeable 0xD00D4D60
+unfreeable 0xD00D4D70
+unfreeable 0xD00D4D7C
+unfreeable 0xD00D4D8C
+inserting symbol loaded_drivers -> 0xC013721C
+unfreeable 0xD00D4D98
+unfreeable 0xD00D4DA4
+unfreeable 0xD00D4DB4
+unfreeable 0xD00D4DC4
+inserting symbol symbol_table_lock -> 0xC0137220
+unfreeable 0xD00D4DD0
+unfreeable 0xD00D4DDC
+unfreeable 0xD00D4DEC
+unfreeable 0xD00D4DFC
+inserting symbol symbol_table -> 0xC0137218
+unfreeable 0xD00D4E08
+unfreeable 0xD00D4E14
+inserting symbol logcnv -> 0xC0106227
+unfreeable 0xD00D4E24
+unfreeable 0xD00D4E30
+unfreeable 0xD00D4E40
+unfreeable 0xD00D4E50
+inserting symbol log_intnv -> 0xC0106257
+unfreeable 0xD00D4E5C
+unfreeable 0xD00D4E68
+unfreeable 0xD00D4E78
+unfreeable 0xD00D4E88
+inserting symbol LogWriteSerialVa -> 0xC01062AF
+unfreeable 0xD00D4E94
+unfreeable 0xD00D4EA0
+unfreeable 0xD00D4EB0
+unfreeable 0xD00D4EC0
+inserting symbol call_stack_ptr -> 0xC0137228
+unfreeable 0xD00D4ECC
+unfreeable 0xD00D4ED8
+unfreeable 0xD00D4EE8
+unfreeable 0xD00D4EF8
+inserting symbol message_table -> 0xC010A1E0
+unfreeable 0xD00D4F04
+unfreeable 0xD00D4F10
+unfreeable 0xD00D4F20
+unfreeable 0xD00D4F30
+inserting symbol type_table_lock -> 0xC0137260
+unfreeable 0xD00D4F3C
+unfreeable 0xD00D4F48
+unfreeable 0xD00D4F58
+unfreeable 0xD00D4F68
+inserting symbol type_table -> 0xC0137280
+unfreeable 0xD00D4F74
+unfreeable 0xD00D4F80
+inserting symbol next_mounted_disk_num -> 0xC0137240
+unfreeable 0xD00D4F90
+unfreeable 0xD00D4F9C
+unfreeable 0xD00D4FAC
+unfreeable 0xD00D4FBC
+unfreeable 0xD00D4FC8
+unfreeable 0xD00D4FD8
+inserting symbol type_strings -> 0xC010A260
+unfreeable 0xD00D4FE4
+unfreeable 0xD00D4FF0
+unfreeable 0xD00D5000
+Page fault: cr2 0xD00D5000, eip 0xC010C00E, nos-err 0x2
 HandleVirtFault A, 0xD00D5000, 2
-A
-B
-need to get entry for 0xD00D5000
-C -> 0xD0003C8C
 
 entry: v 0xD00D5000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
 Page fault totally done.
-Found a kernel symbol: symbol_table for address 0xC01371B8... Found a kernel symbol: logcnv for address 0xC0105C5B... Found a kernel symbol: log_intnv for address 0xC0105C8B... Found a kernel symbol: LogWriteSerialVa for address 0xC0105CE3... Found a kernel symbol: call_stack_ptr for address 0xC01371C8... Found a kernel symbol: message_table for address 0xC010A1E0... Found a kernel symbol: AppendNumberToString.isra.0 for address 0xC010622A... Found a kernel symbol: type_table_lock for address 0xC0137200... Found a kernel symbol: type_table for address 0xC0137220... Found a kernel symbol: next_mounted_disk_num for address 0xC01371E0... Found a kernel symbol: type_strings for address 0xC010A260... Found a kernel symbol: ValidateCopy for address 0xC01065C9... Found a kernel symbol: CleanupVnodeStack for address 0xC01068EA... Found a kernel symbol: CheckValidComponentName for address 0xC0106924... Found a kernel symbol: GetPathComponent.constprop.0 for address 0xC0106960... Found a kernel symbol: GetVnodeFromPath.part.0 for address 0xC01069B2... Found a kernel symbol: mount_points for address 0xC0137240... Found a kernel symbol: GetVnodeFromPath for address 0xC0106B82... Found a kernel symbol: vfs_lock for address 0xC0137260... Found a kernel symbol: CheckVnode for address 0xC0106CBB... Found a kernel symbol: Write for address 0xC0107432... Found a kernel symbol: DirentType for address 0xC0107438... Found a kernel symbol: Stat for address 0xC0107444... Found a kernel symbol: Follow for address 0xC01074B3... Found a kernel symbol: dev_ops for address 0xC010A280... Found a kernel symbol: Close for address 0xC0107551... Found a kernel symbol: Readdir for address 0xC0107566... Found a kernel symbol: Read for address 0xC0107592... Found a kernel symbol: CheckOpen for address 0xC01075C0... Found a kernel symbol: DoesFileExist for address 0xC01078AC... Page fault: cr2 0xD00E900C, eip 0xC010D7F2, nos-err 0x0
-HandleVirtFault A, 0xD00E900C, 0
-A
-B
-need to get entry for 0xD00E900C
-C -> 0xD0003234
+unfreeable 0xD00D5010
+inserting symbol ValidateCopy -> 0xC0106B98
+unfreeable 0xD00D501C
+unfreeable 0xD00D5028
+unfreeable 0xD00D5038
+unfreeable 0xD00D5048
+inserting symbol CleanupVnodeStack -> 0xC0106EB9
+unfreeable 0xD00D5054
+unfreeable 0xD00D5060
+unfreeable 0xD00D5070
+unfreeable 0xD00D5080
+inserting symbol CheckValidComponentName -> 0xC0106EF3
+unfreeable 0xD00D508C
+unfreeable 0xD00D5098
+unfreeable 0xD00D50A8
+unfreeable 0xD00D50B8
+unfreeable 0xD00D50C4
+unfreeable 0xD00D50D4
+inserting symbol mount_points -> 0xC01372A0
+unfreeable 0xD00D50E0
+unfreeable 0xD00D50EC
+unfreeable 0xD00D50FC
+unfreeable 0xD00D510C
+inserting symbol GetVnodeFromPath -> 0xC010711E
+unfreeable 0xD00D5118
+unfreeable 0xD00D5124
+unfreeable 0xD00D5134
+unfreeable 0xD00D5144
+inserting symbol vfs_lock -> 0xC01372C0
+unfreeable 0xD00D5150
+unfreeable 0xD00D515C
+unfreeable 0xD00D516C
+unfreeable 0xD00D517C
+inserting symbol CheckVnode -> 0xC0107257
+unfreeable 0xD00D5188
+unfreeable 0xD00D5194
+unfreeable 0xD00D51A4
+unfreeable 0xD00D51B4
+Page fault: cr2 0xD010500C, eip 0xC010D833, nos-err 0x0
+HandleVirtFault A, 0xD010500C, 0
 
-entry: v 0xD00E9000, p 0x0. aclrf = 00001
+entry: v 0xD0105000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00E9000, file 0xD00033AC, offset 0x12000
 Page fault totally done.
-Found a kernel symbol: ready_for_irqs for address 0xC0137280... Found a kernel symbol: Stat for address 0xC0107CF4... Found a kernel symbol: Follow for address 0xC0107D64... Found a kernel symbol: Create for address 0xC0107DA7... Found a kernel symbol: IdeIo for address 0xC0107EA0... Found a kernel symbol: Write for address 0xC01081DD... Found a kernel symbol: Read for address 0xC01081F9... Found a kernel symbol: dev_ops for address 0xC010A2C0... Found a kernel symbol: prev.0 for address 0xC010F120... Found a kernel symbol: HandlePit for address 0xC0108497... Found a kernel symbol: pit_nanos for address 0xC0137288... Found a kernel symbol: Ps2Wait.isra.0 for address 0xC0108501... Found a kernel symbol: Ps2ControllerRead for address 0xC0108523... Found a kernel symbol: set1_map_lower_norm for address 0xC010D9C0... Found a kernel symbol: set1_map_upper_caps for address 0xC010D840... Found a kernel symbol: set1_map_lower_caps for address 0xC010D8C0... Found a kernel symbol: set1_map_upper_norm for address 0xC010D940... Found a kernel symbol: Ps2KeyboardIrqHandler for address 0xC01086D6... Found a kernel symbol: Ps2KeyboardGetScancodeSet for address 0xC010D227... Found a kernel symbol: Ps2KeyboardSetScancodeSet for address 0xC010D27D... Found a kernel symbol: Ps2KeyboardSetTranslation for address 0xC010D2AF... Found a kernel symbol: x86SetIdtEntry for address 0xC0108798... Found a kernel symbol: memory_table for address 0xC01372A8... Found a kernel symbol: table_length.2 for address 0xC01372A4... Found a kernel symbol: bytes_used.1 for address 0xC01372A0... Found a kernel symbol: range.0 for address 0xC0137298... Found a kernel symbol: x86AllocatePageTable for address 0xC0108A63... Found a kernel symbol: x86MapPage for address 0xC0108A9F... Found a kernel symbol: kernel_page_directory for address 0xC0139000... Found a kernel symbol: vas_data_table for address 0xC013A000... Found a kernel symbol: vas_table for address 0xC013A080... Found a kernel symbol: first_page_table for address 0xC0138000... Found a kernel symbol: MBALIGN for address 0x1... Found a kernel symbol: MEMINFO for address 0x2... Found a kernel symbol: FLAGS for address 0x3... Found a kernel symbol: MAGIC for address 0x1BADB002... Found a kernel symbol: CHECKSUM for address 0xE4524FFB... Found a kernel symbol: stack_bottom for address 0xC013B000... Found a kernel symbol: stack_top for address 0xC013C000... Found a kernel symbol: _start.mapNextPage for address 0x100035... Found a kernel symbol: _start.keep for address 0x100040... Found a kernel symbol: _start.incrementPage for address 0x100042... Found a kernel symbol: _start.endMapping for address 0x10004D... Found a kernel symbol: _start.end for address 0x10007D... Found a kernel symbol: KernelEntryPoint for address 0xC0108C7F... Found a kernel symbol: x86LoadGdt.reloadSegments for address 0xC0108CEE... Found a kernel symbol: int_common_handler for address 0xC0108E3F... Found a kernel symbol: ArchSpinlockAcquire.try_acquire for address 0xC0108E94... Page fault: cr2 0xD00D6008, eip 0xC010C155, nos-err 0x2
-HandleVirtFault A, 0xD00D6008, 2
-A
-B
-need to get entry for 0xD00D6008
-C -> 0xD0003B64
+inserting symbol Write -> 0xC01079CE
+inserting symbol DirentType -> 0xC01079D4
+inserting symbol Stat -> 0xC01079E0
+inserting symbol Follow -> 0xC0107A4F
+inserting symbol dev_ops -> 0xC010A280
+inserting symbol Close -> 0xC0107AED
+unfreeable 0xD00D51C0
+unfreeable 0xD00D51CC
+unfreeable 0xD00D51DC
+unfreeable 0xD00D51EC
+inserting symbol Readdir -> 0xC0107B02
+unfreeable 0xD00D51F8
+unfreeable 0xD00D5208
+inserting symbol Read -> 0xC0107B2E
+inserting symbol CheckOpen -> 0xC0107B5C
+inserting symbol DoesFileExist -> 0xC0107E48
+unfreeable 0xD00D5214
+unfreeable 0xD00D5220
+unfreeable 0xD00D5230
+unfreeable 0xD00D5240
+inserting symbol ready_for_irqs -> 0xC01372E0
+unfreeable 0xD00D524C
+unfreeable 0xD00D5258
+unfreeable 0xD00D5268
+unfreeable 0xD00D5278
+inserting symbol Stat -> 0xC0108290
+inserting symbol Follow -> 0xC0108300
+inserting symbol Create -> 0xC0108343
+inserting symbol IdeIo -> 0xC010843C
+unfreeable 0xD00D5284
+unfreeable 0xD00D5290
+unfreeable 0xD00D52A0
+unfreeable 0xD00D52B0
+inserting symbol Write -> 0xC0108779
+inserting symbol Read -> 0xC0108795
+inserting symbol dev_ops -> 0xC010A2C0
+inserting symbol HandlePit -> 0xC01089C7
+unfreeable 0xD00D52BC
+unfreeable 0xD00D52C8
+unfreeable 0xD00D52D8
+unfreeable 0xD00D52E8
+inserting symbol pit_nanos -> 0xC01372E8
+unfreeable 0xD00D52F4
+unfreeable 0xD00D5300
+unfreeable 0xD00D5310
+unfreeable 0xD00D5320
+inserting symbol Ps2ControllerRead -> 0xC0108A53
+unfreeable 0xD00D532C
+unfreeable 0xD00D5338
+unfreeable 0xD00D5348
+unfreeable 0xD00D5358
+unfreeable 0xD00D5364
+unfreeable 0xD00D5374
+inserting symbol set1_map_lower_norm -> 0xC010DA00
+unfreeable 0xD00D5380
+unfreeable 0xD00D538C
+unfreeable 0xD00D539C
+unfreeable 0xD00D53AC
+unfreeable 0xD00D53B8
+unfreeable 0xD00D53C8
+inserting symbol set1_map_upper_caps -> 0xC010D880
+unfreeable 0xD00D53D4
+unfreeable 0xD00D53E0
+unfreeable 0xD00D53F0
+unfreeable 0xD00D5400
+unfreeable 0xD00D540C
+unfreeable 0xD00D541C
+inserting symbol set1_map_lower_caps -> 0xC010D900
+unfreeable 0xD00D5428
+unfreeable 0xD00D5434
+unfreeable 0xD00D5444
+unfreeable 0xD00D5454
+unfreeable 0xD00D5460
+unfreeable 0xD00D5470
+inserting symbol set1_map_upper_norm -> 0xC010D980
+unfreeable 0xD00D547C
+unfreeable 0xD00D5488
+unfreeable 0xD00D5498
+unfreeable 0xD00D54A8
+unfreeable 0xD00D54B4
+unfreeable 0xD00D54C4
+inserting symbol Ps2KeyboardIrqHandler -> 0xC0108C06
+unfreeable 0xD00D54D0
+unfreeable 0xD00D54DC
+unfreeable 0xD00D54EC
+unfreeable 0xD00D54FC
+unfreeable 0xD00D5508
+unfreeable 0xD00D5518
+inserting symbol Ps2KeyboardGetScancodeSet -> 0xC010D24B
+unfreeable 0xD00D5524
+unfreeable 0xD00D5530
+unfreeable 0xD00D5540
+unfreeable 0xD00D5550
+unfreeable 0xD00D555C
+unfreeable 0xD00D556C
+inserting symbol Ps2KeyboardSetScancodeSet -> 0xC010D2A1
+unfreeable 0xD00D5578
+unfreeable 0xD00D5584
+unfreeable 0xD00D5594
+unfreeable 0xD00D55A4
+unfreeable 0xD00D55B0
+unfreeable 0xD00D55C0
+inserting symbol Ps2KeyboardSetTranslation -> 0xC010D2D3
+unfreeable 0xD00D55CC
+unfreeable 0xD00D55D8
+unfreeable 0xD00D55E8
+unfreeable 0xD00D55F8
+unfreeable 0xD00D5604
+unfreeable 0xD00D5614
+inserting symbol x86SetIdtEntry -> 0xC0108CC8
+unfreeable 0xD00D5620
+unfreeable 0xD00D562C
+unfreeable 0xD00D563C
+unfreeable 0xD00D564C
+inserting symbol memory_table -> 0xC0137308
+unfreeable 0xD00D5658
+unfreeable 0xD00D5664
+unfreeable 0xD00D5674
+unfreeable 0xD00D5684
+inserting symbol x86AllocatePageTable -> 0xC0108F93
+unfreeable 0xD00D5690
+unfreeable 0xD00D569C
+unfreeable 0xD00D56AC
+unfreeable 0xD00D56BC
+unfreeable 0xD00D56C8
+unfreeable 0xD00D56D8
+inserting symbol x86MapPage -> 0xC0108FCF
+unfreeable 0xD00D56E4
+unfreeable 0xD00D56F0
+unfreeable 0xD00D5700
+unfreeable 0xD00D5710
+inserting symbol kernel_page_directory -> 0xC0139000
+unfreeable 0xD00D571C
+unfreeable 0xD00D5728
+unfreeable 0xD00D5738
+unfreeable 0xD00D5748
+inserting symbol vas_data_table -> 0xC013A000
+unfreeable 0xD00D5754
+unfreeable 0xD00D5760
+unfreeable 0xD00D5770
+unfreeable 0xD00D5780
+inserting symbol vas_table -> 0xC013A080
+unfreeable 0xD00D578C
+unfreeable 0xD00D5798
+unfreeable 0xD00D57A8
+unfreeable 0xD00D57B8
+inserting symbol first_page_table -> 0xC0138000
+unfreeable 0xD00D57C4
+unfreeable 0xD00D57D0
+unfreeable 0xD00D57E0
+unfreeable 0xD00D57F0
+inserting symbol MBALIGN -> 0x1
+unfreeable 0xD00D57FC
+unfreeable 0xD00D5808
+unfreeable 0xD00D5818
+unfreeable 0xD00D5828
+inserting symbol MEMINFO -> 0x2
+unfreeable 0xD00D5834
+unfreeable 0xD00D5840
+unfreeable 0xD00D5850
+unfreeable 0xD00D5860
+inserting symbol FLAGS -> 0x3
+unfreeable 0xD00D586C
+unfreeable 0xD00D5878
+unfreeable 0xD00D5888
+unfreeable 0xD00D5898
+inserting symbol MAGIC -> 0x1BADB002
+unfreeable 0xD00D58A4
+unfreeable 0xD00D58B0
+unfreeable 0xD00D58C0
+unfreeable 0xD00D58D0
+inserting symbol CHECKSUM -> 0xE4524FFB
+unfreeable 0xD00D58DC
+unfreeable 0xD00D58E8
+unfreeable 0xD00D58F8
+unfreeable 0xD00D5908
+inserting symbol stack_bottom -> 0xC013B000
+unfreeable 0xD00D5914
+unfreeable 0xD00D5920
+unfreeable 0xD00D5930
+unfreeable 0xD00D5940
+inserting symbol stack_top -> 0xC013C000
+unfreeable 0xD00D594C
+unfreeable 0xD00D5958
+unfreeable 0xD00D5968
+unfreeable 0xD00D5978
+inserting symbol KernelEntryPoint -> 0xC01091AF
+unfreeable 0xD00D5984
+unfreeable 0xD00D5990
+unfreeable 0xD00D59A0
+unfreeable 0xD00D59B0
+unfreeable 0xD00D59BC
+unfreeable 0xD00D59CC
+inserting symbol int_common_handler -> 0xC010936F
+unfreeable 0xD00D59D8
+unfreeable 0xD00D59E4
+unfreeable 0xD00D59F4
+unfreeable 0xD00D5A04
+unfreeable 0xD00D5A10
+unfreeable 0xD00D5A20
+inserting symbol __udivdi3 -> 0xC0109428
+unfreeable 0xD00D5A2C
+unfreeable 0xD00D5A38
+unfreeable 0xD00D5A48
+unfreeable 0xD00D5A58
+inserting symbol __udivmoddi4 -> 0xC0109534
+unfreeable 0xD00D5A64
+unfreeable 0xD00D5A70
+unfreeable 0xD00D5A80
+unfreeable 0xD00D5A90
+inserting symbol _kernel_start -> 0x100000
+unfreeable 0xD00D5A9C
+unfreeable 0xD00D5AA8
+unfreeable 0xD00D5AB8
+unfreeable 0xD00D5AC8
+inserting symbol x86AreCpusOn -> 0xC010924D
+unfreeable 0xD00D5AD4
+unfreeable 0xD00D5AE0
+unfreeable 0xD00D5AF0
+unfreeable 0xD00D5B00
+inserting symbol ArchReadTimestamp -> 0xC0109244
+unfreeable 0xD00D5B0C
+unfreeable 0xD00D5B18
+unfreeable 0xD00D5B28
+unfreeable 0xD00D5B38
+unfreeable 0xD00D5B44
+unfreeable 0xD00D5B54
+inserting symbol _start -> 0x10000C
+unfreeable 0xD00D5B60
+unfreeable 0xD00D5B6C
+unfreeable 0xD00D5B7C
+unfreeable 0xD00D5B8C
+inserting symbol boot_page_table1 -> 0xC013D000
+unfreeable 0xD00D5B98
+unfreeable 0xD00D5BA4
+unfreeable 0xD00D5BB4
+unfreeable 0xD00D5BC4
+inserting symbol boot_page_directory -> 0xC013C000
+unfreeable 0xD00D5BD0
+unfreeable 0xD00D5BDC
+unfreeable 0xD00D5BEC
+unfreeable 0xD00D5BFC
+inserting symbol x86SetCr3 -> 0xC01093B4
+unfreeable 0xD00D5C08
+unfreeable 0xD00D5C14
+unfreeable 0xD00D5C24
+unfreeable 0xD00D5C34
+inserting symbol _kernel_end -> 0xC013E000
+unfreeable 0xD00D5C40
+unfreeable 0xD00D5C4C
+unfreeable 0xD00D5C5C
+unfreeable 0xD00D5C6C
+inserting symbol x86KernelMemoryToPhysical -> 0xC0108F2E
+unfreeable 0xD00D5C78
+unfreeable 0xD00D5C84
+unfreeable 0xD00D5C94
+unfreeable 0xD00D5CA4
+unfreeable 0xD00D5CB0
+unfreeable 0xD00D5CC0
+inserting symbol x86_grub_table -> 0xC01091AB
+unfreeable 0xD00D5CCC
+unfreeable 0xD00D5CD8
+unfreeable 0xD00D5CE8
+unfreeable 0xD00D5CF8
+inserting symbol x86LoadTss -> 0xC01093A0
+unfreeable 0xD00D5D04
+unfreeable 0xD00D5D10
+unfreeable 0xD00D5D20
+unfreeable 0xD00D5D30
+inserting symbol x86LoadIdt -> 0xC0109230
+unfreeable 0xD00D5D3C
+unfreeable 0xD00D5D48
+unfreeable 0xD00D5D58
+unfreeable 0xD00D5D68
+inserting symbol isr96 -> 0xC0109309
+unfreeable 0xD00D5D74
+unfreeable 0xD00D5D80
+unfreeable 0xD00D5D90
+unfreeable 0xD00D5DA0
+inserting symbol irq15 -> 0xC0109369
+unfreeable 0xD00D5DAC
+unfreeable 0xD00D5DB8
+unfreeable 0xD00D5DC8
+unfreeable 0xD00D5DD8
+inserting symbol irq14 -> 0xC0109363
+inserting symbol irq13 -> 0xC010935D
+unfreeable 0xD00D5DE4
+unfreeable 0xD00D5DF0
+unfreeable 0xD00D5E00
+unfreeable 0xD00D5E10
+inserting symbol irq12 -> 0xC0109357
+inserting symbol irq11 -> 0xC0109351
+unfreeable 0xD00D5E1C
+unfreeable 0xD00D5E28
+unfreeable 0xD00D5E38
+unfreeable 0xD00D5E48
+inserting symbol irq10 -> 0xC010934B
+inserting symbol irq9 -> 0xC0109345
+unfreeable 0xD00D5E54
+unfreeable 0xD00D5E60
+unfreeable 0xD00D5E70
+unfreeable 0xD00D5E80
+inserting symbol irq8 -> 0xC010933F
+inserting symbol irq7 -> 0xC0109339
+unfreeable 0xD00D5E8C
+unfreeable 0xD00D5E98
+unfreeable 0xD00D5EA8
+unfreeable 0xD00D5EB8
+inserting symbol irq6 -> 0xC0109333
+inserting symbol irq5 -> 0xC010932D
+unfreeable 0xD00D5EC4
+unfreeable 0xD00D5ED0
+unfreeable 0xD00D5EE0
+unfreeable 0xD00D5EF0
+inserting symbol irq4 -> 0xC0109327
+inserting symbol irq3 -> 0xC0109321
+unfreeable 0xD00D5EFC
+unfreeable 0xD00D5F08
+unfreeable 0xD00D5F18
+unfreeable 0xD00D5F28
+inserting symbol irq2 -> 0xC010931B
+inserting symbol irq1 -> 0xC0109315
+unfreeable 0xD00D5F34
+unfreeable 0xD00D5F40
+inserting symbol irq0 -> 0xC010930F
+inserting symbol isr21 -> 0xC0109303
+unfreeable 0xD00D5F50
+unfreeable 0xD00D5F5C
+unfreeable 0xD00D5F6C
+unfreeable 0xD00D5F7C
+inserting symbol isr20 -> 0xC01092FD
+inserting symbol isr19 -> 0xC01092F7
+unfreeable 0xD00D5F88
+unfreeable 0xD00D5F94
+unfreeable 0xD00D5FA4
+unfreeable 0xD00D5FB4
+inserting symbol isr18 -> 0xC01092F1
+inserting symbol isr17 -> 0xC01092ED
+unfreeable 0xD00D5FC0
+unfreeable 0xD00D5FCC
+unfreeable 0xD00D5FDC
+unfreeable 0xD00D5FEC
+inserting symbol isr16 -> 0xC01092E4
+inserting symbol isr15 -> 0xC01092DB
+unfreeable 0xD00D5FF8
+Page fault: cr2 0xD00D6000, eip 0xC010C15A, nos-err 0x2
+HandleVirtFault A, 0xD00D6000, 2
 
 entry: v 0xD00D6000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
 Page fault totally done.
-Found a kernel symbol: ArchSpinlockAcquire.spin_wait for address 0xC0108E9C... Found a kernel symbol: __udivdi3 for address 0xC0108EF8... Found a kernel symbol: __udivmoddi4 for address 0xC0109004... Found a kernel symbol: _kernel_start for address 0x100000... Found a kernel symbol: x86AreCpusOn for address 0xC0108D1D... Found a kernel symbol: ArchReadTimestamp for address 0xC0108D14... Found a kernel symbol: _start for address 0x10000C... Found a kernel symbol: boot_page_table1 for address 0xC013D000... Found a kernel symbol: boot_page_directory for address 0xC013C000... Found a kernel symbol: x86SetCr3 for address 0xC0108E84... Found a kernel symbol: _kernel_end for address 0xC013E000... Found a kernel symbol: x86KernelMemoryToPhysical for address 0xC01089FE... Found a kernel symbol: x86_grub_table for address 0xC0108C7B... Found a kernel symbol: x86LoadTss for address 0xC0108E70... Found a kernel symbol: x86LoadIdt for address 0xC0108D00... Found a kernel symbol: isr96 for address 0xC0108DD9... Found a kernel symbol: irq15 for address 0xC0108E39... Found a kernel symbol: irq14 for address 0xC0108E33... Found a kernel symbol: irq13 for address 0xC0108E2D... Found a kernel symbol: irq12 for address 0xC0108E27... Found a kernel symbol: irq11 for address 0xC0108E21... Found a kernel symbol: irq10 for address 0xC0108E1B... Found a kernel symbol: irq9 for address 0xC0108E15... Found a kernel symbol: irq8 for address 0xC0108E0F... Found a kernel symbol: irq7 for address 0xC0108E09... Found a kernel symbol: irq6 for address 0xC0108E03... Found a kernel symbol: irq5 for address 0xC0108DFD... Found a kernel symbol: irq4 for address 0xC0108DF7... Found a kernel symbol: irq3 for address 0xC0108DF1... Found a kernel symbol: irq2 for address 0xC0108DEB... Found a kernel symbol: irq1 for address 0xC0108DE5... Found a kernel symbol: irq0 for address 0xC0108DDF... Found a kernel symbol: isr21 for address 0xC0108DD3... Found a kernel symbol: isr20 for address 0xC0108DCD... Found a kernel symbol: isr19 for address 0xC0108DC7... Found a kernel symbol: isr18 for address 0xC0108DC1... Found a kernel symbol: isr17 for address 0xC0108DBD... Found a kernel symbol: isr16 for address 0xC0108DB4... Found a kernel symbol: isr15 for address 0xC0108DAB... Found a kernel symbol: isr14 for address 0xC0108DA4... Found a kernel symbol: isr13 for address 0xC0108D9D... Found a kernel symbol: isr12 for address 0xC0108D96... Found a kernel symbol: isr11 for address 0xC0108D8F... Found a kernel symbol: isr10 for address 0xC0108D88... Found a kernel symbol: isr9 for address 0xC0108D7F... Found a kernel symbol: isr8 for address 0xC0108D78... Found a kernel symbol: isr7 for address 0xC0108D6F... Found a kernel symbol: isr6 for address 0xC0108D66... Found a kernel symbol: isr5 for address 0xC0108D5D... Found a kernel symbol: isr4 for address 0xC0108D54... Found a kernel symbol: isr3 for address 0xC0108D4B... Found a kernel symbol: isr2 for address 0xC0108D42... Found a kernel symbol: isr1 for address 0xC0108D39... Found a kernel symbol: isr0 for address 0xC0108D30... Found a kernel symbol: x86AddTssToGdt for address 0xC0108760... Found a kernel symbol: x86LoadGdt for address 0xC0108CE0... Found a kernel symbol: caps_lock_on for address 0xC0137290... Found a kernel symbol: control_held for address 0xC0137293... Found a kernel symbol: shift_r_held for address 0xC0137291... Found a kernel symbol: shift_held for address 0xC0137292... Found a kernel symbol: release_mode for address 0xC0137294... Found a kernel symbol: HandleCharacter for address 0xC010D0CE... Found a kernel symbol: InitPs2Keyboard for address 0xC010D2D9... Found a kernel symbol: Ps2ControllerSetIrqEnable for address 0xC0108612... Found a kernel symbol: Ps2ControllerTestPort for address 0xC01085F4... Found a kernel symbol: Ps2ControllerEnableDevice for address 0xC01085E2... Found a kernel symbol: Ps2ControllerDisableDevice for address 0xC01085D0... Found a kernel symbol: Ps2DeviceWrite for address 0xC0108554... Found a kernel symbol: Ps2DeviceRead for address 0xC010854F... Found a kernel symbol: Ps2ControllerSetConfiguration for address 0xC0108536... Found a kernel symbol: Ps2ControllerGetConfiguration for address 0xC010852D... Found a kernel symbol: DisablePicLines for address 0xC0108443... Found a kernel symbol: IsPicIrqSpurious for address 0xC01083E9... Found a kernel symbol: InitPs2 for address 0xC0108640... Found a kernel symbol: InitIde for address 0xC0108215... Found a kernel symbol: IdePoll for address 0xC0107E41... Found a kernel symbol: IdeCheckError for address 0xC0107DEA... Found a kernel symbol: ide_lock for address 0xC0137284... Found a kernel symbol: x86IsReadyForIrqs for address 0xC0107CD2... Found a kernel symbol: SendPicEoi for address 0xC0108433... Found a kernel symbol: x86GetCr2 for address 0xC0108E80... Found a kernel symbol: x86HandleInterrupt for address 0xC0107C38... Found a kernel symbol: ArchSetPowerState for address 0xC0107BE0... Page fault: cr2 0xD00EC000, eip 0xC0101284, nos-err 0x0
-HandleVirtFault A, 0xD00EC000, 0
-A
-B
-need to get entry for 0xD00EC000
-C -> 0xD0004D24
+unfreeable 0xD00D6004
+unfreeable 0xD00D6014
+unfreeable 0xD00D6024
+inserting symbol isr14 -> 0xC01092D4
+inserting symbol isr13 -> 0xC01092CD
+unfreeable 0xD00D6030
+unfreeable 0xD00D603C
+unfreeable 0xD00D604C
+unfreeable 0xD00D605C
+inserting symbol isr12 -> 0xC01092C6
+Page fault: cr2 0xD0108000, eip 0xC010CB7D, nos-err 0x0
+HandleVirtFault A, 0xD0108000, 0
 
-entry: v 0xD00EC000, p 0x0. aclrf = 00001
+entry: v 0xD0108000, p 0x0. aclrf = 00001
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00EC000, file 0xD00033AC, offset 0x15000
 Page fault totally done.
-Found a kernel symbol: x86MakeReadyForIrqs for address 0xC0107CD8... Found a kernel symbol: ArchEnableInterrupts for address 0xC0108D17... Found a kernel symbol: InitPit for address 0xC01084B1... Found a kernel symbol: InitPic for address 0xC0108462... Found a kernel symbol: x86InitTss for address 0xC010887F... Found a kernel symbol: x86InitIdt for address 0xC01087D9... Found a kernel symbol: x86InitGdt for address 0xC01086F1... Found a kernel symbol: UnformatFatShortName for address 0xC0107B6E... Found a kernel symbol: FormatFatShortName for address 0xC0107B20... Found a kernel symbol: GetFatShortFilename for address 0xC01078FA... Found a kernel symbol: DetectFatPartition for address 0xC01078A6... Found a kernel symbol: WriteFatEntry for address 0xC0107773... Found a kernel symbol: ReadFatEntry for address 0xC01076AB... Found a kernel symbol: WriteFatCluster for address 0xC010767F... Found a kernel symbol: ReadFatCluster for address 0xC0107654... Found a kernel symbol: demofs_read_directory_entry for address 0xC01072B8... Found a kernel symbol: demofs_follow for address 0xC0107174... Found a kernel symbol: demofs_read_file for address 0xC0106FA8... Found a kernel symbol: demofs_read_inode for address 0xC0106F6E... Found a kernel symbol: VnodeOpClose for address 0xC0106E40... Found a kernel symbol: VnodeOpIsTty for address 0xC0106E24... Found a kernel symbol: VnodeOpIsSeekable for address 0xC0106E08... Found a kernel symbol: VnodeOpIoctl for address 0xC0106DDE... Found a kernel symbol: VnodeOpWrite for address 0xC0106DBC... Found a kernel symbol: VnodeOpReaddir for address 0xC0106D9A... Found a kernel symbol: ReadDirectory for address 0xC010D03C... backup heap: largest is 0x4000, total is 0x6000
-Found a kernel symbol: VnodeOpRead for address 0xC0106D78... Found a kernel symbol: VnodeOpTruncate for address 0xC0106EE4... Found a kernel symbol: VnodeOpCheckOpen for address 0xC0106D4F... Found a kernel symbol: RemoveVfsMount for address 0xC010CDB3... Found a kernel symbol: VnodeOpFollow for address 0xC0106F06... Found a kernel symbol: VnodeOpDirentType for address 0xC0106F30... Found a kernel symbol: ReferenceVnode for address 0xC0106D2C... Found a kernel symbol: DereferenceVnode for address 0xC0106E47... Found a kernel symbol: MountedDeviceComparator for address 0xC01068CF... Found a kernel symbol: CreateTransferReadingFromUser for address 0xC0106898... Found a kernel symbol: CreateTransferWritingToUser for address 0xC0106863... Found a kernel symbol: ReadStringFromUsermode for address 0xC01067B2... Found a kernel symbol: WriteStringToUsermode for address 0xC010671D... Found a kernel symbol: DereferenceOpenFile for address 0xC0106586... Found a kernel symbol: ReferenceOpenFile for address 0xC0106563... Found a kernel symbol: DiskCreateHelper for address 0xC01064DB... Found a kernel symbol: DiskFollowHelper for address 0xC010649E... Found a kernel symbol: InitDiskPartitionHelper for address 0xC0106494... Found a kernel symbol: CreateDiskPartitions for address 0xC01063AC... Found a kernel symbol: GenerateNewRawDiskName for address 0xC0106337... Found a kernel symbol: CodepointsToUtf8 for address 0xC010614A... Found a kernel symbol: CodepointsToUtf16 for address 0xC01060B9... Found a kernel symbol: Utf8ToCodepoints for address 0xC0105F64... Found a kernel symbol: Utf16ToCodepoints for address 0xC0105EC9... Found a kernel symbol: __cyg_profile_func_exit for address 0xC0105E4F... Found a kernel symbol: __cyg_profile_func_enter for address 0xC0105E44... Found a kernel symbol: ArchLoadDriver for address 0xC010D3C0... Found a kernel symbol: RequireDriver for address 0xC010CC13... Found a kernel symbol: GetSymbolAddress for address 0xC010CBC7... Found a kernel symbol: AddSymbol for address 0xC010CB6D... Found a kernel symbol: CloseFile for address 0xC010D09B... Found a kernel symbol: ArchLoadKernelSymbols for address 0xC010D6B0... Found a kernel symbol: GetDriverAddress for address 0xC010CA96... Found a kernel symbol: PutcharConsole for address 0xC0105BF2... Found a kernel symbol: GetcharConsole for address 0xC0105BB1... Found a kernel symbol: SendKeystrokeConsole for address 0xC0105B6C... Found a kernel symbol: AssertionFail for address 0xC0105A7F... Found a kernel symbol: vesa_framebuffer for address 0xC0108C71... Found a kernel symbol: vesa_depth for address 0xC0108C70... Found a kernel symbol: vesa_height for address 0xC0108C77... Found a kernel symbol: vesa_width for address 0xC0108C75... Found a kernel symbol: vesa_pitch for address 0xC0108C79... Found a kernel symbol: DbgScreenPuts for address 0xC010599E... Found a kernel symbol: terminal_font for address 0xC010E120... Found a kernel symbol: SCREEN_WIDTH for address 0xC010E104... Found a kernel symbol: DbgScreenPutchar for address 0xC01057E9... Found a kernel symbol: SCREEN_HEIGHT for address 0xC010E100... Found a kernel symbol: SleepMilli for address 0xC0105703... Found a kernel symbol: SleepNano for address 0xC01056DF... Found a kernel symbol: SleepUntil for address 0xC010568F... Found a kernel symbol: ReceivedTimer for address 0xC01054C3... Found a kernel symbol: HandleSleepWakeups for address 0xC01053F8... Page fault: cr2 0xD00D8000, eip 0xC010C3ED, nos-err 0x2
+inserting symbol isr11 -> 0xC01092BF
+unfreeable 0xD00D6068
+unfreeable 0xD00D6074
+unfreeable 0xD00D6084
+unfreeable 0xD00D6094
+inserting symbol isr10 -> 0xC01092B8
+inserting symbol isr9 -> 0xC01092AF
+unfreeable 0xD00D60A0
+unfreeable 0xD00D60AC
+inserting symbol isr8 -> 0xC01092A8
+inserting symbol isr7 -> 0xC010929F
+unfreeable 0xD00D60BC
+unfreeable 0xD00D60C8
+unfreeable 0xD00D60D8
+unfreeable 0xD00D60E8
+inserting symbol isr6 -> 0xC0109296
+inserting symbol isr5 -> 0xC010928D
+unfreeable 0xD00D60F4
+unfreeable 0xD00D6100
+unfreeable 0xD00D6110
+unfreeable 0xD00D6120
+inserting symbol isr4 -> 0xC0109284
+inserting symbol isr3 -> 0xC010927B
+unfreeable 0xD00D612C
+unfreeable 0xD00D6138
+inserting symbol isr2 -> 0xC0109272
+inserting symbol isr1 -> 0xC0109269
+unfreeable 0xD00D6148
+unfreeable 0xD00D6154
+inserting symbol isr0 -> 0xC0109260
+inserting symbol x86AddTssToGdt -> 0xC0108C90
+unfreeable 0xD00D6164
+unfreeable 0xD00D6170
+unfreeable 0xD00D6180
+unfreeable 0xD00D6190
+inserting symbol x86LoadGdt -> 0xC0109210
+unfreeable 0xD00D619C
+unfreeable 0xD00D61A8
+unfreeable 0xD00D61B8
+unfreeable 0xD00D61C8
+inserting symbol caps_lock_on -> 0xC01372F0
+unfreeable 0xD00D61D4
+unfreeable 0xD00D61E0
+unfreeable 0xD00D61F0
+unfreeable 0xD00D6200
+inserting symbol control_held -> 0xC01372F3
+unfreeable 0xD00D620C
+unfreeable 0xD00D6218
+unfreeable 0xD00D6228
+unfreeable 0xD00D6238
+inserting symbol shift_r_held -> 0xC01372F1
+unfreeable 0xD00D6244
+unfreeable 0xD00D6250
+unfreeable 0xD00D6260
+unfreeable 0xD00D6270
+inserting symbol shift_held -> 0xC01372F2
+unfreeable 0xD00D627C
+unfreeable 0xD00D6288
+unfreeable 0xD00D6298
+unfreeable 0xD00D62A8
+inserting symbol release_mode -> 0xC01372F4
+unfreeable 0xD00D62B4
+unfreeable 0xD00D62C0
+unfreeable 0xD00D62D0
+unfreeable 0xD00D62E0
+inserting symbol HandleCharacter -> 0xC010D0F2
+unfreeable 0xD00D62EC
+unfreeable 0xD00D62F8
+unfreeable 0xD00D6308
+unfreeable 0xD00D6318
+inserting symbol InitPs2Keyboard -> 0xC010D2FD
+unfreeable 0xD00D6324
+unfreeable 0xD00D6330
+unfreeable 0xD00D6340
+unfreeable 0xD00D6350
+inserting symbol Ps2ControllerSetIrqEnable -> 0xC0108B42
+unfreeable 0xD00D635C
+unfreeable 0xD00D6368
+unfreeable 0xD00D6378
+unfreeable 0xD00D6388
+unfreeable 0xD00D6394
+unfreeable 0xD00D63A4
+inserting symbol Ps2ControllerTestPort -> 0xC0108B24
+unfreeable 0xD00D63B0
+unfreeable 0xD00D63BC
+unfreeable 0xD00D63CC
+unfreeable 0xD00D63DC
+unfreeable 0xD00D63E8
+unfreeable 0xD00D63F8
+inserting symbol Ps2ControllerEnableDevice -> 0xC0108B12
+unfreeable 0xD00D6404
+unfreeable 0xD00D6410
+unfreeable 0xD00D6420
+unfreeable 0xD00D6430
+unfreeable 0xD00D643C
+unfreeable 0xD00D644C
+inserting symbol Ps2ControllerDisableDevice -> 0xC0108B00
+unfreeable 0xD00D6458
+unfreeable 0xD00D6464
+unfreeable 0xD00D6474
+unfreeable 0xD00D6484
+unfreeable 0xD00D6490
+unfreeable 0xD00D64A0
+inserting symbol Ps2DeviceWrite -> 0xC0108A84
+unfreeable 0xD00D64AC
+unfreeable 0xD00D64B8
+unfreeable 0xD00D64C8
+unfreeable 0xD00D64D8
+inserting symbol Ps2DeviceRead -> 0xC0108A7F
+unfreeable 0xD00D64E4
+unfreeable 0xD00D64F0
+unfreeable 0xD00D6500
+unfreeable 0xD00D6510
+inserting symbol Ps2ControllerSetConfiguration -> 0xC0108A66
+unfreeable 0xD00D651C
+unfreeable 0xD00D6528
+unfreeable 0xD00D6538
+unfreeable 0xD00D6548
+unfreeable 0xD00D6554
+unfreeable 0xD00D6564
+inserting symbol Ps2ControllerGetConfiguration -> 0xC0108A5D
+unfreeable 0xD00D6570
+unfreeable 0xD00D657C
+unfreeable 0xD00D658C
+unfreeable 0xD00D659C
+unfreeable 0xD00D65A8
+unfreeable 0xD00D65B8
+inserting symbol DisablePicLines -> 0xC0108973
+unfreeable 0xD00D65C4
+unfreeable 0xD00D65D0
+unfreeable 0xD00D65E0
+unfreeable 0xD00D65F0
+inserting symbol IsPicIrqSpurious -> 0xC0108919
+unfreeable 0xD00D65FC
+unfreeable 0xD00D660C
+inserting symbol InitPs2 -> 0xC0108B70
+unfreeable 0xD00D6618
+unfreeable 0xD00D6624
+inserting symbol InitIde -> 0xC01087B1
+unfreeable 0xD00D6634
+unfreeable 0xD00D6640
+unfreeable 0xD00D6650
+unfreeable 0xD00D6660
+inserting symbol IdePoll -> 0xC01083DD
+unfreeable 0xD00D666C
+unfreeable 0xD00D6678
+unfreeable 0xD00D6688
+unfreeable 0xD00D6698
+inserting symbol IdeCheckError -> 0xC0108386
+unfreeable 0xD00D66A4
+unfreeable 0xD00D66B0
+unfreeable 0xD00D66C0
+unfreeable 0xD00D66D0
+inserting symbol ide_lock -> 0xC01372E4
+unfreeable 0xD00D66DC
+unfreeable 0xD00D66E8
+unfreeable 0xD00D66F8
+unfreeable 0xD00D6708
+inserting symbol x86IsReadyForIrqs -> 0xC010826E
+unfreeable 0xD00D6714
+unfreeable 0xD00D6720
+unfreeable 0xD00D6730
+unfreeable 0xD00D6740
+inserting symbol SendPicEoi -> 0xC0108963
+unfreeable 0xD00D674C
+unfreeable 0xD00D6758
+unfreeable 0xD00D6768
+unfreeable 0xD00D6778
+inserting symbol x86GetCr2 -> 0xC01093B0
+unfreeable 0xD00D6784
+unfreeable 0xD00D6790
+unfreeable 0xD00D67A0
+unfreeable 0xD00D67B0
+inserting symbol x86HandleInterrupt -> 0xC01081D4
+unfreeable 0xD00D67BC
+unfreeable 0xD00D67C8
+unfreeable 0xD00D67D8
+unfreeable 0xD00D67E8
+inserting symbol ArchSetPowerState -> 0xC010817C
+unfreeable 0xD00D67F4
+unfreeable 0xD00D6800
+unfreeable 0xD00D6810
+unfreeable 0xD00D6820
+unfreeable 0xD00D682C
+unfreeable 0xD00D683C
+inserting symbol x86MakeReadyForIrqs -> 0xC0108274
+unfreeable 0xD00D6848
+unfreeable 0xD00D6854
+unfreeable 0xD00D6864
+unfreeable 0xD00D6874
+inserting symbol ArchEnableInterrupts -> 0xC0109247
+unfreeable 0xD00D6880
+unfreeable 0xD00D688C
+unfreeable 0xD00D689C
+unfreeable 0xD00D68AC
+unfreeable 0xD00D68B8
+unfreeable 0xD00D68C8
+inserting symbol InitPit -> 0xC01089E1
+unfreeable 0xD00D68D4
+unfreeable 0xD00D68E0
+unfreeable 0xD00D68F0
+unfreeable 0xD00D6900
+inserting symbol InitPic -> 0xC0108992
+unfreeable 0xD00D690C
+unfreeable 0xD00D6918
+unfreeable 0xD00D6928
+unfreeable 0xD00D6938
+inserting symbol x86InitTss -> 0xC0108DAF
+unfreeable 0xD00D6944
+unfreeable 0xD00D6950
+unfreeable 0xD00D6960
+unfreeable 0xD00D6970
+inserting symbol x86InitIdt -> 0xC0108D09
+unfreeable 0xD00D697C
+unfreeable 0xD00D6988
+unfreeable 0xD00D6998
+unfreeable 0xD00D69A8
+inserting symbol x86InitGdt -> 0xC0108C21
+unfreeable 0xD00D69B4
+unfreeable 0xD00D69C0
+unfreeable 0xD00D69D0
+unfreeable 0xD00D69E0
+inserting symbol UnformatFatShortName -> 0xC010810A
+unfreeable 0xD00D69EC
+unfreeable 0xD00D69F8
+unfreeable 0xD00D6A08
+unfreeable 0xD00D6A18
+unfreeable 0xD00D6A24
+unfreeable 0xD00D6A34
+inserting symbol FormatFatShortName -> 0xC01080BC
+unfreeable 0xD00D6A40
+unfreeable 0xD00D6A4C
+unfreeable 0xD00D6A5C
+unfreeable 0xD00D6A6C
+unfreeable 0xD00D6A78
+unfreeable 0xD00D6A88
+inserting symbol GetFatShortFilename -> 0xC0107E96
+unfreeable 0xD00D6A94
+unfreeable 0xD00D6AA0
+unfreeable 0xD00D6AB0
+unfreeable 0xD00D6AC0
+unfreeable 0xD00D6ACC
+unfreeable 0xD00D6ADC
+inserting symbol DetectFatPartition -> 0xC0107E42
+unfreeable 0xD00D6AE8
+unfreeable 0xD00D6AF4
+unfreeable 0xD00D6B04
+unfreeable 0xD00D6B14
+unfreeable 0xD00D6B20
+unfreeable 0xD00D6B30
+inserting symbol WriteFatEntry -> 0xC0107D0F
+unfreeable 0xD00D6B3C
+unfreeable 0xD00D6B4C
+inserting symbol ReadFatEntry -> 0xC0107C47
+unfreeable 0xD00D6B58
+unfreeable 0xD00D6B64
+unfreeable 0xD00D6B74
+unfreeable 0xD00D6B84
+inserting symbol WriteFatCluster -> 0xC0107C1B
+unfreeable 0xD00D6B90
+unfreeable 0xD00D6B9C
+unfreeable 0xD00D6BAC
+unfreeable 0xD00D6BBC
+inserting symbol ReadFatCluster -> 0xC0107BF0
+unfreeable 0xD00D6BC8
+unfreeable 0xD00D6BD4
+unfreeable 0xD00D6BE4
+unfreeable 0xD00D6BF4
+inserting symbol demofs_read_directory_entry -> 0xC0107854
+unfreeable 0xD00D6C00
+unfreeable 0xD00D6C0C
+unfreeable 0xD00D6C1C
+unfreeable 0xD00D6C2C
+unfreeable 0xD00D6C38
+unfreeable 0xD00D6C48
+inserting symbol demofs_follow -> 0xC0107710
+unfreeable 0xD00D6C54
+unfreeable 0xD00D6C60
+unfreeable 0xD00D6C70
+unfreeable 0xD00D6C80
+inserting symbol demofs_read_file -> 0xC0107544
+unfreeable 0xD00D6C8C
+unfreeable 0xD00D6C98
+unfreeable 0xD00D6CA8
+unfreeable 0xD00D6CB8
+inserting symbol demofs_read_inode -> 0xC010750A
+unfreeable 0xD00D6CC4
+unfreeable 0xD00D6CD0
+unfreeable 0xD00D6CE0
+unfreeable 0xD00D6CF0
+inserting symbol VnodeOpClose -> 0xC01073DC
+unfreeable 0xD00D6CFC
+unfreeable 0xD00D6D08
+unfreeable 0xD00D6D18
+unfreeable 0xD00D6D28
+inserting symbol VnodeOpIsTty -> 0xC01073C0
+unfreeable 0xD00D6D34
+unfreeable 0xD00D6D40
+unfreeable 0xD00D6D50
+unfreeable 0xD00D6D60
+inserting symbol VnodeOpIsSeekable -> 0xC01073A4
+unfreeable 0xD00D6D6C
+unfreeable 0xD00D6D78
+unfreeable 0xD00D6D88
+unfreeable 0xD00D6D98
+inserting symbol VnodeOpIoctl -> 0xC010737A
+unfreeable 0xD00D6DA4
+unfreeable 0xD00D6DB0
+unfreeable 0xD00D6DC0
+unfreeable 0xD00D6DD0
+inserting symbol VnodeOpWrite -> 0xC0107358
+unfreeable 0xD00D6DDC
+unfreeable 0xD00D6DE8
+unfreeable 0xD00D6DF8
+unfreeable 0xD00D6E08
+inserting symbol VnodeOpReaddir -> 0xC0107336
+unfreeable 0xD00D6E14
+unfreeable 0xD00D6E20
+unfreeable 0xD00D6E30
+unfreeable 0xD00D6E40
+inserting symbol ReadDirectory -> 0xC010D060
+unfreeable 0xD00D6E4C
+unfreeable 0xD00D6E58
+unfreeable 0xD00D6E68
+unfreeable 0xD00D6E78
+inserting symbol VnodeOpRead -> 0xC0107314
+unfreeable 0xD00D6E84
+unfreeable 0xD00D6E90
+inserting symbol VnodeOpTruncate -> 0xC0107480
+unfreeable 0xD00D6EA0
+unfreeable 0xD00D6EAC
+unfreeable 0xD00D6EBC
+unfreeable 0xD00D6ECC
+inserting symbol VnodeOpDirentType -> 0xC01074CC
+unfreeable 0xD00D6ED8
+unfreeable 0xD00D6EE4
+unfreeable 0xD00D6EF4
+unfreeable 0xD00D6F04
+inserting symbol VnodeOpCheckOpen -> 0xC01072EB
+unfreeable 0xD00D6F10
+unfreeable 0xD00D6F1C
+unfreeable 0xD00D6F2C
+unfreeable 0xD00D6F3C
+inserting symbol RemoveVfsMount -> 0xC010CDD7
+unfreeable 0xD00D6F48
+unfreeable 0xD00D6F54
+unfreeable 0xD00D6F64
+unfreeable 0xD00D6F74
+inserting symbol VnodeOpFollow -> 0xC01074A2
+unfreeable 0xD00D6F80
+unfreeable 0xD00D6F8C
+unfreeable 0xD00D6F9C
+unfreeable 0xD00D6FAC
+inserting symbol ReferenceVnode -> 0xC01072C8
+unfreeable 0xD00D6FB8
+unfreeable 0xD00D6FC4
+unfreeable 0xD00D6FD4
+unfreeable 0xD00D6FE4
+inserting symbol DereferenceVnode -> 0xC01073E3
+unfreeable 0xD00D6FF0
+unfreeable 0xD00D6FFC
+Page fault: cr2 0xD00D7000, eip 0xC010C3E7, nos-err 0x2
+HandleVirtFault A, 0xD00D7000, 2
+
+entry: v 0xD00D7000, p 0x0. aclrf = 00000
+HandleVirtFault B
+Page fault totally done.
+unfreeable 0xD00D700C
+unfreeable 0xD00D701C
+inserting symbol MountedDeviceComparator -> 0xC0106E9E
+unfreeable 0xD00D7028
+unfreeable 0xD00D7034
+unfreeable 0xD00D7044
+unfreeable 0xD00D7054
+unfreeable 0xD00D7060
+unfreeable 0xD00D7070
+inserting symbol CreateTransferReadingFromUser -> 0xC0106E67
+unfreeable 0xD00D707C
+unfreeable 0xD00D7088
+unfreeable 0xD00D7098
+unfreeable 0xD00D70A8
+unfreeable 0xD00D70B4
+unfreeable 0xD00D70C4
+inserting symbol CreateTransferWritingToUser -> 0xC0106E32
+unfreeable 0xD00D70D0
+unfreeable 0xD00D70DC
+unfreeable 0xD00D70EC
+unfreeable 0xD00D70FC
+unfreeable 0xD00D7108
+unfreeable 0xD00D7118
+inserting symbol ReadStringFromUsermode -> 0xC0106D81
+unfreeable 0xD00D7124
+unfreeable 0xD00D7130
+unfreeable 0xD00D7140
+unfreeable 0xD00D7150
+unfreeable 0xD00D715C
+unfreeable 0xD00D716C
+inserting symbol WriteStringToUsermode -> 0xC0106CEC
+unfreeable 0xD00D7178
+unfreeable 0xD00D7184
+unfreeable 0xD00D7194
+unfreeable 0xD00D71A4
+unfreeable 0xD00D71B0
+unfreeable 0xD00D71C0
+inserting symbol DereferenceOpenFile -> 0xC0106B55
+unfreeable 0xD00D71CC
+unfreeable 0xD00D71D8
+unfreeable 0xD00D71E8
+unfreeable 0xD00D71F8
+inserting symbol ReferenceOpenFile -> 0xC0106B32
+unfreeable 0xD00D7204
+unfreeable 0xD00D7210
+unfreeable 0xD00D7220
+unfreeable 0xD00D7230
+inserting symbol DiskCreateHelper -> 0xC0106AAA
+unfreeable 0xD00D723C
+unfreeable 0xD00D7248
+unfreeable 0xD00D7258
+unfreeable 0xD00D7268
+inserting symbol DiskFollowHelper -> 0xC0106A6D
+unfreeable 0xD00D7274
+unfreeable 0xD00D7280
+unfreeable 0xD00D7290
+unfreeable 0xD00D72A0
+inserting symbol InitDiskPartitionHelper -> 0xC0106A63
+unfreeable 0xD00D72AC
+unfreeable 0xD00D72B8
+unfreeable 0xD00D72C8
+unfreeable 0xD00D72D8
+unfreeable 0xD00D72E4
+unfreeable 0xD00D72F4
+inserting symbol CreateDiskPartitions -> 0xC0106978
+unfreeable 0xD00D7300
+unfreeable 0xD00D730C
+unfreeable 0xD00D731C
+unfreeable 0xD00D732C
+inserting symbol GenerateNewRawDiskName -> 0xC0106903
+unfreeable 0xD00D7338
+unfreeable 0xD00D7344
+unfreeable 0xD00D7354
+unfreeable 0xD00D7364
+unfreeable 0xD00D7370
+unfreeable 0xD00D7380
+inserting symbol CodepointsToUtf8 -> 0xC0106716
+unfreeable 0xD00D738C
+unfreeable 0xD00D7398
+unfreeable 0xD00D73A8
+unfreeable 0xD00D73B8
+inserting symbol CodepointsToUtf16 -> 0xC0106685
+unfreeable 0xD00D73C4
+unfreeable 0xD00D73D0
+unfreeable 0xD00D73E0
+unfreeable 0xD00D73F0
+inserting symbol Utf8ToCodepoints -> 0xC0106530
+unfreeable 0xD00D73FC
+unfreeable 0xD00D7408
+unfreeable 0xD00D7418
+unfreeable 0xD00D7428
+inserting symbol Utf16ToCodepoints -> 0xC0106495
+unfreeable 0xD00D7434
+unfreeable 0xD00D7440
+unfreeable 0xD00D7450
+unfreeable 0xD00D7460
+inserting symbol __cyg_profile_func_exit -> 0xC010641B
+unfreeable 0xD00D746C
+unfreeable 0xD00D7478
+unfreeable 0xD00D7488
+unfreeable 0xD00D7498
+unfreeable 0xD00D74A4
+unfreeable 0xD00D74B4
+inserting symbol __cyg_profile_func_enter -> 0xC0106410
+unfreeable 0xD00D74C0
+unfreeable 0xD00D74CC
+unfreeable 0xD00D74DC
+unfreeable 0xD00D74EC
+unfreeable 0xD00D74F8
+unfreeable 0xD00D7508
+inserting symbol ArchLoadDriver -> 0xC010D3E4
+unfreeable 0xD00D7514
+unfreeable 0xD00D7520
+unfreeable 0xD00D7530
+unfreeable 0xD00D7540
+inserting symbol RequireDriver -> 0xC010CC37
+unfreeable 0xD00D754C
+unfreeable 0xD00D7558
+unfreeable 0xD00D7568
+unfreeable 0xD00D7578
+inserting symbol GetSymbolAddress -> 0xC010CBEB
+unfreeable 0xD00D7584
+unfreeable 0xD00D7590
+unfreeable 0xD00D75A0
+unfreeable 0xD00D75B0
+inserting symbol AddSymbol -> 0xC010CB6D
+unfreeable 0xD00D75BC
+unfreeable 0xD00D75C8
+unfreeable 0xD00D75D8
+unfreeable 0xD00D75E8
+inserting symbol CloseFile -> 0xC010D0BF
+unfreeable 0xD00D75F4
+unfreeable 0xD00D7604
+inserting symbol ArchLoadKernelSymbols -> 0xC010D6ED
+unfreeable 0xD00D7610
+unfreeable 0xD00D761C
+unfreeable 0xD00D762C
+unfreeable 0xD00D763C
+inserting symbol GetDriverAddress -> 0xC010CA96
+unfreeable 0xD00D7648
+unfreeable 0xD00D7654
+unfreeable 0xD00D7664
+unfreeable 0xD00D7674
+inserting symbol PutcharConsole -> 0xC01061BE
+unfreeable 0xD00D7680
+unfreeable 0xD00D768C
+unfreeable 0xD00D769C
+unfreeable 0xD00D76AC
+inserting symbol GetcharConsole -> 0xC010617D
+unfreeable 0xD00D76B8
+unfreeable 0xD00D76C4
+unfreeable 0xD00D76D4
+unfreeable 0xD00D76E4
+inserting symbol SendKeystrokeConsole -> 0xC0106138
+unfreeable 0xD00D76F0
+unfreeable 0xD00D76FC
+unfreeable 0xD00D770C
+unfreeable 0xD00D771C
+unfreeable 0xD00D7728
+unfreeable 0xD00D7738
+inserting symbol AssertionFail -> 0xC010604B
+unfreeable 0xD00D7744
+unfreeable 0xD00D7750
+unfreeable 0xD00D7760
+unfreeable 0xD00D7770
+inserting symbol vesa_framebuffer -> 0xC01091A1
+unfreeable 0xD00D777C
+unfreeable 0xD00D7788
+unfreeable 0xD00D7798
+unfreeable 0xD00D77A8
+inserting symbol vesa_depth -> 0xC01091A0
+unfreeable 0xD00D77B4
+unfreeable 0xD00D77C0
+unfreeable 0xD00D77D0
+unfreeable 0xD00D77E0
+inserting symbol vesa_height -> 0xC01091A7
+unfreeable 0xD00D77EC
+unfreeable 0xD00D77F8
+unfreeable 0xD00D7808
+unfreeable 0xD00D7818
+inserting symbol vesa_width -> 0xC01091A5
+unfreeable 0xD00D7824
+unfreeable 0xD00D7830
+unfreeable 0xD00D7840
+unfreeable 0xD00D7850
+inserting symbol vesa_pitch -> 0xC01091A9
+unfreeable 0xD00D785C
+unfreeable 0xD00D7868
+unfreeable 0xD00D7878
+unfreeable 0xD00D7888
+inserting symbol DbgScreenPuts -> 0xC0105F6A
+unfreeable 0xD00D7894
+unfreeable 0xD00D78A0
+unfreeable 0xD00D78B0
+unfreeable 0xD00D78C0
+inserting symbol terminal_font -> 0xC010E120
+unfreeable 0xD00D78CC
+unfreeable 0xD00D78D8
+unfreeable 0xD00D78E8
+unfreeable 0xD00D78F8
+inserting symbol SCREEN_WIDTH -> 0xC010E104
+unfreeable 0xD00D7904
+unfreeable 0xD00D7914
+inserting symbol DbgScreenPutchar -> 0xC0105DB5
+unfreeable 0xD00D7920
+unfreeable 0xD00D792C
+unfreeable 0xD00D793C
+unfreeable 0xD00D794C
+inserting symbol SCREEN_HEIGHT -> 0xC010E100
+unfreeable 0xD00D7958
+unfreeable 0xD00D7964
+unfreeable 0xD00D7974
+unfreeable 0xD00D7984
+inserting symbol SleepMilli -> 0xC0105CCF
+unfreeable 0xD00D7990
+unfreeable 0xD00D799C
+unfreeable 0xD00D79AC
+unfreeable 0xD00D79BC
+inserting symbol SleepNano -> 0xC0105CAB
+unfreeable 0xD00D79C8
+unfreeable 0xD00D79D4
+unfreeable 0xD00D79E4
+unfreeable 0xD00D79F4
+inserting symbol SleepUntil -> 0xC0105C5B
+unfreeable 0xD00D7A00
+unfreeable 0xD00D7A0C
+unfreeable 0xD00D7A1C
+unfreeable 0xD00D7A2C
+inserting symbol ReceivedTimer -> 0xC0105A8F
+unfreeable 0xD00D7A38
+unfreeable 0xD00D7A44
+unfreeable 0xD00D7A54
+unfreeable 0xD00D7A64
+inserting symbol HandleSleepWakeups -> 0xC01059C4
+unfreeable 0xD00D7A70
+unfreeable 0xD00D7A7C
+unfreeable 0xD00D7A8C
+unfreeable 0xD00D7A9C
+inserting symbol UnassignThreadToCpu -> 0xC0103DA1
+unfreeable 0xD00D7AA8
+unfreeable 0xD00D7AB4
+unfreeable 0xD00D7AC4
+unfreeable 0xD00D7AD4
+unfreeable 0xD00D7AE0
+unfreeable 0xD00D7AF0
+inserting symbol AssignThreadToCpu -> 0xC0103DA1
+unfreeable 0xD00D7AFC
+unfreeable 0xD00D7B08
+unfreeable 0xD00D7B18
+unfreeable 0xD00D7B28
+inserting symbol ThreadInitialisationHandler -> 0xC01057B6
+unfreeable 0xD00D7B34
+unfreeable 0xD00D7B40
+unfreeable 0xD00D7B50
+unfreeable 0xD00D7B60
+unfreeable 0xD00D7B6C
+unfreeable 0xD00D7B7C
+inserting symbol ArchPrepareStack -> 0xC01093F0
+unfreeable 0xD00D7B88
+unfreeable 0xD00D7B94
+unfreeable 0xD00D7BA4
+unfreeable 0xD00D7BB4
+inserting symbol ArchSwitchThread -> 0xC01093FF
+unfreeable 0xD00D7BC0
+unfreeable 0xD00D7BCC
+unfreeable 0xD00D7BDC
+unfreeable 0xD00D7BEC
+inserting symbol UpdateThreadTimeUsed -> 0xC01054E6
+unfreeable 0xD00D7BF8
+unfreeable 0xD00D7C04
+unfreeable 0xD00D7C14
+unfreeable 0xD00D7C24
+unfreeable 0xD00D7C30
+unfreeable 0xD00D7C40
+inserting symbol CreateUserStack -> 0xC010548B
+unfreeable 0xD00D7C4C
+unfreeable 0xD00D7C58
+unfreeable 0xD00D7C68
+unfreeable 0xD00D7C78
+inserting symbol GetPid -> 0xC0101708
+unfreeable 0xD00D7C84
+unfreeable 0xD00D7C90
+unfreeable 0xD00D7CA0
+unfreeable 0xD00D7CB0
+inserting symbol CreateProcessWithEntryPoint -> 0xC0105430
+unfreeable 0xD00D7CBC
+unfreeable 0xD00D7CC8
+unfreeable 0xD00D7CD8
+unfreeable 0xD00D7CE8
+unfreeable 0xD00D7CF4
+unfreeable 0xD00D7D04
+inserting symbol CreateThreadEx -> 0xC0105650
+unfreeable 0xD00D7D10
+unfreeable 0xD00D7D1C
+unfreeable 0xD00D7D2C
+unfreeable 0xD00D7D3C
+inserting symbol KillProcess -> 0xC010CA3B
+unfreeable 0xD00D7D48
+unfreeable 0xD00D7D54
+inserting symbol WaitProcess -> 0xC010C9CB
+unfreeable 0xD00D7D64
+unfreeable 0xD00D7D70
+unfreeable 0xD00D7D80
+unfreeable 0xD00D7D90
+inserting symbol ForkProcess -> 0xC010C985
+unfreeable 0xD00D7D9C
+unfreeable 0xD00D7DA8
+unfreeable 0xD00D7DB8
+unfreeable 0xD00D7DC8
+inserting symbol GetProcess -> 0xC010541D
+unfreeable 0xD00D7DD4
+unfreeable 0xD00D7DE0
+unfreeable 0xD00D7DF0
+unfreeable 0xD00D7E00
+inserting symbol AddThreadToProcess -> 0xC01053EE
+unfreeable 0xD00D7E0C
+unfreeable 0xD00D7E18
+unfreeable 0xD00D7E28
+unfreeable 0xD00D7E38
+inserting symbol CreateProcess -> 0xC010C894
+unfreeable 0xD00D7E44
+unfreeable 0xD00D7E50
+unfreeable 0xD00D7E60
+unfreeable 0xD00D7E70
+inserting symbol UnlockProcess -> 0xC010539F
+unfreeable 0xD00D7E7C
+unfreeable 0xD00D7E88
+unfreeable 0xD00D7E98
+unfreeable 0xD00D7EA8
+inserting symbol LockProcess -> 0xC010538A
+unfreeable 0xD00D7EB4
+unfreeable 0xD00D7EC0
+unfreeable 0xD00D7ED0
+unfreeable 0xD00D7EE0
+inserting symbol GetProcessFromPid -> 0xC010C64B
+unfreeable 0xD00D7EEC
+unfreeable 0xD00D7EFC
+inserting symbol InitIdle -> 0xC010536C
+unfreeable 0xD00D7F08
+unfreeable 0xD00D7F14
+unfreeable 0xD00D7F24
+unfreeable 0xD00D7F34
+inserting symbol ArchStallProcessor -> 0xC010924B
+unfreeable 0xD00D7F40
+unfreeable 0xD00D7F4C
+unfreeable 0xD00D7F5C
+unfreeable 0xD00D7F6C
+inserting symbol TerminateThread -> 0xC01052E9
+unfreeable 0xD00D7F78
+unfreeable 0xD00D7F84
+unfreeable 0xD00D7F94
+unfreeable 0xD00D7FA4
+inserting symbol InitCleaner -> 0xC01052A9
+unfreeable 0xD00D7FB0
+unfreeable 0xD00D7FBC
+unfreeable 0xD00D7FCC
+unfreeable 0xD00D7FDC
+inserting symbol IsSpinlockHeld -> 0xC010522B
+unfreeable 0xD00D7FE8
+unfreeable 0xD00D7FF4
+Page fault: cr2 0xD00D8000, eip 0xC010C3ED, nos-err 0x2
 HandleVirtFault A, 0xD00D8000, 2
-A
-B
-need to get entry for 0xD00D8000
-C -> 0xD0003484
 
-entry: v 0xD00D8000, p 0x0. aclrf = 00001
+entry: v 0xD00D8000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00D8000, file 0xD00033AC, offset 0x1000
 Page fault totally done.
-Found a kernel symbol: UnassignThreadToCpu for address 0xC0104A01... Found a kernel symbol: AssignThreadToCpu for address 0xC0104A01... Found a kernel symbol: ThreadInitialisationHandler for address 0xC01051EA... Found a kernel symbol: ArchPrepareStack for address 0xC0108EC0... Found a kernel symbol: ArchSwitchThread for address 0xC0108ECF... Found a kernel symbol: UpdateThreadTimeUsed for address 0xC0104F1A... Found a kernel symbol: CreateUserStack for address 0xC0104EBF... Found a kernel symbol: GetPid for address 0xC0101708... Found a kernel symbol: CreateProcessWithEntryPoint for address 0xC0104E64... Found a kernel symbol: CreateThreadEx for address 0xC0105084... Found a kernel symbol: KillProcess for address 0xC010CA3B... Found a kernel symbol: WaitProcess for address 0xC010C9CB... Found a kernel symbol: ForkProcess for address 0xC010C985... Found a kernel symbol: GetProcess for address 0xC0104E51... Found a kernel symbol: AddThreadToProcess for address 0xC0104E22... Found a kernel symbol: CreateProcess for address 0xC010C894... Found a kernel symbol: UnlockProcess for address 0xC0104DD3... Found a kernel symbol: LockProcess for address 0xC0104DBE... Found a kernel symbol: GetProcessFromPid for address 0xC010C64B... Found a kernel symbol: InitIdle for address 0xC0104DA0... Found a kernel symbol: ArchStallProcessor for address 0xC0108D1B... Found a kernel symbol: TerminateThread for address 0xC0104D1D... Found a kernel symbol: InitCleaner for address 0xC0104CDD... Found a kernel symbol: IsSpinlockHeld for address 0xC0104C5F... Found a kernel symbol: ArchSpinlockRelease for address 0xC0108EA8... Found a kernel symbol: ReleaseSpinlockDirect for address 0xC0104C5A... Found a kernel symbol: ArchSpinlockAcquire for address 0xC0108E90... Found a kernel symbol: AcquireSpinlockDirect for address 0xC0104C2A... Found a kernel symbol: GetSemaphoreCount for address 0xC010172F... Found a kernel symbol: AssertSchedulerLockHeld for address 0xC0104A01... Found a kernel symbol: CancelSemaphoreOfThread for address 0xC0104BD6... Found a kernel symbol: DestroySemaphore for address 0xC0104BA7... Found a kernel symbol: UnblockThread for address 0xC010501D... Found a kernel symbol: TryDequeueForSleep for address 0xC0105606... Found a kernel symbol: UnlockSchedulerX for address 0xC0105073... Found a kernel symbol: BlockThread for address 0xC0104EEF... Found a kernel symbol: QueueForSleep for address 0xC01055AD... Found a kernel symbol: GetSystemTimer for address 0xC0105543... Found a kernel symbol: LockSchedulerX for address 0xC0105062... Found a kernel symbol: srand for address 0xC0104A40... Found a kernel symbol: DestroyVas for address 0xC0104A01... Found a kernel symbol: BytesToPages for address 0xC01049F4... Found a kernel symbol: HandleVirtFault for address 0xC01048D6... Found a kernel symbol: ArchInitVirt for address 0xC0108B79... Found a kernel symbol: GetKernelVas for address 0xC010488E... Found a kernel symbol: ArchSetVas for address 0xC0108A51... Found a kernel symbol: SetVas for address 0xC0104872... Found a kernel symbol: LockVirt for address 0xC010481C... Found a kernel symbol: CopyVas for address 0xC01046A4... Found a kernel symbol: UnmapVirt for address 0xC0104433... Found a kernel symbol: GetVirtPermissions for address 0xC010439C... Found a kernel symbol: SetVirtPermissions for address 0xC010428F... Found a kernel symbol: UnlockVirt for address 0xC0104259... Found a kernel symbol: ArchUpdateMapping for address 0xC0108AFC... Found a kernel symbol: GetPhysFromVirt for address 0xC0104161... Found a kernel symbol: ArchUnmap for address 0xC0108B36... Found a kernel symbol: EvictPage for address 0xC01040E3... Found a kernel symbol: ArchFlushTlb for address 0xC0108B4D... Found a kernel symbol: ArchAddMapping for address 0xC0108B31... Found a kernel symbol: CreateVas for address 0xC0103D56... Found a kernel symbol: ArchInitVas for address 0xC0108B52... Found a kernel symbol: CreateVasEx for address 0xC0103D0D... Found a kernel symbol: AvlPrinter for address 0xC0103CCF... Found a kernel symbol: ArchVirtualToPhysical for address 0xC0108A05... Found a kernel symbol: ArchGetMemory for address 0xC01088CB... Found a kernel symbol: AllocPhysContiguous for address 0xC01039C1... Found a kernel symbol: AllocPhys for address 0xC010394E... Found a kernel symbol: DeallocPhysContiguous for address 0xC0103919... Found a kernel symbol: DeallocPhys for address 0xC01038C8... Found a kernel symbol: EvictVirt for address 0xC0103D76... Found a kernel symbol: ReallocHeap for address 0xC01036CB... Page fault: cr2 0xD00D9000, eip 0xC010C157, nos-err 0x2
+unfreeable 0xD00D8004
+unfreeable 0xD00D8014
+inserting symbol ArchSpinlockRelease -> 0xC01093D8
+unfreeable 0xD00D8020
+unfreeable 0xD00D802C
+unfreeable 0xD00D803C
+unfreeable 0xD00D804C
+inserting symbol ReleaseSpinlockDirect -> 0xC0105226
+unfreeable 0xD00D8058
+unfreeable 0xD00D8064
+unfreeable 0xD00D8074
+unfreeable 0xD00D8084
+unfreeable 0xD00D8090
+unfreeable 0xD00D80A0
+inserting symbol ArchSpinlockAcquire -> 0xC01093C0
+unfreeable 0xD00D80AC
+unfreeable 0xD00D80B8
+unfreeable 0xD00D80C8
+unfreeable 0xD00D80D8
+inserting symbol AcquireSpinlockDirect -> 0xC01051F6
+unfreeable 0xD00D80E4
+unfreeable 0xD00D80F0
+unfreeable 0xD00D8100
+unfreeable 0xD00D8110
+unfreeable 0xD00D811C
+unfreeable 0xD00D812C
+inserting symbol GetSemaphoreCount -> 0xC010172F
+unfreeable 0xD00D8138
+unfreeable 0xD00D8144
+unfreeable 0xD00D8154
+unfreeable 0xD00D8164
+inserting symbol AssertSchedulerLockHeld -> 0xC0103DA1
+unfreeable 0xD00D8170
+unfreeable 0xD00D817C
+unfreeable 0xD00D818C
+unfreeable 0xD00D819C
+unfreeable 0xD00D81A8
+unfreeable 0xD00D81B8
+inserting symbol CancelSemaphoreOfThread -> 0xC01051A2
+unfreeable 0xD00D81C4
+unfreeable 0xD00D81D0
+unfreeable 0xD00D81E0
+unfreeable 0xD00D81F0
+unfreeable 0xD00D81FC
+unfreeable 0xD00D820C
+inserting symbol DestroySemaphore -> 0xC0105173
+unfreeable 0xD00D8218
+unfreeable 0xD00D8224
+unfreeable 0xD00D8234
+unfreeable 0xD00D8244
+inserting symbol UnblockThread -> 0xC01055E9
+unfreeable 0xD00D8250
+unfreeable 0xD00D825C
+unfreeable 0xD00D826C
+unfreeable 0xD00D827C
+inserting symbol TryDequeueForSleep -> 0xC0105BD2
+unfreeable 0xD00D8288
+unfreeable 0xD00D8294
+unfreeable 0xD00D82A4
+unfreeable 0xD00D82B4
+unfreeable 0xD00D82C0
+unfreeable 0xD00D82D0
+inserting symbol UnlockSchedulerX -> 0xC010563F
+unfreeable 0xD00D82DC
+unfreeable 0xD00D82E8
+unfreeable 0xD00D82F8
+unfreeable 0xD00D8308
+inserting symbol BlockThread -> 0xC01054BB
+unfreeable 0xD00D8314
+unfreeable 0xD00D8320
+unfreeable 0xD00D8330
+unfreeable 0xD00D8340
+inserting symbol QueueForSleep -> 0xC0105B79
+unfreeable 0xD00D834C
+unfreeable 0xD00D8358
+unfreeable 0xD00D8368
+unfreeable 0xD00D8378
+inserting symbol GetSystemTimer -> 0xC0105B0F
+unfreeable 0xD00D8384
+unfreeable 0xD00D8390
+unfreeable 0xD00D83A0
+unfreeable 0xD00D83B0
+inserting symbol LockSchedulerX -> 0xC010562E
+unfreeable 0xD00D83BC
+unfreeable 0xD00D83C8
+unfreeable 0xD00D83D8
+unfreeable 0xD00D83E8
+inserting symbol srand -> 0xC010500C
+unfreeable 0xD00D83F4
+unfreeable 0xD00D8400
+unfreeable 0xD00D8410
+unfreeable 0xD00D8420
+inserting symbol DestroyVas -> 0xC0103DA1
+unfreeable 0xD00D842C
+unfreeable 0xD00D8438
+unfreeable 0xD00D8448
+unfreeable 0xD00D8458
+inserting symbol BytesToPages -> 0xC0104FC1
+unfreeable 0xD00D8464
+unfreeable 0xD00D8470
+unfreeable 0xD00D8480
+unfreeable 0xD00D8490
+inserting symbol HandleVirtFault -> 0xC0104ED3
+unfreeable 0xD00D849C
+unfreeable 0xD00D84A8
+unfreeable 0xD00D84B8
+unfreeable 0xD00D84C8
+inserting symbol ArchInitVirt -> 0xC01090A9
+unfreeable 0xD00D84D4
+unfreeable 0xD00D84E0
+unfreeable 0xD00D84F0
+unfreeable 0xD00D8500
+inserting symbol GetKernelVas -> 0xC0104E8B
+unfreeable 0xD00D850C
+unfreeable 0xD00D8518
+unfreeable 0xD00D8528
+unfreeable 0xD00D8538
+inserting symbol ArchSetVas -> 0xC0108F81
+unfreeable 0xD00D8544
+unfreeable 0xD00D8550
+unfreeable 0xD00D8560
+unfreeable 0xD00D8570
+inserting symbol SetVas -> 0xC0104E6F
+unfreeable 0xD00D857C
+unfreeable 0xD00D8588
+unfreeable 0xD00D8598
+unfreeable 0xD00D85A8
+inserting symbol LockVirt -> 0xC0104E3D
+unfreeable 0xD00D85B4
+unfreeable 0xD00D85C0
+unfreeable 0xD00D85D0
+unfreeable 0xD00D85E0
+inserting symbol LockVirtEx -> 0xC0104DBA
+unfreeable 0xD00D85EC
+unfreeable 0xD00D85FC
+inserting symbol CopyVas -> 0xC0104C4A
+unfreeable 0xD00D8608
+unfreeable 0xD00D8614
+inserting symbol GetVirtPermissions -> 0xC01049B8
+unfreeable 0xD00D8624
+unfreeable 0xD00D8630
+unfreeable 0xD00D8640
+unfreeable 0xD00D8650
+inserting symbol SetVirtPermissions -> 0xC01048AB
+unfreeable 0xD00D865C
+unfreeable 0xD00D8668
+unfreeable 0xD00D8678
+unfreeable 0xD00D8688
+inserting symbol UnlockVirt -> 0xC0104879
+unfreeable 0xD00D8694
+unfreeable 0xD00D86A0
+unfreeable 0xD00D86B0
+unfreeable 0xD00D86C0
+inserting symbol ArchUpdateMapping -> 0xC010902C
+unfreeable 0xD00D86CC
+unfreeable 0xD00D86D8
+unfreeable 0xD00D86E8
+unfreeable 0xD00D86F8
+inserting symbol GetPhysFromVirt -> 0xC0104781
+unfreeable 0xD00D8704
+unfreeable 0xD00D8710
+unfreeable 0xD00D8720
+unfreeable 0xD00D8730
+inserting symbol UnmapVirtEx -> 0xC01045D3
+unfreeable 0xD00D873C
+unfreeable 0xD00D8748
+unfreeable 0xD00D8758
+unfreeable 0xD00D8768
+inserting symbol ArchUnmap -> 0xC0109066
+unfreeable 0xD00D8774
+unfreeable 0xD00D8780
+unfreeable 0xD00D8790
+unfreeable 0xD00D87A0
+inserting symbol EvictPage -> 0xC01044FF
+unfreeable 0xD00D87AC
+unfreeable 0xD00D87B8
+unfreeable 0xD00D87C8
+unfreeable 0xD00D87D8
+inserting symbol ArchFlushTlb -> 0xC010907D
+unfreeable 0xD00D87E4
+unfreeable 0xD00D87F0
+unfreeable 0xD00D8800
+unfreeable 0xD00D8810
+inserting symbol ArchAddMapping -> 0xC0109061
+unfreeable 0xD00D881C
+unfreeable 0xD00D8828
+unfreeable 0xD00D8838
+unfreeable 0xD00D8848
+inserting symbol UnlockVirtEx -> 0xC01040DA
+unfreeable 0xD00D8854
+unfreeable 0xD00D8864
+inserting symbol FindVirtToEvictFromAddressSpace -> 0xC0104068
+unfreeable 0xD00D8870
+unfreeable 0xD00D887C
+unfreeable 0xD00D888C
+unfreeable 0xD00D889C
+unfreeable 0xD00D88A8
+unfreeable 0xD00D88B8
+unfreeable 0xD00D88C4
+unfreeable 0xD00D88D4
+inserting symbol FindVirtToEvictFromSubtree -> 0xC0103F4E
+unfreeable 0xD00D88E0
+unfreeable 0xD00D88EC
+unfreeable 0xD00D88FC
+unfreeable 0xD00D890C
+unfreeable 0xD00D8918
+unfreeable 0xD00D8928
+inserting symbol GetPageEvictionRank -> 0xC0103F11
+unfreeable 0xD00D8934
+unfreeable 0xD00D8940
+unfreeable 0xD00D8950
+unfreeable 0xD00D8960
+unfreeable 0xD00D896C
+unfreeable 0xD00D897C
+inserting symbol CreateVas -> 0xC0103EF1
+unfreeable 0xD00D8988
+unfreeable 0xD00D8994
+unfreeable 0xD00D89A4
+unfreeable 0xD00D89B4
+inserting symbol ArchInitVas -> 0xC0109082
+unfreeable 0xD00D89C0
+unfreeable 0xD00D89CC
+unfreeable 0xD00D89DC
+unfreeable 0xD00D89EC
+inserting symbol CreateVasEx -> 0xC0103EA8
+unfreeable 0xD00D89F8
+unfreeable 0xD00D8A08
+inserting symbol AvlPrinter -> 0xC0103E6A
+unfreeable 0xD00D8A14
+unfreeable 0xD00D8A24
+inserting symbol DeallocateSwapfileIndex -> 0xC0103DA1
+unfreeable 0xD00D8A30
+unfreeable 0xD00D8A3C
+unfreeable 0xD00D8A4C
+unfreeable 0xD00D8A5C
+unfreeable 0xD00D8A68
+unfreeable 0xD00D8A78
+inserting symbol AllocateSwapfileIndex -> 0xC0103D7D
+unfreeable 0xD00D8A84
+unfreeable 0xD00D8A90
+unfreeable 0xD00D8AA0
+unfreeable 0xD00D8AB0
+inserting symbol GetSwapfile -> 0xC0103D77
+unfreeable 0xD00D8ABC
+unfreeable 0xD00D8AC8
+unfreeable 0xD00D8AD8
+unfreeable 0xD00D8AE8
+inserting symbol swapfile -> 0xC0137040
+unfreeable 0xD00D8AF4
+unfreeable 0xD00D8B00
+unfreeable 0xD00D8B10
+unfreeable 0xD00D8B20
+inserting symbol ArchVirtualToPhysical -> 0xC0108F35
+unfreeable 0xD00D8B2C
+unfreeable 0xD00D8B38
+unfreeable 0xD00D8B48
+unfreeable 0xD00D8B58
+unfreeable 0xD00D8B64
+unfreeable 0xD00D8B74
+inserting symbol ArchGetMemory -> 0xC0108DFB
+unfreeable 0xD00D8B80
+unfreeable 0xD00D8B8C
+unfreeable 0xD00D8B9C
+unfreeable 0xD00D8BAC
+inserting symbol AllocPhysContiguous -> 0xC0103AF9
+unfreeable 0xD00D8BB8
+unfreeable 0xD00D8BC4
+unfreeable 0xD00D8BD4
+unfreeable 0xD00D8BE4
+inserting symbol AllocPhys -> 0xC0103A86
+unfreeable 0xD00D8BF0
+unfreeable 0xD00D8BFC
+inserting symbol DeallocPhysContiguous -> 0xC0103A51
+unfreeable 0xD00D8C0C
+unfreeable 0xD00D8C18
+unfreeable 0xD00D8C28
+unfreeable 0xD00D8C38
+unfreeable 0xD00D8C44
+unfreeable 0xD00D8C54
+inserting symbol DeallocPhys -> 0xC0103A00
+unfreeable 0xD00D8C60
+unfreeable 0xD00D8C6C
+unfreeable 0xD00D8C7C
+unfreeable 0xD00D8C8C
+inserting symbol EvictVirt -> 0xC01046C5
+unfreeable 0xD00D8C98
+unfreeable 0xD00D8CA4
+unfreeable 0xD00D8CB4
+unfreeable 0xD00D8CC4
+inserting symbol ReallocHeap -> 0xC0103813
+unfreeable 0xD00D8CD0
+unfreeable 0xD00D8CDC
+unfreeable 0xD00D8CEC
+unfreeable 0xD00D8CFC
+inserting symbol IsVirtInitialised -> 0xC0104FBB
+unfreeable 0xD00D8D08
+unfreeable 0xD00D8D14
+unfreeable 0xD00D8D24
+unfreeable 0xD00D8D34
+inserting symbol DbgPrintListStats -> 0xC010333D
+unfreeable 0xD00D8D40
+unfreeable 0xD00D8D4C
+unfreeable 0xD00D8D5C
+unfreeable 0xD00D8D6C
+inserting symbol PostponeScheduleUntilStandardIrql -> 0xC0102FCF
+unfreeable 0xD00D8D78
+unfreeable 0xD00D8D84
+unfreeable 0xD00D8D94
+unfreeable 0xD00D8DA4
+unfreeable 0xD00D8DB0
+unfreeable 0xD00D8DC0
+unfreeable 0xD00D8DCC
+unfreeable 0xD00D8DDC
+inserting symbol Schedule -> 0xC01057FA
+unfreeable 0xD00D8DE8
+unfreeable 0xD00D8DF4
+unfreeable 0xD00D8E04
+unfreeable 0xD00D8E14
+inserting symbol ArchSetIrql -> 0xC0108253
+unfreeable 0xD00D8E20
+unfreeable 0xD00D8E2C
+unfreeable 0xD00D8E3C
+unfreeable 0xD00D8E4C
+inserting symbol ArchDisableInterrupts -> 0xC0109249
+unfreeable 0xD00D8E58
+unfreeable 0xD00D8E64
+unfreeable 0xD00D8E74
+unfreeable 0xD00D8E84
+unfreeable 0xD00D8E90
+unfreeable 0xD00D8EA0
+inserting symbol DeferUntilIrql -> 0xC0102E5B
+unfreeable 0xD00D8EAC
+unfreeable 0xD00D8EB8
+unfreeable 0xD00D8EC8
+unfreeable 0xD00D8ED8
+inserting symbol GetIrql -> 0xC0102E4C
+unfreeable 0xD00D8EE4
+unfreeable 0xD00D8EF0
+unfreeable 0xD00D8F00
+unfreeable 0xD00D8F10
+inserting symbol LowerIrql -> 0xC0102F03
+unfreeable 0xD00D8F1C
+unfreeable 0xD00D8F28
+unfreeable 0xD00D8F38
+unfreeable 0xD00D8F48
+inserting symbol ArchSendEoi -> 0xC010824E
+unfreeable 0xD00D8F54
+unfreeable 0xD00D8F60
+unfreeable 0xD00D8F70
+unfreeable 0xD00D8F80
+inserting symbol RaiseIrql -> 0xC0102ECD
+unfreeable 0xD00D8F8C
+unfreeable 0xD00D8F98
+unfreeable 0xD00D8FA8
+unfreeable 0xD00D8FB8
+inserting symbol RespondToIrq -> 0xC0102DD5
+unfreeable 0xD00D8FC4
+unfreeable 0xD00D8FD0
+unfreeable 0xD00D8FE0
+unfreeable 0xD00D8FF0
+inserting symbol RegisterIrqHandler -> 0xC0102D89
+unfreeable 0xD00D8FFC
+Page fault: cr2 0xD00D9000, eip 0xC010C157, nos-err 0x2
 HandleVirtFault A, 0xD00D9000, 2
-A
-B
-need to get entry for 0xD00D9000
-C -> 0xD00034FC
 
-entry: v 0xD00D9000, p 0x0. aclrf = 00001
+entry: v 0xD00D9000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00D9000, file 0xD00033AC, offset 0x2000
 Page fault totally done.
-Found a kernel symbol: IsVirtInitialised for address 0xC01049EE... Found a kernel symbol: DbgPrintListStats for address 0xC0103255... Found a kernel symbol: PostponeScheduleUntilStandardIrql for address 0xC0102EE7... Found a kernel symbol: Schedule for address 0xC010522E... Found a kernel symbol: ArchSetIrql for address 0xC0107CB7... Found a kernel symbol: ArchDisableInterrupts for address 0xC0108D19... Found a kernel symbol: DeferUntilIrql for address 0xC0102D73... Found a kernel symbol: GetIrql for address 0xC0102D64... Found a kernel symbol: LowerIrql for address 0xC0102E1B... Found a kernel symbol: ArchSendEoi for address 0xC0107CB2... Found a kernel symbol: RaiseIrql for address 0xC0102DE5... Found a kernel symbol: RespondToIrq for address 0xC0102CED... Found a kernel symbol: RegisterIrqHandler for address 0xC0102CA1... Found a kernel symbol: ArchGetCurrentCpuIndex for address 0xC0108D10... Found a kernel symbol: GetCpu for address 0xC0102C8D... Found a kernel symbol: GetCpuAtIndex for address 0xC0102C80... Found a kernel symbol: GetCpuCount for address 0xC0102C7A... Found a kernel symbol: ArchInitNextCpu for address 0xC0101FC5... Found a kernel symbol: ArchInitBootstrapCpu for address 0xC0107BB2... Found a kernel symbol: AllocHeapZero for address 0xC0103616... Found a kernel symbol: StartMultitasking for address 0xC0105373... Found a kernel symbol: InitProcess for address 0xC0104DE3... Found a kernel symbol: InitConsole for address 0xC0105AFD... Found a kernel symbol: InitDbgScreen for address 0xC01059C2... Found a kernel symbol: InitOtherCpu for address 0xC0102C3F... Found a kernel symbol: ReinitPhys for address 0xC0103B58... Found a kernel symbol: InitVirt for address 0xC0104894... Found a kernel symbol: InitBootstrapCpu for address 0xC0102C2E... Found a kernel symbol: InitDiskUtil for address 0xC01062BD... backup heap: largest is 0x4000, total is 0x5000
-Found a kernel symbol: InitScheduler for address 0xC0105338... Found a kernel symbol: InitTimer for address 0xC0105574... Found a kernel symbol: InitVfs for address 0xC0106BCF... Found a kernel symbol: InitIrql for address 0xC0102EF7... Found a kernel symbol: InitHeap for address 0xC010382D... Found a kernel symbol: InitPhys for address 0xC0103AF7... Found a kernel symbol: InitCpuTable for address 0xC0102C27... Found a kernel symbol: KernelMain for address 0xC0102B39... Found a kernel symbol: InitSymbolTable for address 0xC010CAE2... Found a kernel symbol: ArchInitDev for address 0xC01083CE... Found a kernel symbol: InitThread for address 0xC0102AD1... Found a kernel symbol: DbgScreenPrintf for address 0xC0105E2B... Found a kernel symbol: GetFreePhysKilobytes for address 0xC0103BFE... Found a kernel symbol: GetTotalPhysKilobytes for address 0xC0103BF5... Found a kernel symbol: InitUserspace for address 0xC0102A8F... Found a kernel symbol: CreateKernelTransfer for address 0xC010682E... Found a kernel symbol: OpenFile for address 0xC010CE67... Found a kernel symbol: PutsConsole for address 0xC0105C37... Found a kernel symbol: GenerateNewMountedDiskName for address 0xC01062E6... Found a kernel symbol: VnodeOpCreate for address 0xC0106E9A... Found a kernel symbol: DemofsMountCreator for address 0xC01075EF... Found a kernel symbol: InitFilesystemTable for address 0xC0102937... Found a kernel symbol: RegisterFilesystem for address 0xC0102888... Found a kernel symbol: InitRandomDevice for address 0xC010285C... Found a kernel symbol: rand for address 0xC0104A02... Found a kernel symbol: CreateThread for address 0xC01051C3... Found a kernel symbol: GetVas for address 0xC0103D87... Found a kernel symbol: CreatePseudoTerminal for address 0xC010276A... Found a kernel symbol: SetThreadPriority for address 0xC010538F... Found a kernel symbol: GetThread for address 0xC0104F0B... Found a kernel symbol: PerformTransfer for address 0xC010664D... Found a kernel symbol: GetPartitionsForDisk for address 0xC0102497... Found a kernel symbol: MapVirt for address 0xC0103D95... Found a kernel symbol: VnodeOpStat for address 0xC0106F4C... Found a kernel symbol: GetMbrPartitions for address 0xC01023E2... Found a kernel symbol: CreateMbrPartitionIfExists for address 0xC01022F4... Found a kernel symbol: MountFilesystemForDisk for address 0xC0102964... Found a kernel symbol: CreatePartition for address 0xC0102243... Found a kernel symbol: WriteFile for address 0xC0106C5C... Page fault: cr2 0xD00DA004, eip 0xC010C155, nos-err 0x2
-HandleVirtFault A, 0xD00DA004, 2
-A
-B
-need to get entry for 0xD00DA004
-C -> 0xD00032C4
+unfreeable 0xD00D9008
+unfreeable 0xD00D9018
+unfreeable 0xD00D9028
+unfreeable 0xD00D9034
+unfreeable 0xD00D9044
+inserting symbol ArchGetCurrentCpuIndex -> 0xC0109240
+unfreeable 0xD00D9050
+unfreeable 0xD00D905C
+unfreeable 0xD00D906C
+unfreeable 0xD00D907C
+inserting symbol GetCpu -> 0xC0102D75
+unfreeable 0xD00D9088
+unfreeable 0xD00D9094
+unfreeable 0xD00D90A4
+unfreeable 0xD00D90B4
+inserting symbol GetCpuAtIndex -> 0xC0102D68
+unfreeable 0xD00D90C0
+unfreeable 0xD00D90D0
+inserting symbol GetCpuCount -> 0xC0102D62
+unfreeable 0xD00D90DC
+unfreeable 0xD00D90E8
+unfreeable 0xD00D90F8
+unfreeable 0xD00D9108
+inserting symbol ArchInitNextCpu -> 0xC0101FC5
+unfreeable 0xD00D9114
+unfreeable 0xD00D9120
+unfreeable 0xD00D9130
+unfreeable 0xD00D9140
+inserting symbol ArchInitBootstrapCpu -> 0xC010814E
+unfreeable 0xD00D914C
+unfreeable 0xD00D9158
+unfreeable 0xD00D9168
+unfreeable 0xD00D9178
+inserting symbol AllocHeapZero -> 0xC0103754
+unfreeable 0xD00D9184
+unfreeable 0xD00D9190
+unfreeable 0xD00D91A0
+unfreeable 0xD00D91B0
+inserting symbol StartMultitasking -> 0xC010593F
+unfreeable 0xD00D91BC
+unfreeable 0xD00D91C8
+unfreeable 0xD00D91D8
+unfreeable 0xD00D91E8
+inserting symbol InitProcess -> 0xC01053AF
+unfreeable 0xD00D91F4
+unfreeable 0xD00D9200
+unfreeable 0xD00D9210
+unfreeable 0xD00D9220
+inserting symbol InitConsole -> 0xC01060C9
+unfreeable 0xD00D922C
+unfreeable 0xD00D9238
+unfreeable 0xD00D9248
+unfreeable 0xD00D9258
+inserting symbol InitDbgScreen -> 0xC0105F8E
+unfreeable 0xD00D9264
+unfreeable 0xD00D9270
+unfreeable 0xD00D9280
+unfreeable 0xD00D9290
+inserting symbol InitOtherCpu -> 0xC0102D27
+unfreeable 0xD00D929C
+unfreeable 0xD00D92A8
+unfreeable 0xD00D92B8
+unfreeable 0xD00D92C8
+inserting symbol ReinitPhys -> 0xC0103C90
+unfreeable 0xD00D92D4
+unfreeable 0xD00D92E0
+unfreeable 0xD00D92F0
+unfreeable 0xD00D9300
+inserting symbol InitVirt -> 0xC0104E91
+unfreeable 0xD00D930C
+unfreeable 0xD00D9318
+unfreeable 0xD00D9328
+unfreeable 0xD00D9338
+inserting symbol InitBootstrapCpu -> 0xC0102D16
+unfreeable 0xD00D9344
+unfreeable 0xD00D9350
+unfreeable 0xD00D9360
+unfreeable 0xD00D9370
+inserting symbol InitDiskUtil -> 0xC0106889
+unfreeable 0xD00D937C
+unfreeable 0xD00D9388
+unfreeable 0xD00D9398
+unfreeable 0xD00D93A8
+inserting symbol InitScheduler -> 0xC0105904
+unfreeable 0xD00D93B4
+unfreeable 0xD00D93C0
+unfreeable 0xD00D93D0
+unfreeable 0xD00D93E0
+inserting symbol InitTimer -> 0xC0105B40
+unfreeable 0xD00D93EC
+unfreeable 0xD00D93F8
+unfreeable 0xD00D9408
+unfreeable 0xD00D9418
+inserting symbol InitVfs -> 0xC010716B
+unfreeable 0xD00D9424
+unfreeable 0xD00D9430
+unfreeable 0xD00D9440
+unfreeable 0xD00D9450
+inserting symbol InitIrql -> 0xC0102FDF
+unfreeable 0xD00D945C
+unfreeable 0xD00D9468
+unfreeable 0xD00D9478
+unfreeable 0xD00D9488
+inserting symbol InitHeap -> 0xC0103975
+unfreeable 0xD00D9494
+unfreeable 0xD00D94A0
+unfreeable 0xD00D94B0
+unfreeable 0xD00D94C0
+inserting symbol InitPhys -> 0xC0103C2F
+unfreeable 0xD00D94CC
+unfreeable 0xD00D94D8
+unfreeable 0xD00D94E8
+unfreeable 0xD00D94F8
+inserting symbol InitCpuTable -> 0xC0102D0F
+unfreeable 0xD00D9504
+unfreeable 0xD00D9510
+unfreeable 0xD00D9520
+unfreeable 0xD00D9530
+inserting symbol KernelMain -> 0xC0102C21
+unfreeable 0xD00D953C
+unfreeable 0xD00D9548
+unfreeable 0xD00D9558
+unfreeable 0xD00D9568
+inserting symbol InitSymbolTable -> 0xC010CAE2
+unfreeable 0xD00D9574
+unfreeable 0xD00D9580
+unfreeable 0xD00D9590
+unfreeable 0xD00D95A0
+inserting symbol InitSwapfile -> 0xC0103D3F
+unfreeable 0xD00D95AC
+unfreeable 0xD00D95B8
+unfreeable 0xD00D95C8
+unfreeable 0xD00D95D8
+inserting symbol ArchInitDev -> 0xC01088FE
+unfreeable 0xD00D95E4
+unfreeable 0xD00D95F0
+unfreeable 0xD00D9600
+unfreeable 0xD00D9610
+inserting symbol InitThread -> 0xC0102B61
+unfreeable 0xD00D961C
+unfreeable 0xD00D9628
+unfreeable 0xD00D9638
+unfreeable 0xD00D9648
+inserting symbol DbgScreenPrintf -> 0xC01063F7
+unfreeable 0xD00D9654
+unfreeable 0xD00D9660
+unfreeable 0xD00D9670
+unfreeable 0xD00D9680
+inserting symbol GetFreePhysKilobytes -> 0xC0103D36
+unfreeable 0xD00D968C
+unfreeable 0xD00D9698
+unfreeable 0xD00D96A8
+unfreeable 0xD00D96B8
+unfreeable 0xD00D96C4
+unfreeable 0xD00D96D4
+inserting symbol GetTotalPhysKilobytes -> 0xC0103D2D
+unfreeable 0xD00D96E0
+unfreeable 0xD00D96EC
+unfreeable 0xD00D96FC
+unfreeable 0xD00D970C
+unfreeable 0xD00D9718
+unfreeable 0xD00D9728
+inserting symbol InitUserspace -> 0xC0102B1F
+unfreeable 0xD00D9734
+unfreeable 0xD00D9740
+unfreeable 0xD00D9750
+unfreeable 0xD00D9760
+inserting symbol CreateKernelTransfer -> 0xC0106DFD
+unfreeable 0xD00D976C
+unfreeable 0xD00D9778
+unfreeable 0xD00D9788
+unfreeable 0xD00D9798
+inserting symbol OpenFile -> 0xC010CE8B
+unfreeable 0xD00D97A4
+unfreeable 0xD00D97B0
+unfreeable 0xD00D97C0
+unfreeable 0xD00D97D0
+inserting symbol PutsConsole -> 0xC0106203
+unfreeable 0xD00D97DC
+unfreeable 0xD00D97E8
+unfreeable 0xD00D97F8
+unfreeable 0xD00D9808
+inserting symbol GenerateNewMountedDiskName -> 0xC01068B2
+unfreeable 0xD00D9814
+unfreeable 0xD00D9820
+unfreeable 0xD00D9830
+unfreeable 0xD00D9840
+unfreeable 0xD00D984C
+unfreeable 0xD00D985C
+inserting symbol VnodeOpCreate -> 0xC0107436
+unfreeable 0xD00D9868
+unfreeable 0xD00D9874
+unfreeable 0xD00D9884
+unfreeable 0xD00D9894
+inserting symbol DemofsMountCreator -> 0xC0107B8B
+unfreeable 0xD00D98A0
+unfreeable 0xD00D98AC
+unfreeable 0xD00D98BC
+unfreeable 0xD00D98CC
+unfreeable 0xD00D98D8
+unfreeable 0xD00D98E8
+inserting symbol InitFilesystemTable -> 0xC01029C7
+unfreeable 0xD00D98F4
+unfreeable 0xD00D9900
+unfreeable 0xD00D9910
+unfreeable 0xD00D9920
+inserting symbol RegisterFilesystem -> 0xC0102918
+unfreeable 0xD00D992C
+unfreeable 0xD00D9938
+unfreeable 0xD00D9948
+unfreeable 0xD00D9958
+unfreeable 0xD00D9964
+unfreeable 0xD00D9974
+inserting symbol InitRandomDevice -> 0xC01028EC
+unfreeable 0xD00D9980
+unfreeable 0xD00D998C
+unfreeable 0xD00D999C
+unfreeable 0xD00D99AC
+inserting symbol rand -> 0xC0104FCE
+unfreeable 0xD00D99B8
+unfreeable 0xD00D99C4
+inserting symbol CreateThread -> 0xC010578F
+unfreeable 0xD00D99D4
+unfreeable 0xD00D99E0
+inserting symbol GetVas -> 0xC01040F4
+unfreeable 0xD00D99F0
+unfreeable 0xD00D99FC
+unfreeable 0xD00D9A0C
+unfreeable 0xD00D9A1C
+inserting symbol CreatePseudoTerminal -> 0xC01027FA
+unfreeable 0xD00D9A28
+unfreeable 0xD00D9A34
+unfreeable 0xD00D9A44
+unfreeable 0xD00D9A54
+inserting symbol SetThreadPriority -> 0xC010595B
+unfreeable 0xD00D9A60
+unfreeable 0xD00D9A6C
+unfreeable 0xD00D9A7C
+unfreeable 0xD00D9A8C
+inserting symbol GetThread -> 0xC01054D7
+unfreeable 0xD00D9A98
+unfreeable 0xD00D9AA4
+unfreeable 0xD00D9AB4
+unfreeable 0xD00D9AC4
+inserting symbol PerformTransfer -> 0xC0106C1C
+unfreeable 0xD00D9AD0
+unfreeable 0xD00D9ADC
+unfreeable 0xD00D9AEC
+unfreeable 0xD00D9AFC
+inserting symbol GetPartitionsForDisk -> 0xC0102507
+unfreeable 0xD00D9B08
+unfreeable 0xD00D9B14
+unfreeable 0xD00D9B24
+unfreeable 0xD00D9B34
+unfreeable 0xD00D9B40
+unfreeable 0xD00D9B50
+inserting symbol UnmapVirt -> 0xC0104A4F
+unfreeable 0xD00D9B5C
+unfreeable 0xD00D9B68
+inserting symbol MapVirt -> 0xC0104102
+unfreeable 0xD00D9B78
+unfreeable 0xD00D9B84
+unfreeable 0xD00D9B94
+unfreeable 0xD00D9BA4
+inserting symbol VnodeOpStat -> 0xC01074E8
+unfreeable 0xD00D9BB0
+unfreeable 0xD00D9BBC
+unfreeable 0xD00D9BCC
+unfreeable 0xD00D9BDC
+inserting symbol GetMbrPartitions -> 0xC0102419
+unfreeable 0xD00D9BE8
+unfreeable 0xD00D9BF4
+unfreeable 0xD00D9C04
+unfreeable 0xD00D9C14
+inserting symbol CreateMbrPartitionIfExists -> 0xC010232F
+unfreeable 0xD00D9C20
+unfreeable 0xD00D9C2C
+unfreeable 0xD00D9C3C
+unfreeable 0xD00D9C4C
+unfreeable 0xD00D9C58
+unfreeable 0xD00D9C68
+inserting symbol MountFilesystemForDisk -> 0xC01029F4
+unfreeable 0xD00D9C74
+unfreeable 0xD00D9C80
+unfreeable 0xD00D9C90
+unfreeable 0xD00D9CA0
+unfreeable 0xD00D9CAC
+unfreeable 0xD00D9CBC
+inserting symbol CreatePartition -> 0xC010227E
+unfreeable 0xD00D9CC8
+unfreeable 0xD00D9CD4
+unfreeable 0xD00D9CE4
+unfreeable 0xD00D9CF4
+inserting symbol WriteFile -> 0xC01071F8
+unfreeable 0xD00D9D00
+unfreeable 0xD00D9D0C
+unfreeable 0xD00D9D1C
+unfreeable 0xD00D9D2C
+inserting symbol ReadFile -> 0xC010719A
+unfreeable 0xD00D9D38
+unfreeable 0xD00D9D44
+unfreeable 0xD00D9D54
+unfreeable 0xD00D9D64
+inserting symbol CreateOpenFile -> 0xC0106AD5
+unfreeable 0xD00D9D70
+unfreeable 0xD00D9D7C
+unfreeable 0xD00D9D8C
+unfreeable 0xD00D9D9C
+inserting symbol AddVfsMount -> 0xC010CCE4
+unfreeable 0xD00D9DA8
+unfreeable 0xD00D9DB4
+unfreeable 0xD00D9DC4
+unfreeable 0xD00D9DD4
+inserting symbol CreateVnode -> 0xC0107284
+unfreeable 0xD00D9DE0
+unfreeable 0xD00D9DEC
+unfreeable 0xD00D9DFC
+unfreeable 0xD00D9E0C
+inserting symbol InitNullDevice -> 0xC0102029
+unfreeable 0xD00D9E18
+unfreeable 0xD00D9E24
+unfreeable 0xD00D9E34
+unfreeable 0xD00D9E44
+inserting symbol ThreadListDelete -> 0xC0101F54
+unfreeable 0xD00D9E50
+unfreeable 0xD00D9E5C
+unfreeable 0xD00D9E6C
+unfreeable 0xD00D9E7C
+inserting symbol ThreadListDeleteTop -> 0xC0101F38
+unfreeable 0xD00D9E88
+unfreeable 0xD00D9E98
+inserting symbol ThreadListContains -> 0xC0101F12
+unfreeable 0xD00D9EA4
+unfreeable 0xD00D9EB0
+unfreeable 0xD00D9EC0
+unfreeable 0xD00D9ED0
+inserting symbol ThreadListInsert -> 0xC0101EE9
+unfreeable 0xD00D9EDC
+unfreeable 0xD00D9EE8
+unfreeable 0xD00D9EF8
+unfreeable 0xD00D9F08
+inserting symbol ThreadListInit -> 0xC0101ED0
+unfreeable 0xD00D9F14
+unfreeable 0xD00D9F20
+unfreeable 0xD00D9F30
+unfreeable 0xD00D9F40
+inserting symbol StackAdtSize -> 0xC0101EC1
+unfreeable 0xD00D9F4C
+unfreeable 0xD00D9F58
+unfreeable 0xD00D9F68
+unfreeable 0xD00D9F78
+inserting symbol StackAdtPop -> 0xC0101E9D
+unfreeable 0xD00D9F84
+unfreeable 0xD00D9F90
+unfreeable 0xD00D9FA0
+unfreeable 0xD00D9FB0
+inserting symbol StackAdtPeek -> 0xC0101E83
+unfreeable 0xD00D9FBC
+unfreeable 0xD00D9FC8
+unfreeable 0xD00D9FD8
+unfreeable 0xD00D9FE8
+inserting symbol StackAdtPush -> 0xC0101E74
+unfreeable 0xD00D9FF4
+unfreeable 0xD00DA000
+Page fault: cr2 0xD00DA000, eip 0xC010C3E7, nos-err 0x2
+HandleVirtFault A, 0xD00DA000, 2
 
-entry: v 0xD00DA000, p 0x0. aclrf = 00001
+entry: v 0xD00DA000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00DA000, file 0xD00033AC, offset 0x3000
 Page fault totally done.
-Found a kernel symbol: ReadFile for address 0xC0106BFE... Found a kernel symbol: CreateOpenFile for address 0xC0106506... Found a kernel symbol: AddVfsMount for address 0xC010CCC0... Found a kernel symbol: CreateVnode for address 0xC0106CE8... Found a kernel symbol: InitNullDevice for address 0xC0102029... Found a kernel symbol: ThreadListDelete for address 0xC0101F54... Found a kernel symbol: ThreadListDeleteTop for address 0xC0101F38... Found a kernel symbol: ThreadListContains for address 0xC0101F12... Found a kernel symbol: ThreadListInsert for address 0xC0101EE9... Found a kernel symbol: ThreadListInit for address 0xC0101ED0... Found a kernel symbol: StackAdtSize for address 0xC0101EC1... Found a kernel symbol: StackAdtPop for address 0xC0101E9D... Found a kernel symbol: StackAdtPeek for address 0xC0101E83... Found a kernel symbol: StackAdtPush for address 0xC0101E74... Found a kernel symbol: StackAdtDestroy for address 0xC0101E58... Found a kernel symbol: StackAdtCreate for address 0xC0101E3D... Found a kernel symbol: RadixTrieCreateBoolListFromData64 for address 0xC010C523... Found a kernel symbol: RadixTrieCreateBoolListFromData for address 0xC010C4C4... Found a kernel symbol: RadixTrieGet for address 0xC010C418... Found a kernel symbol: LogDeveloperWarning for address 0xC0105E0B... Found a kernel symbol: RadixTrieInsert for address 0xC010C17E... Found a kernel symbol: RadixTrieCreate for address 0xC010C161... Found a kernel symbol: PriorityQueueGetUsedSize for address 0xC010172F... Found a kernel symbol: PriorityQueueGetCapacity for address 0xC0101708... Found a kernel symbol: PriorityQueuePop for address 0xC0101CD5... Found a kernel symbol: PriorityQueuePeek for address 0xC0101C99... Found a kernel symbol: PanicEx for address 0xC0105E56... Found a kernel symbol: PriorityQueueInsert for address 0xC0101BA3... Found a kernel symbol: PriorityQueueDestroy for address 0xC0101B86... Found a kernel symbol: PriorityQueueCreate for address 0xC0101B36... Found a kernel symbol: LinkedListGetDataFromNode for address 0xC0101ABA... Found a kernel symbol: LinkedListGetNextNode for address 0xC0101A9E... Found a kernel symbol: LinkedListGetFirstNode for address 0xC0101A9E... Found a kernel symbol: LinkedListDestroy for address 0xC0101A75... Found a kernel symbol: LinkedListSize for address 0xC0101708... Found a kernel symbol: LinkedListDeleteData for address 0xC0101A59... Found a kernel symbol: LinkedListDeleteIndex for address 0xC01019ED... Found a kernel symbol: Panic for address 0xC0105EA8... Found a kernel symbol: LinkedListGetData for address 0xC01019BF... Found a kernel symbol: LinkedListContains for address 0xC01019AB... Found a kernel symbol: LinkedListGetIndex for address 0xC010198C... Found a kernel symbol: LinkedListInsertEnd for address 0xC010193C... Found a kernel symbol: LinkedListInsertStart for address 0xC010190B... Found a kernel symbol: LinkedListCreate for address 0xC01018F3... Found a kernel symbol: BlockingBufferTryGet for address 0xC01018C2... Found a kernel symbol: BlockingBufferGet for address 0xC01018A5... Found a kernel symbol: AcquireSemaphore for address 0xC0104A7F... Found a kernel symbol: BlockingBufferAdd for address 0xC010182C... Found a kernel symbol: BlockingBufferDestroy for address 0xC0101807... Found a kernel symbol: InitSpinlock for address 0xC0104BF7... Found a kernel symbol: CreateSemaphore for address 0xC0104A51... Found a kernel symbol: BlockingBufferCreate for address 0xC01017A9... Found a kernel symbol: ReleaseSemaphore for address 0xC0104B4C... Found a kernel symbol: ReleaseSpinlockIrql for address 0xC0104CB1... Found a kernel symbol: AcquireSpinlockIrql for address 0xC0104C6A... Found a kernel symbol: AvlTreePrint for address 0xC010175A... Found a kernel symbol: AvlTreeGetData for address 0xC010174E... Found a kernel symbol: AvlTreeGetRight for address 0xC0101742... Found a kernel symbol: AvlTreeGetLeft for address 0xC0101737... Found a kernel symbol: AvlTreeGetRootNode for address 0xC010172F... Found a kernel symbol: AvlTreeDestroy for address 0xC010170F... Found a kernel symbol: AvlTreeSize for address 0xC0101708... Found a kernel symbol: AvlTreeGet for address 0xC01016F5... Found a kernel symbol: AvlTreeContains for address 0xC01016E2... Found a kernel symbol: AvlTreeDelete for address 0xC01016C1... Found a kernel symbol: AvlTreeInsert for address 0xC010167F... Found a kernel symbol: AvlTreeSetComparator for address 0xC0101670... Found a kernel symbol: AvlTreeSetDeletionHandler for address 0xC0101661... Found a kernel symbol: AvlTreeCreate for address 0xC0101642... Found a kernel symbol: LogWriteSerial for address 0xC0105DF5... Found a kernel symbol: FreeHeap for address 0xC0103628... Page fault: cr2 0xD00DB000, eip 0xC010C3E7, nos-err 0x2
+unfreeable 0xD00DA010
+unfreeable 0xD00DA020
+inserting symbol StackAdtDestroy -> 0xC0101E58
+unfreeable 0xD00DA02C
+unfreeable 0xD00DA038
+unfreeable 0xD00DA048
+unfreeable 0xD00DA058
+inserting symbol StackAdtCreate -> 0xC0101E3D
+unfreeable 0xD00DA064
+unfreeable 0xD00DA070
+unfreeable 0xD00DA080
+unfreeable 0xD00DA090
+inserting symbol RadixTrieCreateBoolListFromData64 -> 0xC010C523
+unfreeable 0xD00DA09C
+unfreeable 0xD00DA0A8
+unfreeable 0xD00DA0B8
+unfreeable 0xD00DA0C8
+unfreeable 0xD00DA0D4
+unfreeable 0xD00DA0E4
+unfreeable 0xD00DA0F0
+unfreeable 0xD00DA100
+inserting symbol RadixTrieCreateBoolListFromData -> 0xC010C4C4
+unfreeable 0xD00DA10C
+unfreeable 0xD00DA118
+unfreeable 0xD00DA128
+unfreeable 0xD00DA138
+unfreeable 0xD00DA144
+unfreeable 0xD00DA154
+inserting symbol RadixTrieGet -> 0xC010C418
+unfreeable 0xD00DA160
+unfreeable 0xD00DA16C
+unfreeable 0xD00DA17C
+unfreeable 0xD00DA18C
+inserting symbol LogDeveloperWarning -> 0xC01063D7
+unfreeable 0xD00DA198
+unfreeable 0xD00DA1A4
+unfreeable 0xD00DA1B4
+unfreeable 0xD00DA1C4
+unfreeable 0xD00DA1D0
+unfreeable 0xD00DA1E0
+inserting symbol RadixTrieInsert -> 0xC010C17E
+unfreeable 0xD00DA1EC
+unfreeable 0xD00DA1F8
+unfreeable 0xD00DA208
+unfreeable 0xD00DA218
+inserting symbol RadixTrieCreate -> 0xC010C161
+unfreeable 0xD00DA224
+unfreeable 0xD00DA230
+unfreeable 0xD00DA240
+unfreeable 0xD00DA250
+inserting symbol PriorityQueueGetUsedSize -> 0xC010172F
+unfreeable 0xD00DA25C
+unfreeable 0xD00DA268
+unfreeable 0xD00DA278
+unfreeable 0xD00DA288
+unfreeable 0xD00DA294
+unfreeable 0xD00DA2A4
+inserting symbol PriorityQueueGetCapacity -> 0xC0101708
+unfreeable 0xD00DA2B0
+unfreeable 0xD00DA2BC
+unfreeable 0xD00DA2CC
+unfreeable 0xD00DA2DC
+unfreeable 0xD00DA2E8
+unfreeable 0xD00DA2F8
+inserting symbol PriorityQueuePop -> 0xC0101CD5
+unfreeable 0xD00DA304
+unfreeable 0xD00DA310
+unfreeable 0xD00DA320
+unfreeable 0xD00DA330
+inserting symbol PriorityQueuePeek -> 0xC0101C99
+unfreeable 0xD00DA33C
+unfreeable 0xD00DA348
+unfreeable 0xD00DA358
+unfreeable 0xD00DA368
+inserting symbol PanicEx -> 0xC0106422
+unfreeable 0xD00DA374
+unfreeable 0xD00DA380
+unfreeable 0xD00DA390
+unfreeable 0xD00DA3A0
+inserting symbol PriorityQueueInsert -> 0xC0101BA3
+unfreeable 0xD00DA3AC
+unfreeable 0xD00DA3B8
+unfreeable 0xD00DA3C8
+unfreeable 0xD00DA3D8
+inserting symbol PriorityQueueDestroy -> 0xC0101B86
+unfreeable 0xD00DA3E4
+unfreeable 0xD00DA3F0
+unfreeable 0xD00DA400
+unfreeable 0xD00DA410
+inserting symbol PriorityQueueCreate -> 0xC0101B36
+unfreeable 0xD00DA41C
+unfreeable 0xD00DA428
+unfreeable 0xD00DA438
+unfreeable 0xD00DA448
+inserting symbol LinkedListGetDataFromNode -> 0xC0101ABA
+unfreeable 0xD00DA454
+unfreeable 0xD00DA460
+unfreeable 0xD00DA470
+unfreeable 0xD00DA480
+unfreeable 0xD00DA48C
+unfreeable 0xD00DA49C
+inserting symbol LinkedListGetNextNode -> 0xC0101A9E
+unfreeable 0xD00DA4A8
+unfreeable 0xD00DA4B4
+unfreeable 0xD00DA4C4
+unfreeable 0xD00DA4D4
+unfreeable 0xD00DA4E0
+unfreeable 0xD00DA4F0
+inserting symbol LinkedListGetFirstNode -> 0xC0101A9E
+unfreeable 0xD00DA4FC
+unfreeable 0xD00DA508
+unfreeable 0xD00DA518
+unfreeable 0xD00DA528
+unfreeable 0xD00DA534
+unfreeable 0xD00DA544
+inserting symbol LinkedListDestroy -> 0xC0101A75
+unfreeable 0xD00DA550
+unfreeable 0xD00DA55C
+unfreeable 0xD00DA56C
+unfreeable 0xD00DA57C
+inserting symbol LinkedListSize -> 0xC0101708
+unfreeable 0xD00DA588
+unfreeable 0xD00DA594
+unfreeable 0xD00DA5A4
+unfreeable 0xD00DA5B4
+inserting symbol LinkedListDeleteData -> 0xC0101A59
+unfreeable 0xD00DA5C0
+unfreeable 0xD00DA5CC
+unfreeable 0xD00DA5DC
+unfreeable 0xD00DA5EC
+inserting symbol LinkedListDeleteIndex -> 0xC01019ED
+unfreeable 0xD00DA5F8
+unfreeable 0xD00DA604
+unfreeable 0xD00DA614
+unfreeable 0xD00DA624
+inserting symbol Panic -> 0xC0106474
+unfreeable 0xD00DA630
+unfreeable 0xD00DA63C
+inserting symbol LinkedListGetData -> 0xC01019BF
+unfreeable 0xD00DA64C
+unfreeable 0xD00DA658
+unfreeable 0xD00DA668
+unfreeable 0xD00DA678
+inserting symbol LinkedListContains -> 0xC01019AB
+unfreeable 0xD00DA684
+unfreeable 0xD00DA690
+unfreeable 0xD00DA6A0
+unfreeable 0xD00DA6B0
+inserting symbol LinkedListGetIndex -> 0xC010198C
+unfreeable 0xD00DA6BC
+unfreeable 0xD00DA6C8
+unfreeable 0xD00DA6D8
+unfreeable 0xD00DA6E8
+inserting symbol LinkedListInsertEnd -> 0xC010193C
+unfreeable 0xD00DA6F4
+unfreeable 0xD00DA700
+unfreeable 0xD00DA710
+unfreeable 0xD00DA720
+inserting symbol LinkedListInsertStart -> 0xC010190B
+unfreeable 0xD00DA72C
+unfreeable 0xD00DA738
+unfreeable 0xD00DA748
+unfreeable 0xD00DA758
+inserting symbol LinkedListCreate -> 0xC01018F3
+unfreeable 0xD00DA764
+unfreeable 0xD00DA770
+unfreeable 0xD00DA780
+unfreeable 0xD00DA790
+inserting symbol BlockingBufferTryGet -> 0xC01018C2
+unfreeable 0xD00DA79C
+unfreeable 0xD00DA7A8
+unfreeable 0xD00DA7B8
+unfreeable 0xD00DA7C8
+unfreeable 0xD00DA7D4
+unfreeable 0xD00DA7E4
+inserting symbol BlockingBufferGet -> 0xC01018A5
+unfreeable 0xD00DA7F0
+unfreeable 0xD00DA800
+inserting symbol AcquireSemaphore -> 0xC010504B
+unfreeable 0xD00DA80C
+unfreeable 0xD00DA818
+unfreeable 0xD00DA828
+unfreeable 0xD00DA838
+inserting symbol BlockingBufferAdd -> 0xC010182C
+unfreeable 0xD00DA844
+unfreeable 0xD00DA850
+unfreeable 0xD00DA860
+unfreeable 0xD00DA870
+inserting symbol BlockingBufferDestroy -> 0xC0101807
+unfreeable 0xD00DA87C
+unfreeable 0xD00DA888
+unfreeable 0xD00DA898
+unfreeable 0xD00DA8A8
+inserting symbol InitSpinlock -> 0xC01051C3
+unfreeable 0xD00DA8B4
+unfreeable 0xD00DA8C0
+unfreeable 0xD00DA8D0
+unfreeable 0xD00DA8E0
+inserting symbol CreateSemaphore -> 0xC010501D
+unfreeable 0xD00DA8EC
+unfreeable 0xD00DA8F8
+unfreeable 0xD00DA908
+unfreeable 0xD00DA918
+inserting symbol BlockingBufferCreate -> 0xC01017A9
+unfreeable 0xD00DA924
+unfreeable 0xD00DA930
+unfreeable 0xD00DA940
+unfreeable 0xD00DA950
+inserting symbol ReleaseSemaphore -> 0xC0105118
+unfreeable 0xD00DA95C
+unfreeable 0xD00DA968
+unfreeable 0xD00DA978
+unfreeable 0xD00DA988
+inserting symbol ReleaseSpinlockIrql -> 0xC010527D
+unfreeable 0xD00DA994
+unfreeable 0xD00DA9A0
+unfreeable 0xD00DA9B0
+unfreeable 0xD00DA9C0
+inserting symbol AcquireSpinlockIrql -> 0xC0105236
+unfreeable 0xD00DA9CC
+unfreeable 0xD00DA9D8
+unfreeable 0xD00DA9E8
+unfreeable 0xD00DA9F8
+inserting symbol AvlTreePrint -> 0xC010175A
+unfreeable 0xD00DAA04
+unfreeable 0xD00DAA10
+unfreeable 0xD00DAA20
+unfreeable 0xD00DAA30
+inserting symbol AvlTreeGetData -> 0xC010174E
+unfreeable 0xD00DAA3C
+unfreeable 0xD00DAA48
+unfreeable 0xD00DAA58
+unfreeable 0xD00DAA68
+inserting symbol AvlTreeGetRight -> 0xC0101742
+unfreeable 0xD00DAA74
+unfreeable 0xD00DAA80
+unfreeable 0xD00DAA90
+unfreeable 0xD00DAAA0
+inserting symbol AvlTreeGetLeft -> 0xC0101737
+unfreeable 0xD00DAAAC
+unfreeable 0xD00DAAB8
+unfreeable 0xD00DAAC8
+unfreeable 0xD00DAAD8
+inserting symbol AvlTreeGetRootNode -> 0xC010172F
+unfreeable 0xD00DAAE4
+unfreeable 0xD00DAAF0
+unfreeable 0xD00DAB00
+unfreeable 0xD00DAB10
+inserting symbol AvlTreeDestroy -> 0xC010170F
+unfreeable 0xD00DAB1C
+unfreeable 0xD00DAB28
+unfreeable 0xD00DAB38
+unfreeable 0xD00DAB48
+inserting symbol AvlTreeSize -> 0xC0101708
+unfreeable 0xD00DAB54
+unfreeable 0xD00DAB60
+unfreeable 0xD00DAB70
+unfreeable 0xD00DAB80
+inserting symbol AvlTreeGet -> 0xC01016F5
+unfreeable 0xD00DAB8C
+unfreeable 0xD00DAB98
+inserting symbol AvlTreeContains -> 0xC01016E2
+unfreeable 0xD00DABA8
+unfreeable 0xD00DABB4
+unfreeable 0xD00DABC4
+unfreeable 0xD00DABD4
+inserting symbol AvlTreeDelete -> 0xC01016C1
+unfreeable 0xD00DABE0
+unfreeable 0xD00DABEC
+unfreeable 0xD00DABFC
+unfreeable 0xD00DAC0C
+inserting symbol AvlTreeInsert -> 0xC010167F
+unfreeable 0xD00DAC18
+unfreeable 0xD00DAC24
+unfreeable 0xD00DAC34
+unfreeable 0xD00DAC44
+inserting symbol AvlTreeSetComparator -> 0xC0101670
+unfreeable 0xD00DAC50
+unfreeable 0xD00DAC5C
+unfreeable 0xD00DAC6C
+unfreeable 0xD00DAC7C
+inserting symbol AvlTreeSetDeletionHandler -> 0xC0101661
+unfreeable 0xD00DAC88
+unfreeable 0xD00DAC94
+unfreeable 0xD00DACA4
+unfreeable 0xD00DACB4
+inserting symbol AvlTreeCreate -> 0xC0101642
+unfreeable 0xD00DACC0
+unfreeable 0xD00DACCC
+unfreeable 0xD00DACDC
+unfreeable 0xD00DACEC
+inserting symbol LogWriteSerial -> 0xC01063C1
+unfreeable 0xD00DACF8
+unfreeable 0xD00DAD04
+inserting symbol FreeHeap -> 0xC0103766
+unfreeable 0xD00DAD14
+unfreeable 0xD00DAD20
+unfreeable 0xD00DAD30
+unfreeable 0xD00DAD40
+inserting symbol AllocHeap -> 0xC0103742
+unfreeable 0xD00DAD4C
+unfreeable 0xD00DAD58
+inserting symbol strdup -> 0xC01012E1
+unfreeable 0xD00DAD68
+unfreeable 0xD00DAD74
+unfreeable 0xD00DAD84
+unfreeable 0xD00DAD94
+inserting symbol AllocHeapEx -> 0xC01033B7
+unfreeable 0xD00DADA0
+unfreeable 0xD00DADAC
+unfreeable 0xD00DADBC
+unfreeable 0xD00DADCC
+inserting symbol strdup_pageable -> 0xC01012B7
+unfreeable 0xD00DADD8
+unfreeable 0xD00DADE8
+inserting symbol strncpy -> 0xC010128E
+unfreeable 0xD00DADF4
+unfreeable 0xD00DAE00
+unfreeable 0xD00DAE10
+unfreeable 0xD00DAE20
+inserting symbol strlen -> 0xC010127E
+unfreeable 0xD00DAE2C
+unfreeable 0xD00DAE38
+unfreeable 0xD00DAE48
+unfreeable 0xD00DAE58
+inserting symbol strcpy -> 0xC0101266
+unfreeable 0xD00DAE64
+unfreeable 0xD00DAE70
+unfreeable 0xD00DAE80
+unfreeable 0xD00DAE90
+inserting symbol strcmp -> 0xC0101248
+unfreeable 0xD00DAE9C
+unfreeable 0xD00DAEA8
+unfreeable 0xD00DAEB8
+unfreeable 0xD00DAEC8
+inserting symbol strcat -> 0xC0101223
+unfreeable 0xD00DAED4
+unfreeable 0xD00DAEE0
+unfreeable 0xD00DAEF0
+unfreeable 0xD00DAF00
+inserting symbol memmove -> 0xC01011F4
+unfreeable 0xD00DAF0C
+unfreeable 0xD00DAF18
+unfreeable 0xD00DAF28
+unfreeable 0xD00DAF38
+inserting symbol memcpy -> 0xC01011DF
+unfreeable 0xD00DAF44
+unfreeable 0xD00DAF50
+unfreeable 0xD00DAF60
+unfreeable 0xD00DAF70
+inserting symbol memset -> 0xC01011CA
+unfreeable 0xD00DAF7C
+unfreeable 0xD00DAF88
+unfreeable 0xD00DAF98
+unfreeable 0xD00DAFA8
+inserting symbol strncmp -> 0xC010119C
+unfreeable 0xD00DAFB4
+unfreeable 0xD00DAFC0
+unfreeable 0xD00DAFD0
+unfreeable 0xD00DAFE0
+inserting symbol memcmp -> 0xC0101169
+unfreeable 0xD00DAFEC
+unfreeable 0xD00DAFF8
+Page fault: cr2 0xD00DB000, eip 0xC010C3E7, nos-err 0x2
 HandleVirtFault A, 0xD00DB000, 2
-A
-B
-need to get entry for 0xD00DB000
-C -> 0xD00034BC
 
-entry: v 0xD00DB000, p 0x0. aclrf = 00001
+entry: v 0xD00DB000, p 0x0. aclrf = 00000
 HandleVirtFault B
-bringing into memory...
-bringing into memory from file...
-Deferring a virt disk read to virtual 0xD00DB000, file 0xD00033AC, offset 0x4000
 Page fault totally done.
-Found a kernel symbol: AllocHeap for address 0xC0103604... Found a kernel symbol: strdup for address 0xC01012E1... Found a kernel symbol: AllocHeapEx for address 0xC01032CF... Found a kernel symbol: strdup_pageable for address 0xC01012B7... Found a kernel symbol: strncpy for address 0xC010128E... Found a kernel symbol: strlen for address 0xC010127E... Found a kernel symbol: strcpy for address 0xC0101266... Found a kernel symbol: strcmp for address 0xC0101248... Found a kernel symbol: strcat for address 0xC0101223... Found a kernel symbol: memmove for address 0xC01011F4... Found a kernel symbol: memcpy for address 0xC01011DF... Found a kernel symbol: memset for address 0xC01011CA... Found a kernel symbol: strncmp for address 0xC010119C... Found a kernel symbol: memcmp for address 0xC0101169... Found a kernel symbol: memchr for address 0xC010114D... Found a kernel symbol: isxdigit for address 0xC010112B... Found a kernel symbol: isupper for address 0xC010111A... Found a kernel symbol: ispunct for address 0xC01010EC... Found a kernel symbol: isspace for address 0xC01010D3... Found a kernel symbol: isgraph for address 0xC01010B7... Found a kernel symbol: isprint for address 0xC01010A4... Found a kernel symbol: islower for address 0xC0101093... Found a kernel symbol: isdigit for address 0xC0101082... Found a kernel symbol: isblank for address 0xC010106C... Found a kernel symbol: iscntrl for address 0xC0101056... Found a kernel symbol: isalnum for address 0xC0101034... Found a kernel symbol: isalpha for address 0xC0101020... Found a kernel symbol: tolower for address 0xC0101010... Found a kernel symbol: toupper for address 0xC0101000... UnmapVirt A
+unfreeable 0xD00DB008
+unfreeable 0xD00DB018
+inserting symbol memchr -> 0xC010114D
+unfreeable 0xD00DB024
+unfreeable 0xD00DB030
+unfreeable 0xD00DB040
+unfreeable 0xD00DB050
+inserting symbol isxdigit -> 0xC010112B
+unfreeable 0xD00DB05C
+unfreeable 0xD00DB068
+unfreeable 0xD00DB078
+unfreeable 0xD00DB088
+inserting symbol isupper -> 0xC010111A
+unfreeable 0xD00DB094
+unfreeable 0xD00DB0A0
+unfreeable 0xD00DB0B0
+unfreeable 0xD00DB0C0
+inserting symbol ispunct -> 0xC01010EC
+unfreeable 0xD00DB0CC
+unfreeable 0xD00DB0D8
+unfreeable 0xD00DB0E8
+unfreeable 0xD00DB0F8
+inserting symbol isspace -> 0xC01010D3
+unfreeable 0xD00DB104
+unfreeable 0xD00DB110
+unfreeable 0xD00DB120
+unfreeable 0xD00DB130
+inserting symbol isgraph -> 0xC01010B7
+unfreeable 0xD00DB13C
+unfreeable 0xD00DB148
+unfreeable 0xD00DB158
+unfreeable 0xD00DB168
+inserting symbol isprint -> 0xC01010A4
+unfreeable 0xD00DB174
+unfreeable 0xD00DB180
+unfreeable 0xD00DB190
+unfreeable 0xD00DB1A0
+inserting symbol islower -> 0xC0101093
+unfreeable 0xD00DB1AC
+unfreeable 0xD00DB1B8
+unfreeable 0xD00DB1C8
+unfreeable 0xD00DB1D8
+inserting symbol isdigit -> 0xC0101082
+unfreeable 0xD00DB1E4
+unfreeable 0xD00DB1F0
+unfreeable 0xD00DB200
+unfreeable 0xD00DB210
+inserting symbol isblank -> 0xC010106C
+unfreeable 0xD00DB21C
+unfreeable 0xD00DB228
+unfreeable 0xD00DB238
+unfreeable 0xD00DB248
+inserting symbol iscntrl -> 0xC0101056
+unfreeable 0xD00DB254
+unfreeable 0xD00DB260
+unfreeable 0xD00DB270
+unfreeable 0xD00DB280
+inserting symbol isalnum -> 0xC0101034
+unfreeable 0xD00DB28C
+unfreeable 0xD00DB298
+unfreeable 0xD00DB2A8
+unfreeable 0xD00DB2B8
+inserting symbol isalpha -> 0xC0101020
+unfreeable 0xD00DB2C4
+unfreeable 0xD00DB2D0
+unfreeable 0xD00DB2E0
+unfreeable 0xD00DB2F0
+inserting symbol tolower -> 0xC0101010
+unfreeable 0xD00DB2FC
+unfreeable 0xD00DB308
+unfreeable 0xD00DB318
+unfreeable 0xD00DB328
+inserting symbol toupper -> 0xC0101000
+unfreeable 0xD00DB334
+unfreeable 0xD00DB340
+unfreeable 0xD00DB350
+unfreeable 0xD00DB360
+UnmapVirt B
+Removing mapping at 0xD00F3000
+Removing mapping at 0xD00F4000
+Removing mapping at 0xD00F5000
+Removing mapping at 0xD00F6000
+Removing mapping at 0xD00F7000
+Removing mapping at 0xD00F8000
+Removing mapping at 0xD00F9000
+Removing mapping at 0xD00FA000
+Removing mapping at 0xD00FB000
+Removing mapping at 0xD00FC000
+Removing mapping at 0xD00FD000
+Removing mapping at 0xD00FE000
+Removing mapping at 0xD00FF000
+Removing mapping at 0xD0100000
+Removing mapping at 0xD0101000
+Removing mapping at 0xD0102000
+Removing mapping at 0xD0103000
+Removing mapping at 0xD0104000
+Removing mapping at 0xD0105000
+Removing mapping at 0xD0106000
+Removing mapping at 0xD0107000
+Removing mapping at 0xD0108000
+Removing mapping at 0xD0109000
 
 
 
   NOS Kernel
   Copyright Alex Boxall 2022-2023
 
-  1116 / 1312 KB used
+  1132 / 1312 KB used
 
-UnmapVirt A
+Adding mapping at 0xD010E000. flags = 0x13, rwxgu'lfia = 10010'1011. p 0x1EF000
+Removing mapping at 0xD00CB000
