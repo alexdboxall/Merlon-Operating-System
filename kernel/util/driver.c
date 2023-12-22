@@ -61,6 +61,7 @@ void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
 
     driver_table_lock = CreateMutex();
     symbol_table_lock = CreateMutex();
+    LogWriteSerial("driver / symbol locks = 0x%X, 0x%X\n", driver_table_lock, symbol_table_lock);
 
     loaded_drivers = AvlTreeCreate();
     AvlTreeSetComparator(loaded_drivers, DriverTableComparator);
@@ -73,7 +74,7 @@ void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
         Panic(PANIC_NO_FILESYSTEM);
     }
     LogWriteSerial("about to load the kernel symbols...\n");
-    ArchLoadKernelSymbols(kernel_file);
+    ArchLoadSymbols(kernel_file, 0);
     CloseFile(kernel_file);
 }
 
@@ -83,7 +84,7 @@ static bool PAGEABLE_CODE_SECTION DoesSymbolContainIllegalCharacters(const char*
             return true;
         }
     }
-    return false;
+    return strlen(symbol) == 0;
 }
 
 void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
@@ -98,6 +99,10 @@ void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
     AcquireMutex(symbol_table_lock, -1);
     RadixTrieInsert(symbol_table, &b, (void*) address);
     ReleaseMutex(symbol_table_lock);
+    
+    if (GetSymbolAddress(symbol) != address) {
+        PanicEx(PANIC_ASSERTION_FAILURE, "Bad radix trie!");
+    }
 }
 
 size_t PAGEABLE_CODE_SECTION GetSymbolAddress(const char* symbol) {
@@ -115,20 +120,27 @@ size_t PAGEABLE_CODE_SECTION GetSymbolAddress(const char* symbol) {
 static int PAGEABLE_CODE_SECTION LoadDriver(const char* name) {
     EXACT_IRQL(IRQL_STANDARD);
 
+    LogWriteSerial("loading driver...\n");
+
     struct open_file* file;
     int res = OpenFile(name, O_RDONLY, 0, &file);
     if (res != 0) {
         return res;
     }
+
+    LogWriteSerial("opened file...\n");
     
     struct loaded_driver* drv = AllocHeapEx(sizeof(struct loaded_driver), 0);
     drv->filename = strdup_pageable(name);
+    LogWriteSerial("about to ArchLoadDriver...\n");
     res = ArchLoadDriver(&drv->relocation_point, file);
+    LogWriteSerial("ArchLoadDriver returned %d\n", res);
     if (res != 0) {
         return res;
     }
 
     AvlTreeInsert(loaded_drivers, drv);
+    ArchLoadSymbols(file, drv->relocation_point - 0xD0000000);
     return 0;
 }
 
@@ -137,7 +149,7 @@ int PAGEABLE_CODE_SECTION RequireDriver(const char* name) {
 
     AcquireMutex(driver_table_lock, -1);
 
-    if (GetDriverAddress(name) != 0) {
+    if (GetDriverAddressWithLockHeld(name) != 0) {
         ReleaseMutex(driver_table_lock);
 
         /*

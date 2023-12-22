@@ -28,7 +28,7 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSizeOfImageIncludingBss(void* data, bo
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
     size_t base_point = relocate ? 0xD0000000U : 0x10000000;
-    size_t total_size = base_point;
+    size_t total_size = 0;
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
         struct Elf32_Phdr* prog_header = prog_headers + i;
@@ -50,7 +50,8 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSizeOfImageIncludingBss(void* data, bo
 		}
     }
 
-    return (total_size + ARCH_PAGE_SIZE - 1) & (~ARCH_PAGE_SIZE);
+	LogWriteSerial("total size = 0x%X\n", total_size);
+    return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
 static size_t PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate) {
@@ -111,6 +112,7 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSymbolValue(void* data, int table, siz
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
     struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr(data, elf_header->e_shoff);
 	struct Elf32_Shdr* symbol_table = sect_headers + table;
+	struct Elf32_Shdr* string_table = sect_headers + symbol_table->sh_link;
 
 	size_t num_symbol_table_entries = symbol_table->sh_size / symbol_table->sh_entsize;
 	if (index >= num_symbol_table_entries) {
@@ -121,9 +123,11 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSymbolValue(void* data, int table, siz
 	struct Elf32_Sym* symbol = ((struct Elf32_Sym*) AddVoidPtr(data, symbol_table->sh_offset)) + index;
 
 	if (symbol->st_shndx == SHN_UNDEF) {
-		struct Elf32_Shdr* string_table = sect_headers + symbol_table->sh_link;
 		const char* name = (const char*) AddVoidPtr(data, string_table->sh_offset + symbol->st_name);
+
+		LogWriteSerial("Looking for symbol with name: %s...)\n", name);
 		size_t target = GetSymbolAddress(name);
+		LogWriteSerial("got 0x%X\n", target);
 
 		if (target == 0) {
 			if (!(ELF32_ST_BIND(symbol->st_info) & STB_WEAK)) {
@@ -170,6 +174,7 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t reloca
 		*ref = DO_386_RELATIVE((relocation_point - base_address), *ref);
 
 	} else {
+		LogWriteSerial("some whacko type...\n");
 		return false;
 	}
 
@@ -181,6 +186,7 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t reloc
 	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr(data, elf_header->e_shoff);
 
 	for (int i = 0; i < elf_header->e_shnum; ++i) {
+		LogWriteSerial("starting relocation %d / %d\n", i, elf_header->e_shnum);
 		struct Elf32_Shdr* section = sect_headers + i;
 
 		if (section->sh_type == SHT_REL) {
@@ -194,8 +200,10 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t reloc
 			for (int index = 0; index < count; ++index) {
 				bool success = ElfPerformRelocation(data, relocation_point, section, relocation_tables + index);
 				if (!success) {
+					LogWriteSerial("failed to do a relocation!! (%d)\n", index);
 					return false;
 				}
+				LogWriteSerial("successful relocation!! (%d)\n", index);
 			}
 
 
@@ -237,12 +245,11 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
     size_t size = ElfGetSizeOfImageIncludingBss(data, relocate);
 
     if (relocate) {
-		*relocation_point = MapVirt(0, 0, size, VM_READ | VM_EXEC | VM_LOCK, NULL, 0);
+		*relocation_point = MapVirt(0, 0, size, VM_READ | VM_EXEC, NULL, 0);
+		LogWriteSerial("RELOCATION POINT AT 0x%X\n", *relocation_point);
     	ElfLoadProgramHeaders(data, *relocation_point, relocate);
-
         bool success = ElfPerformRelocations(data, *relocation_point);
         if (success) {
-			*entry_point = elf_header->e_entry - 0xD0000000U + ((size_t) relocation_point);
             return 0;
 
         } else {
@@ -250,6 +257,7 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
         }
 
     } else {
+		(void) entry_point;
 		return ENOSYS;
     }
 }
@@ -257,28 +265,47 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
 int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_file* file) {
     EXACT_IRQL(IRQL_STANDARD);
 
-    struct stat st;
-    size_t file_size = VnodeOpStat(file->node, &st);
+    off_t file_size;
+	int res = GetFileSize(file, &file_size);
+	if (res != 0) {
+		return res;
+	}
 
-	LogWriteSerial("VM_FILE A\n");
     size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
+	LogWriteSerial("mapped a region to the file: 0x%X, of size 0x%X\n", file_rgn, (int) file_size);
+    res = ElfLoad((void*) file_rgn, relocation_point, true, NULL);
 
-    int res = ElfLoad((void*) file_rgn, relocation_point, true, NULL);
-	LogWriteSerial("UnmapVirt A\n");
+	struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) file_rgn;
+    struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) (file_rgn + elf_header->e_shoff);
+
+	for (int i = 0; i < elf_header->e_shnum; ++i) {
+		const char* sh_name = ElfLookupString((void*) file_rgn, sect_headers[i].sh_name);
+		if (!strcmp(sh_name, ".lockedtext") || !strcmp(sh_name, ".lockeddata")) {
+			// it's okay to lock extra memory - it wouldn't be ok if we did it the other way around though
+			// (assumed everything was locked, and only unlocked parts of it)
+			size_t start_addr = (sect_headers[i].sh_addr - 0xD0000000U + *relocation_point) & ~(ARCH_PAGE_SIZE - 1);
+			size_t num_pages = (sect_headers[i].sh_size + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+			while (num_pages--) {
+				LogWriteSerial("Locking driver memory here: 0x%X\n", start_addr);
+				LockVirt(start_addr);
+				start_addr += ARCH_PAGE_SIZE;
+			}
+		}
+	}
+
     UnmapVirt(file_rgn, file_size);
 
     return res;
 }
 
-void PAGEABLE_CODE_SECTION ArchLoadKernelSymbols(struct open_file* kernel_file) {
-	struct stat st;
-	int res = VnodeOpStat(kernel_file->node, &st);
+void PAGEABLE_CODE_SECTION ArchLoadSymbols(struct open_file* file, size_t adjust) {
+	off_t size;
+	int res = GetFileSize(file, &size);
 	if (res != 0) {
 		Panic(PANIC_BAD_KERNEL);
 	}
 
-	LogWriteSerial("VM_FILE B\n");
-	size_t mem = MapVirt(0, 0, st.st_size, VM_READ | VM_FILE, kernel_file, 0);
+	size_t mem = MapVirt(0, 0, size, VM_READ | VM_FILE, file, 0);
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) mem;
 
@@ -322,7 +349,7 @@ void PAGEABLE_CODE_SECTION ArchLoadKernelSymbols(struct open_file* kernel_file) 
     const char* string_table = (const char*) (mem + string_table_offset);
 
     /*
-    * Register all of the symbols we find.
+    * Register all of the visible symbols we find.
     */
     for (size_t i = 0; i < symbol_table_length / sizeof(struct Elf32_Sym); ++i) {
         struct Elf32_Sym symbol = symbol_table[i];
@@ -331,12 +358,35 @@ void PAGEABLE_CODE_SECTION ArchLoadKernelSymbols(struct open_file* kernel_file) 
             continue;
         }
 
+		LogWriteSerial("SYMBOL: %s, 0x%X 0x%X 0x%X 0x%X 0x%X", string_table + symbol.st_name, symbol.st_info, symbol.st_other, symbol.st_shndx, symbol.st_size, symbol.st_value);
+		
+		LogWriteSerial("symbol table is at 0x%X into the file, we are at 0x%X\n", symbol_table_offset, symbol_table_offset + sizeof(struct Elf32_Sym) * i);
+/*
+		NAME						    INF OTH SH 	SIZE  ADDR
+SYMBOL: Ps2ControllerSetConfiguration , 0x2 0x0 0x1 0x1E 0xD0000039inserting symbol Ps2ControllerSetConfiguration -> 0xC4113039
+SYMBOL: shift_held                    , 0x1 0x0 0xD 0x1 0xD0003002inserting symbol shift_held -> 0xC4116002
+SYMBOL: Ps2ControllerSetIrqEnable     , 0x2 0x0 0x1 0x2F 0xD0000126inserting symbol Ps2ControllerSetIrqEnable -> 0xC4113126
+SYMBOL: Ps2ControllerGetConfiguration , 0x2 0x0 0x1 0x6 0xD0000033inserting symbol Ps2ControllerGetConfiguration -> 0xC4113033
+SYMBOL: Ps2DeviceWrite                , 0x2 0x0 0x1 0x7F 0xD0000059inserting symbol Ps2DeviceWrite -> 0xC4113059
+SYMBOL: release_mode                  , 0x1 0x0 0xD 0x1 0xD0003004inserting symbol release_mode -> 0xC4116004
+SYMBOL: control_held                  , 0x1 0x0 0xD 0x1 0xD0003003inserting symbol control_held -> 0xC4116003
+SYMBOL: Ps2ControllerTestPort         , 0x2 0x0 0x1 0x24 0xD0000102inserting symbol Ps2ControllerTestPort -> 0xC4113102
+SYMBOL: caps_lock_on                  , 0x1 0x0 0xD 0x1 0xD0003000inserting symbol caps_lock_on -> 0xC4116000
+SYMBOL: InitPs2                       , 0x12 0x0 0x1 0xA2 0xD0000155inserting symbol InitPs2 -> 0xC4113155
+*/
+
+		/*
+		 * Skip "hidden" and "internal" symbols
+		 */
+		if ((symbol.st_other & 3) != 0) {
+			continue;
+		}
+
 		/*
 		 * No need for strdup, as it gets converted to the weird radix trie format.
 		 */
-        AddSymbol(string_table + symbol.st_name, symbol.st_value);
+        AddSymbol(string_table + symbol.st_name, symbol.st_value + adjust);
     }
 
-	LogWriteSerial("UnmapVirt B\n");
-	UnmapVirt(mem, st.st_size);
+	UnmapVirt(mem, size);
 }

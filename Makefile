@@ -75,8 +75,8 @@ driver_header:
 	mkdir $(BUILD_DRIVER_SOURCE_DIR)
 	mkdir $(BUILD_DRIVER_SOURCE_DIR)/drivers
 	mkdir $(BUILD_OUTPUT_DIR)/drivers
-	cp -r $(DRIVER_DIR)/* $(BUILD_DRIVER_SOURCE_DIR)/drivers
-	cp -r $(COMMON_DRIVER_DIR)/* $(BUILD_DRIVER_SOURCE_DIR)/drivers
+	cp -r $(DRIVER_DIR)/* $(BUILD_DRIVER_SOURCE_DIR)/drivers || true
+	cp -r $(COMMON_DRIVER_DIR)/* $(BUILD_DRIVER_SOURCE_DIR)/drivers || true
 
 driver_all:
 	for dir in $(wildcard ./$(BUILD_DRIVER_SOURCE_DIR)/drivers/*/.); do \
@@ -88,8 +88,8 @@ cstdlib:
 
 applications: app_header app_all
 drivers: driver_header driver_all
-osrelease: common_header release_compile cstdlib common_footer
-osdebug: common_header debug_compile cstdlib common_footer
+osrelease: common_header release_compile cstdlib drivers common_footer
+osdebug: common_header debug_compile cstdlib drivers common_footer
 
 #osrelease: common_header release_compile cstdlib drivers applications common_footer
 #osdebug: common_header debug_compile cstdlib drivers applications common_footer

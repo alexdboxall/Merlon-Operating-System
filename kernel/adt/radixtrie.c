@@ -7,7 +7,7 @@
 
 // A very cursed port from https://iq.opengenus.org/radix-tree
 
-#define DATA_BYTES_IN_SHORT     11
+#define DATA_BYTES_IN_SHORT     15
 #define MAX_BITS_PER_EDGE       (DATA_BYTES_IN_SHORT * 8)
 
 struct short_bool_list {
@@ -118,7 +118,7 @@ static struct node* PAGEABLE_CODE_SECTION CreateNode(void) {
 
 static struct edge* PAGEABLE_CODE_SECTION CreateEdgeInternal(struct long_bool_list label) {
     struct edge* edge = AllocHeapEx(sizeof(struct edge), HEAP_UNFREEABLE | HEAP_ALLOW_PAGING);
-    
+    struct edge* first_edge = edge;
     while (label.length >= MAX_BITS_PER_EDGE) {
         struct node* new_node = CreateNode();
         edge->label = CreateShortListByTruncatingLong(&label);
@@ -131,7 +131,7 @@ static struct edge* PAGEABLE_CODE_SECTION CreateEdgeInternal(struct long_bool_li
     }
 
     edge->label = CreateShortListByTruncatingLong(&label);
-    return edge;
+    return first_edge;
 }
 
 static struct edge* PAGEABLE_CODE_SECTION CreateEdgeFromNodeShort(const struct short_bool_list* label, struct node* node) {
@@ -162,6 +162,9 @@ static bool PAGEABLE_CODE_SECTION StartsWith(const struct long_bool_list* l, con
     if (l->length < s->length) return false;
 
     for (int i = 0; i < s->length; ++i) {
+        if (i >= MAX_BITS_PER_EDGE) {
+            return true;
+        }
         if (GetBitOfLongList(l, i) != GetBitOfShortList(s, i)) {
             return false;
         }
@@ -206,7 +209,7 @@ void PAGEABLE_CODE_SECTION RadixTrieInsert(struct radix_trie* trie, const struct
                 struct short_bool_list suffix = RemoveStartOfShortList(&current_edge->label, current_str.length);
                 // TODO: may be overflow here if very long shared chunk...
 
-                if (current_str.length >= 88) {
+                if (current_str.length >= MAX_BITS_PER_EDGE) {
                     LogDeveloperWarning("dicey radix tree truncation from %d\n", current_str.length);
                 }
 

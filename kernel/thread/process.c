@@ -103,6 +103,7 @@ void UnlockProcess(struct process* prcss) {
 void InitProcess(void) {
     InitSpinlock(&pid_lock, "pid", IRQL_SCHEDULER);
     process_table_mutex = CreateMutex();
+    LogWriteSerial("prcsstablemutex = 0x%X\n", process_table_mutex);
     process_table = AvlTreeCreate();
     AvlTreeSetComparator(process_table, ProcessTableComparator);
 }

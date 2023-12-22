@@ -721,12 +721,10 @@ static void* AllocUnfreeableMemory(size_t size, int flags) {
         }
 
         if (size + unfreeable_pageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED) {
-            LogDeveloperWarning("exhausted the more efficient unfreeable memory - will use normal memory instead\n");
             return NULL;
         }
 
         void* retv = (void*) (unfreeable_pageable_area + unfreeable_pageable_ptr);
-        LogWriteSerial("unfreeable 0x%X\n", retv);
         unfreeable_pageable_ptr += size;
         return retv;
 
@@ -736,12 +734,10 @@ static void* AllocUnfreeableMemory(size_t size, int flags) {
         }
 
         if (size + unfreeable_nonpageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED) {
-            LogDeveloperWarning("exhausted the more efficient unfreeable memory - will use normal memory instead\n");
-            return NULL;
+           return NULL;
         }
 
         void* retv = (void*) (unfreeable_nonpageable_area + unfreeable_nonpageable_ptr);
-        LogWriteSerial("unfreeable 0x%X\n", retv);
         unfreeable_nonpageable_ptr += size;
         return retv;
     }

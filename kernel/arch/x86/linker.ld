@@ -12,7 +12,6 @@ SECTIONS
 	
 	.multiboot.text : {
 		*(.multiboot.text)
-	
 	}
 	
 	. += 0xC0000000;
@@ -31,12 +30,15 @@ SECTIONS
 
 
 	. = ALIGN(4096);
+	_start_pageablek_section = .;
+
 	.pageablek ALIGN(4096) : AT (ADDR (.data) + SIZEOF(.data) - 0xC0000000)
 	{
 		*(.pageablektext)
 		*(.pageablekdata)
 	}
-	
+	_end_pageablek_section = .;
+
 	.data ALIGN(4096) : AT (ADDR (.data) - 0xC0000000)
 	{
 		*(.data)

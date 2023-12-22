@@ -10,12 +10,12 @@
 #include <machine/pic.h>
 #include <machine/portio.h>
 #include <machine/interrupt.h>
-#include <machine/ps2controller.h>
+#include "ps2controller.h"
 
-static const char set1_map_lower_norm[] PAGEABLE_DATA_SECTION = "  1234567890-=  qwertyuiop[]  asdfghjkl;'` \\zxcvbnm,./ *               789-456+1230.                                           ";
-static const char set1_map_upper_norm[] PAGEABLE_DATA_SECTION = "  !@#$%^&*()_+  QWERTYUIOP{}  ASDFGHJKL:\"~ |ZXCVBNM<>? *               789-456+1230.                                           ";
-static const char set1_map_lower_caps[] PAGEABLE_DATA_SECTION = "  1234567890-=  QWERTYUIOP[]  ASDFGHJKL;'` \\ZXCVBNM,./ *               789-456+1230.                                           ";
-static const char set1_map_upper_caps[] PAGEABLE_DATA_SECTION = "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *               789-456+1230.                                           ";
+static const char set1_map_lower_norm[] = "  1234567890-=  qwertyuiop[]  asdfghjkl;'` \\zxcvbnm,./ *               789-456+1230.                                           ";
+static const char set1_map_upper_norm[] = "  !@#$%^&*()_+  QWERTYUIOP{}  ASDFGHJKL:\"~ |ZXCVBNM<>? *               789-456+1230.                                           ";
+static const char set1_map_lower_caps[] = "  1234567890-=  QWERTYUIOP[]  ASDFGHJKL;'` \\ZXCVBNM,./ *               789-456+1230.                                           ";
+static const char set1_map_upper_caps[] = "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *               789-456+1230.                                           ";
 
 #if 0
 static const char set2_map_lower_norm[] = "              `      q1   zsaw2  cxde43   vftr5  nbhgy6   mju78  ,kio09  ./l;p-   ' [=     ] \\           1 47   0.2568   +3-*9             -";
@@ -63,14 +63,14 @@ bool shift_held = false;
 bool shift_r_held = false;
 bool caps_lock_on = false;
 
-static void PAGEABLE_CODE_SECTION Ps2KeyboardSetLEDs(void) {
+static void Ps2KeyboardSetLEDs(void) {
     uint8_t data = caps_lock_on << 2;
 
     Ps2DeviceWrite(0xED, false);
     Ps2DeviceWrite(data, false);
 }
 
-static void PAGEABLE_CODE_SECTION Ps2KeyboardTranslateSet1(uint8_t scancode) {
+static void Ps2KeyboardTranslateSet1(uint8_t scancode) {
     EXACT_IRQL(IRQL_STANDARD);
 
     if (scancode & 0x80) {
@@ -136,26 +136,28 @@ static void PAGEABLE_CODE_SECTION Ps2KeyboardTranslateSet1(uint8_t scancode) {
     }
 
     if (received_character != 0 && !release_mode) {
+        LogWriteSerial("Sending to terminal...\n");
         SendKeystrokeConsole(received_character);
+        LogWriteSerial("Done...\n");
     }
 
     release_mode = false;
 }
 
-void PAGEABLE_CODE_SECTION HandleCharacter(void* scancode) {
+void HandleCharacter(void* scancode) {
     EXACT_IRQL(IRQL_STANDARD);
+    LogWriteSerial("Handling keyboard...\n");
     Ps2KeyboardTranslateSet1((size_t) scancode);
 }
 
-// THIS IS THE ONLY PART THAT MUSTN'T BE PAGED OUT
-static int Ps2KeyboardIrqHandler(struct x86_regs*) {
+static int LOCKED_DRIVER_CODE Ps2KeyboardIrqHandler(struct x86_regs*) {
 	uint8_t scancode = inb(0x60);
+    LogWriteSerial("Got keyboard...\n");
     DeferUntilIrql(IRQL_STANDARD, HandleCharacter, (void*) (size_t) scancode);
     return 0;
 }
-// END NON-PAGEABLE PART
 
-static int PAGEABLE_CODE_SECTION Ps2KeyboardGetScancodeSet(void) {
+static int Ps2KeyboardGetScancodeSet(void) {
     Ps2DeviceWrite(0xF0, false);
     Ps2DeviceWrite(0, false);
 
@@ -171,7 +173,7 @@ static int PAGEABLE_CODE_SECTION Ps2KeyboardGetScancodeSet(void) {
     }
 }
 
-static int PAGEABLE_CODE_SECTION Ps2KeyboardSetScancodeSet(int num) {
+static int Ps2KeyboardSetScancodeSet(int num) {
     Ps2DeviceWrite(0xF0, false);
     Ps2DeviceWrite(num, false);
 
@@ -182,7 +184,7 @@ static int PAGEABLE_CODE_SECTION Ps2KeyboardSetScancodeSet(int num) {
     }
 }
 
-static void PAGEABLE_CODE_SECTION Ps2KeyboardSetTranslation(bool enable) {
+static void Ps2KeyboardSetTranslation(bool enable) {
     uint8_t config = Ps2ControllerGetConfiguration();
     if (enable) {
         config |= 1 << 6;
@@ -192,7 +194,7 @@ static void PAGEABLE_CODE_SECTION Ps2KeyboardSetTranslation(bool enable) {
     Ps2ControllerSetConfiguration(config);
 }
 
-void PAGEABLE_CODE_SECTION InitPs2Keyboard(void) {
+void InitPs2Keyboard(void) {
     Ps2KeyboardSetTranslation(true);
     Ps2KeyboardSetScancodeSet(1);
 

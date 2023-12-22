@@ -15,3 +15,4 @@ int ReadFile(struct open_file* file, struct transfer* io);
 int ReadDirectory(struct open_file* file, struct transfer* io);
 int WriteFile(struct open_file* file, struct transfer* io);
 int CloseFile(struct open_file* file);
+int GetFileSize(struct open_file* file, off_t* size);

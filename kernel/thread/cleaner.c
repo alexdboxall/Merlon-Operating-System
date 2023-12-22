@@ -90,7 +90,7 @@ void InitCleaner(void) {
      * of terminated (but uncleaned) tasks.
      */
     cleaner_semaphore = CreateSemaphore(1 << 30, 1 << 30);
-
+    LogWriteSerial("cleaner sem = 0x%X\n", cleaner_semaphore);
     CreateThread(CleanerThread, NULL, GetVas(), "cleaner");
 }
 

@@ -90,6 +90,7 @@ int IdePoll(struct ide_data* ide) {
 * so we are limited to a 28 bit sector number (i.e. disks up to 128GB in size)
 */
 static int IdeIo(struct ide_data* ide, struct transfer* io) {
+    MAX_IRQL(IRQL_PAGE_FAULT);
     int disk_num = ide->disk_num;
     
     /*
@@ -116,6 +117,7 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         return EINVAL;
     }
 
+    LogWriteSerial("ide lock at 0x%X\n", ide_lock);
     AcquireSemaphore(ide_lock, -1);
 
     uint16_t base = disk_num >= 2 ? ide->secondary_base : ide->primary_base;
@@ -181,6 +183,7 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
                     outw(base + 0x00, buffer[i]);
                 }
             }
+            IdePoll(ide);
 
             /*
             * We need to flush the disk's cache if we are writing.
@@ -203,7 +206,6 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
                 for (uint64_t i = 0; i < ide->sector_size / 2; ++i) {
                     buffer[i] = inw(base + 0x00);
                 }
-
                 PerformTransfer(buffer, io, ide->sector_size);
             }
         }
@@ -215,6 +217,7 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         sector += sectors_in_this_transfer;
     }
 
+    LogWriteSerial("RELEASING IDE SEMAPHORE... MIGHT SWITCH TASK...\n");
     ReleaseSemaphore(ide_lock);
 
     return 0;

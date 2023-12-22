@@ -32,6 +32,7 @@ struct blocking_buffer* BlockingBufferCreate(int size) {
     buffer->sem = CreateSemaphore(size, size);
     buffer->reverse_sem = CreateSemaphore(size, 0);
     InitSpinlock(&buffer->lock, "blocking buffer", IRQL_SCHEDULER);
+    LogWriteSerial("blocking buffer sems 0x%X 0x%X\n", buffer->sem, buffer->reverse_sem);
     
     return buffer;
 }
@@ -44,7 +45,7 @@ void BlockingBufferDestroy(struct blocking_buffer* buffer) {
 
 int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c, bool block) {
     int res = AcquireSemaphore(buffer->reverse_sem, block ? -1 : 0);
-    if (block && res != 0) {
+    if (!block && res != 0) {
         return ENOBUFS;
     }
 
@@ -83,7 +84,9 @@ uint8_t BlockingBufferGet(struct blocking_buffer* buffer) {
     /*
      * Wait for there to be something to actually read.
      */
+    LogWriteSerial("G1 ");
     AcquireSemaphore(buffer->sem, -1);
+    LogWriteSerial("G2 ");
     return BlockingBufferGetAfterAcquisition(buffer);
 }
 

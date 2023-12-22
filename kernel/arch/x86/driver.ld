@@ -1,24 +1,32 @@
-ENTRY(_driver_entry_point)
 OUTPUT_FORMAT("elf32-i386")
 
 SECTIONS
 {
 	. = 0xD0000000;	
 	
-	.text ALIGN(4096) : AT (ADDR (.text))
+	.text BLOCK(4096) : ALIGN(4096)
 	{
 		*(.text)
 		*(.rodata)
-		*(.symtab)
-		*(.strtab)
 	}
 	
-	.data ALIGN(4096) : AT (ADDR (.data))
+	.data BLOCK(4096) : ALIGN(4096)
 	{
 		*(.data)
 	}
+
+	.lockedtext BLOCK(4096) : ALIGN(4096)
+	{
+		*(.lockedtext)
+		*(.lockedrodata)
+	}
 	
-	.bss ALIGN(4096) : AT (ADDR (.bss))
+	.lockeddata BLOCK(4096) : ALIGN(4096)
+	{
+		*(.lockeddata)
+	}
+	
+	.bss BLOCK(4096) : ALIGN(4096)
 	{
 		*(COMMON)
 		*(.bss)

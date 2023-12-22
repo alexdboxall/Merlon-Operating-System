@@ -246,6 +246,10 @@ size_t AllocPhys(void) {
     AllocateBitmapEntry(index);
     --pages_left;
 
+    if (pages_left == 0) {
+        LogDeveloperWarning("THAT WAS THE LAST PAGE!\n");
+    }
+
     ReleaseSpinlockIrql(&phys_lock);
 
     return index * ARCH_PAGE_SIZE;

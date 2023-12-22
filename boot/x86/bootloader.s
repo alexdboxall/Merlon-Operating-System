@@ -401,7 +401,7 @@ db 0x01
 db 0x01
 db 0x01
 dd 16384				; start sector (we put a dummy VBR here)
-dd 16384 * 4 			; total sectors in partition
+dd 100000    			; total sectors in partition
 
 ; A data packet we use to interface with the BIOS extended disk functions.
 ; We'll borrow the memory from the partition table

@@ -12,9 +12,15 @@ struct open_file* swapfile = NULL;
 void InitSwapfile(void) {
     int res = OpenFile("swap:/", O_RDWR, 0, &swapfile);
     if (res != 0) {
-        LogDeveloperWarning("No swapfile found!!\n");
-        swapfile = NULL;
+        Panic(PANIC_NO_FILESYSTEM);
     }
+
+    /*
+    extern size_t _start_pageablek_section;
+    extern size_t _end_pageablek_section;
+    size_t start_pageable_kernel = (((size_t) &_start_pageablek_section) + 0xFFF) & ~0xFFF;
+    size_t end_pageable_kernel = ((size_t) &_end_pageablek_section) & ~0xFFF;
+    */
 }
 
 struct open_file* GetSwapfile(void) {

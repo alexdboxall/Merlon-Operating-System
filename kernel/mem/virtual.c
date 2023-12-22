@@ -103,21 +103,28 @@ static void PerformDeferredAccess(void* data) {
     struct defer_disk_access* access = (struct defer_disk_access*) data;
     struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
     
-    if (access->direction == TRANSFER_WRITE) {
-        int res = WriteFile(access->file, &tr);
-        if (res != 0) {
-            Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
-        }
-        UnmapVirt(access->address, ARCH_PAGE_SIZE);
-
-    } else {
-        int res = ReadFile(access->file, &tr);
-        if (res != 0) {
-            Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
-        }
-        UnlockVirt(access->address);
-        ArchFlushTlb(GetVas());
+    bool write = access->direction == TRANSFER_WRITE;
+    LogWriteSerial("ABOUT TO ACCESS DISK DEFERRED... DIR %d\n", access->direction);
+    int res = (write ? WriteFile : ReadFile)(access->file, &tr);
+    if (res != 0) {
+        Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
     }
+
+    if (write) {
+        UnmapVirt(access->address, ARCH_PAGE_SIZE);
+    } else {
+
+        size_t* oadr = (size_t*) access->address;
+        LogWriteSerial("\nDEFER READ to 0x%X [0x%X]:\n", oadr, access->offset);
+        for (size_t i = 0; i < ARCH_PAGE_SIZE / sizeof(size_t); ++i) {
+            LogWriteSerial("0x%X, ", *oadr++);
+        }
+        LogWriteSerial("\n\n");
+
+        DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
+        UnlockVirt(access->address);
+    }
+    LogWriteSerial("DISK ACCESS DONE FOR SWAPFILE - ALL GOOD 0x%X (DIR %d).\n", access->offset, access->direction);
 
     FreeHeap(access);
 }
@@ -129,6 +136,13 @@ static void PerformDeferredAccess(void* data) {
 static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset) {
     size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
     inline_memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
+
+    size_t* oadr = (size_t*) old_addr;
+    LogWriteSerial("\nDEFER WRITE [0x%X]:\n", offset);
+    for (size_t i = 0; i < ARCH_PAGE_SIZE / sizeof(size_t); ++i) {
+        LogWriteSerial("0x%X, ", *oadr++);
+    }
+    LogWriteSerial("\n\n");
 
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
@@ -211,7 +225,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
 /*
  * Lower value means it should be swapped out first.
  */
-/*static*/ int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
+static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
     (void) vas;
     
     /*
@@ -236,8 +250,10 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
      *  Globals add 3 points.
      */
 
-    bool accessed = false;
-    bool dirty = false;
+    bool accessed;
+    bool dirty;
+    ArchGetPageUsageBits(vas, entry, &accessed, &dirty);
+    ArchSetPageUsageBits(vas, entry, false, false);
 
     int penalty = (entry->global ? 3 : 0) + entry->times_swapped * 8;
 
@@ -540,7 +556,7 @@ static size_t AllocVirtRange(struct vas* vas, size_t pages, int flags) {
         /*
          * TODO: this probably needs a global lock of some sort.
          */
-        static size_t hideous_allocator = 0xD0000000U;
+        static size_t hideous_allocator = ARCH_KRNL_SBRK_BASE;
         size_t retv = hideous_allocator;
         hideous_allocator += pages * ARCH_PAGE_SIZE;
         return retv;
@@ -744,7 +760,6 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     LogWriteSerial(" ----> RELOADING SWAP TO VIRT 0x%X: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
 
     DeferDiskRead(entry->virtual, GetSwapfile(), offset);
-    DeallocateSwapfileIndex(offset / ARCH_PAGE_SIZE);
 }
 
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {

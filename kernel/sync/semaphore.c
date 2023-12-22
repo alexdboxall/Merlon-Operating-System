@@ -85,6 +85,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
          * Need to block for the semaphore (or return if the timeout is zero).
          */
         thr->waiting_on_semaphore = sem;
+        LogWriteSerial("waiting on sem: 0x%X\n", sem);
 
         if (timeout_ms == 0) {
             thr->timed_out = true;

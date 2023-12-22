@@ -24,6 +24,8 @@ static size_t first_page_table[1024] __attribute__((aligned(ARCH_PAGE_SIZE)));
 #define x86_PAGE_PRESENT		1
 #define x86_PAGE_WRITE			2
 #define x86_PAGE_USER			4
+#define x86_PAGE_ACCESSED		(1 << 5)
+#define x86_PAGE_DIRTY			(1 << 6)
 
 static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 	size_t* page_dir = vas->arch_data->v_page_directory;
@@ -33,7 +35,7 @@ static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 	inline_memset((void*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE), 0, ARCH_PAGE_SIZE);
 }
 
-static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int flags) {
+static size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
 	size_t table_num = virtual / 0x400000;
 	size_t page_num = (virtual % 0x400000) / ARCH_PAGE_SIZE;
 	size_t* page_dir = vas->arch_data->v_page_directory;
@@ -42,7 +44,11 @@ static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int fla
 		x86AllocatePageTable(vas, table_num);
 	}
 
-	((size_t*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE))[page_num] = physical | flags;
+	return ((size_t*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE)) + page_num;
+}
+
+static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int flags) {
+	*x86GetPageEntry(vas, virtual) = physical | flags;
 	ArchFlushTlb(vas);
 }
 
@@ -71,6 +77,22 @@ void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry) {
 	if (entry->in_ram) flags |= x86_PAGE_PRESENT;
 
 	x86MapPage(vas, entry->physical, entry->virtual, flags);
+}
+
+void ArchGetPageUsageBits(struct vas* vas, struct vas_entry* vas_entry, bool* accessed, bool* dirty) {
+	size_t entry = *x86GetPageEntry(vas, vas_entry->virtual);
+	*accessed = entry & x86_PAGE_ACCESSED;
+	*dirty = entry & x86_PAGE_DIRTY;
+}
+
+void ArchSetPageUsageBits(struct vas* vas, struct vas_entry* vas_entry, bool accessed, bool dirty) {
+	size_t* entry = x86GetPageEntry(vas, vas_entry->virtual);
+
+	if (accessed) *entry |= x86_PAGE_ACCESSED;
+	else *entry &= ~x86_PAGE_ACCESSED;
+
+	if (dirty) *entry |= x86_PAGE_DIRTY;
+	else *entry &= ~x86_PAGE_DIRTY;
 }
 
 void ArchAddMapping(struct vas* vas, struct vas_entry* entry) {
@@ -139,9 +161,38 @@ void ArchInitVirt(void) {
 	* the kernel address spaces to share page tables, so we must allocate
 	* them all now so new address spaces can copy from us.
 	*/
-	for (int i = 769; i < 1023; ++i) {
+	/*for (int i = 769; i < 1023; ++i) {
+		x86AllocatePageTable(vas, i);
+	}*/
+	
+	/*
+	 * The maximum amount of virtual kernel memory we can access will depend on
+	 * the amount of RAM - full access requires 1MB, which is an issue if we've got, e.g.
+	 * only 1.5MB of RAM. We ensure we always get at least 128MB of kernel virtual memory -
+	 * systems with 1.5MB of RAM will certainly not need that much virtual memory.
+	 * 
+	 * A quick reference table:
+	 * 
+	 * 	Physical RAM		Max Kernel Virtual RAM		Physical RAM Usage
+	 * 	1280 KB				132 MB						 248 /  544 (54% free)
+	 *  1536 KB				194 MB						 312 /  800 (61% free)
+	 *  2048 KB				324 MB						 440 / 1312 (66% free)
+	 *  3072 KB				580 MB						 696 / 2336 (70% free)
+	 *  4096 KB				764 MB						 880 / 3360 (73% free)
+	 *  8192 KB				764 MB						 884 / 7456 (88% free)
+	 */
+
+	size_t tables_allocated = 0; 
+	int start = ARCH_KRNL_SBRK_BASE / 0x400000;
+	for (int i = start; i < 1023; ++i) {
+		if (i >= start + 32 && tables_allocated * 16 > GetTotalPhysKilobytes()) {
+			break;
+		}
+		++tables_allocated;
 		x86AllocatePageTable(vas, i);
 	}
+
+	LogWriteSerial("can access %d MB of kernel virtual memory\n", tables_allocated * 4);
 
 	/*
 	 * The boot assembly code set up two page tables for us, that we no longer need.

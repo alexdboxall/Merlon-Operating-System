@@ -54,11 +54,15 @@ static void DummyAppThread(void*) {
 		PutsConsole("  Command not found: ");
 		PutsConsole(bf);
 		PutsConsole("\n  drv0:/> ");
+
+        MapVirt(0, 0, 4096 * 16, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
     }
 }
 
 void InitUserspace(void) {
-    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used\n\n", GetTotalPhysKilobytes() - GetFreePhysKilobytes(), GetTotalPhysKilobytes());
+    size_t free = GetFreePhysKilobytes();
+    size_t total = GetTotalPhysKilobytes();
+    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
     CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
 }
 

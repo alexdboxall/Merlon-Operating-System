@@ -54,7 +54,9 @@ struct pty_subordinate_internal_data {
 static int MasterRead(struct vnode* node, struct transfer* tr) {    
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
     while (tr->length_remaining > 0) {
+        LogWriteSerial("DISPLAY IS WAITING...\n");
         char c = BlockingBufferGet(internal->display_buffer);
+        LogWriteSerial("DISPLAYING...\n");
         PerformTransfer(&c, tr, 1);
     }
 
@@ -70,7 +72,9 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     while (tr->length_remaining > 0) {
         char c;
         PerformTransfer(&c, tr, 1);
+        LogWriteSerial("ABOUT TO WRITE KEYBOARD...\n");
         BlockingBufferAdd(internal->keybrd_buffer, c, true);
+        LogWriteSerial("WROTE KEYBOARD...\n");
     }
 
     return 0;
@@ -123,7 +127,9 @@ static void LineProcessor(void* sub_) {
         bool echo = internal->termios.c_lflag & ECHO;
         bool canon = internal->termios.c_lflag & ICANON;
 
+        LogWriteSerial("ABOUT TO PROCESS LINE...\n");
         char c = BlockingBufferGet(master_internal->keybrd_buffer);
+        LogWriteSerial("PROCESSING LINE...\n");
 
         /*
          * This must happen before we modify the line buffer (i.e. to add or backspace a character), as
@@ -164,7 +170,9 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
         return 0;
     }
 
+    LogWriteSerial("ABOUT TO READ STDIN...\n");
     char c = BlockingBufferGet(master_internal->flushed_buffer);
+    LogWriteSerial("READ...\n");
     PerformTransfer(&c, tr, 1);
 
     int res = 0;
@@ -184,10 +192,13 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
         char c;
         int err = PerformTransfer(&c, tr, 1);
         if (err) {
+            LogDeveloperWarning("err A!\n");
             return err;
         }
 
+        LogWriteSerial("ABOUT TO PRINT...\n");
         BlockingBufferAdd(master_internal->display_buffer, c, true);
+        LogWriteSerial("PRINTED...\n");
     }
     
     return 0;

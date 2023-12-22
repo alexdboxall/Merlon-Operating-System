@@ -516,7 +516,7 @@ int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, str
 }
 
 int ReadFile(struct open_file* file, struct transfer* io) {
-	EXACT_IRQL(IRQL_PAGE_FAULT);
+	MAX_IRQL(IRQL_PAGE_FAULT);
 
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
@@ -550,7 +550,7 @@ int PAGEABLE_CODE_SECTION ReadDirectory(struct open_file* file, struct transfer*
 }
 
 int WriteFile(struct open_file* file, struct transfer* io) {
-	EXACT_IRQL(IRQL_PAGE_FAULT);
+	MAX_IRQL(IRQL_PAGE_FAULT);
 
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
@@ -558,7 +558,6 @@ int WriteFile(struct open_file* file, struct transfer* io) {
     if (!file->can_write) {
         return EBADF;
     }
-    // TODO: lock??
 
 	if (VnodeOpDirentType(file->node) == DT_DIR) {
 		return EISDIR;
@@ -576,5 +575,22 @@ int PAGEABLE_CODE_SECTION CloseFile(struct open_file* file) {
 
     DereferenceVnode(file->node);
 	DereferenceOpenFile(file);
+	return 0;
+}
+
+int GetFileSize(struct open_file* file, off_t* size) {
+	EXACT_IRQL(IRQL_STANDARD);
+
+	if (file == NULL || file->node == NULL || size == NULL) {
+		return EINVAL;
+	}
+	
+	struct stat st;
+	int res = VnodeOpStat(file->node, &st);
+	if (res != 0) {
+		return res;
+	}
+
+	*size = st.st_size;
 	return 0;
 }
