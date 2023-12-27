@@ -442,10 +442,6 @@ void EvictVirt(void) {
 
     // TODO: go through other address spaces
 
-    for  (int i = 0; i < PREV_SWAP_LIMIT; ++i) {
-        LogWriteSerial("  ==> PREV SWAP [%d] = 0x%X 0x%X\n", i, previous_swaps[i], previous_swaps[i] != NULL ? previous_swaps[i]->virtual : 0);
-    }
-
     while (false) {
         struct vas* vas = NULL;
         if (vas != GetVas()) {
@@ -454,10 +450,7 @@ void EvictVirt(void) {
     }
 
     if (lowest_ranked.entry != NULL) {
-        previous_swaps[swap_num++ % PREV_SWAP_LIMIT] = lowest_ranked.entry;
-        LogWriteSerial("TOSSING A %s PAGE\n", lowest_ranked.entry->relocatable ? "RELOCATABLE" : "NORMAL");
-        LogWriteSerial("    ** TOSSING PAGE 0x%X **    \n", lowest_ranked.entry->virtual);
-        
+        previous_swaps[swap_num++ % PREV_SWAP_LIMIT] = lowest_ranked.entry;        
         EvictPage(lowest_ranked.vas, lowest_ranked.entry);
         lowest_ranked.entry->times_swapped++;
     }
@@ -578,11 +571,11 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
         entry->swapfile_offset = 0xDEADDEAD;
     }
 
-    LogWriteSerial("Adding mapping at 0x%X. flags = 0x%X, rwxgu'lfia = %d%d%d%d%d'%d%d%d%d. p 0x%X\n", 
+    /*LogWriteSerial("Adding mapping at 0x%X. flags = 0x%X, rwxgu'lfia = %d%d%d%d%d'%d%d%d%d. p 0x%X\n", 
         entry->virtual, flags,
         entry->read, entry->write, entry->exec, entry->global, entry->user, entry->lock, entry->file, entry->in_ram, entry->allocated,
         entry->physical 
-    );
+    );*/
 
     /*
      * TODO: later on, check if shared, and add phys->virt entry if needed

@@ -15,6 +15,7 @@ APP_DIR = ./applications
 FREESTANDING_LIBC_DIR = ./libc/common
 LIBC_MAKEFILE_DIR = ./libc/$(TARGET)
 SYSROOT = ./sysroot
+SYSROOT_STATIC = ./sysroot_static
 
 SUBDIRS := 
 
@@ -32,6 +33,7 @@ common_header:
 	rm -r $(ROOT_BUILD_DIR) || true
 	rm -r $(SYSROOT)/System || true
 	mkdir $(SYSROOT)/System
+	cp -r $(SYSROOT_STATIC)/* $(SYSROOT)
 	mkdir $(ROOT_BUILD_DIR)
 	mkdir $(BUILD_SOURCE_DIR)
 	mkdir $(BUILD_OUTPUT_DIR)

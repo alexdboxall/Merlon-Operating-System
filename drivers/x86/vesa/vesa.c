@@ -4,9 +4,11 @@
 #include <virtual.h>
 #include <errno.h>
 #include <log.h>
+#include <vfs.h>
 #include <common.h>
 #include <video.h>
 #include <driver.h>
+#include <fcntl.h>
 #include <irql.h>
 
 //#include "img.h"
@@ -185,7 +187,14 @@ void InitVesa(void) {
         }
     }*/
 
-    /*int i = 0;
+    ((void (*)(uint8_t*, int, int, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutrect"))
+        (data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, 0x3880F8);
+
+    struct open_file* img_file;
+    OpenFile("sys:/bwsc.img", O_RDONLY, 0, &img_file);
+    uint8_t* test_image = (uint8_t*) MapVirt(0, 0, 1024 * 768 * 3, VM_READ | VM_FILE, img_file, 0);
+    
+    int i = 0;
     for (int y = 0; y < 768; ++y) {
         for (int x = 0; x < 1024; ++x) {
             uint32_t col = test_image[i + 2];
@@ -193,18 +202,11 @@ void InitVesa(void) {
             col |= test_image[i + 1];
             col <<= 8;
             col |= test_image[i];
-            i += 4;
+            i += 3;
             VesaPutpixel(x, y, col);
         }
-    }*/
+    }
 
-    ((void (*)(uint8_t*, int, int, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutrect"))
-        (data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, 0x3880F8);
-
-    /*
-    for (int y = 0; y < vesa_height; ++y) {
-        for (int x = 0; x < vesa_width; ++x) {
-            VesaPutpixel(x, y, 0x3880F8);
-        }
-    }*/
+    UnmapVirt((size_t) test_image, 1024 * 768 * 3);
+    CloseFile(img_file);
 }

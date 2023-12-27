@@ -18,6 +18,7 @@ static struct thread_list sleep_overflow_list;
 #define SLEEP_QUEUE_LENGTH 32
 
 static uint64_t system_time = 0;
+static int sleep_wakeups_posted = 0;
 
 void ReceivedTimer(uint64_t nanos) {
     EXACT_IRQL(IRQL_TIMER);
@@ -45,7 +46,10 @@ void ReceivedTimer(uint64_t nanos) {
      * This must be done at IRQL_PAGE_FAULT, as the Sleep... functions can be called at IRQL_PAGE_FAULT,
      * because the IDE driver must be able to pause while handling a page fault.
      */
-    DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
+    if (sleep_wakeups_posted < 5) {
+        DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
+        ++sleep_wakeups_posted;
+    }
 }
 
 uint64_t GetSystemTimer(void) {
@@ -111,6 +115,9 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     }
 
     LockScheduler();
+    if (sleep_wakeups_posted > 0) {
+        --sleep_wakeups_posted;
+    }
 
     uint64_t system_time = *((uint64_t*) sys_time_ptr);
 

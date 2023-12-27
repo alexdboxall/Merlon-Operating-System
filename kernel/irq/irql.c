@@ -36,6 +36,8 @@ __attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*hand
             deferment.context = context;
             deferment.handler = handler;
 
+            LogWriteSerial("DEFER: 0x%X. queue size = %d\n", handler, PriorityQueueGetUsedSize(GetCpu()->deferred_functions));
+
             PriorityQueueInsert(GetCpu()->deferred_functions, (void*) &deferment, irql);
         }
     }
