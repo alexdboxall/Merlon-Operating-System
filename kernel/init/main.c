@@ -52,6 +52,12 @@
 		PutsConsole(bf);
         PutsConsole("\n");
 
+        if (bf[0] == 'A') {
+            PutsConsole("Calling some ACPICA.SYS function...\n");
+            ((void(*)()) GetSymbolAddress("InitAcpica"))();
+            PutsConsole("Done...\n");
+        }
+
         if (GetFreePhysKilobytes() < 16) {
             PutsConsole("Less than 16 KB left\n");
             MapVirt(0, 0, 4096, VM_LOCK | VM_READ, NULL, 0);

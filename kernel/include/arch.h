@@ -88,6 +88,8 @@ void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUnmap(struct vas* vas, struct vas_entry* entry);
 void ArchSetVas(struct vas* vas);
 
+void ArchPerformDriverRelocationOnPage(struct vas* vas, struct vas_entry* entry, struct open_file* file, size_t relocation_base, size_t virtual);
+
 void ArchGetPageUsageBits(struct vas* vas, struct vas_entry* entry, bool* accessed, bool* dirty);
 void ArchSetPageUsageBits(struct vas* vas, struct vas_entry* entry, bool accessed, bool dirty);
 

@@ -22,9 +22,9 @@ void ArchInitDev(bool fs) {
         InitIde();
 
     } else {
-        ((void(*)()) (Loadx86Driver("sys:/ps2.sys", "InitPs2")))();
         ((void(*)()) (Loadx86Driver("sys:/vesa.sys", "InitVesa")))();
+        ((void(*)()) (Loadx86Driver("sys:/ps2.sys", "InitPs2")))();
         //((void(*)()) (Loadx86Driver("sys:/vga.sys", "InitVga")))();
-        //((void(*)()) (Loadx86Driver("sys:/acpica.sys", "InitAcpica")))();
+        ((void(*)()) (Loadx86Driver("sys:/acpica.sys", "InitAcpica")))();
     }
 }

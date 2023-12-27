@@ -140,8 +140,31 @@ static void PerformDeferredAccess(void* data) {
         UnmapVirt(access->address, ARCH_PAGE_SIZE);
     } else {
         DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
-        UnlockVirt(access->address);
-        SetTemporaryWriteEnable(access->address, false);
+
+        struct vas* vas = GetVas();
+        AcquireSpinlockIrql(&vas->lock);
+        struct vas_entry* entry = GetVirtEntry(vas, access->address);
+        entry->allow_temp_write = false;
+        bool holy_shit = entry->relocatable && !entry->first_load;
+        if (!holy_shit) {
+            entry->lock = false;
+        }
+        /*
+         * Need to keep page locked if we're doing relocations on it - otherwise by the time that we actually 
+         * load in all the data we need to do the relocations (e.g. ELF headers, the symbol table), we have probably
+         * already swapped out the page we are relocating (which leads to us getting nowhere).
+         */
+        entry->first_load = false;
+        ArchUpdateMapping(vas, entry);
+        ReleaseSpinlockIrql(&vas->lock);
+
+        // TODO: locks here need to be adjusted to include the below within it, but that needs recursive mutexes
+
+        if (holy_shit) {
+            ArchPerformDriverRelocationOnPage(vas, entry, entry->file_node, entry->relocation_base, access->address);
+            UnlockVirtEx(vas, access->address);
+            ReleaseSpinlockIrql(&vas->lock);
+        }
     }
 
     FreeHeap(access);
@@ -206,7 +229,6 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
 
         if (entry->write && !entry->relocatable) {
             LogWriteSerial("but first writing it back...\n");
-        
             DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
         }
 
@@ -263,7 +285,7 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
      *  60 FILE, WRITABLE, DIRTY, <don't care>
      *  70 NORMAL, DIRTY, <don't care>
      *  80 COW, 
-     *  100 RELOCATABLE
+     *  150 RELOCATABLE
      * 
      *  Globals add 3 points.
      */
@@ -276,7 +298,7 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
     int penalty = (entry->global ? 3 : 0) + entry->times_swapped * 8;
 
     if (entry->relocatable) {
-        return 100;
+        return 150;
 
     } else if (entry->cow) {
         return 80 + penalty;
@@ -300,6 +322,8 @@ struct eviction_candidate {
     struct vas_entry* entry;
 };
 
+#define PREV_SWAP_LIMIT 16
+
 void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* lowest_rank, struct eviction_candidate* lowest_ranked, int* count, struct vas_entry** prev_swaps) {
     static uint8_t rand = 0;
     
@@ -307,7 +331,7 @@ void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* low
         return;
     }
 
-    if (*lowest_rank < 100 /*10*/) {
+    if (*lowest_rank < 10) {
         /*
         * No need to look anymore - we've already a best possible page.
         */
@@ -338,7 +362,7 @@ void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* low
         }
 
         bool prev_swap = false;
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < PREV_SWAP_LIMIT; ++i) {
             if (prev_swaps[i] == entry) {
                 prev_swap = true;
                 break;
@@ -377,13 +401,35 @@ void FindVirtToEvictFromAddressSpace(struct vas* vas, int* lowest_rank, struct e
 void EvictVirt(void) {
     MAX_IRQL(IRQL_STANDARD);
 
+    LogWriteSerial("EvictVirt()\n");
+    
     if (GetSwapfile() == NULL) {
         return;
     }
 
+    // TODO: we need to ensure that EvictVirt(), when called from the defer, does not evict any pages that were just
+    //       loaded in!! This is an issue when we need to perform relocations during page faults, as that brings in a 
+    //       whole heap of other pages, and that often causes TryEvictPages() to straight away get rid of the page we just
+    //       loaded in. Alternatively, TryEvictPages() can be a NOP the first time it is called after a page fault.
+    //       This would give the code on the page that we loaded in time to 'progress' before being swapped out again.
+
+    /*
+    void TryEvictPages() {
+     if (had_page_fault) {
+        had_page_fault = false;
+        return;
+     }
+     EvictVirt()
+    }
+
+    void HandlePageFault() {
+        had_page_fault = true;
+    }
+     */
+
     // don't allow any of the last 8 swaps to be repeated (as an instruction may require at least 6 pages on x86
     // if it straddles many boundaries)
-    static struct vas_entry* previous_swaps[8] = {0};
+    static struct vas_entry* previous_swaps[PREV_SWAP_LIMIT] = {0};
     static int swap_num = 0;
 
     int lowest_rank = 10000;
@@ -396,15 +442,22 @@ void EvictVirt(void) {
 
     // TODO: go through other address spaces
 
+    for  (int i = 0; i < PREV_SWAP_LIMIT; ++i) {
+        LogWriteSerial("  ==> PREV SWAP [%d] = 0x%X 0x%X\n", i, previous_swaps[i], previous_swaps[i] != NULL ? previous_swaps[i]->virtual : 0);
+    }
+
     while (false) {
         struct vas* vas = NULL;
         if (vas != GetVas()) {
-            FindVirtToEvictFromAddressSpace(GetVas(), &lowest_rank, &lowest_ranked, true, previous_swaps);
+            FindVirtToEvictFromAddressSpace(GetVas(), &lowest_rank, &lowest_ranked, false, previous_swaps);
         }
     }
 
     if (lowest_ranked.entry != NULL) {
-        previous_swaps[swap_num++ % 8] = lowest_ranked.entry;
+        previous_swaps[swap_num++ % PREV_SWAP_LIMIT] = lowest_ranked.entry;
+        LogWriteSerial("TOSSING A %s PAGE\n", lowest_ranked.entry->relocatable ? "RELOCATABLE" : "NORMAL");
+        LogWriteSerial("    ** TOSSING PAGE 0x%X **    \n", lowest_ranked.entry->virtual);
+        
         EvictPage(lowest_ranked.vas, lowest_ranked.entry);
         lowest_ranked.entry->times_swapped++;
     }
@@ -817,14 +870,6 @@ static void BringIntoMemoryFromFile(struct vas_entry* entry) {
     entry->swapfile = false;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
-
-    if (entry->relocatable) {
-        if (entry->first_load) {
-            entry->first_load = false;
-        } else {
-            PanicEx(PANIC_NOT_IMPLEMENTED, "TODO: need to re-relocate after the disk read is complete...\n");
-        }
-    }
 
     DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset);
 }
