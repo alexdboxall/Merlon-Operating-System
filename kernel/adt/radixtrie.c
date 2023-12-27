@@ -7,7 +7,7 @@
 
 // A very cursed port from https://iq.opengenus.org/radix-tree
 
-#define DATA_BYTES_IN_SHORT     15
+#define DATA_BYTES_IN_SHORT     31//15
 #define MAX_BITS_PER_EDGE       (DATA_BYTES_IN_SHORT * 8)
 
 struct short_bool_list {

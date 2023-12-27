@@ -8,15 +8,31 @@
 #include <assert.h>
 #include <panic.h>
 #include <string.h>
+#include <timer.h>
+#include <thread.h>
 #include <spinlock.h>
 #include <log.h>
 #include <sys/types.h>
 #include <irql.h>
 #include <cpu.h>
 #include <transfer.h>
+#include <console.h>
 #include <swapfile.h>
 #include <vfs.h>
 #include <errno.h>
+
+/****
+ * ***
+ * ***
+ * *** DRIVER PAGES THAT GET PAGED OUT NEED TO HAVE RELOCATIONS REAPPLIED TO THEM!!!!
+ * *** (AS IS, WHEN IT GETS PAGED BACK IN, IT GETS THE ORIGINAL, NON-RELOCATION APPLIED PAGE BACK)
+ * ***
+ * ***
+ * 
+ * It'd also be good to allow drivers to ask for re-relocation, e.g. so that unresolved symbols can instead of 
+ * panicking, just be left unresolved, and then the driver can call RequireDriver(...) and then "RelocateDriver"(...)
+ * to use symbols as normal, instead of needing to use GetSymbolAddress
+*/
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual);
 
@@ -49,6 +65,15 @@ static int VirtAvlComparator(void* a, void* b) {
         return 0;
     }
     return (a_entry->virtual < b_entry->virtual) ? -1 : 1;
+}
+
+void SetTemporaryWriteEnable(size_t virtual, bool value) {
+    struct vas* vas = GetVas();
+    AcquireSpinlockIrql(&vas->lock);
+    struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    entry->allow_temp_write = value;
+    ArchUpdateMapping(vas, entry);
+    ReleaseSpinlockIrql(&vas->lock);
 }
 
 /**
@@ -94,6 +119,7 @@ struct vas* CreateVas() {
 
 struct defer_disk_access {
     struct open_file* file;
+    struct vas_entry* entry;
     off_t offset;
     size_t address;
     int direction;
@@ -104,7 +130,7 @@ static void PerformDeferredAccess(void* data) {
     struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
     
     bool write = access->direction == TRANSFER_WRITE;
-    LogWriteSerial("ABOUT TO ACCESS DISK DEFERRED... DIR %d\n", access->direction);
+
     int res = (write ? WriteFile : ReadFile)(access->file, &tr);
     if (res != 0) {
         Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
@@ -113,18 +139,10 @@ static void PerformDeferredAccess(void* data) {
     if (write) {
         UnmapVirt(access->address, ARCH_PAGE_SIZE);
     } else {
-
-        size_t* oadr = (size_t*) access->address;
-        LogWriteSerial("\nDEFER READ to 0x%X [0x%X]:\n", oadr, access->offset);
-        for (size_t i = 0; i < ARCH_PAGE_SIZE / sizeof(size_t); ++i) {
-            LogWriteSerial("0x%X, ", *oadr++);
-        }
-        LogWriteSerial("\n\n");
-
         DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
         UnlockVirt(access->address);
+        SetTemporaryWriteEnable(access->address, false);
     }
-    LogWriteSerial("DISK ACCESS DONE FOR SWAPFILE - ALL GOOD 0x%X (DIR %d).\n", access->offset, access->direction);
 
     FreeHeap(access);
 }
@@ -136,20 +154,13 @@ static void PerformDeferredAccess(void* data) {
 static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset) {
     size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
     inline_memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
-
-    size_t* oadr = (size_t*) old_addr;
-    LogWriteSerial("\nDEFER WRITE [0x%X]:\n", offset);
-    for (size_t i = 0; i < ARCH_PAGE_SIZE / sizeof(size_t); ++i) {
-        LogWriteSerial("0x%X, ", *oadr++);
-    }
-    LogWriteSerial("\n\n");
-
+    
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
     access->direction = TRANSFER_WRITE;
     access->offset = offset;
-    DeferUntilIrql(IRQL_PAGE_FAULT, PerformDeferredAccess, (void*) access);
+    DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
 }
 
 static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset) {
@@ -160,7 +171,7 @@ static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset)
     access->file = file;
     access->direction = TRANSFER_READ;
     access->offset = offset;
-    DeferUntilIrql(IRQL_PAGE_FAULT, PerformDeferredAccess, (void*) access);
+    DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
 }
 
 /**
@@ -191,7 +202,11 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
          * We will just reload it from disk next time.
          */
 
-        if (entry->write) {
+        LogWriteSerial("tossing a file from the disk...\n");
+
+        if (entry->write && !entry->relocatable) {
+            LogWriteSerial("but first writing it back...\n");
+        
             DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
         }
 
@@ -210,6 +225,8 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         entry->allocated = false;
         
         uint64_t offset = AllocateSwapfileIndex() * ARCH_PAGE_SIZE;
+        
+        //PutsConsole("PAGE OUT\n");
         LogWriteSerial(" ----> WRITING VIRT 0x%X TO SWAP: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
         DeferDiskWrite(entry->virtual, GetSwapfile(), offset);
         entry->swapfile_offset = offset;
@@ -246,6 +263,7 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
      *  60 FILE, WRITABLE, DIRTY, <don't care>
      *  70 NORMAL, DIRTY, <don't care>
      *  80 COW, 
+     *  100 RELOCATABLE
      * 
      *  Globals add 3 points.
      */
@@ -257,7 +275,10 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
 
     int penalty = (entry->global ? 3 : 0) + entry->times_swapped * 8;
 
-    if (entry->cow) {
+    if (entry->relocatable) {
+        return 100;
+
+    } else if (entry->cow) {
         return 80 + penalty;
 
     } else if (entry->file && !entry->write) {
@@ -286,7 +307,7 @@ void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* low
         return;
     }
 
-    if (*lowest_rank < 10) {
+    if (*lowest_rank < 100 /*10*/) {
         /*
         * No need to look anymore - we've already a best possible page.
         */
@@ -440,6 +461,18 @@ static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
+    /*
+     *                                                      OF TOTAL        OF PARENT
+     *  MapVirt                                             100%            100%                    11933330 ms
+     *      AddMapping                                      96%                 96%         
+     *          Before InsertIntoAvl                        4%                      3.8%
+     *          InsertIntoAvl                               46%                     44%
+     *          ArchAddMapping                              0%                      0%
+     *          ReleaseSpinlockIrql                         46%                     44%             5533278 ms
+     * 
+     * 
+     */
+
     assert(!(file != NULL && (flags & VM_FILE) == 0));
 
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
@@ -448,6 +481,12 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     bool lock = flags & VM_LOCK;
     entry->lock = lock;
     entry->in_ram = lock;
+
+    size_t relocation_base = 0;
+    if (flags & VM_RELOCATABLE) {
+        relocation_base = physical;
+        physical = 0;
+    }
 
     if (lock) {
         /*
@@ -465,18 +504,26 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      */
     entry->virtual = virtual;
     entry->times_swapped = 0;
-    entry->read = flags & VM_READ;
-    entry->write = flags & VM_WRITE;
-    entry->exec = flags & VM_EXEC;
+    entry->read = (flags & VM_READ) ? 1 : 0;
+    entry->write = (flags & VM_WRITE) ? 1 : 0;
+    entry->exec = (flags & VM_EXEC) ? 1 : 0;
     entry->file = (flags & VM_FILE) ? 1 : 0;
-    entry->user = flags & VM_USER;
+    entry->user = (flags & VM_USER) ? 1 : 0;
+    entry->relocatable = (flags & VM_RELOCATABLE) ? 1 : 0;
+    entry->allow_temp_write = false;
     entry->global = !(flags & VM_LOCAL);
     entry->physical = physical;
     entry->ref_count = 1;
     entry->file_offset = pos;
     entry->file_node = file;
     entry->swapfile = false;
-    entry->swapfile_offset = 0xDEADDEAD;
+    entry->first_load = entry->relocatable;
+
+    if (entry->relocatable) {
+        entry->relocation_base = relocation_base;
+    } else {
+        entry->swapfile_offset = 0xDEADDEAD;
+    }
 
     LogWriteSerial("Adding mapping at 0x%X. flags = 0x%X, rwxgu'lfia = %d%d%d%d%d'%d%d%d%d. p 0x%X\n", 
         entry->virtual, flags,
@@ -590,21 +637,31 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
  *                      VM_FILE         : if set, this page is file-backed. Cannot be combined with VM_MAP_HARDWARE.
  *                      VM_MAP_HARDWARE : if set, a physical address can be specified for the backing. If this flag is set,
  *                                        then VM_LOCK must also be set, and VM_FILE must be clear.
+ *                      VM_LOCAL        : if set, it is only mapped into the current virtual address space. If set, it is mapped
+ *                                        into the kernel virtual address space.
+ *                      VM_RECURSIVE    : must be set if and only if this call to MapVirtEx is being called with the virtual
+ *                                        address space lock already held. Does not affect the page, only the call to MapVirtEx
+ *                                        When set, the lock is not automatically acquired or released as it is assumed to be
+ *                                        already held
+ *                      VM_RELOCATABLE  : if set, then this page will have driver relocations applied to it when it is swapped
+ *                                        in. `file` should be set to the driver's file.
  * @param file      If VM_FILE is set, then the page is backed by this file, starting at the position specified by pos.
- *                      If VM_FILE is clear, then this value must be NULL.
+ *                      If VM_FILE is clear, then this value must be NULL. Takes on a different meaning in VM_RELOCATABLE is set.
  * @param pos       If VM_FILE is set, then this is the offset into the file where the page is mapped to. If VM_FILE is clear,
- *                      then this value must be 0.
+ *                      then this value must be 0. If VM_RELOCATABLE is set, this value should be zero.
  * 
  * @maxirql IRQL_SCHEDULER
  */
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
+    LogWriteSerial("MapVirtEx: flags = 0x%X\n", flags);
+
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
      */
-    if (physical != 0 && (flags & VM_MAP_HARDWARE) == 0) {
+    if (physical != 0 && (flags & (VM_MAP_HARDWARE | VM_RELOCATABLE)) == 0) {
         return 0;
     }
 
@@ -621,6 +678,14 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     }
     
     if ((flags & VM_FILE) == 0 && (file != NULL || pos != 0)) {
+        return 0;
+    }
+
+    if ((flags & VM_RELOCATABLE) && (flags & VM_FILE) == 0) {
+        return 0;
+    }
+
+    if ((flags & VM_RELOCATABLE) && physical == 0) {
         return 0;
     }
 
@@ -647,7 +712,14 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     }
 
     for (size_t i = 0; i < pages; ++i) {
-        AddMapping(vas, physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE), virtual + i * ARCH_PAGE_SIZE, flags, file, pos + i * ARCH_PAGE_SIZE);
+        AddMapping(
+            vas, 
+            (flags & VM_RELOCATABLE) ? physical : (physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE)), 
+            virtual + i * ARCH_PAGE_SIZE, 
+            flags, 
+            file,
+            pos + i * ARCH_PAGE_SIZE
+        );
     }   
 
     if (vas == GetVas()) {
@@ -671,9 +743,10 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
-
+    LogWriteSerial("MapVirt: flags = 0x%X\n", flags);
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
-    return MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
+    size_t ret = MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
+    return ret;
 }
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
@@ -739,10 +812,19 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
 static void BringIntoMemoryFromFile(struct vas_entry* entry) {
     entry->physical = AllocPhys();
     entry->allocated = true;
+    entry->allow_temp_write = true;
     entry->in_ram = true;
     entry->swapfile = false;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
+
+    if (entry->relocatable) {
+        if (entry->first_load) {
+            entry->first_load = false;
+        } else {
+            PanicEx(PANIC_NOT_IMPLEMENTED, "TODO: need to re-relocate after the disk read is complete...\n");
+        }
+    }
 
     DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset);
 }
@@ -753,6 +835,7 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     entry->physical = AllocPhys();
     entry->allocated = true;
     entry->in_ram = true;
+    entry->allow_temp_write = true;
     entry->swapfile = false;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
@@ -787,10 +870,14 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
         entry->physical = AllocPhys();
         entry->allocated = true;
         entry->in_ram = true;
+        entry->allow_temp_write = true;
         assert(!entry->swapfile);
         ArchUpdateMapping(GetVas(), entry);
         ArchFlushTlb(GetVas());
         inline_memset((void*) entry->virtual, 0, ARCH_PAGE_SIZE);
+        entry->allow_temp_write = false;
+        ArchUpdateMapping(GetVas(), entry);
+        ArchFlushTlb(GetVas());
         return 0;
     }
 
@@ -834,7 +921,7 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
     /*
      * Only allow these flags to be set / cleared.
      */
-    if ((set | clear) & ~(VM_READ | VM_WRITE | VM_EXEC)) {
+    if ((set | clear) & ~(VM_READ | VM_WRITE | VM_EXEC | VM_USER)) {
         assert(false);
         return;
     }
@@ -872,6 +959,8 @@ int GetVirtPermissions(size_t virtual) {
     if (entry.lock) permissions |= VM_LOCK;
     if (entry.file) permissions |= VM_FILE;
     if (entry.user) permissions |= VM_USER;
+    if (!entry.global) permissions |= VM_LOCAL;
+    if (entry.relocatable) permissions |= VM_RELOCATABLE;
 
     return permissions;
 }
@@ -884,7 +973,7 @@ void UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
         entry->ref_count--;
 
         if (entry->ref_count == 0) {
-            LogWriteSerial("Removing mapping at 0x%X\n", virtual + i * ARCH_PAGE_SIZE);
+            //LogWriteSerial("Removing mapping at 0x%X\n", virtual + i * ARCH_PAGE_SIZE);
 
             if (entry->in_ram) {
                 ArchUnmap(vas, entry);
@@ -1046,9 +1135,12 @@ void InitVirt(void) {
  * 
  * @maxirql IRQL_PAGE_FAULT 
  */
+
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
-    LogWriteSerial("HandleVirtFault A, 0x%X, %d\n", faulting_virt, fault_type);
-    int irql = RaiseIrql(IRQL_PAGE_FAULT);
+    LogWriteSerial("===> ENTER PAGE FAULT\n");
+    LogWriteSerial("HandleVirtFault A, 0x%X, %d, %d\n", faulting_virt, fault_type, GetIrql());
+
+    EXACT_IRQL(IRQL_STANDARD);
 
     (void) fault_type;
 
@@ -1059,8 +1151,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     if (entry == NULL) {
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
     }
-    LogWriteSerial("\nentry: v 0x%X, p 0x%X. aclrf = %d%d%d%d%d\n", entry->virtual, entry->physical, entry->allocated, entry->cow, entry->lock, entry->in_ram, entry->file);
-    LogWriteSerial("HandleVirtFault B\n");
+    LogWriteSerial("entry: v 0x%X, p 0x%X. aclrf = %d%d%d%d%d\n", entry->virtual, entry->physical, entry->allocated, entry->cow, entry->lock, entry->in_ram, entry->file);
 
     /*
      * Sanity check that our flags are configured correctly.
@@ -1079,8 +1170,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     }
 
     ReleaseSpinlockIrql(&vas->lock);
-    LowerIrql(irql);
-    LogWriteSerial("Page fault totally done.\n");
+    LogWriteSerial("===> EXIT PAGE FAULT.\n");
 }
 
 /**

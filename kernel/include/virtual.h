@@ -15,6 +15,7 @@
 #define VM_MAP_HARDWARE 128     /* map a physical page that doesn't live within the physical memoery manager*/
 #define VM_LOCAL        256     /* indicates it's local to the VAS - i.e. not in kernel global memory */
 #define VM_RECURSIVE    512     /* assumes the VAS is already locked, so won't lock or unlock it */
+#define VM_RELOCATABLE  1024    /* needs driver fixups whenever swapped back in*/
 
 #define VAS_NO_ARCH_INIT    1
 
@@ -35,12 +36,18 @@ struct vas_entry {
     uint8_t exec            : 1;
     uint8_t user            : 1;
     uint8_t global          : 1;
-    uint8_t times_swapped   : 3;
+    uint8_t allow_temp_write: 1;        /* used internally - allows the system to write to otherwise read-only pages to, e.g. reload from disk */
+    uint8_t relocatable     : 1;        /* from a relocated driver file             */
+    uint8_t times_swapped   : 1;
+    uint8_t first_load      : 1;
 
     off_t file_offset;
     struct open_file* file_node;
     size_t physical;
-    size_t swapfile_offset;
+    union {
+        size_t swapfile_offset;
+        size_t relocation_base;
+    };
 
     int ref_count;
 };
@@ -60,6 +67,7 @@ size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct 
 void UnmapVirt(size_t virtual, size_t bytes);
 void UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages);
 size_t GetPhysFromVirt(size_t virtual);
+void SetTemporaryWriteEnable(size_t virtual, bool value);
 
 struct vas* GetKernelVas(void);     // a kernel vas
 struct vas* GetVas(void);           // current vas

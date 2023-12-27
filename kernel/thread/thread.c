@@ -28,7 +28,7 @@ static struct spinlock innermost_lock;
 * Please note that overflowing the kernel stack into non-paged memory will lead to
 * an immediate and unrecoverable crash on most systems.
 */
-#define KERNEL_STACK_SIZE   BytesToPages(1024 * 4) * ARCH_PAGE_SIZE
+#define DEFAULT_KERNEL_STACK_KB   BytesToPages(1024 * 16) * ARCH_PAGE_SIZE / 1024
 
 /*
 * The user stack is allocated as needed - this is the maximum size of the stack in
@@ -90,8 +90,8 @@ static void CreateCanary(size_t canary_base) {
 * the address of either the top of the stack (if it grows downward),
 * or the bottom (if it grows upward).
 */
-static void CreateKernelStacks(struct thread* thr) {
-    int total_bytes = (BytesToPages(KERNEL_STACK_SIZE) + NUM_CANARY_PAGES) * ARCH_PAGE_SIZE;
+static void CreateKernelStacks(struct thread* thr, int kernel_stack_kb) {
+    int total_bytes = (BytesToPages(kernel_stack_kb * 1024) + NUM_CANARY_PAGES) * ARCH_PAGE_SIZE;
     
     size_t stack_bottom = MapVirt(0, 0, total_bytes, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
     size_t stack_top = stack_bottom + total_bytes;
@@ -130,6 +130,7 @@ static void CreateKernelStacks(struct thread* thr) {
 void BlockThread(int reason) {
     AssertSchedulerLockHeld();
     assert(reason != THREAD_STATE_READY && reason != THREAD_STATE_RUNNING);
+    assert(GetCpu() != NULL && GetCpu()->current_thread != NULL);
     assert(GetCpu()->current_thread->state == THREAD_STATE_RUNNING);
     GetCpu()->current_thread->state = reason;
     PostponeScheduleUntilStandardIrql();
@@ -172,7 +173,8 @@ static int GetNextThreadId(void) {
     return result;
 }
 
-struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority) {
+struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb) {
+    LogWriteSerial("CREATING THREAD!! %s\n", name);
     struct thread* thr = AllocHeap(sizeof(struct thread));
     thr->argument = argument;
     thr->initial_address = entry_point;
@@ -187,7 +189,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
     thr->vas = vas;
     thr->thread_id = GetNextThreadId();
-    CreateKernelStacks(thr);
+    CreateKernelStacks(thr, kernel_stack_kb == 0 ? DEFAULT_KERNEL_STACK_KB : 0);
 
     if (prcss != NULL) {
         AddThreadToProcess(prcss, thr);
@@ -203,7 +205,9 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
 }
 
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name) {
-    return CreateThreadEx(entry_point, argument, vas, name, GetProcess(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL);
+    return CreateThreadEx(
+        entry_point, argument, vas, name, GetProcess(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0
+    );
 }
 
 struct thread* GetThread(void) {
@@ -221,6 +225,7 @@ void ThreadInitialisationHandler(void) {
      * but we forced ourselves to jump here instead, so we'd better do it now.
      */
     ReleaseSpinlockIrql(&innermost_lock);
+
     UpdateTimesliceExpiry();
 
     /*
@@ -292,6 +297,7 @@ static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread
      */
     struct cpu* cpu = GetCpu();
     AcquireSpinlockIrql(&innermost_lock);
+
     cpu->current_thread = new_thread;
     cpu->current_vas = new_thread->vas;
     ArchSwitchThread(old_thread, new_thread);
@@ -301,6 +307,7 @@ static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread
      * ArchSwitchThread to ThreadInitialisationHandler!
      */
     ReleaseSpinlockIrql(&innermost_lock);
+
     UpdateTimesliceExpiry();
 }
 
@@ -347,11 +354,12 @@ static void ScheduleWithLockHeld(void) {
     if (old_thread->state == THREAD_STATE_RUNNING) {
         ThreadListInsert(&ready_list, old_thread);
     }
+
     SwitchToNewTask(old_thread, new_thread);
 }
 
 void Schedule(void) {
-    if (GetIrql() != IRQL_STANDARD) {
+    if (GetIrql() > IRQL_PAGE_FAULT) {
         PostponeScheduleUntilStandardIrql();
         return;
     }

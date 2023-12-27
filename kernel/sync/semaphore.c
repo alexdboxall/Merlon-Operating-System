@@ -4,6 +4,7 @@
 #include <threadlist.h>
 #include <heap.h>
 #include <errno.h>
+#include <string.h>
 #include <irql.h>
 #include <timer.h>
 #include <assert.h>
@@ -12,6 +13,7 @@
 
 
 struct semaphore {
+    const char* name;
     int max_count;
     int current_count;
     struct thread_list waiting_list;
@@ -28,10 +30,11 @@ struct semaphore {
  * 
  * @maxirql IRQL_SCHEDULER
  */
-struct semaphore* CreateSemaphore(int max_count, int initial_count) {
+struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_count) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     struct semaphore* sem = AllocHeap(sizeof(struct semaphore));
+    sem->name = name;
     sem->max_count = max_count;
     sem->current_count = initial_count;
     ThreadListInit(&sem->waiting_list, NEXT_INDEX_SEMAPHORE);
@@ -52,10 +55,10 @@ struct semaphore* CreateSemaphore(int max_count, int initial_count) {
  *         ETIMEDOUT if the semaphore was not acquired, and the operation timed out
  *         EAGAIN if the semaphore was not acquired, and the timeout_ms value was 0
  * 
- * @maxirql IRQL_SCHEDULER
+ * @maxirql IRQL_PAGE_FAULT
  */
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
-    MAX_IRQL(IRQL_SCHEDULER);
+    MAX_IRQL(IRQL_PAGE_FAULT);
     assert(sem != NULL);
 
     LockScheduler();
@@ -67,6 +70,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
         } else {
             Panic(PANIC_SEM_BLOCK_WITHOUT_THREAD);
         }
+        UnlockScheduler();
         return 0;
     }
 
@@ -85,7 +89,6 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
          * Need to block for the semaphore (or return if the timeout is zero).
          */
         thr->waiting_on_semaphore = sem;
-        LogWriteSerial("waiting on sem: 0x%X\n", sem);
 
         if (timeout_ms == 0) {
             thr->timed_out = true;
@@ -113,12 +116,15 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
  * @param sem The semaphore to release/signal 
  */
 void ReleaseSemaphore(struct semaphore* sem) {
-    MAX_IRQL(IRQL_SCHEDULER);
-    assert(sem->current_count > 0);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     LockScheduler();
+    assert(sem->current_count > 0);
     
     if (sem->waiting_list.head == NULL) {
+        if (sem->current_count == 0) {
+            Panic(PANIC_NEGATIVE_SEMAPHORE);
+        }
         sem->current_count--;
 
     } else {

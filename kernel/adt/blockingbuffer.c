@@ -5,6 +5,7 @@
 #include <spinlock.h>
 #include <semaphore.h>
 #include <errno.h>
+#include <thread.h>
 #include <panic.h>
 #include <log.h>
 #include <irql.h>
@@ -29,11 +30,9 @@ struct blocking_buffer* BlockingBufferCreate(int size) {
     buffer->used_size = 0;
     buffer->start_pos = 0;
     buffer->end_pos = 0;
-    buffer->sem = CreateSemaphore(size, size);
-    buffer->reverse_sem = CreateSemaphore(size, 0);
-    InitSpinlock(&buffer->lock, "blocking buffer", IRQL_SCHEDULER);
-    LogWriteSerial("blocking buffer sems 0x%X 0x%X\n", buffer->sem, buffer->reverse_sem);
-    
+    buffer->sem = CreateSemaphore("bb get", size, size);
+    buffer->reverse_sem = CreateSemaphore("bb add", size, 0);
+    InitSpinlock(&buffer->lock, "blocking buffer", IRQL_SCHEDULER);    
     return buffer;
 }
 
@@ -45,6 +44,7 @@ void BlockingBufferDestroy(struct blocking_buffer* buffer) {
 
 int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c, bool block) {
     int res = AcquireSemaphore(buffer->reverse_sem, block ? -1 : 0);
+
     if (!block && res != 0) {
         return ENOBUFS;
     }
@@ -57,12 +57,11 @@ int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c, bool block) {
     buffer->end_pos = (buffer->end_pos + 1) % buffer->total_size;
     buffer->used_size++;
 
-    ReleaseSpinlockIrql(&buffer->lock);
-
     /*
      * Wake up someone waiting for a character to enter the buffer - or make it so 
      * next time someone wants a character they can grab it straight away.
      */
+    ReleaseSpinlockIrql(&buffer->lock);
     ReleaseSemaphore(buffer->sem);
     return 0;
 }
@@ -84,9 +83,7 @@ uint8_t BlockingBufferGet(struct blocking_buffer* buffer) {
     /*
      * Wait for there to be something to actually read.
      */
-    LogWriteSerial("G1 ");
     AcquireSemaphore(buffer->sem, -1);
-    LogWriteSerial("G2 ");
     return BlockingBufferGetAfterAcquisition(buffer);
 }
 

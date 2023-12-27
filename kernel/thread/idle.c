@@ -8,13 +8,14 @@
 /**
  * A thread that can be run if no other thread is available to run. This thread must never terminate or
  * block. Ideally, it should try to invoke power-saving features or perform optimsiations to the system.
+ * May be run at IRQL_PAGE_FAULT at some points (usually during boot) where we might be waiting on the disk
+ * to pause for a momenet in the page fault handler (this invoking sleep and blocking the task, leaving only
+ * the idle task).
  * 
- * @note EXACT_IRQL(IRQL_STANDARD)
+ * @note MAX_IRQL(IRQL_PAGE_FAULT)
  */
 static void IdleThread(void*) {
-    EXACT_IRQL(IRQL_STANDARD);
-
-    SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_IDLE);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     while (1) {
         ArchStallProcessor();
@@ -30,5 +31,5 @@ static void IdleThread(void*) {
 void InitIdle(void) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    CreateThread(IdleThread, NULL, GetVas(), "idle thread");
+    CreateThreadEx(IdleThread, NULL, GetVas(), "idle thread", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_IDLE, 0);
 }

@@ -70,7 +70,7 @@ int demofs_read_file(struct demofs* fs, ino_t file, uint32_t file_size_left, str
 
             io->offset -= delta;
             io->length_remaining = remainder;
-            file_size_left -= SECTOR_SIZE;
+            file_size_left -= SECTOR_SIZE;      // ???!
 
         } else {
             /*

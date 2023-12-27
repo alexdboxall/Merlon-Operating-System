@@ -181,6 +181,8 @@ while True:
 
                     # need to keep going until it reboots, as it needs to know that tests have finished
                     tests_done = True
+    else:
+        time.sleep(0.01)
 
 
 w.close()

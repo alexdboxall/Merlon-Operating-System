@@ -41,6 +41,10 @@ void ReceivedTimer(uint64_t nanos) {
         PostponeScheduleUntilStandardIrql();
     }
 
+    /*
+     * This must be done at IRQL_PAGE_FAULT, as the Sleep... functions can be called at IRQL_PAGE_FAULT,
+     * because the IDE driver must be able to pause while handling a page fault.
+     */
     DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
 }
 
@@ -100,7 +104,7 @@ bool TryDequeueForSleep(struct thread* thr) {
 }
 
 void HandleSleepWakeups(void* sys_time_ptr) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     if (GetThread() == NULL) {
         return;
@@ -111,14 +115,14 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     uint64_t system_time = *((uint64_t*) sys_time_ptr);
 
     /*
-     * Wake up any sleeping tasks that need it.
-     */
+    * Wake up any sleeping tasks that need it.
+    */
     while (PriorityQueueGetUsedSize(sleep_queue) > 0) {
         struct priority_queue_result res = PriorityQueuePeek(sleep_queue);
         
         /*
-         * Check if it needs waking.
-         */
+        * Check if it needs waking.
+        */
         if (res.priority <= system_time) {
             struct thread* thr = *((struct thread**) res.data);
             thr->timed_out = true;
@@ -127,16 +131,16 @@ void HandleSleepWakeups(void* sys_time_ptr) {
 
         } else {
             /*
-             * If this one doesn't need waking, none of the others will either.
-             */
+            * If this one doesn't need waking, none of the others will either.
+            */
             break;
         }
     }
 
     /*
-     * Check for any tasks that are asleep but on the overflow list. This is slow, but will
-     * only happen if we have more than 32 sleeping tasks, so it should normally not take any time.
-     */
+    * Check for any tasks that are asleep but on the overflow list. This is slow, but will
+    * only happen if we have more than 32 sleeping tasks, so it should normally not take any time.
+    */
     struct thread* iter = sleep_overflow_list.head;
     while (iter) {
         if (iter->sleep_expiry <= system_time) {
@@ -153,7 +157,14 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     UnlockScheduler();
 }
 
+/*
+ * Needs to be allowed at IRQL_PAGE_FAULT so the IDE driver can use it. Cannot be any higher, as otherwise
+ * the thread might not actually sleep (if IRQL_SCHEDULER or above, we won't actually do the 'blocked task switch'
+ * until it is released).
+ */
 void SleepUntil(uint64_t system_time_ns) {
+    MAX_IRQL(IRQL_PAGE_FAULT);
+
     if (system_time_ns < GetSystemTimer()) {
         return;
     }
@@ -166,9 +177,11 @@ void SleepUntil(uint64_t system_time_ns) {
 }
 
 void SleepNano(uint64_t delta_ns) {
+    MAX_IRQL(IRQL_PAGE_FAULT);
     SleepUntil(GetSystemTimer() + delta_ns);
 }
 
 void SleepMilli(uint32_t delta_ms) {
+    MAX_IRQL(IRQL_PAGE_FAULT);
     SleepNano(((uint64_t) delta_ms) * 1000000ULL);
 }

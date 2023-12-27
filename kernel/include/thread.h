@@ -86,8 +86,9 @@ void AssertSchedulerLockHeld(void);
 
 struct thread* GetThread(void);
 void TerminateThread(struct thread* thr);
+void TerminateThreadLockHeld(struct thread* thr);
 
-struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority);
+struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb);
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);
 
 void BlockThread(int reason);

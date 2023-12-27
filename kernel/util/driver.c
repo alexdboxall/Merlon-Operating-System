@@ -59,8 +59,8 @@ size_t PAGEABLE_CODE_SECTION GetDriverAddress(const char* name) {
 void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
     EXACT_IRQL(IRQL_STANDARD);
 
-    driver_table_lock = CreateMutex();
-    symbol_table_lock = CreateMutex();
+    driver_table_lock = CreateMutex("drv table");
+    symbol_table_lock = CreateMutex("sym table");
     LogWriteSerial("driver / symbol locks = 0x%X, 0x%X\n", driver_table_lock, symbol_table_lock);
 
     loaded_drivers = AvlTreeCreate();
@@ -94,7 +94,8 @@ void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
         return;
     }
 
-    LogWriteSerial("inserting symbol %s -> 0x%X\n", symbol, address);
+    LogWriteSerial("adding symbol %s -> 0x%X\n", symbol, address);
+
     struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
     AcquireMutex(symbol_table_lock, -1);
     RadixTrieInsert(symbol_table, &b, (void*) address);
@@ -146,6 +147,8 @@ static int PAGEABLE_CODE_SECTION LoadDriver(const char* name) {
 
 int PAGEABLE_CODE_SECTION RequireDriver(const char* name) {
     EXACT_IRQL(IRQL_STANDARD);
+
+    LogWriteSerial("Requiring driver: %s\n", name);
 
     AcquireMutex(driver_table_lock, -1);
 

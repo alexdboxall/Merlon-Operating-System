@@ -12,6 +12,21 @@
 #include <machine/elf.h>
 #include <panic.h>
 
+/****
+ * *** TODO:
+ * *** @@@
+ * ***
+ * *** DRIVER PAGES THAT GET PAGED OUT NEED TO HAVE RELOCATIONS REAPPLIED TO THEM!!!!
+ * *** (AS IS, WHEN IT GETS PAGED BACK IN, IT GETS THE ORIGINAL, NON-RELOCATION APPLIED PAGE BACK)
+ * ***
+ * ***
+ * 
+ * It'd also be good to allow drivers to ask for re-relocation, e.g. so that unresolved symbols can instead of 
+ * panicking, just be left unresolved, and then the driver can call RequireDriver(...) and then "RelocateDriver"(...)
+ * to use symbols as normal, instead of needing to use GetSymbolAddress
+*/
+
+
 static bool PAGEABLE_CODE_SECTION IsElfValid(struct Elf32_Ehdr* header) {
     if (header->e_ident[EI_MAG0] != ELFMAG0) return false;
     if (header->e_ident[EI_MAG1] != ELFMAG1) return false;
@@ -50,16 +65,14 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSizeOfImageIncludingBss(void* data, bo
 		}
     }
 
-	LogWriteSerial("total size = 0x%X\n", total_size);
     return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
-static size_t PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate) {
+static int PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate, struct open_file* file) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
     size_t base_point = relocate ? 0xD0000000U : 0x10000000;
-    size_t sbrk_address = base_point;
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
         struct Elf32_Phdr* prog_header = prog_headers + i;
@@ -67,21 +80,69 @@ static size_t PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t rel
         size_t address = prog_header->p_vaddr;
 		size_t offset = prog_header->p_offset;
 		size_t size = prog_header->p_filesz;
-		size_t num_zero_bytes = prog_header->p_memsz - size;
 		size_t type = prog_header->p_type;
+		uint32_t flags = prog_header->p_flags;
+		size_t num_zero_bytes = prog_header->p_memsz - size;
 
 		if (type == PHT_LOAD) {
 			if (!relocate) {
-                Panic(PANIC_NOT_IMPLEMENTED);
+                return ENOSYS;
             
 			} else {
-				memcpy((void*) (address + relocation_point - base_point), (const void*) AddVoidPtr(data, offset), size);
-				memset((void*) (address + relocation_point - base_point + size), 0, num_zero_bytes);
+				size_t addr = address + relocation_point - base_point;
+				size_t remainder = size & (ARCH_PAGE_SIZE - 1);
+
+				LogWriteSerial("Loading from 0x%X -> size 0x%X, and it is: %s %s %s\n",
+					addr,
+					size,
+					(flags & PF_R) ? "READABLE" : "-",
+					(flags & PF_W) ? "WRITABLE" : "-",
+					(flags & PF_X) ? "EXECUTABLE" : "-"
+				);
+				
+				int page_flags = 0;
+				if (flags & PF_X) page_flags |= VM_EXEC;
+				if (flags & PF_W) page_flags |= VM_WRITE;
+				if (flags & PF_R) page_flags |= VM_READ;
+
+				/*
+				 * We don't actually want to write to the executable file, so we must just copy to the page as normal
+				 * instead of using a file-backed page.
+				 */
+				if (flags & PF_W) {
+					size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
+
+					for (size_t i = 0; i < pages; ++i) {
+						SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags, (VM_READ | VM_WRITE | VM_EXEC) & ~page_flags);
+					}
+
+					memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
+
+				} else {
+					size_t pages = (size - remainder) / ARCH_PAGE_SIZE;
+
+					if (addr & (ARCH_PAGE_SIZE - 1)) {
+						return EINVAL;
+					}
+					if (pages > 0) {
+						UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
+						size_t v = MapVirt(relocation_point, addr, pages * ARCH_PAGE_SIZE, VM_RELOCATABLE | VM_FILE | page_flags, file, offset);
+						if (v != addr) {
+							return ENOMEM;
+						}
+					}
+
+					if (remainder > 0) {
+						SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, (VM_READ | VM_EXEC) & ~page_flags);
+						memcpy((void*) AddVoidPtr(addr, pages * ARCH_PAGE_SIZE), (const void*) AddVoidPtr(data, offset + pages * ARCH_PAGE_SIZE), remainder);
+						SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, 0, VM_WRITE);
+					}
+				}
 			}
 		}
     }
-
-    return sbrk_address;
+	
+	return 0;
 }
 
 static char* PAGEABLE_CODE_SECTION ElfLookupString(void* data, int offset) {
@@ -149,9 +210,12 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSymbolValue(void* data, int table, siz
 
 static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table)
 {
+	LogWriteSerial("about to perform a relocation!\n");
+
 	size_t base_address = 0xD0000000U;
 
 	size_t addr = (size_t) relocation_point - base_address + relocation_table->r_offset;
+
 	size_t* ref = (size_t*) addr;
 
 	int symbolValue = 0;
@@ -163,7 +227,12 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t reloca
 		}
 	}
 	
+	if ((GetVirtPermissions(addr) & VM_WRITE) == 0) {
+		SetTemporaryWriteEnable(addr, true);
+	}
+	
 	int type = ELF32_R_TYPE(relocation_table->r_info);
+	
 	if (type == R_386_32) {
 		*ref = DO_386_32(symbolValue, *ref);
 
@@ -175,9 +244,11 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t reloca
 
 	} else {
 		LogWriteSerial("some whacko type...\n");
+		SetTemporaryWriteEnable(addr, false);
 		return false;
 	}
-
+	
+	SetTemporaryWriteEnable(addr, false);
 	return true;
 }
 
@@ -216,7 +287,7 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t reloc
 	return true;
 }
 
-static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* entry_point) {
+static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* entry_point, struct open_file* file) {
     EXACT_IRQL(IRQL_STANDARD);
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
@@ -245,9 +316,9 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
     size_t size = ElfGetSizeOfImageIncludingBss(data, relocate);
 
     if (relocate) {
-		*relocation_point = MapVirt(0, 0, size, VM_READ | VM_EXEC, NULL, 0);
+		*relocation_point = MapVirt(0, 0, size, VM_READ, NULL, 0);
 		LogWriteSerial("RELOCATION POINT AT 0x%X\n", *relocation_point);
-    	ElfLoadProgramHeaders(data, *relocation_point, relocate);
+    	ElfLoadProgramHeaders(data, *relocation_point, relocate, file);
         bool success = ElfPerformRelocations(data, *relocation_point);
         if (success) {
             return 0;
@@ -273,7 +344,7 @@ int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_f
 
     size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
 	LogWriteSerial("mapped a region to the file: 0x%X, of size 0x%X\n", file_rgn, (int) file_size);
-    res = ElfLoad((void*) file_rgn, relocation_point, true, NULL);
+    res = ElfLoad((void*) file_rgn, relocation_point, true, NULL, file);
 
 	struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) file_rgn;
     struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) (file_rgn + elf_header->e_shoff);
@@ -357,23 +428,6 @@ void PAGEABLE_CODE_SECTION ArchLoadSymbols(struct open_file* file, size_t adjust
         if (symbol.st_value == 0) { 
             continue;
         }
-
-		LogWriteSerial("SYMBOL: %s, 0x%X 0x%X 0x%X 0x%X 0x%X", string_table + symbol.st_name, symbol.st_info, symbol.st_other, symbol.st_shndx, symbol.st_size, symbol.st_value);
-		
-		LogWriteSerial("symbol table is at 0x%X into the file, we are at 0x%X\n", symbol_table_offset, symbol_table_offset + sizeof(struct Elf32_Sym) * i);
-/*
-		NAME						    INF OTH SH 	SIZE  ADDR
-SYMBOL: Ps2ControllerSetConfiguration , 0x2 0x0 0x1 0x1E 0xD0000039inserting symbol Ps2ControllerSetConfiguration -> 0xC4113039
-SYMBOL: shift_held                    , 0x1 0x0 0xD 0x1 0xD0003002inserting symbol shift_held -> 0xC4116002
-SYMBOL: Ps2ControllerSetIrqEnable     , 0x2 0x0 0x1 0x2F 0xD0000126inserting symbol Ps2ControllerSetIrqEnable -> 0xC4113126
-SYMBOL: Ps2ControllerGetConfiguration , 0x2 0x0 0x1 0x6 0xD0000033inserting symbol Ps2ControllerGetConfiguration -> 0xC4113033
-SYMBOL: Ps2DeviceWrite                , 0x2 0x0 0x1 0x7F 0xD0000059inserting symbol Ps2DeviceWrite -> 0xC4113059
-SYMBOL: release_mode                  , 0x1 0x0 0xD 0x1 0xD0003004inserting symbol release_mode -> 0xC4116004
-SYMBOL: control_held                  , 0x1 0x0 0xD 0x1 0xD0003003inserting symbol control_held -> 0xC4116003
-SYMBOL: Ps2ControllerTestPort         , 0x2 0x0 0x1 0x24 0xD0000102inserting symbol Ps2ControllerTestPort -> 0xC4113102
-SYMBOL: caps_lock_on                  , 0x1 0x0 0xD 0x1 0xD0003000inserting symbol caps_lock_on -> 0xC4116000
-SYMBOL: InitPs2                       , 0x12 0x0 0x1 0xA2 0xD0000155inserting symbol InitPs2 -> 0xC4113155
-*/
 
 		/*
 		 * Skip "hidden" and "internal" symbols

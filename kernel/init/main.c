@@ -24,10 +24,6 @@
 
 /*
  * Next steps:
- * - ELF loader
- * - PS2.SYS, drivers that export symbols, etc.
- * - floppy driver
- * - FAT32 driver
  * - running any old ring 3 program
  * - dynamic linker
  * - system call interface (KRNLAPI.LIB) 
@@ -37,10 +33,11 @@
  *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, pause, rmtree, rmdir, cls, copytree, link, 
  *                  ...ttyname, sleep, exit
  *          port zlib, nasm
+ * - floppy driver
+ * - FAT32 driver
  */
-extern void InitDbgScreen(void);
 
-static void DummyAppThread(void*) {
+ void DummyAppThread(void*) {
 	PutsConsole("  drv0:/> ");
 
     struct open_file* con;
@@ -53,9 +50,18 @@ static void DummyAppThread(void*) {
 		ReadFile(con, &tr);
 		PutsConsole("  Command not found: ");
 		PutsConsole(bf);
-		PutsConsole("\n  drv0:/> ");
+        PutsConsole("\n");
 
-        MapVirt(0, 0, 4096 * 16, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+        if (GetFreePhysKilobytes() < 16) {
+            PutsConsole("Less than 16 KB left\n");
+            MapVirt(0, 0, 4096, VM_LOCK | VM_READ, NULL, 0);
+
+        } else {
+            MapVirt(0, 0, 8 * 4096, VM_LOCK | VM_READ, NULL, 0);
+        }
+
+		PutsConsole("  drv0:/> ");
+
     }
 }
 
@@ -96,6 +102,14 @@ void InitThread(void*) {
     InitUserspace();
 
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
+
+    while (true) {
+        /*
+         * We crash in strange and rare conditions if this thread's stack gets removed, so we will
+         * ensure we don't terminate it.
+         */
+        SleepMilli(100000);
+    }
 }
 
 void KernelMain(void) {
@@ -143,10 +157,10 @@ void KernelMain(void) {
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
     InitRandomDevice();
     InitNullDevice();
-    InitDbgScreen();
     InitConsole();
     InitProcess();
 
-    CreateThread(InitThread, NULL, GetVas(), "init");
+    assert(GetIrql() == IRQL_STANDARD);
+    CreateThreadEx(InitThread, NULL, GetVas(), "init", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0);
     StartMultitasking();
 }

@@ -203,7 +203,7 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     64,
     72,
     80,                 
-    88,                 // 11
+    88,                 // 11 [10]
     96,
     104,
     112,
@@ -213,22 +213,35 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
     192,
     224,
     256,                
-    320,                // 21
+    320,                // 21 [20]
     384,
     448,
     512,
     768,
     1024,
     1536,
-    2048,
-    1024 * 4,           
-    1024 * 8,           // 30
-    1024 * 16,          // 31
-    1024 * 32,          // 32
-    1024 * 64,          // 33
-    1024 * 128,         // 34
-    1024 * 256,         // 35
+    2048,               // 28 [27]
+    1024 * 4,           // 29 [28]   
+    1024 * 8,           // 30 [29]
+    1024 * 16,          // 31 [30]
+    1024 * 32,          // 32 [31]
+    1024 * 64,          // 33 [32]
+    1024 * 128,         // 34 [33]
+    1024 * 256,         // 35 [34]
 };
+
+/*
+min index = 28
+   -> head_list[28] = 0x0
+   -> head_list[29] = 0x0
+   -> head_list[30] = 0x0
+   -> head_list[31] = 0x0
+   -> head_list[32] = 0x0
+   -> head_list[33] = 0x0
+   -> head_list[34] = 0x0
+2192, 2200 -> 4080
+C: head_list[27] = 0xC0118008
+*/
 
 /**
  * Used to work out which free list a block should be in, when we are *reading* a block.
@@ -692,14 +705,18 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     /*
      * If we can't find a block that will fit, then we must allocate more memory.
      */
-    size_t total_size = user_requested_size + METADATA_TOTAL_AMOUNT;
+    size_t total_size = free_list_block_sizes[min_index + 1] + METADATA_TOTAL_AMOUNT;
+    // round up to the size of the next block list size, so we guarantee we end up in the next bucket, to avoid
+    // an issue where the user requests, e.g. 2.1KB, and we allocate 3.9KB, which means due to the two lookup types,
+    // it gets it in the wrong bucket
     struct block* sys_block = RequestBlock(total_size, flags);
 
-    /*
+    /*  
      * Put the new memory in the free list (which ought to be empty, as wouldn't need to
      * request new memory otherwise). Then we can allocate the block.
      */
     int sys_index = GetInsertionIndex(GetBlockSize(sys_block) - METADATA_TOTAL_AMOUNT);
+
     assert(head_list[sys_index] == NULL);
     head_list[sys_index] = sys_block;
     return AllocateBlock(head_list[sys_index], sys_index, user_requested_size);

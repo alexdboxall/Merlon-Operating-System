@@ -30,7 +30,8 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_CANNOT_MALLOC_WITHOUT_FAULTING]		= "heap allocation cannot be completed without faulting",
 	[PANIC_NO_FILESYSTEM]						= "no driver can access the boot filesystem",
 	[PANIC_BAD_KERNEL]							= "kernel executable file is corrupted",
-	[PANIC_DISK_FAILURE_ON_SWAPFILE]			= "failed to read from or write to swapfile"
+	[PANIC_DISK_FAILURE_ON_SWAPFILE]			= "failed to read from or write to swapfile",
+	[PANIC_NEGATIVE_SEMAPHORE]					= "more semaphore releases than acquisitions"
 };
 
 [[noreturn]] void Panic(int code)
@@ -49,7 +50,6 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 
 	RaiseIrql(IRQL_HIGH);
 	LogWriteSerial("\n\n *** KERNEL PANIC ***\n\n0x%X - %s\n", code, message);
-	DbgScreenPrintf("\n\n  --- KERNEL PANIC ---\n\n  Error Code: %d\n  Message: %s\n", code, message);
 
 	while (1) {
 		ArchDisableInterrupts();

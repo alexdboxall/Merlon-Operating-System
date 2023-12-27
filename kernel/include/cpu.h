@@ -16,6 +16,7 @@ struct cpu {
     int irql;
 
     struct priority_queue* deferred_functions;
+    struct priority_queue* irq_deferred_functions;
     bool init_irql_done;
     bool postponed_task_switch;
 

@@ -71,13 +71,14 @@ int IdePoll(struct ide_data* ide) {
     */
     int timeout = 0;
     while (inb(base + 0x7) & 0x80) {
-        if (timeout > 9975) {
+        if (timeout > 975) {
             /*
             * For the last 25 iterations, wait 10ms
             */
+            LogWriteSerial("ide poll delay...\n");
             SleepMilli(10);
         }
-        if (timeout++ > 10000) {
+        if (timeout++ > 1000) {
             return EIO;
         }
     }
@@ -117,7 +118,6 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         return EINVAL;
     }
 
-    LogWriteSerial("ide lock at 0x%X\n", ide_lock);
     AcquireSemaphore(ide_lock, -1);
 
     uint16_t base = disk_num >= 2 ? ide->secondary_base : ide->primary_base;
@@ -217,7 +217,6 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         sector += sectors_in_this_transfer;
     }
 
-    LogWriteSerial("RELEASING IDE SEMAPHORE... MIGHT SWITCH TASK...\n");
     ReleaseSemaphore(ide_lock);
 
     return 0;
@@ -359,7 +358,7 @@ static const struct vnode_operations dev_ops = {
 };
 
 void InitIde(void) {
-    ide_lock = CreateMutex();
+    ide_lock = CreateMutex("ide");
 
     for (int i = 0; i < 1; ++i) {
         struct vnode* node = CreateVnode(dev_ops);

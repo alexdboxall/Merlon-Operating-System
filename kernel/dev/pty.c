@@ -4,6 +4,7 @@
 #include <vfs.h>
 #include <log.h>
 #include <assert.h>
+#include <irql.h>
 #include <errno.h>
 #include <string.h>
 #include <transfer.h>
@@ -51,12 +52,12 @@ struct pty_subordinate_internal_data {
 // read copies data from trusted to untrusted.
 
 // "THE SCREEN"
-static int MasterRead(struct vnode* node, struct transfer* tr) {    
+static int MasterRead(struct vnode* node, struct transfer* tr) {  
+    EXACT_IRQL(IRQL_STANDARD);
+
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
     while (tr->length_remaining > 0) {
-        LogWriteSerial("DISPLAY IS WAITING...\n");
         char c = BlockingBufferGet(internal->display_buffer);
-        LogWriteSerial("DISPLAYING...\n");
         PerformTransfer(&c, tr, 1);
     }
 
@@ -65,6 +66,8 @@ static int MasterRead(struct vnode* node, struct transfer* tr) {
 
 // "THE KEYBOARD"
 static int MasterWrite(struct vnode* node, struct transfer* tr) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     // TODO: (perhaps if it is full, it doesn't block, and just returns ENOBUFS
 
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
@@ -72,15 +75,15 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     while (tr->length_remaining > 0) {
         char c;
         PerformTransfer(&c, tr, 1);
-        LogWriteSerial("ABOUT TO WRITE KEYBOARD...\n");
         BlockingBufferAdd(internal->keybrd_buffer, c, true);
-        LogWriteSerial("WROTE KEYBOARD...\n");
     }
 
     return 0;
 }
 
 static void FlushSubordinateLineBuffer(struct vnode* node) {
+    EXACT_IRQL(IRQL_STANDARD);
+    
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
@@ -94,6 +97,8 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
 
     if (internal->line_buffer_pos == 0) {
@@ -104,6 +109,8 @@ static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
+    EXACT_IRQL(IRQL_STANDARD);
+   
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
 
     if (internal->line_buffer_pos == LINE_BUFFER_SIZE) {
@@ -117,6 +124,7 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
 }
 
 static void LineProcessor(void* sub_) {
+    EXACT_IRQL(IRQL_STANDARD);
     SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
     struct vnode* node = (struct vnode*) sub_;
@@ -127,9 +135,7 @@ static void LineProcessor(void* sub_) {
         bool echo = internal->termios.c_lflag & ECHO;
         bool canon = internal->termios.c_lflag & ICANON;
 
-        LogWriteSerial("ABOUT TO PROCESS LINE...\n");
         char c = BlockingBufferGet(master_internal->keybrd_buffer);
-        LogWriteSerial("PROCESSING LINE...\n");
 
         /*
          * This must happen before we modify the line buffer (i.e. to add or backspace a character), as
@@ -163,6 +169,8 @@ static void LineProcessor(void* sub_) {
 
 // "THE STDIN LINE BUFFER"
 static int SubordinateRead(struct vnode* node, struct transfer* tr) {    
+    EXACT_IRQL(IRQL_STANDARD);
+    
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
@@ -170,9 +178,7 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
         return 0;
     }
 
-    LogWriteSerial("ABOUT TO READ STDIN...\n");
     char c = BlockingBufferGet(master_internal->flushed_buffer);
-    LogWriteSerial("READ...\n");
     PerformTransfer(&c, tr, 1);
 
     int res = 0;
@@ -185,6 +191,8 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
 
 // "WRITING TO STDOUT"
 static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
@@ -196,9 +204,7 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
             return err;
         }
 
-        LogWriteSerial("ABOUT TO PRINT...\n");
         BlockingBufferAdd(master_internal->display_buffer, c, true);
-        LogWriteSerial("PRINTED...\n");
     }
     
     return 0;

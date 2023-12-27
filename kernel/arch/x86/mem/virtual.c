@@ -48,8 +48,8 @@ static size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
 }
 
 static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int flags) {
+	LogWriteSerial("x86MapPage v 0x%X -> p 0x%X [0x%X]\n", virtual, physical, flags);
 	*x86GetPageEntry(vas, virtual) = physical | flags;
-	ArchFlushTlb(vas);
 }
 
 size_t ArchVirtualToPhysical(size_t virtual) {
@@ -73,7 +73,12 @@ size_t ArchVirtualToPhysical(size_t virtual) {
 
 void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry) {
 	int flags = 0;
-	if (!entry->cow && entry->write) flags |= x86_PAGE_WRITE;
+
+	/*
+	 * Non-in-RAM pages need to be writable, as we need to be able to bring them into RAM
+	 * by writing to them!
+	 */
+	if ((!entry->cow && entry->write) || entry->allow_temp_write) flags |= x86_PAGE_WRITE;
 	if (entry->in_ram) flags |= x86_PAGE_PRESENT;
 
 	x86MapPage(vas, entry->physical, entry->virtual, flags);
@@ -139,7 +144,7 @@ void ArchInitVirt(void) {
 	/* <= is required to make it match kernel_entry.s */
 	size_t num_pages = (max_kernel_addr - 0xC0000000) / ARCH_PAGE_SIZE;
     for (size_t i = 0; i < num_pages; ++i) {
-		first_page_table[i] = (i * ARCH_PAGE_SIZE) | x86_PAGE_PRESENT;
+		first_page_table[i] = (i * ARCH_PAGE_SIZE) | x86_PAGE_PRESENT | x86_PAGE_WRITE;
 	}
 
 	/*

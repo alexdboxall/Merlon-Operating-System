@@ -111,6 +111,7 @@ _start:
 	; Enable paging
 	mov ecx, cr0
 	or ecx, (1 << 31)
+	or ecx, (1 << 16)		; enforce read-only pages in ring 0
 	mov cr0, ecx
 
 	; This is why identity paging was required earlier, as paging is on, but we

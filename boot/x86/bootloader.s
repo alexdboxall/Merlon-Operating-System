@@ -174,9 +174,9 @@ next_sector:
     mov ax, 0x100 
     mov es, ax
     mov ax, 0x4F01
-    ;mov cl, [preferred_modes_table + bp]
-	;mov ch, 0x01
-	mov cx, 0x105
+    mov cl, [preferred_modes_table + bp]
+	mov ch, 0x01
+	;mov cx, 0x117 ;0x105 ;0x105
     xor di, di
 	push cx
 	push bp
@@ -193,7 +193,7 @@ next_sector:
 
 .found_good_mode:
     ; Set video mode
-    mov bx, 0x4105 ;cx
+    mov bx, cx; 0x4105 ;0x4105 ;cx
     mov ax, 0x4F02
     int 0x10
 
@@ -206,9 +206,10 @@ next_sector:
 
 
 preferred_modes_table:
-	;db 0x3F
+	;db 0x17		; FOR TESTING
+	db 0x05		; FOR REAL H/W
+
 	db 0x07
-	db 0x05
 
 	db 0x1A
 	db 0x19

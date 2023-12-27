@@ -7,11 +7,6 @@
 #include <thread.h>
 #include <assert.h>
 
-struct irql_deferment {
-    void (*handler)(void*);
-    void* context;
-};
-
 /**
  * Runs a function at an IRQL lower than or equal to the current IRQL. If the IRQLs match,
  * the function will be run immediately. If the target IRQL is lower than the current IRQL,
@@ -40,6 +35,7 @@ __attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*hand
             struct irql_deferment deferment;
             deferment.context = context;
             deferment.handler = handler;
+
             PriorityQueueInsert(GetCpu()->deferred_functions, (void*) &deferment, irql);
         }
     }
@@ -121,7 +117,7 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
     cpu->irql = current_level;
     ArchSetIrql(current_level);
 
-    if (current_level == IRQL_STANDARD && cpu->postponed_task_switch) {
+    if (current_level <= IRQL_PAGE_FAULT && cpu->postponed_task_switch) {
         cpu->postponed_task_switch = false;
         Schedule();
     }
@@ -136,6 +132,6 @@ void PostponeScheduleUntilStandardIrql(void) {
  * Requires TFW_SP_AFTER_HEAP or later.
  */
 void InitIrql(void) {
-    GetCpu()->deferred_functions = PriorityQueueCreate(128, true, sizeof(struct irql_deferment));
+    GetCpu()->deferred_functions = PriorityQueueCreate(64, true, sizeof(struct irql_deferment));
     GetCpu()->init_irql_done = true;
 }

@@ -180,3 +180,7 @@ enum PH_Types
 #define DO_386_32(S, A)			((S) + (A))
 #define DO_386_RELATIVE(B, A)	((B) + (A))
 #define DO_386_PC32(S, A, P)	((S) + (A) - (P))
+
+#define PF_X	1
+#define PF_W	2
+#define PF_R	4

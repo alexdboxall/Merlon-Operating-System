@@ -3,6 +3,7 @@
 #include <irql.h>
 #include <log.h>
 #include <irq.h>
+#include <thread.h>
 #include <linkedlist.h>
 #include <errno.h>
 

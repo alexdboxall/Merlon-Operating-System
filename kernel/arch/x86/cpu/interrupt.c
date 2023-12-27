@@ -41,7 +41,7 @@ void x86HandleInterrupt(struct x86_regs* r) {
             type |= VM_EXEC;
         }
 
-        LogWriteSerial("Page fault: cr2 0x%X, eip 0x%X, nos-err 0x%X\n", x86GetCr2(), r->eip, type);
+        LogWriteSerial("\n\nPage fault: cr2 0x%X, eip 0x%X, nos-err 0x%X\n", x86GetCr2(), r->eip, type);
 
         HandleVirtFault(x86GetCr2(), type);
     }

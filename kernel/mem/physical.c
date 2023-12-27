@@ -204,7 +204,7 @@ static void EvictPagesIfNeeded(void* context) {
 
     // TODO: probs needs lock on pages_left
     int timeout = 0;
-    while (pages_left < NUM_EMERGENCY_PAGES && timeout < 10) {
+    while (pages_left < NUM_EMERGENCY_PAGES && timeout < 5) {
         EvictVirt();
         ++timeout;
     }
@@ -225,9 +225,11 @@ static void EvictPagesIfNeeded(void* context) {
 size_t AllocPhys(void) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
-
     AcquireSpinlockIrql(&phys_lock);
+
+    if (pages_left <= NUM_EMERGENCY_PAGES) {
+        DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
+    }
 
     size_t index = 0;
     if (allocation_stack == NULL) {

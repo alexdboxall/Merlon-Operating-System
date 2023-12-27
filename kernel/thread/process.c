@@ -102,8 +102,7 @@ void UnlockProcess(struct process* prcss) {
 
 void InitProcess(void) {
     InitSpinlock(&pid_lock, "pid", IRQL_SCHEDULER);
-    process_table_mutex = CreateMutex();
-    LogWriteSerial("prcsstablemutex = 0x%X\n", process_table_mutex);
+    process_table_mutex = CreateMutex("prcss table");
     process_table = AvlTreeCreate();
     AvlTreeSetComparator(process_table, ProcessTableComparator);
 }
@@ -113,12 +112,12 @@ struct process* PAGEABLE_CODE_SECTION CreateProcess(pid_t parent_pid) {
 
     struct process* prcss = AllocHeap(sizeof(struct process));
 
-    prcss->lock = CreateMutex();
+    prcss->lock = CreateMutex("prcss");
     prcss->vas = CreateVas();
     prcss->parent = parent_pid;
     prcss->children = AvlTreeCreate();
     prcss->threads = AvlTreeCreate();
-    prcss->killed_children_semaphore = CreateSemaphore(1000, 1000);
+    prcss->killed_children_semaphore = CreateSemaphore("killed children", 1000, 1000);
     prcss->retv = 0;
     prcss->terminated = false;
     prcss->pid = InsertIntoProcessTable(prcss);
@@ -362,7 +361,7 @@ void PAGEABLE_CODE_SECTION KillProcess(int retv) {
      * threads in the process, and the process itself. Obviously, this means we can't be running on said
      * threads or process. 
      */
-    CreateThreadEx(KillProcessHelper, (void*) prcss, GetKernelVas(), "process killer", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+    CreateThreadEx(KillProcessHelper, (void*) prcss, GetKernelVas(), "process killer", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH, 0);
 
     TerminateThread(GetThread());
 }
@@ -402,7 +401,7 @@ struct process* GetProcess(void) {
 struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* args) {
     MAX_IRQL(IRQL_STANDARD);
     struct process* prcss = CreateProcess(parent);
-    struct thread* thr = CreateThread(entry_point, args, prcss->vas, "init");
+    struct thread* thr = CreateThread(entry_point, args, prcss->vas, "prcssinit");
     AddThreadToProcess(prcss, thr);
     return prcss;
 }

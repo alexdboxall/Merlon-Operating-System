@@ -27,7 +27,7 @@ static struct semaphore* fs_table_lock;
 
 void InitFilesystemTable(void) {
     num_filesystems = 0;
-    fs_table_lock = CreateMutex();
+    fs_table_lock = CreateMutex("fs table");
     LogWriteSerial("fstablelock = 0x%X\n", fs_table_lock);
 
     RegisterFilesystem("demofs", DemofsMountCreator);

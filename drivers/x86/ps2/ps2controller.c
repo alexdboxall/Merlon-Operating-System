@@ -17,7 +17,7 @@
 #define PS2_STATUS_BIT_TIMEOUT		64
 #define PS2_STATUS_BIT_PARITY		128
 
-static int Ps2Wait(bool writing) {
+static int LOCKED_DRIVER_CODE Ps2Wait(bool writing) {
     int timeout = 0;
     while (true) {
         uint8_t status = inb(0x64);
@@ -46,35 +46,35 @@ static int Ps2Wait(bool writing) {
 * hardware and between different emulators. (This is thanks to the
 * various quality of USB to PS/2 emulation implementations.)
 */
-static void Ps2ControllerWrite(uint8_t data) {
+static void LOCKED_DRIVER_CODE Ps2ControllerWrite(uint8_t data) {
     outb(0x64, data);
 }
 
-static void Ps2ControllerWrite2(uint8_t data1, uint8_t data2) {
+static void LOCKED_DRIVER_CODE Ps2ControllerWrite2(uint8_t data1, uint8_t data2) {
     Ps2ControllerWrite(data1);
     Ps2Wait(true);
     outb(0x60, data2);
 }
 
-static uint8_t Ps2ControllerRead(void) {
+static uint8_t LOCKED_DRIVER_CODE Ps2ControllerRead(void) {
     Ps2Wait(false);
     return inb(0x60);
 }
 
-uint8_t Ps2ControllerGetConfiguration(void) {
+uint8_t LOCKED_DRIVER_CODE Ps2ControllerGetConfiguration(void) {
     Ps2ControllerWrite(0x20);
     return Ps2ControllerRead();
 }
 
-void Ps2ControllerSetConfiguration(uint8_t value) {
+void LOCKED_DRIVER_CODE Ps2ControllerSetConfiguration(uint8_t value) {
     Ps2ControllerWrite2(0x60, value);
 }
 
-uint8_t Ps2DeviceRead(void) {
+uint8_t LOCKED_DRIVER_CODE Ps2DeviceRead(void) {
     return Ps2ControllerRead();
 }
 
-int Ps2DeviceWrite(uint8_t data, bool port2) {
+int LOCKED_DRIVER_CODE Ps2DeviceWrite(uint8_t data, bool port2) {
     if (port2) {
         Ps2ControllerWrite(0xD4);
     }
@@ -145,7 +145,7 @@ static bool Ps2ControllerDetectPort2(void) {
     return true;
 }
 
-void Ps2ControllerSetIrqEnable(bool enable, bool port2) {
+void LOCKED_DRIVER_CODE Ps2ControllerSetIrqEnable(bool enable, bool port2) {
     uint8_t config = Ps2ControllerGetConfiguration();
     if (enable) {
         config |= (port2 ? 2 : 1);

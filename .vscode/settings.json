@@ -117,7 +117,12 @@
         "istream": "c",
         "tuple": "c",
         "*.tcc": "c",
-        "ps2controller.h": "c"
+        "ps2controller.h": "c",
+        "regs.h": "c",
+        "io_context": "c",
+        "complex": "c",
+        "util.h": "c",
+        "video.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

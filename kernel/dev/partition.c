@@ -235,12 +235,17 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
         return NULL;
     }
 
+    LogWriteSerial("AAA\n");
     if (mem[0x1FE] != 0x55) {
+        LogWriteSerial("CCC\n");
         return NULL;
     }
+    LogWriteSerial("BBB\n");
     if (mem[0x1FF] != 0xAA) {
+        LogWriteSerial("DDD\n");
         return NULL;
     }
+    LogWriteSerial("EEE\n");
 
     struct open_file** partitions = AllocHeap(sizeof(struct open_file) * 5);
     inline_memset(partitions, 0, sizeof(struct open_file) * 5);

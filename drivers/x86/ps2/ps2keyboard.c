@@ -57,20 +57,20 @@ static const char set2_map_upper_caps[] = "              ~      Q!   zsaw@  cxde
 * interrupt handler, and we can't get a second keyboard interrupt while the
 * first one is processing as EOI wouldn't have been sent yet.
 */
-bool release_mode = false;
-bool control_held = false;
-bool shift_held = false;
-bool shift_r_held = false;
-bool caps_lock_on = false;
+static bool LOCKED_DRIVER_DATA release_mode = false;
+static bool LOCKED_DRIVER_DATA control_held = false;
+static bool LOCKED_DRIVER_DATA shift_held = false;
+static bool LOCKED_DRIVER_DATA shift_r_held = false;
+static bool LOCKED_DRIVER_DATA caps_lock_on = false;
 
-static void Ps2KeyboardSetLEDs(void) {
+static void LOCKED_DRIVER_CODE Ps2KeyboardSetLEDs(void) {
     uint8_t data = caps_lock_on << 2;
 
     Ps2DeviceWrite(0xED, false);
     Ps2DeviceWrite(data, false);
 }
 
-static void Ps2KeyboardTranslateSet1(uint8_t scancode) {
+static void LOCKED_DRIVER_CODE Ps2KeyboardTranslateSet1(uint8_t scancode) {
     EXACT_IRQL(IRQL_STANDARD);
 
     if (scancode & 0x80) {
@@ -135,24 +135,20 @@ static void Ps2KeyboardTranslateSet1(uint8_t scancode) {
         }
     }
 
-    if (received_character != 0 && !release_mode) {
-        LogWriteSerial("Sending to terminal...\n");
-        SendKeystrokeConsole(received_character);
-        LogWriteSerial("Done...\n");
-    }
-
+    bool send_it = received_character != 0 && !release_mode;
     release_mode = false;
+    if (send_it) {
+        SendKeystrokeConsole(received_character);
+    }
 }
 
-void HandleCharacter(void* scancode) {
+void LOCKED_DRIVER_CODE HandleCharacter(void* scancode) {
     EXACT_IRQL(IRQL_STANDARD);
-    LogWriteSerial("Handling keyboard...\n");
     Ps2KeyboardTranslateSet1((size_t) scancode);
 }
 
 static int LOCKED_DRIVER_CODE Ps2KeyboardIrqHandler(struct x86_regs*) {
 	uint8_t scancode = inb(0x60);
-    LogWriteSerial("Got keyboard...\n");
     DeferUntilIrql(IRQL_STANDARD, HandleCharacter, (void*) (size_t) scancode);
     return 0;
 }
