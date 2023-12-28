@@ -185,7 +185,7 @@ static struct open_file* GetMountFromName(const char* name) {
 }
 
 int PAGEABLE_CODE_SECTION AddVfsMount(struct vnode* node, const char* name) {
-	EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (name == NULL || node == NULL) {
 		return EINVAL;
@@ -220,7 +220,7 @@ int PAGEABLE_CODE_SECTION AddVfsMount(struct vnode* node, const char* name) {
 }
 
 int PAGEABLE_CODE_SECTION RemoveVfsMount(const char* name) {
-	EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (name == NULL) {
 		return EINVAL;
@@ -410,7 +410,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 }
 
 int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
-	EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
 		return EINVAL;
@@ -533,7 +533,7 @@ int ReadFile(struct open_file* file, struct transfer* io) {
 }
 
 int PAGEABLE_CODE_SECTION ReadDirectory(struct open_file* file, struct transfer* io) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
 	if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
@@ -567,7 +567,7 @@ int WriteFile(struct open_file* file, struct transfer* io) {
 }
 
 int PAGEABLE_CODE_SECTION CloseFile(struct open_file* file) {
-	EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (file == NULL || file->node == NULL) {
 		return EINVAL;
@@ -579,7 +579,7 @@ int PAGEABLE_CODE_SECTION CloseFile(struct open_file* file) {
 }
 
 int GetFileSize(struct open_file* file, off_t* size) {
-	EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
 	if (file == NULL || file->node == NULL || size == NULL) {
 		return EINVAL;

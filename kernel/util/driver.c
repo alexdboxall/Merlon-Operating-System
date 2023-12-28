@@ -26,7 +26,7 @@ struct loaded_driver {
 };
 
 static int PAGEABLE_CODE_SECTION DriverTableComparator(void* a_, void* b_) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct loaded_driver* a = a_;
     struct loaded_driver* b = b_;
@@ -35,7 +35,7 @@ static int PAGEABLE_CODE_SECTION DriverTableComparator(void* a_, void* b_) {
 }
 
 static size_t PAGEABLE_CODE_SECTION GetDriverAddressWithLockHeld(const char* name) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct loaded_driver dummy;
     dummy.filename = (char*) name;
@@ -48,7 +48,7 @@ static size_t PAGEABLE_CODE_SECTION GetDriverAddressWithLockHeld(const char* nam
 }
 
 size_t PAGEABLE_CODE_SECTION GetDriverAddress(const char* name) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     AcquireMutex(driver_table_lock, -1);
     size_t res = GetDriverAddressWithLockHeld(name);
@@ -57,7 +57,7 @@ size_t PAGEABLE_CODE_SECTION GetDriverAddress(const char* name) {
 }
 
 void PAGEABLE_CODE_SECTION InitSymbolTable(void) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     driver_table_lock = CreateMutex("drv table");
     symbol_table_lock = CreateMutex("sym table");
@@ -88,7 +88,7 @@ static bool PAGEABLE_CODE_SECTION DoesSymbolContainIllegalCharacters(const char*
 }
 
 void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (DoesSymbolContainIllegalCharacters(symbol)) {
         return;
@@ -107,7 +107,7 @@ void PAGEABLE_CODE_SECTION AddSymbol(const char* symbol, size_t address) {
 }
 
 size_t PAGEABLE_CODE_SECTION GetSymbolAddress(const char* symbol) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct long_bool_list b = RadixTrieCreateBoolListFromData64((char*) symbol);
 
@@ -119,7 +119,7 @@ size_t PAGEABLE_CODE_SECTION GetSymbolAddress(const char* symbol) {
 }
 
 static int PAGEABLE_CODE_SECTION LoadDriver(const char* name) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     LogWriteSerial("loading driver...\n");
 
@@ -146,7 +146,7 @@ static int PAGEABLE_CODE_SECTION LoadDriver(const char* name) {
 }
 
 int PAGEABLE_CODE_SECTION RequireDriver(const char* name) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     LogWriteSerial("Requiring driver: %s\n", name);
 

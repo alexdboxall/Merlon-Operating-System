@@ -73,6 +73,7 @@ void SetTemporaryWriteEnable(size_t virtual, bool value) {
     struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
     entry->allow_temp_write = value;
     ArchUpdateMapping(vas, entry);
+    ArchFlushTlb(vas);
     ReleaseSpinlockIrql(&vas->lock);
 }
 
@@ -127,19 +128,24 @@ struct defer_disk_access {
 
 static void PerformDeferredAccess(void* data) {
     struct defer_disk_access* access = (struct defer_disk_access*) data;
+        LogWriteSerial("PerformDeferredAccess 0x%X %d\n", access->address, access->direction);
     struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
-    
+    LogWriteSerial("1\n");
     bool write = access->direction == TRANSFER_WRITE;
 
     int res = (write ? WriteFile : ReadFile)(access->file, &tr);
     if (res != 0) {
         Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
     }
+    LogWriteSerial("2\n");
 
     if (write) {
         UnmapVirt(access->address, ARCH_PAGE_SIZE);
+            LogWriteSerial("3\n");
+
     } else {
         DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
+    LogWriteSerial("4\n");
 
         struct vas* vas = GetVas();
         AcquireSpinlockIrql(&vas->lock);
@@ -156,7 +162,9 @@ static void PerformDeferredAccess(void* data) {
          */
         entry->first_load = false;
         ArchUpdateMapping(vas, entry);
+        ArchFlushTlb(vas);
         ReleaseSpinlockIrql(&vas->lock);
+    LogWriteSerial("5\n");
 
         // TODO: locks here need to be adjusted to include the below within it, but that needs recursive mutexes
 
@@ -165,9 +173,15 @@ static void PerformDeferredAccess(void* data) {
             UnlockVirtEx(vas, access->address);
             ReleaseSpinlockIrql(&vas->lock);
         }
+    LogWriteSerial("6\n");
+
+        LogWriteSerial(" ----> FINISHED RELOADING FROM SWAP 0x%X\n", entry->virtual);
+
     }
+    LogWriteSerial("7\n");
 
     FreeHeap(access);
+    LogWriteSerial("8\n");
 }
 
 /**
@@ -178,23 +192,25 @@ static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset
     size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
     inline_memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
     
+    LogWriteSerial("DDW\n");
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
     access->direction = TRANSFER_WRITE;
     access->offset = offset;
-    DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
+    DeferUntilIrql(IRQL_STANDARD_HIGH_PRIORITY, PerformDeferredAccess, (void*) access);
 }
 
 static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset) {
     LockVirtEx(GetVas(), new_addr);
 
+    LogWriteSerial("DDR\n");
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
     access->direction = TRANSFER_READ;
     access->offset = offset;
-    DeferUntilIrql(IRQL_STANDARD, PerformDeferredAccess, (void*) access);
+    DeferUntilIrql(IRQL_STANDARD_HIGH_PRIORITY, PerformDeferredAccess, (void*) access);
 }
 
 /**
@@ -208,7 +224,7 @@ static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset)
  * @maxirql IRQL_SCHEDULER
  */
 void EvictPage(struct vas* vas, struct vas_entry* entry) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     assert(!entry->lock);
     assert(!entry->cow);
@@ -399,7 +415,7 @@ void FindVirtToEvictFromAddressSpace(struct vas* vas, int* lowest_rank, struct e
  * @maxirql IRQL_STANDARD
  */
 void EvictVirt(void) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     LogWriteSerial("EvictVirt()\n");
     
@@ -571,11 +587,11 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
         entry->swapfile_offset = 0xDEADDEAD;
     }
 
-    /*LogWriteSerial("Adding mapping at 0x%X. flags = 0x%X, rwxgu'lfia = %d%d%d%d%d'%d%d%d%d. p 0x%X\n", 
+    LogWriteSerial("Adding mapping at 0x%X. flags = 0x%X, rwxgu'lfia = %d%d%d%d%d'%d%d%d%d. p 0x%X\n", 
         entry->virtual, flags,
         entry->read, entry->write, entry->exec, entry->global, entry->user, entry->lock, entry->file, entry->in_ram, entry->allocated,
         entry->physical 
-    );*/
+    );
 
     /*
      * TODO: later on, check if shared, and add phys->virt entry if needed
@@ -881,6 +897,7 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     LogWriteSerial(" ----> RELOADING SWAP TO VIRT 0x%X: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
 
     DeferDiskRead(entry->virtual, GetSwapfile(), offset);
+    LogWriteSerial("X\n");
 }
 
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {
@@ -1173,14 +1190,15 @@ void InitVirt(void) {
  * 
  * @maxirql IRQL_PAGE_FAULT 
  */
+int handling_page_fault = 0;
 
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
     LogWriteSerial("===> ENTER PAGE FAULT\n");
     LogWriteSerial("HandleVirtFault A, 0x%X, %d, %d\n", faulting_virt, fault_type, GetIrql());
 
-    EXACT_IRQL(IRQL_STANDARD);
-
     (void) fault_type;
+
+    ++handling_page_fault;
 
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
@@ -1209,6 +1227,8 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     ReleaseSpinlockIrql(&vas->lock);
     LogWriteSerial("===> EXIT PAGE FAULT.\n");
+    
+    --handling_page_fault;
 }
 
 /**

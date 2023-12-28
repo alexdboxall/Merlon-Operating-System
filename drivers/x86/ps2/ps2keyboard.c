@@ -64,7 +64,7 @@ static void LOCKED_DRIVER_CODE Ps2KeyboardSetLEDs(void) {
 }
 
 static void LOCKED_DRIVER_CODE Ps2KeyboardTranslateSet1(uint8_t scancode) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     if (scancode & 0x80) {
         release_mode = true;
@@ -136,7 +136,6 @@ static void LOCKED_DRIVER_CODE Ps2KeyboardTranslateSet1(uint8_t scancode) {
 }
 
 void LOCKED_DRIVER_CODE HandleCharacter(void* scancode) {
-    EXACT_IRQL(IRQL_STANDARD);
     Ps2KeyboardTranslateSet1((size_t) scancode);
 }
 

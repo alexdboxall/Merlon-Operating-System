@@ -97,6 +97,7 @@ static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_compara
         } else {
             left_tree = AvlInsert(tree->left, data, comparator);
         }
+
         new_tree = AvlCreateNode(tree->data, left_tree, tree->right);
 
     } else {
@@ -106,6 +107,7 @@ static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_compara
         } else {
             right_tree = AvlInsert(tree->right, data, comparator);
         }
+
         new_tree = AvlCreateNode(tree->data, tree->left, right_tree);
     }
 

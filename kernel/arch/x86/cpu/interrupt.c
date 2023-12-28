@@ -6,6 +6,7 @@
 #include <irq.h>
 #include <irql.h>
 #include <virtual.h>
+#include <panic.h>
 #include <console.h>
 
 static bool ready_for_irqs = false;

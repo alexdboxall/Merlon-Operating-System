@@ -11,22 +11,19 @@
 #include <machine/interrupt.h>
 #include <errno.h>
 
-void ArchInitBootstrapCpu(struct cpu* cpu) {
-    (void) cpu;
-
+void ArchInitBootstrapCpu(struct cpu*) {
     x86InitGdt();
     x86InitIdt();
     x86InitTss();
     
     InitPic();
-    InitPit(30);
+    InitPit(40);
 
     ArchEnableInterrupts();
     x86MakeReadyForIrqs();
 }
 
-bool ArchInitNextCpu(struct cpu* cpu) {
-    (void) cpu;
+bool ArchInitNextCpu(struct cpu*) {
     return false;
 }
 

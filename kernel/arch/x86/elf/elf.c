@@ -12,22 +12,7 @@
 #include <machine/elf.h>
 #include <panic.h>
 
-/****
- * *** TODO:
- * *** @@@
- * ***
- * *** DRIVER PAGES THAT GET PAGED OUT NEED TO HAVE RELOCATIONS REAPPLIED TO THEM!!!!
- * *** (AS IS, WHEN IT GETS PAGED BACK IN, IT GETS THE ORIGINAL, NON-RELOCATION APPLIED PAGE BACK)
- * ***
- * ***
- * 
- * It'd also be good to allow drivers to ask for re-relocation, e.g. so that unresolved symbols can instead of 
- * panicking, just be left unresolved, and then the driver can call RequireDriver(...) and then "RelocateDriver"(...)
- * to use symbols as normal, instead of needing to use GetSymbolAddress
-*/
-
-
-static bool PAGEABLE_CODE_SECTION IsElfValid(struct Elf32_Ehdr* header) {
+static bool IsElfValid(struct Elf32_Ehdr* header) {
     if (header->e_ident[EI_MAG0] != ELFMAG0) return false;
     if (header->e_ident[EI_MAG1] != ELFMAG1) return false;
     if (header->e_ident[EI_MAG2] != ELFMAG2) return false;
@@ -38,7 +23,7 @@ static bool PAGEABLE_CODE_SECTION IsElfValid(struct Elf32_Ehdr* header) {
     return true;
 }
 
-static size_t PAGEABLE_CODE_SECTION ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
+static size_t ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -68,7 +53,7 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSizeOfImageIncludingBss(void* data, bo
     return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
-static int PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate, struct open_file* file) {
+static int ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate, struct open_file* file) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -145,7 +130,7 @@ static int PAGEABLE_CODE_SECTION ElfLoadProgramHeaders(void* data, size_t reloca
 	return 0;
 }
 
-static char* PAGEABLE_CODE_SECTION ElfLookupString(void* data, int offset) {
+static char* ElfLookupString(void* data, int offset) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 
 	if (elf_header->e_shstrndx == SHN_UNDEF) {
@@ -162,7 +147,7 @@ static char* PAGEABLE_CODE_SECTION ElfLookupString(void* data, int offset) {
 	return string_table + offset;
 }
 
-static size_t PAGEABLE_CODE_SECTION ElfGetSymbolValue(void* data, int table, size_t index, bool* error, size_t relocation_point, size_t base_address) {
+static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error, size_t relocation_point, size_t base_address) {
     *error = false;
 
 	if (table == SHN_UNDEF || index == SHN_UNDEF) {
@@ -208,7 +193,7 @@ static size_t PAGEABLE_CODE_SECTION ElfGetSymbolValue(void* data, int table, siz
 	}
 }
 
-static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, size_t on_page)
+static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, size_t on_page)
 {
 	LogWriteSerial("ElfPerformRelocation\n");
 	size_t base_address = 0xD0000000U;
@@ -238,29 +223,45 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocation(void* data, size_t reloca
 		}
 	}
 	
-	if ((GetVirtPermissions(addr) & VM_WRITE) == 0) {
-		SetTemporaryWriteEnable(addr, true);
+	bool needs_write_low = (GetVirtPermissions(addr) & VM_WRITE) == 0;
+	bool needs_write_high = (GetVirtPermissions(addr + sizeof(size_t) - 1) & VM_WRITE) == 0;
+
+	if (needs_write_low) {
+		SetVirtPermissions(addr, VM_WRITE, 0);
 	}
-	
+	if (needs_write_high) {
+		SetVirtPermissions(addr + sizeof(size_t) - 1, VM_WRITE, 0);
+	}
+
 	int type = ELF32_R_TYPE(relocation_table->r_info);
-	
+	bool success = true;
+
 	if (type == R_386_32) {
+		LogWriteSerial("about to do a R_386_32 relocation...\n");
 		*ref = DO_386_32(symbolValue, *ref);
 
 	} else if (type == R_386_PC32) {
+		LogWriteSerial("about to do a R_386_PC32 relocation...\n");
 		*ref = DO_386_PC32(symbolValue, *ref, (size_t) ref);
 
 	} else if (type == R_386_RELATIVE) {
+		LogWriteSerial("about to do a DO_386_RELATIVE relocation...\n");
 		*ref = DO_386_RELATIVE((relocation_point - base_address), *ref);
 
 	} else {
 		LogWriteSerial("some whacko type...\n");
-		SetTemporaryWriteEnable(addr, false);
-		return false;
+		success = false;
 	}
+
+	LogWriteSerial("relocation done!\n");
 	
-	SetTemporaryWriteEnable(addr, false);
-	return true;
+	if (needs_write_low) {
+		SetVirtPermissions(addr, 0, VM_WRITE);
+	}
+	if (needs_write_high) {
+		SetVirtPermissions(addr + sizeof(size_t) - 1, 0, VM_WRITE);
+	}
+	return success;
 }
 
 static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t relocation_point, size_t on_page) {
@@ -320,7 +321,7 @@ void ArchPerformDriverRelocationOnPage(struct vas* vas, struct vas_entry* entry,
 }
 
 static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* entry_point, struct open_file* file) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 
@@ -367,7 +368,7 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
 }
 
 int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_file* file) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     off_t file_size;
 	int res = GetFileSize(file, &file_size);

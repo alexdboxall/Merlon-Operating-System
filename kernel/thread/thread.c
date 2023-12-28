@@ -174,7 +174,6 @@ static int GetNextThreadId(void) {
 }
 
 struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb) {
-    LogWriteSerial("CREATING THREAD!! %s\n", name);
     struct thread* thr = AllocHeap(sizeof(struct thread));
     thr->argument = argument;
     thr->initial_address = entry_point;

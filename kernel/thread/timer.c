@@ -35,21 +35,13 @@ void ReceivedTimer(uint64_t nanos) {
 
     /*
      * Preempt the current thread if it has used up its timeslice. 
-     * TODO: check if this still is correct for SMP. 
      */
     struct thread* thr = GetThread();
     if (thr != NULL && thr->timeslice_expiry != 0 && thr->timeslice_expiry <= system_time) {
         PostponeScheduleUntilStandardIrql();
     }
 
-    /*
-     * This must be done at IRQL_PAGE_FAULT, as the Sleep... functions can be called at IRQL_PAGE_FAULT,
-     * because the IDE driver must be able to pause while handling a page fault.
-     */
-    if (sleep_wakeups_posted < 5) {
-        DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
-        ++sleep_wakeups_posted;
-    }
+    DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
 }
 
 uint64_t GetSystemTimer(void) {

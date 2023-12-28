@@ -53,7 +53,7 @@ struct pty_subordinate_internal_data {
 
 // "THE SCREEN"
 static int MasterRead(struct vnode* node, struct transfer* tr) {  
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
     while (tr->length_remaining > 0) {
@@ -66,7 +66,7 @@ static int MasterRead(struct vnode* node, struct transfer* tr) {
 
 // "THE KEYBOARD"
 static int MasterWrite(struct vnode* node, struct transfer* tr) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);
 
     // TODO: (perhaps if it is full, it doesn't block, and just returns ENOBUFS
 
@@ -82,8 +82,8 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
 }
 
 static void FlushSubordinateLineBuffer(struct vnode* node) {
-    EXACT_IRQL(IRQL_STANDARD);
-    
+    MAX_IRQL(IRQL_PAGE_FAULT);
+
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
@@ -97,7 +97,7 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
 
@@ -109,8 +109,7 @@ static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
-    EXACT_IRQL(IRQL_STANDARD);
-   
+    MAX_IRQL(IRQL_PAGE_FAULT);   
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
 
     if (internal->line_buffer_pos == LINE_BUFFER_SIZE) {
@@ -124,7 +123,8 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
 }
 
 static void LineProcessor(void* sub_) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
+
     SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
     struct vnode* node = (struct vnode*) sub_;
@@ -169,7 +169,7 @@ static void LineProcessor(void* sub_) {
 
 // "THE STDIN LINE BUFFER"
 static int SubordinateRead(struct vnode* node, struct transfer* tr) {    
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
     
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
@@ -191,7 +191,7 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
 
 // "WRITING TO STDOUT"
 static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;

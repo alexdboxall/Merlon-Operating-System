@@ -24,7 +24,7 @@
  * 
  */
 __attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
-    if (irql == GetIrql()) {
+    if (irql == GetIrql() || (irql == IRQL_STANDARD_HIGH_PRIORITY && GetIrql() == IRQL_STANDARD)) {
         handler(context);
 
     } else if (irql > GetIrql()) {
@@ -35,9 +35,6 @@ __attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*hand
             struct irql_deferment deferment;
             deferment.context = context;
             deferment.handler = handler;
-
-            LogWriteSerial("DEFER: 0x%X. queue size = %d\n", handler, PriorityQueueGetUsedSize(GetCpu()->deferred_functions));
-
             PriorityQueueInsert(GetCpu()->deferred_functions, (void*) &deferment, irql);
         }
     }
@@ -58,7 +55,6 @@ __attribute__((no_instrument_function)) int RaiseIrql(int level) {
     ArchDisableInterrupts();
 
     struct cpu* cpu = GetCpu();
-
     int existing_level = cpu->irql;
 
     if (level < existing_level) {
@@ -86,11 +82,14 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
 
     while (cpu->init_irql_done && PriorityQueueGetUsedSize(deferred_functions) > 0) {
         struct priority_queue_result next = PriorityQueuePeek(deferred_functions);
-        assert((int) next.priority <= current_level);
+        assert((int) next.priority <= current_level || (next.priority == IRQL_STANDARD_HIGH_PRIORITY && current_level == IRQL_STANDARD));
 
         if ((int) next.priority >= target_level) {
             current_level = next.priority;
-
+            if (current_level == IRQL_STANDARD_HIGH_PRIORITY) {
+                current_level = IRQL_STANDARD;
+            }
+            
             /*
              * Must Pop() before we call the handler (otherwise if the handler does a raise/lower, it will
              * retrigger itself and cause a recursion loop), and must also get data off the queue before we Pop().
@@ -101,7 +100,6 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
             void* context = deferred_call->context;
             void (*handler)(void*) = deferred_call->handler;
             if (handler == NULL) {
-                cpu->irql = current_level;
                 ArchSetIrql(current_level);
                 continue;
             }
@@ -116,10 +114,13 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
     }
 
     current_level = target_level;
+    if (current_level == IRQL_STANDARD_HIGH_PRIORITY) {
+        current_level = IRQL_STANDARD;
+    }
     cpu->irql = current_level;
     ArchSetIrql(current_level);
 
-    if (current_level <= IRQL_PAGE_FAULT && cpu->postponed_task_switch) {
+    if (current_level == IRQL_STANDARD && cpu->postponed_task_switch) {
         cpu->postponed_task_switch = false;
         Schedule();
     }
@@ -134,6 +135,6 @@ void PostponeScheduleUntilStandardIrql(void) {
  * Requires TFW_SP_AFTER_HEAP or later.
  */
 void InitIrql(void) {
-    GetCpu()->deferred_functions = PriorityQueueCreate(64, true, sizeof(struct irql_deferment));
+    GetCpu()->deferred_functions = PriorityQueueCreate(16, true, sizeof(struct irql_deferment));
     GetCpu()->init_irql_done = true;
 }

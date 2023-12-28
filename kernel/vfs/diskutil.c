@@ -47,7 +47,7 @@ static char* type_strings[__DISKUTIL_NUM_TYPES] = {
  * @maxirql IRQL_STANDARD 
  */
 void InitDiskUtil(void) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
     InitSpinlock(&type_table_lock, "diskutil", IRQL_SCHEDULER);
     memset(type_table, 0, sizeof(type_table));
 }
@@ -164,7 +164,7 @@ static char* GetPartitionNameString(int index) {
  * @maxirql IRQL_STANDARD
  */
 void CreateDiskPartitions(struct open_file* disk) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct open_file** partitions = GetPartitionsForDisk(disk);
 

@@ -58,3 +58,17 @@ uint32_t GetBayerAdjustedColour16(int x, int y, uint32_t colour) {
     int change = (65 * (bayer_matrix_16[y % 16][x % 16] - 128)) / 256;
     return ApplyBayerAdjustment(colour, change);
 }
+
+uint8_t GetBayerAdjustedChannelForVeryHighQuality(int x, int y, uint16_t channel) {
+    int change = (1024 * (bayer_matrix_16[y % 16][x % 16] - 128)) / 256;
+    int channel32 = channel;
+    channel32 += change;
+    if (channel32 > 65535) {
+        channel32 = 65535;
+    } 
+    if (channel32 < 0) {
+        channel32 = 0;
+    }
+
+    return (channel32 + 127) >> 8;
+}

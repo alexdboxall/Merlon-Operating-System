@@ -203,11 +203,22 @@ static void EvictPagesIfNeeded(void* context) {
     */
 
     // TODO: probs needs lock on pages_left
+    
+    extern int handling_page_fault;
+    if (handling_page_fault > 0) {
+        return;
+    }
+
     int timeout = 0;
+    LogWriteSerial("ABOUT TO START THE EVICT VIRT LOOP!\n");
     while (pages_left < NUM_EMERGENCY_PAGES && timeout < 5) {
+        LogWriteSerial("EvictVirt about to be called, timeout = %d\n", timeout);
+        handling_page_fault++;
         EvictVirt();
+        handling_page_fault--;
         ++timeout;
     }
+    LogWriteSerial("FINISHED THE EVICT VIRT LOOP!\n");
 
     if (pages_left == 0) {
        Panic(PANIC_OUT_OF_PHYS);

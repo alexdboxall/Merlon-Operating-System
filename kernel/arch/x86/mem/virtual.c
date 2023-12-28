@@ -48,7 +48,7 @@ static size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
 }
 
 static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int flags) {
-	LogWriteSerial("x86MapPage v 0x%X -> p 0x%X [0x%X]\n", virtual, physical, flags);
+	//LogWriteSerial("x86MapPage v 0x%X -> p 0x%X [0x%X]\n", virtual, physical, flags);
 	*x86GetPageEntry(vas, virtual) = physical | flags;
 }
 

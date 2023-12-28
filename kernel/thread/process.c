@@ -48,7 +48,7 @@ static int ProcessTableComparator(void* a_, void* b_) {
 }
 
 static int PAGEABLE_CODE_SECTION InsertIntoProcessTable(struct process* prcss) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     AcquireSpinlockIrql(&pid_lock);
     pid_t pid = next_pid++;
@@ -79,7 +79,7 @@ static void RemoveFromProcessTable(pid_t pid) {
 }
 
 struct process* PAGEABLE_CODE_SECTION GetProcessFromPid(pid_t pid) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     AcquireMutex(process_table_mutex, -1);
 
@@ -108,7 +108,7 @@ void InitProcess(void) {
 }
 
 struct process* PAGEABLE_CODE_SECTION CreateProcess(pid_t parent_pid) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct process* prcss = AllocHeap(sizeof(struct process));
 
@@ -140,7 +140,7 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
 }
 
 struct process* PAGEABLE_CODE_SECTION ForkProcess(void) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     LockProcess(GetProcess());
 
@@ -160,7 +160,7 @@ struct process* PAGEABLE_CODE_SECTION ForkProcess(void) {
 }
 
 static void PAGEABLE_CODE_SECTION ReapProcess(struct process* prcss) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     // TOOD: there's more cleanup to be done here..., e.g. VAS()
 
@@ -177,7 +177,7 @@ static void PAGEABLE_CODE_SECTION ReapProcess(struct process* prcss) {
 }
 
 static pid_t PAGEABLE_CODE_SECTION TryReapProcessAux(struct process* parent, struct avl_node* node, pid_t target, int* status) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
     
     if (node == NULL) {
         return 0;
@@ -205,12 +205,12 @@ static pid_t PAGEABLE_CODE_SECTION TryReapProcessAux(struct process* parent, str
 }
 
 static pid_t PAGEABLE_CODE_SECTION TryReapProcess(struct process* parent, pid_t target, int* status) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
     return TryReapProcessAux(parent, AvlTreeGetRootNode(parent->children), target, status);
 } 
 
 pid_t PAGEABLE_CODE_SECTION WaitProcess(pid_t pid, int* status, int flags) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     (void) flags;
 
@@ -244,7 +244,7 @@ pid_t PAGEABLE_CODE_SECTION WaitProcess(pid_t pid, int* status, int flags) {
  * processes.
  */
 static void PAGEABLE_CODE_SECTION AdoptOrphan(struct process* adopter, struct process* ophan) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     LockProcess(adopter);
 
@@ -262,7 +262,7 @@ static void PAGEABLE_CODE_SECTION AdoptOrphan(struct process* adopter, struct pr
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
 static void PAGEABLE_CODE_SECTION OrphanChildProcesses(struct avl_node* node) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (node == NULL) {
         return;
@@ -281,7 +281,7 @@ static void PAGEABLE_CODE_SECTION OrphanChildProcesses(struct avl_node* node) {
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
 static void PAGEABLE_CODE_SECTION KillRemainingThreads(struct avl_node* node) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (node == NULL) {
         return;
@@ -310,7 +310,7 @@ static void PAGEABLE_CODE_SECTION KillRemainingThreads(struct avl_node* node) {
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
 static void PAGEABLE_CODE_SECTION KillProcessHelper(void* arg) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct process* prcss = arg;
 
@@ -351,7 +351,7 @@ static void PAGEABLE_CODE_SECTION KillProcessHelper(void* arg) {
  * @note MAX_IRQL(IRQL_STANDARD)
  */
 void PAGEABLE_CODE_SECTION KillProcess(int retv) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     struct process* prcss = GetProcess();
     prcss->retv = retv;
@@ -399,7 +399,7 @@ struct process* GetProcess(void) {
  * @note MAX_IRQL(IRQL_STANDARD)
  */
 struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* args) {
-    MAX_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
     struct process* prcss = CreateProcess(parent);
     struct thread* thr = CreateThread(entry_point, args, prcss->vas, "prcssinit");
     AddThreadToProcess(prcss, thr);

@@ -106,6 +106,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     } 
 
     UnlockScheduler();
+
     return thr->timed_out ? (timeout_ms == 0 ? EAGAIN : ETIMEDOUT) : 0;
 }
 

@@ -58,7 +58,7 @@ struct thread {
     size_t canary_position;
     bool timed_out;
     bool death_sentence;
-    
+
     struct semaphore* waiting_on_semaphore;
 
     struct process* process;

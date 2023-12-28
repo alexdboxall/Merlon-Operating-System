@@ -33,7 +33,7 @@ static struct semaphore* cleaner_semaphore;
  * @note EXACT_IRQL(IRQL_STANDARD)
  */
 static void PAGEABLE_CODE_SECTION CleanerDestroyThread(struct thread* thr) {
-    EXACT_IRQL(IRQL_STANDARD);
+    MAX_IRQL(IRQL_PAGE_FAULT);   
 
     /*
      * TODO: clean up user stacks, any other thread data, etc.

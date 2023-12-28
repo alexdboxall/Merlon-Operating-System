@@ -79,6 +79,7 @@ int IdePoll(struct ide_data* ide) {
             SleepMilli(10);
         }
         if (timeout++ > 1000) {
+            LogWriteSerial("IDE SHAT ITSELF!\n");
             return EIO;
         }
     }

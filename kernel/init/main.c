@@ -38,7 +38,7 @@
  */
 
  void DummyAppThread(void*) {
-	PutsConsole("  drv0:/> ");
+	PutsConsole("drv0:/> ");
 
     struct open_file* con;
     OpenFile("con:", O_RDONLY, 0, &con);
@@ -48,15 +48,9 @@
 		inline_memset(bf, 0, 302);
         struct transfer tr = CreateKernelTransfer(bf, 301, 0, TRANSFER_READ);
 		ReadFile(con, &tr);
-		PutsConsole("  Command not found: ");
+		PutsConsole("Command not found: ");
 		PutsConsole(bf);
         PutsConsole("\n");
-
-        if (bf[0] == 'A') {
-            PutsConsole("Calling some ACPICA.SYS function...\n");
-            ((void(*)()) GetSymbolAddress("InitAcpica"))();
-            PutsConsole("Done...\n");
-        }
 
         if (GetFreePhysKilobytes() < 16) {
             PutsConsole("Less than 16 KB left\n");
@@ -66,7 +60,7 @@
             MapVirt(0, 0, 8 * 4096, VM_LOCK | VM_READ, NULL, 0);
         }
 
-		PutsConsole("  drv0:/> ");
+		PutsConsole("drv0:/> ");
 
     }
 }
@@ -74,7 +68,7 @@
 void InitUserspace(void) {
     size_t free = GetFreePhysKilobytes();
     size_t total = GetTotalPhysKilobytes();
-    DbgScreenPrintf("\n\n\n  NOS Kernel\n  Copyright Alex Boxall 2022-2023\n\n  %d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
+    DbgScreenPrintf("NOS Kernel\nCopyright Alex Boxall 2022-2023\n\n%d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
     CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
 }
 
@@ -166,7 +160,6 @@ void KernelMain(void) {
     InitConsole();
     InitProcess();
 
-    assert(GetIrql() == IRQL_STANDARD);
     CreateThreadEx(InitThread, NULL, GetVas(), "init", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0);
     StartMultitasking();
 }

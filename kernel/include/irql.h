@@ -22,21 +22,22 @@ struct irql_deferment {
  * Scheduler works. Page faults are allowed.
  */
 #define IRQL_STANDARD       0
+#define IRQL_STANDARD_HIGH_PRIORITY 1
 
 /*
  * Scheduler still works at this point. Cannot page fault.
  */
-#define IRQL_PAGE_FAULT     1
+#define IRQL_PAGE_FAULT     2
 
 /*
  * This is the scheduler (and therefore things won't be scheduled out 'behind its back'). Cannot page fault. 
  */
-#define IRQL_SCHEDULER      2
+#define IRQL_SCHEDULER      3
 
 /*
  * Scheduling will be postponed. Cannot page fault. Cannot use lower-priority devices.
  */
-#define IRQL_DRIVER         3      // 3...39 is the driver range
+#define IRQL_DRIVER         4      // 3...39 is the driver range
 
 /*
  * No scheduling, no page faulting, no using other hardware devices (no other irqs)

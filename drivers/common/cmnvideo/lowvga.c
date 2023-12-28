@@ -70,9 +70,9 @@ static bool built_palette_lookups = false;
 
 static void BuildPaletteLookups(void) {
     for (int i = 0; i < 512; ++i) {
-        int r = ((i >> 6) & 7) * 255 / 7;
-        int g = ((i >> 3) & 7) * 255 / 7;
-        int b = ((i >> 0) & 7) * 255 / 7;
+        int r = ((i >> 6) & 7) * 32 + 16;
+        int g = ((i >> 3) & 7) * 32 + 16;
+        int b = ((i >> 0) & 7) * 32 + 16;
         uint32_t col = (r << 16) | (g << 8) | b;
         palette_256_lookup[i] = CalculateClosestVga256Colour(col);
         palette_16_lookup[i] = CalculateClosestVga16Colour(col);
