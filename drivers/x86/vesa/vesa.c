@@ -10,6 +10,7 @@
 #include <physical.h>
 #include <common.h>
 #include <semaphore.h>
+#include <swapfile.h>
 #include <video.h>
 #include <driver.h>
 #include <fcntl.h>
@@ -103,9 +104,7 @@ static void vesa_render_character(char c) {
 * cursor location. Can handle newlines and the edges of the screen.
 */
 void DrvConsolePutchar(char c) {
-    LogWriteSerial("DrvConsolePutchar A\n");
     AcquireMutex(data_lock, -1);
-    LogWriteSerial("DrvConsolePutchar B\n");
 
     if (c == '\n') {
         vesa_newline();
@@ -215,6 +214,7 @@ void ShowRAMUsage(void*) {
 
         size_t free = GetFreePhysKilobytes();
         size_t total = GetTotalPhysKilobytes();
+        size_t pages_on_swap = GetNumberOfPagesOnSwapfile();
 
         char buffer[128];
         memset(buffer, 0, 128);
@@ -224,7 +224,10 @@ void ShowRAMUsage(void*) {
         AppendNumberToStringX(buffer, total);
         strcat(buffer, " KB used (");
         AppendNumberToStringX(buffer, 100 * free / total);
-        strcat(buffer, "% free)             ");
+        strcat(buffer, "% free). ");
+        AppendNumberToStringX(buffer, pages_on_swap * 4);
+        strcat(buffer, " KB on swapfile.         ");
+
     
         for (int i = 0; buffer[i]; ++i) {
             AcquireMutex(data_lock, -1);
@@ -248,7 +251,6 @@ void ShowRAMUsage(void*) {
 */
 void InitVesa(void) {
     data_lock = CreateMutex("vesa");
-    LogWriteSerial("data_lock is 0x%X, and located at 0x%X\n", data_lock, &data_lock);
     
     RequireDriver("sys:/cmnvideo.sys");
     GenericVideoPutpixel = (void (*)(uint8_t*, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutpixel");
@@ -290,6 +292,8 @@ void InitVesa(void) {
     driver.puts = DrvConsolePuts;
     InitVideoConsole(driver);
 
+    CreateThread(ShowRAMUsage, NULL, GetVas(), "ram usage");
+
     /*int LINES_PER_SECTION = 50;
 
     for (int y = 0; y < vesa_height; ++y) {
@@ -305,28 +309,6 @@ void InitVesa(void) {
     auto special_bayer = (uint8_t (*)(int, int, uint16_t)) GetSymbolAddress("GetBayerAdjustedChannelForVeryHighQuality");
 
     GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, 0x0bb9db /*0x3880F8*/);
-
-    const int SEGMENT_WIDTH = 1;
-    for (int x = 64; x < vesa_width - 64; x += SEGMENT_WIDTH) {
-        int progress = 1000 * (x - 64) / (vesa_width - 128);
-        const int SOLID_PROPORTION = 400;
-        if (progress > SOLID_PROPORTION) {
-            progress = (progress - SOLID_PROPORTION) * 1000 / (1000 - SOLID_PROPORTION);
-        } else {
-            progress = 0;
-        }
-        int green = progress * 0x7F / 1000;
-        int blue = 0xAA + progress * (0xFF - 0xAA) / 1000;
-        if (data->depth_in_bits >= 15) {
-            green = special_bayer(x, 0, progress * 0x7F00 / 1000);
-            blue = 0xAA + special_bayer(x, 0, progress * (0xFF00 - 0xAA00) / 1000);
-        }
-        GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, x, 128 - 24, SEGMENT_WIDTH, 24, (green << 8) | blue);
-    }
-
-    GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64, 128, vesa_width - 128, vesa_height - (256 - 48), 0x000000);
-
-    CreateThread(ShowRAMUsage, NULL, GetVas(), "ram usage");
 
     /*struct open_file* img_file;
     OpenFile("sys:/bwsc.img", O_RDONLY, 0, &img_file);
@@ -347,4 +329,28 @@ void InitVesa(void) {
 
     UnmapVirt((size_t) test_image, 1024 * 768 * 3);
     CloseFile(img_file);*/
+
+    const int SEGMENT_WIDTH = 1;
+    for (int x = 64; x < vesa_width - 64; x += SEGMENT_WIDTH) {
+        int progress = 1000 * (x - 64) / (vesa_width - 128);
+        const int SOLID_PROPORTION = 400;
+        if (progress > SOLID_PROPORTION) {
+            progress = (progress - SOLID_PROPORTION) * 1000 / (1000 - SOLID_PROPORTION);
+        } else {
+            progress = 0;
+        }
+        int green = progress * 0x7F / 1000;
+        int blue = 0xAA + progress * (0xFF - 0xAA) / 1000;
+        if (data->depth_in_bits >= 15) {
+            green = special_bayer(x, 0, progress * 0x7F00 / 1000);
+            blue = 0xAA + special_bayer(x, 0, progress * (0xFF00 - 0xAA00) / 1000);
+        }
+        GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, x, 128 - 24, SEGMENT_WIDTH, 24, (green << 8) | blue);
+    }
+
+    GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64, 128, vesa_width - 128, vesa_height - (256 - 48), 0x000000);
+    const char* titlebar = "New Operating System Kernel";
+    for (int i = 0; titlebar[i]; ++i) {
+        GenericVideoDrawConsoleCharacter(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64 + 16 + i * 8, 128 - 24 + 5, 0x0000AA, 0xFFFFFF, titlebar[i]);
+    }
 }

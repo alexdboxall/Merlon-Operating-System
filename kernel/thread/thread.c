@@ -281,7 +281,7 @@ void AssertSchedulerLockHeld(void) {
     assert(IsSpinlockHeld(&scheduler_lock));
 }
 
-static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread) {
+__attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread) {
     if (new_thread->vas != old_thread->vas) {
         SetVas(new_thread->vas);
     }

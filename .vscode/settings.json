@@ -122,7 +122,8 @@
         "io_context": "c",
         "complex": "c",
         "util.h": "c",
-        "video.h": "c"
+        "video.h": "c",
+        "system_error": "c"
     },
     "files.exclude": {
         "**/.git": true,

@@ -31,7 +31,13 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_NO_FILESYSTEM]						= "no driver can access the boot filesystem",
 	[PANIC_BAD_KERNEL]							= "kernel executable file is corrupted",
 	[PANIC_DISK_FAILURE_ON_SWAPFILE]			= "failed to read from or write to swapfile",
-	[PANIC_NEGATIVE_SEMAPHORE]					= "more semaphore releases than acquisitions"
+	[PANIC_NEGATIVE_SEMAPHORE]					= "more semaphore releases than acquisitions",
+	[PANIC_NON_MASKABLE_INTERRUPT]				= "unrecoverable hardware error",
+	[PANIC_UNHANDLED_KERNEL_EXCEPTION]			= "unhandled cpu exception",
+	[PANIC_REQUIRED_DRIVER_MISSING_SYMBOL]		= "driver is missing a required symbol",
+	[PANIC_REQUIRED_DRIVER_NOT_FOUND]			= "a required driver could not be loaded",
+	[PANIC_NO_LOW_MEMORY]						= "not enough conventional memory to satisfy request",
+	[PANIC_OUT_OF_SWAPFILE]						= "out of swapfile space",
 };
 
 [[noreturn]] void Panic(int code)

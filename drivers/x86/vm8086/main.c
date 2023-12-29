@@ -123,7 +123,7 @@ static size_t LOCKED_DRIVER_CODE AllocLowPage(void) {
     if (num_low_pages == 0) {
         TryReserveLowPages();
         if (num_low_pages == 0) {
-            PanicEx(PANIC_DRIVER_FAULT, "no low memory for vm8086");
+            PanicEx(PANIC_NO_LOW_MEMORY, "no low memory for vm8086");
         }
     }
 

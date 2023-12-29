@@ -132,3 +132,59 @@ int WriteFatEntry(struct fat_data* fat, int entry, uint32_t value) {
         return 0;
     }
 }
+
+/*
+struct fat_data {
+    int fat_sectors[4];
+    union {
+        uint64_t first_root_dir_sector_12_16;
+        uint64_t root_dir_cluster_32;
+    };
+    uint64_t root_dir_num_sectors_12_16;
+    uint64_t first_data_sector;
+    uint64_t first_fat_sector;
+
+    uint8_t* cluster_buffer_a;
+    uint8_t* cluster_buffer_b;
+};
+*/
+
+struct fat_data LoadFatData(uint8_t* boot_sector, struct open_file* disk) {
+    struct fat_data data;
+
+    data.disk = disk;
+
+    data.bytes_per_sector = boot_sector[0xB] | (boot_sector[0xC] << 8);
+    data.sectors_per_cluster = boot_sector[0xD];
+    data.num_fats = boot_sector[0x10];
+
+    int total_sectors = boot_sector[0x13] | (boot_sector[0x14] << 8);
+    if (total_sectors == 0) {
+        total_sectors = boot_sector[0x23];
+        total_sectors <<= 8;
+        total_sectors |= boot_sector[0x22];
+        total_sectors <<= 8;
+        total_sectors |= boot_sector[0x21];
+        total_sectors <<= 8;
+        total_sectors |= boot_sector[0x20];
+    }
+
+    data.total_clusters = total_sectors / data.sectors_per_cluster;    
+
+    if (data.total_clusters < 4084) {
+        data.fat_type = FAT12;
+    } else if (data.total_clusters < 65524) {
+        data.fat_type = FAT16;
+    } else {
+        data.fat_type = FAT32;
+    }
+    
+    if (data.fat_type == FAT32) {
+        // TODO: set data.sectors_per_fat
+    } else {
+        data.sectors_per_fat = boot_sector[0x16] | (boot_sector[0x17] << 8);
+    }
+
+    return data;
+}
+

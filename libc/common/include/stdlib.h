@@ -22,6 +22,12 @@
 EXPORT_ int rand(void);
 EXPORT_ void srand(unsigned int seed);
 
+#ifdef COMPILE_KERNEL
+void qsort_pageable(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
+#endif
+void* bsearch(const void* key, const void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
+void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
+
 #ifndef COMPILE_KERNEL
 
 typedef struct {
@@ -38,9 +44,6 @@ typedef struct {
     long long int quot;
     long long int rem;
 } lldiv_t;
-
-void* bsearch(const void* key, const void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
-void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
 
 int abs(int j);
 long int labs(long int j);

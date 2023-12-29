@@ -228,24 +228,17 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
         return NULL;
     }
 
-	LogWriteSerial("VM_FILE C\n");
     uint8_t* mem = (uint8_t*) MapVirt(0, 0, st.st_blksize, VM_READ | VM_FILE, disk, 0);
-    LogWriteSerial("mem = 0x%X\n", mem);
     if (mem == NULL) {
         return NULL;
     }
 
-    LogWriteSerial("AAA\n");
     if (mem[0x1FE] != 0x55) {
-        LogWriteSerial("CCC\n");
         return NULL;
     }
-    LogWriteSerial("BBB\n");
     if (mem[0x1FF] != 0xAA) {
-        LogWriteSerial("DDD\n");
         return NULL;
     }
-    LogWriteSerial("EEE\n");
 
     struct open_file** partitions = AllocHeap(sizeof(struct open_file) * 5);
     inline_memset(partitions, 0, sizeof(struct open_file) * 5);
@@ -258,7 +251,6 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
         }
     }
 
-	LogWriteSerial("UnmapVirt C\n");
     UnmapVirt((size_t) mem, st.st_blksize);
     
     return partitions;
@@ -269,7 +261,6 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
  * e.g. {vnode_ptr_1, vnode_ptr_2, vnode_ptr_3, NULL}
  */
 struct open_file** GetPartitionsForDisk(struct open_file* disk) {
-    LogWriteSerial("Finding partitions...\n");
     struct open_file** partitions = GetMbrPartitions(disk);
     
     if (partitions == NULL) {

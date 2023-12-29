@@ -11,6 +11,11 @@
 #include <machine/interrupt.h>
 #include <errno.h>
 
+static void x86EnableNMIs(void) {
+    outb(0x70, inb(0x70) & 0x7F);
+    inb(0x71);
+}
+
 void ArchInitBootstrapCpu(struct cpu*) {
     x86InitGdt();
     x86InitIdt();
@@ -21,6 +26,7 @@ void ArchInitBootstrapCpu(struct cpu*) {
 
     ArchEnableInterrupts();
     x86MakeReadyForIrqs();
+    x86EnableNMIs();
 }
 
 bool ArchInitNextCpu(struct cpu*) {

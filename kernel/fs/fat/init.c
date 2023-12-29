@@ -2,17 +2,23 @@
 #include <fs/internal/fat.h>
 #include <string.h>
 #include <errno.h>
+#include <transfer.h>
+#include <vfs.h>
+#include <sys/stat.h>
 
-int DetectFatPartition(void* partition) {
-    (void) partition;
+int DetectFatPartition(struct open_file* disk) {
+    struct stat st;
+    int res = VnodeOpStat(disk->node, &st);
+    if (res != 0) {
+        return ENOTSUP;
+    }
 
     uint8_t buffer[512];
-    /* TODO: raw disk read into the buffer instead of calling memset */
-    inline_memset(buffer, 0, 512);
-
-    /*
-     * TODO: we'd want to check the partition data to see if there is a filesystem ID.
-     */
+    struct transfer io = CreateKernelTransfer(buffer, 512, 0, TRANSFER_READ);
+    res = ReadFile(disk, &io);
+    if (res != 0) {
+        return ENOTSUP;
+    }
 
     /*
      * Check that it's a boot sector at all.
@@ -43,14 +49,7 @@ int DetectFatPartition(void* partition) {
     }
 
     /*
-    - FAT can be detected by examining various fields and verifying that they are all valid:
-    - Cluster size is a power of 2
-    - Media type is 0xf0 or greater or equal to 0xf8
-    - FAT size is not 0
-    */
-
-    /*
-     * Check the OEM string.
+     * Check the OEM string has valid characters.
      */
     for (int i = 3; i < 11; ++i) {
         if ((buffer[i] >= 1 && buffer[i] < 32) || buffer[i] > 127) {
@@ -58,20 +57,9 @@ int DetectFatPartition(void* partition) {
         }
     }
 
-    // at this point, we have FAT!
-    // check what type.
+    struct fat_data fat = LoadFatData(buffer, disk);
+    (void) fat;
 
-    struct fat_data fat;
-
-    // TODO: load fat.total_clusters
-
-    if (fat.total_clusters < 4084) {
-        fat.fat_type = FAT12;
-    } else if (fat.total_clusters < 65524) {
-        fat.fat_type = FAT16;
-    } else {
-        fat.fat_type = FAT32;
-    }
 
     // TODO: load the rest
 
@@ -83,5 +71,5 @@ int DetectFatPartition(void* partition) {
     Check these and return ENOTSUP if not matching.
 */
 
-    return ENOSYS;
+    return 0;
 }

@@ -203,22 +203,22 @@ static void EvictPagesIfNeeded(void* context) {
     */
 
     // TODO: probs needs lock on pages_left
-    
+
     extern int handling_page_fault;
     if (handling_page_fault > 0) {
+        LogWriteSerial(" ///=> EvictPagesIfNeeded was called, but nobody's home!...\n");
         return;
     }
 
+    LogWriteSerial(" ///=> About to start evicting pages...\n");
+
     int timeout = 0;
-    LogWriteSerial("ABOUT TO START THE EVICT VIRT LOOP!\n");
     while (pages_left < NUM_EMERGENCY_PAGES && timeout < 5) {
-        LogWriteSerial("EvictVirt about to be called, timeout = %d\n", timeout);
         handling_page_fault++;
         EvictVirt();
         handling_page_fault--;
         ++timeout;
     }
-    LogWriteSerial("FINISHED THE EVICT VIRT LOOP!\n");
 
     if (pages_left == 0) {
        Panic(PANIC_OUT_OF_PHYS);
@@ -239,7 +239,12 @@ size_t AllocPhys(void) {
     AcquireSpinlockIrql(&phys_lock);
 
     if (pages_left <= NUM_EMERGENCY_PAGES) {
+        LogWriteSerial("deferring EvictPagesIfNeeded (pages_left = %d)\n", pages_left);
         DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
+    }
+
+    if (pages_left == 0) {
+        Panic(PANIC_OUT_OF_PHYS);
     }
 
     size_t index = 0;

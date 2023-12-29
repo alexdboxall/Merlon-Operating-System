@@ -1,21 +1,30 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #ifdef COMPILE_KERNEL
 #include <heap.h>
+#include <log.h>
 #else
 #include <stdlib.h>
 #endif
 
 
-static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size, int (*compar)(const void *, const void *)) {
+static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size, int (*compar)(const void *, const void *), bool allow_paging) {
     size_t count_1 = mid - low + 1;
     size_t count_2 = high - mid;
 
+    (void) allow_paging;
+
+#ifdef COMPILE_KERNEL
+    void* temp_1 = allow_paging ? AllocHeapEx(count_1 * size, HEAP_ALLOW_PAGING) : AllocHeap(count_1 * size);
+    void* temp_2 = allow_paging ? AllocHeapEx(count_2 * size, HEAP_ALLOW_PAGING) : AllocHeap(count_2 * size);
+#else
     void* temp_1 = malloc(count_1 * size);
     void* temp_2 = malloc(count_2 * size);
+#endif
 
     memcpy(temp_1, (const void*) (((uint8_t*) array) + low * size), count_1 * size);
     memcpy(temp_2, (const void*) (((uint8_t*) array) + (mid + 1) * size), count_2 * size);
@@ -57,24 +66,33 @@ static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size,
     free(temp_2);
 }
 
-static void MergeSort(void* array, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *)) {
+static void MergeSort(void* array, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *), bool allow_paging) {
     if (low < high) {
         size_t mid = low + (high - low) / 2;
-        MergeSort(array, low, mid, size, compar);
-        MergeSort(array, mid + 1, high, size, compar);
-        Merge(array, low, mid, high, size, compar);
+        MergeSort(array, low, mid, size, compar, allow_paging);
+        MergeSort(array, mid + 1, high, size, compar, allow_paging);
+        Merge(array, low, mid, high, size, compar, allow_paging);
     }
 }
 
 void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)) {
-    MergeSort(base, 0, nmemb - 1, size, compar);
+    MergeSort(base, 0, nmemb - 1, size, compar, false);
 }
+
+#ifdef COMPILE_KERNEL
+void qsort_pageable(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)) {
+    MergeSort(base, 0, nmemb - 1, size, compar, true);
+}
+#endif
 
 void* bsearch(const void* key, const void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *)) {
     size_t low = 0;
     size_t high = nmemb - 1;
 
     while (low <= high) {
+#ifdef COMPILE_KERNEL
+        LogWriteSerial("bsearch: looking in %d -> %d\n", low, high);
+#endif
         size_t mid = low + (high - low) / 2;
         const void* mid_item = (const void*) (((uint8_t*) base) + size * mid);
         int compare_result = compar(key, mid_item);
@@ -83,10 +101,10 @@ void* bsearch(const void* key, const void* base, size_t nmemb, size_t size, int 
             return (void*) mid_item;
 
         } else if (compare_result < 0) {
-            high = mid + 1;
+            high = mid - 1;
 
         } else {
-            low = mid - 1;
+            low = mid + 1;
         }
     }
 

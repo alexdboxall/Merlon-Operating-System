@@ -8,7 +8,9 @@
 #include <driver.h>
 #include <sys/stat.h>
 #include <assert.h>
+#include <heap.h>
 #include <irql.h>
+#include <stdlib.h>		
 #include <machine/elf.h>
 #include <panic.h>
 
@@ -23,11 +25,11 @@ static bool IsElfValid(struct Elf32_Ehdr* header) {
     return true;
 }
 
-static size_t ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
+static size_t ElfGetSizeOfImageIncludingBss(void* data) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
-    size_t base_point = relocate ? 0xD0000000U : 0x10000000;
+    size_t base_point = 0xD0000000U;
     size_t total_size = 0;
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
@@ -39,25 +41,20 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data, bool relocate) {
 		size_t type = prog_header->p_type;
 
 		if (type == PHT_LOAD) {
-			if (!relocate) {
-                Panic(PANIC_NOT_IMPLEMENTED);
-            
-			} else {
-                if (address - base_point + size + num_zero_bytes >= total_size) {
-                    total_size = address - base_point + size + num_zero_bytes;
-                }
-			}
+            if (address - base_point + size + num_zero_bytes >= total_size) {
+                total_size = address - base_point + size + num_zero_bytes;
+            }
 		}
     }
 
     return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
-static int ElfLoadProgramHeaders(void* data, size_t relocation_point, bool relocate, struct open_file* file) {
+static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct open_file* file) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
-    size_t base_point = relocate ? 0xD0000000U : 0x10000000;
+    size_t base_point = 0xD0000000U;
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
         struct Elf32_Phdr* prog_header = prog_headers + i;
@@ -70,58 +67,45 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, bool reloc
 		size_t num_zero_bytes = prog_header->p_memsz - size;
 
 		if (type == PHT_LOAD) {
-			if (!relocate) {
-                return ENOSYS;
-            
+			size_t addr = address + relocation_point - base_point;
+			size_t remainder = size & (ARCH_PAGE_SIZE - 1);
+
+			int page_flags = 0;
+			if (flags & PF_X) page_flags |= VM_EXEC;
+			if (flags & PF_W) page_flags |= VM_WRITE;
+			if (flags & PF_R) page_flags |= VM_READ;
+
+			/*
+			 * We don't actually want to write to the executable file, so we must just copy to the page as normal
+			 * instead of using a file-backed page.
+			 */
+			if (flags & PF_W) {
+				size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
+
+				for (size_t i = 0; i < pages; ++i) {
+					SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags, (VM_READ | VM_WRITE | VM_EXEC) & ~page_flags);
+				}
+
+				memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
+
 			} else {
-				size_t addr = address + relocation_point - base_point;
-				size_t remainder = size & (ARCH_PAGE_SIZE - 1);
+				size_t pages = (size - remainder) / ARCH_PAGE_SIZE;
 
-				LogWriteSerial("Loading from 0x%X -> size 0x%X, and it is: %s %s %s\n",
-					addr,
-					size,
-					(flags & PF_R) ? "READABLE" : "-",
-					(flags & PF_W) ? "WRITABLE" : "-",
-					(flags & PF_X) ? "EXECUTABLE" : "-"
-				);
-				
-				int page_flags = 0;
-				if (flags & PF_X) page_flags |= VM_EXEC;
-				if (flags & PF_W) page_flags |= VM_WRITE;
-				if (flags & PF_R) page_flags |= VM_READ;
-
-				/*
-				 * We don't actually want to write to the executable file, so we must just copy to the page as normal
-				 * instead of using a file-backed page.
-				 */
-				if (flags & PF_W) {
-					size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
-
-					for (size_t i = 0; i < pages; ++i) {
-						SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags, (VM_READ | VM_WRITE | VM_EXEC) & ~page_flags);
+				if (addr & (ARCH_PAGE_SIZE - 1)) {
+					return EINVAL;
+				}
+				if (pages > 0) {
+					UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
+					size_t v = MapVirt(relocation_point, addr, pages * ARCH_PAGE_SIZE, VM_RELOCATABLE | VM_FILE | page_flags, file, offset);
+					if (v != addr) {
+						return ENOMEM;
 					}
+				}
 
-					memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
-
-				} else {
-					size_t pages = (size - remainder) / ARCH_PAGE_SIZE;
-
-					if (addr & (ARCH_PAGE_SIZE - 1)) {
-						return EINVAL;
-					}
-					if (pages > 0) {
-						UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
-						size_t v = MapVirt(relocation_point, addr, pages * ARCH_PAGE_SIZE, VM_RELOCATABLE | VM_FILE | page_flags, file, offset);
-						if (v != addr) {
-							return ENOMEM;
-						}
-					}
-
-					if (remainder > 0) {
-						SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, (VM_READ | VM_EXEC) & ~page_flags);
-						memcpy((void*) AddVoidPtr(addr, pages * ARCH_PAGE_SIZE), (const void*) AddVoidPtr(data, offset + pages * ARCH_PAGE_SIZE), remainder);
-						SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, 0, VM_WRITE);
-					}
+				if (remainder > 0) {
+					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, (VM_READ | VM_EXEC) & ~page_flags);
+					memcpy((void*) AddVoidPtr(addr, pages * ARCH_PAGE_SIZE), (const void*) AddVoidPtr(data, offset + pages * ARCH_PAGE_SIZE), remainder);
+					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, 0, VM_WRITE);
 				}
 			}
 		}
@@ -171,10 +155,7 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 	if (symbol->st_shndx == SHN_UNDEF) {
 		const char* name = (const char*) AddVoidPtr(data, string_table->sh_offset + symbol->st_name);
 
-		LogWriteSerial("Looking for symbol with name: %s...)\n", name);
 		size_t target = GetSymbolAddress(name);
-		LogWriteSerial("got 0x%X\n", target);
-
 		if (target == 0) {
 			if (!(ELF32_ST_BIND(symbol->st_info) & STB_WEAK)) {
 				*error = true;
@@ -193,26 +174,11 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 	}
 }
 
-static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, size_t on_page)
+static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, struct quick_relocation_table* table)
 {
-	LogWriteSerial("ElfPerformRelocation\n");
 	size_t base_address = 0xD0000000U;
 	size_t addr = (size_t) relocation_point - base_address + relocation_table->r_offset;
 	size_t* ref = (size_t*) addr;
-
-	if (on_page != 0) {
-		size_t start_page = addr / ARCH_PAGE_SIZE;
-		size_t end_page = (addr + sizeof(size_t) - 1) / ARCH_PAGE_SIZE;
-		size_t target_page = on_page / ARCH_PAGE_SIZE;
-		if (start_page != target_page && end_page != target_page) {
-			LogWriteSerial("no need to rewrite this relocation...\n");
-			return true;
-		} else {
-			LogWriteSerial("Upon reloading the page at 0x%X, we need to perform a relocation.\n", target_page * ARCH_PAGE_SIZE);
-		}
-	} else {
-		LogWriteSerial("Doing a normal, initial relocation.\n");
-	}
 
 	int symbolValue = 0;
 	if (ELF32_R_SYM(relocation_table->r_info) != SHN_UNDEF) {
@@ -235,25 +201,24 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 
 	int type = ELF32_R_TYPE(relocation_table->r_info);
 	bool success = true;
+	size_t val = 0;
 
 	if (type == R_386_32) {
-		LogWriteSerial("about to do a R_386_32 relocation...\n");
-		*ref = DO_386_32(symbolValue, *ref);
+		val = DO_386_32(symbolValue, *ref);
 
 	} else if (type == R_386_PC32) {
-		LogWriteSerial("about to do a R_386_PC32 relocation...\n");
-		*ref = DO_386_PC32(symbolValue, *ref, (size_t) ref);
+		val = DO_386_PC32(symbolValue, *ref, addr);
 
 	} else if (type == R_386_RELATIVE) {
-		LogWriteSerial("about to do a DO_386_RELATIVE relocation...\n");
-		*ref = DO_386_RELATIVE((relocation_point - base_address), *ref);
+		val = DO_386_RELATIVE((relocation_point - base_address), *ref);
 
 	} else {
 		LogWriteSerial("some whacko type...\n");
 		success = false;
 	}
 
-	LogWriteSerial("relocation done!\n");
+	*ref = val;
+	AddToQuickRelocationTable(table, addr, val);
 	
 	if (needs_write_low) {
 		SetVirtPermissions(addr, 0, VM_WRITE);
@@ -264,12 +229,11 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	return success;
 }
 
-static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t relocation_point, size_t on_page) {
+static bool ElfPerformRelocations(void* data, size_t relocation_point, struct quick_relocation_table** table) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr(data, elf_header->e_shoff);
 
 	for (int i = 0; i < elf_header->e_shnum; ++i) {
-		LogWriteSerial("starting relocation %d / %d\n", i, elf_header->e_shnum);
 		struct Elf32_Shdr* section = sect_headers + i;
 
 		if (section->sh_type == SHT_REL) {
@@ -280,14 +244,17 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t reloc
 				continue;
 			}
 
+			*table = CreateQuickRelocationTable(count);
+			
 			for (int index = 0; index < count; ++index) {
-				bool success = ElfPerformRelocation(data, relocation_point, section, relocation_tables + index, on_page);
+				bool success = ElfPerformRelocation(data, relocation_point, section, relocation_tables + index, *table);
 				if (!success) {
 					LogWriteSerial("failed to do a relocation!! (%d)\n", index);
 					return false;
 				}
-				LogWriteSerial("successful relocation!! (%d)\n", index);
 			}
+
+			SortQuickRelocationTable(*table);
 
 
 		} else if (section->sh_type == SHT_RELA) {
@@ -299,28 +266,7 @@ static bool PAGEABLE_CODE_SECTION ElfPerformRelocations(void* data, size_t reloc
 	return true;
 }
 
-void ArchPerformDriverRelocationOnPage(struct vas* vas, struct vas_entry* entry, struct open_file* file, size_t relocation_base, size_t virtual) {
-	LogWriteSerial("ArchPerformDriverRelocationOnPage start\n");
-
-	off_t size; 
-	GetFileSize(file, &size);
-
-	LogWriteSerial("got the file size!! 0x%X\n", size);
-
-	(void) vas;
-	(void) entry;
-	
-	size_t mem = MapVirt(0, 0, size, VM_READ | VM_FILE, file, 0);
-	LogWriteSerial("mapped the driver into virtual memory! 0x%X\n", mem);
-
-	ElfPerformRelocations((void*) mem, relocation_base, virtual);
-	LogWriteSerial("performed the relocations!!\n");
-
-	UnmapVirt(mem, size);
-	LogWriteSerial("ArchPerformDriverRelocationOnPage end\n");
-}
-
-static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, bool relocate, size_t* entry_point, struct open_file* file) {
+static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table) {
     MAX_IRQL(IRQL_PAGE_FAULT);
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
@@ -332,7 +278,7 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
     /*
     * To load a driver, we need the section headers.
     */
-    if (elf_header->e_shnum == 0 && relocate) {
+    if (elf_header->e_shnum == 0) {
         return EINVAL;
     }
 
@@ -346,28 +292,22 @@ static PAGEABLE_CODE_SECTION int ElfLoad(void* data, size_t* relocation_point, b
     /*
     * Load into memory.
     */
-    size_t size = ElfGetSizeOfImageIncludingBss(data, relocate);
+    size_t size = ElfGetSizeOfImageIncludingBss(data);
 
-    if (relocate) {
-		*relocation_point = MapVirt(0, 0, size, VM_READ, NULL, 0);
-		LogWriteSerial("RELOCATION POINT AT 0x%X\n", *relocation_point);
-    	ElfLoadProgramHeaders(data, *relocation_point, relocate, file);
+	*relocation_point = MapVirt(0, 0, size, VM_READ, NULL, 0);
+	LogWriteSerial("RELOCATION POINT AT 0x%X\n", *relocation_point);
+	ElfLoadProgramHeaders(data, *relocation_point, file);
 
-        bool success = ElfPerformRelocations(data, *relocation_point, 0);
-        if (success) {
-            return 0;
+	bool success = ElfPerformRelocations(data, *relocation_point, table);
+	if (success) {
+		return 0;
 
-        } else {
-            return EINVAL;
-        }
-
-    } else {
-		(void) entry_point;
-		return ENOSYS;
-    }
+	} else {
+		return EINVAL;
+	}
 }
 
-int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_file* file) {
+int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table) {
     MAX_IRQL(IRQL_PAGE_FAULT);
 
     off_t file_size;
@@ -377,8 +317,7 @@ int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_f
 	}
 
     size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
-	LogWriteSerial("mapped a region to the file: 0x%X, of size 0x%X\n", file_rgn, (int) file_size);
-    res = ElfLoad((void*) file_rgn, relocation_point, true, NULL, file);
+    res = ElfLoad((void*) file_rgn, relocation_point, file, table);
 
 	struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) file_rgn;
     struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) (file_rgn + elf_header->e_shoff);
@@ -391,7 +330,6 @@ int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_f
 			size_t start_addr = (sect_headers[i].sh_addr - 0xD0000000U + *relocation_point) & ~(ARCH_PAGE_SIZE - 1);
 			size_t num_pages = (sect_headers[i].sh_size + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
 			while (num_pages--) {
-				LogWriteSerial("Locking driver memory here: 0x%X\n", start_addr);
 				LockVirt(start_addr);
 				start_addr += ARCH_PAGE_SIZE;
 			}
@@ -403,7 +341,7 @@ int PAGEABLE_CODE_SECTION ArchLoadDriver(size_t* relocation_point, struct open_f
     return res;
 }
 
-void PAGEABLE_CODE_SECTION ArchLoadSymbols(struct open_file* file, size_t adjust) {
+void ArchLoadSymbols(struct open_file* file, size_t adjust) {
 	off_t size;
 	int res = GetFileSize(file, &size);
 	if (res != 0) {

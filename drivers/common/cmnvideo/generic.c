@@ -3,6 +3,7 @@
 #include "include/bayer.h"
 #include "include/lowvga.h"
 #include <string.h>
+#include <byteswap.h>
 
 /*
  * Bounds checking width and height, etc. is the responsiblity of the calling driver. There is a function in 
@@ -15,7 +16,9 @@ void GenericVideoPutrect(uint8_t* virtual_framebuffer, int pitch, int depth, int
         uint32_t* pos32 = ((uint32_t*) (size_t) position) + x;
         uint8_t* start_pos = (uint8_t*) pos32;
 
-        // TODO: endianness (flip colour's bytes if wrong)
+#ifdef ARCH_BIG_ENDIAN
+        colour = bswap_32(colour);
+#endif
 
         for (int i = 0; i < w; ++i) {
             *pos32++ = colour;
@@ -47,11 +50,13 @@ void GenericVideoPutrect(uint8_t* virtual_framebuffer, int pitch, int depth, int
     } else if (depth == 15 || depth == 16) {
         uint16_t* pos16 = ((uint16_t*) (size_t) position) + x;
         uint8_t* start_pos = (uint8_t*) pos16;
-        uint32_t mod_colour = ConvertToColourDepth(colour, depth);
+        uint16_t mod_colour = ConvertToColourDepth(colour, depth);
 
         // TODO: endianness (flip mod_colour's bytes if wrong)
 
-        // #ifdef BIG_ENDIAN ...
+#ifdef ARCH_BIG_ENDIAN
+        mod_colour = bswap_16(mod_colour);
+#endif
 
         for (int i = 0; i < w; ++i) {
             *pos16++ = mod_colour;

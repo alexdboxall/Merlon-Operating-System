@@ -182,7 +182,7 @@ char* strncpy(char* restrict dst, const char* restrict src, size_t n)
 
 #ifdef COMPILE_KERNEL
 char* strdup_pageable(const char* str){
-	char* copy = (char*) AllocHeapEx(strlen(str) + 1, 0);
+	char* copy = (char*) AllocHeapEx(strlen(str) + 1, HEAP_ALLOW_PAGING);
 	strcpy(copy, str);
 	return copy;
 }

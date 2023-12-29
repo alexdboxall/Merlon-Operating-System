@@ -9,6 +9,9 @@
 #include <panic.h>
 #include <console.h>
 
+#define ISR_PAGE_FAULT  14
+#define ISR_NMI         2
+
 static bool ready_for_irqs = false;
 
 static int GetRequiredIrql(int irq_num) {
@@ -25,7 +28,7 @@ void x86HandleInterrupt(struct x86_regs* r) {
     if (num >= PIC_IRQ_BASE && num < PIC_IRQ_BASE + 16) {
         RespondToIrq(num, GetRequiredIrql(num), r);
 
-    } else if (num == 14) {
+    } else if (num == ISR_PAGE_FAULT) {
         extern size_t x86GetCr2();
 
         int type = 0;
@@ -45,6 +48,13 @@ void x86HandleInterrupt(struct x86_regs* r) {
         LogWriteSerial("\n\nPage fault: cr2 0x%X, eip 0x%X, nos-err 0x%X\n", x86GetCr2(), r->eip, type);
 
         HandleVirtFault(x86GetCr2(), type);
+
+    } else if (num == ISR_NMI) {
+        Panic(PANIC_NON_MASKABLE_INTERRUPT);
+
+    } else {
+        LogWriteSerial("Got interrupt %d.\n", num);
+        Panic(PANIC_UNHANDLED_KERNEL_EXCEPTION);
     }
 
     /*
@@ -70,43 +80,20 @@ void ArchSetIrql(int irql) {
     }
     
     if (irql >= IRQL_DRIVER) {
-        //int irq_num = irql - IRQL_DRIVER;
+        int irq_num = irql - IRQL_DRIVER;
 
         /*
          * We want to disable all higher IRQs (as the PIC puts the lowest priority interrupts at 
          * high numbers), as well as our self. Allow IRQ2 to stay enabled as it is used internally.
          */
-        //uint16_t mask = (0xFFFF ^ ((1 << irq_num) - 1)) & ~(1 << 2);
-        //DisablePicLines(mask);
-
-        /*
-         * e.g. lets say we got IRQ6 - floppy disk.
-         * we want bits 0-5 to be clear, and bits 6-15 to be set.
-         * 
-         * irq_num                          = 6
-         * (1 << irq_num)                   = 64        = 0b 0000 0000 0100 0000
-         * (1 << irq_num) - 1               = 63        = 0b 0000 0000 0011 1111
-         * 0xFFFF ^ ((1 << irq_num) - 1)    = X         = 0b 1111 1111 1100 0000
-         * 
-         * 1 << 2                           =           = 0b 0000 0000 0000 0100
-         * ~(1 << 2)                        = Y         = 0b 1111 1111 1111 1011
-         * 
-         * X & Y                            = MASK      = 0b 1111 1111 1100 0000
-         * 
-         * So we got what we wanted.
-         * 
-         * On IRQ1:
-         * 
-         * 0xFFFF ^ ((1 << irq_num) - 1)    = X         = 0b 1111 1111 1111 1110
-         * ~(1 << 2)                        = Y         = 0b 1111 1111 1111 1011
-         * X & Y                            = MASK      = 0b 1111 1111 1111 1010
-         */
+        uint16_t mask = (0xFFFF ^ ((1 << irq_num) - 1)) & ~(1 << 2);
+        DisablePicLines(mask);
 
     } else {
         /*
          * Allow everything to go through.
          */
-        //DisablePicLines(0x0000);
+        DisablePicLines(0x0000);
     }
 
     ArchEnableInterrupts();

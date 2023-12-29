@@ -9,6 +9,7 @@
 #include <panic.h>
 #include <string.h>
 #include <timer.h>
+#include <driver.h>
 #include <thread.h>
 #include <spinlock.h>
 #include <log.h>
@@ -20,19 +21,6 @@
 #include <swapfile.h>
 #include <vfs.h>
 #include <errno.h>
-
-/****
- * ***
- * ***
- * *** DRIVER PAGES THAT GET PAGED OUT NEED TO HAVE RELOCATIONS REAPPLIED TO THEM!!!!
- * *** (AS IS, WHEN IT GETS PAGED BACK IN, IT GETS THE ORIGINAL, NON-RELOCATION APPLIED PAGE BACK)
- * ***
- * ***
- * 
- * It'd also be good to allow drivers to ask for re-relocation, e.g. so that unresolved symbols can instead of 
- * panicking, just be left unresolved, and then the driver can call RequireDriver(...) and then "RelocateDriver"(...)
- * to use symbols as normal, instead of needing to use GetSymbolAddress
-*/
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual);
 
@@ -124,37 +112,36 @@ struct defer_disk_access {
     off_t offset;
     size_t address;
     int direction;
+    bool deallocate_swap_on_read;
 };
 
 static void PerformDeferredAccess(void* data) {
     struct defer_disk_access* access = (struct defer_disk_access*) data;
-        LogWriteSerial("PerformDeferredAccess 0x%X %d\n", access->address, access->direction);
     struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
-    LogWriteSerial("1\n");
+
     bool write = access->direction == TRANSFER_WRITE;
 
     int res = (write ? WriteFile : ReadFile)(access->file, &tr);
     if (res != 0) {
         Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
     }
-    LogWriteSerial("2\n");
 
     if (write) {
         UnmapVirt(access->address, ARCH_PAGE_SIZE);
-            LogWriteSerial("3\n");
 
     } else {
-        DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
-    LogWriteSerial("4\n");
-
         struct vas* vas = GetVas();
         AcquireSpinlockIrql(&vas->lock);
         struct vas_entry* entry = GetVirtEntry(vas, access->address);
         entry->allow_temp_write = false;
+        if (access->deallocate_swap_on_read) {
+            DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
+        }
         bool holy_shit = entry->relocatable && !entry->first_load;
         if (!holy_shit) {
             entry->lock = false;
         }
+
         /*
          * Need to keep page locked if we're doing relocations on it - otherwise by the time that we actually 
          * load in all the data we need to do the relocations (e.g. ELF headers, the symbol table), we have probably
@@ -164,24 +151,20 @@ static void PerformDeferredAccess(void* data) {
         ArchUpdateMapping(vas, entry);
         ArchFlushTlb(vas);
         ReleaseSpinlockIrql(&vas->lock);
-    LogWriteSerial("5\n");
 
         // TODO: locks here need to be adjusted to include the below within it, but that needs recursive mutexes
 
         if (holy_shit) {
-            ArchPerformDriverRelocationOnPage(vas, entry, entry->file_node, entry->relocation_base, access->address);
-            UnlockVirtEx(vas, access->address);
-            ReleaseSpinlockIrql(&vas->lock);
+            LogWriteSerial(" ----> ABOUT TO PERFORM RELOCATION FIXUPS\n");
+            PerformDriverRelocationOnPage(vas, entry->relocation_base, access->address);
+            UnlockVirt(access->address);
+            LogWriteSerial(" ----> PERFORMED RELOCATION FIXUPS\n");
         }
-    LogWriteSerial("6\n");
-
-        LogWriteSerial(" ----> FINISHED RELOADING FROM SWAP 0x%X\n", entry->virtual);
-
+        
+        LogWriteSerial(" ----> FINISHED RELOADING FROM DISK 0x%X\n", entry->virtual);
     }
-    LogWriteSerial("7\n");
 
     FreeHeap(access);
-    LogWriteSerial("8\n");
 }
 
 /**
@@ -192,24 +175,24 @@ static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset
     size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
     inline_memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
     
-    LogWriteSerial("DDW\n");
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
     access->direction = TRANSFER_WRITE;
     access->offset = offset;
+    access->deallocate_swap_on_read = false;
     DeferUntilIrql(IRQL_STANDARD_HIGH_PRIORITY, PerformDeferredAccess, (void*) access);
 }
 
-static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset) {
+static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset, bool deallocate_swap_on_read) {
     LockVirtEx(GetVas(), new_addr);
 
-    LogWriteSerial("DDR\n");
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
     access->direction = TRANSFER_READ;
     access->offset = offset;
+    access->deallocate_swap_on_read = deallocate_swap_on_read;
     DeferUntilIrql(IRQL_STANDARD_HIGH_PRIORITY, PerformDeferredAccess, (void*) access);
 }
 
@@ -241,10 +224,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
          * We will just reload it from disk next time.
          */
 
-        LogWriteSerial("tossing a file from the disk...\n");
-
         if (entry->write && !entry->relocatable) {
-            LogWriteSerial("but first writing it back...\n");
             DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
         }
 
@@ -314,7 +294,7 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
     int penalty = (entry->global ? 3 : 0) + entry->times_swapped * 8;
 
     if (entry->relocatable) {
-        return 150;
+        return 0;   /* @@@ TODO: 150 */
 
     } else if (entry->cow) {
         return 80 + penalty;
@@ -338,7 +318,7 @@ struct eviction_candidate {
     struct vas_entry* entry;
 };
 
-#define PREV_SWAP_LIMIT 16
+#define PREV_SWAP_LIMIT 24
 
 void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* lowest_rank, struct eviction_candidate* lowest_ranked, int* count, struct vas_entry** prev_swaps) {
     static uint8_t rand = 0;
@@ -416,8 +396,6 @@ void FindVirtToEvictFromAddressSpace(struct vas* vas, int* lowest_rank, struct e
  */
 void EvictVirt(void) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
-
-    LogWriteSerial("EvictVirt()\n");
     
     if (GetSwapfile() == NULL) {
         return;
@@ -717,8 +695,6 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
 static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    LogWriteSerial("MapVirtEx: flags = 0x%X\n", flags);
-
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
@@ -805,7 +781,6 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
-    LogWriteSerial("MapVirt: flags = 0x%X\n", flags);
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     size_t ret = MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
     return ret;
@@ -880,11 +855,15 @@ static void BringIntoMemoryFromFile(struct vas_entry* entry) {
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
 
-    DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset);
+    DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset, false);
 }
 
 static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     assert(!entry->file);
+
+    // TODO: probably should not make the page actually present until it is read in from memory
+    //       (in case some other thread tries to use it, e.g. for the keyboard / display) - alternatively,
+    //       you could actually make VAS locking useful and use mutexes, so it could just lock it here
     uint64_t offset = entry->swapfile_offset;
     entry->physical = AllocPhys();
     entry->allocated = true;
@@ -896,8 +875,7 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
 
     LogWriteSerial(" ----> RELOADING SWAP TO VIRT 0x%X: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
 
-    DeferDiskRead(entry->virtual, GetSwapfile(), offset);
-    LogWriteSerial("X\n");
+    DeferDiskRead(entry->virtual, GetSwapfile(), offset, true);
 }
 
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {
@@ -1194,7 +1172,6 @@ int handling_page_fault = 0;
 
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
     LogWriteSerial("===> ENTER PAGE FAULT\n");
-    LogWriteSerial("HandleVirtFault A, 0x%X, %d, %d\n", faulting_virt, fault_type, GetIrql());
 
     (void) fault_type;
 
@@ -1207,7 +1184,6 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     if (entry == NULL) {
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
     }
-    LogWriteSerial("entry: v 0x%X, p 0x%X. aclrf = %d%d%d%d%d\n", entry->virtual, entry->physical, entry->allocated, entry->cow, entry->lock, entry->in_ram, entry->file);
 
     /*
      * Sanity check that our flags are configured correctly.
@@ -1225,10 +1201,11 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
         Panic(PANIC_UNKNOWN);
     }
 
+    --handling_page_fault;
     ReleaseSpinlockIrql(&vas->lock);
     LogWriteSerial("===> EXIT PAGE FAULT.\n");
-    
-    --handling_page_fault;
+
+    // TODO: try to evict pages here if running low...
 }
 
 /**

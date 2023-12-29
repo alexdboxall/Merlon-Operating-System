@@ -14,6 +14,7 @@
 *	- ARCH_PAGE_SIZE
 *	- ARCH_MAX_CPU_ALLOWED
 *	- ARCH_MAX_RAM_KBS
+*	- ARCH_BIG_ENDIAN or ARCH_LITTLE_ENDIAN
 * 	- the valid user area, via ARCH_USER_AREA_BASE and ARCH_USER_AREA_LIMIT
 * 	- the valid kernel area, via ARCH_KRNL_SBRK_BASE and ARCH_KRNL_SBRK_LIMIT
 *    		(the kernel and user areas must not overlap, but ARCH_USER_AREA_LIMIT may equal ARCH_KRNL_SBRK_BASE
@@ -47,6 +48,7 @@ struct vas_entry;
 struct thread;
 struct open_file;
 struct cpu;
+struct quick_relocation_table;
 
 struct arch_driver_t;
 
@@ -88,13 +90,11 @@ void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry);
 void ArchUnmap(struct vas* vas, struct vas_entry* entry);
 void ArchSetVas(struct vas* vas);
 
-void ArchPerformDriverRelocationOnPage(struct vas* vas, struct vas_entry* entry, struct open_file* file, size_t relocation_base, size_t virtual);
-
 void ArchGetPageUsageBits(struct vas* vas, struct vas_entry* entry, bool* accessed, bool* dirty);
 void ArchSetPageUsageBits(struct vas* vas, struct vas_entry* entry, bool accessed, bool dirty);
 
 // responsible for loading all symbols. should not close the file!
-int ArchLoadDriver(size_t* relocation_point, struct open_file* file);
+int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table);
 void ArchLoadSymbols(struct open_file* file, size_t adjust);
 void ArchSwitchThread(struct thread* old, struct thread* new);
 size_t ArchPrepareStack(size_t addr);

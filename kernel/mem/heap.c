@@ -92,6 +92,10 @@ static void AddBlockToBackupHeap(size_t size) {
     emergency_blocks[index_of_smallest_block].address = address;
 }
 
+void ReserveHeapMemory(size_t size) {
+    AddBlockToBackupHeap(size);
+}
+
 static void RestoreEmergencyPages(void* context) {
     (void) context;
 
@@ -116,8 +120,6 @@ static void RestoreEmergencyPages(void* context) {
             }
         }
     }
-
-    LogWriteSerial("backup heap: largest is 0x%X, total is 0x%X\n", largest_block, total_size);
 
     while (largest_block < BOOTSTRAP_AREA_SIZE / 2 || total_size < BOOTSTRAP_AREA_SIZE) {
         AddBlockToBackupHeap(BOOTSTRAP_AREA_SIZE);
@@ -780,6 +782,12 @@ void* AllocHeapEx(size_t size, int flags) {
 
     if (size >= WARNING_LARGE_REQUEST_SIZE) {
         LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should consider using MapVirt.\n", size);
+    }
+
+    if (flags == 0) {
+        LogDeveloperWarning("AllocHeapEx called with flags = 0. You probably meant to pass either HEAP_ALLOW_PAGING,"
+                            "or HEAP_NO_FAULT. Passing neither is valid and it puts it on the locked heap, but allocation"
+                            "may cause faults. This is unlikely to be what you want.");
     }
 
     /*

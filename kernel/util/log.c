@@ -132,31 +132,3 @@ __attribute__((no_instrument_function)) void DbgScreenPrintf(const char* format,
 	LogWriteSerialVa(format, list, true);
 	va_end(list);
 }
-
-static size_t call_stack[1024];
-static size_t call_stack_ptr = 0;
-
-#include <irql.h>
-
-__attribute__((no_instrument_function)) void __cyg_profile_func_enter(void *this_fn, void *call_site) {
-	(void) this_fn;
-	(void) call_site;
-	call_stack[call_stack_ptr++] = (size_t) this_fn;
-
-	if (GetIrql() >= IRQL_DRIVER) {
-		return;
-	}
-
-	/*LogWriteSerial("CALL STACK: ");
-	for (size_t i = 0; i < call_stack_ptr; ++i) {
-		LogWriteSerial("0x%X, ", call_stack[i]);
-	}
-	LogWriteSerial("\n");*/
-}
-
-__attribute__((no_instrument_function)) void __cyg_profile_func_exit(void *this_fn, void *call_site) {
-	(void) this_fn;
-	(void) call_site;
-	--call_stack_ptr;
-	//LogWriteSerial("EXIT: 0x%X -> 0x%X\n", this_fn, call_site);
-}

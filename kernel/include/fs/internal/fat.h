@@ -2,6 +2,8 @@
 
 #include <common.h>
 
+struct open_file;
+
 #define LFN_SHORT_ONLY  0
 #define LFN_BOTH        1
 #define LFN_ERROR       2
@@ -26,7 +28,7 @@ struct fat_data {
     int sectors_per_cluster;
     int bytes_per_sector;
 
-    void* disk; // TODO! points to a vnode for the partition
+    struct open_file* disk; // TODO! points to a vnode for the partition
 
     uint8_t* cluster_buffer_a;
     uint8_t* cluster_buffer_b;
@@ -40,3 +42,5 @@ int ReadFatCluster(struct fat_data* fat, int cluster, bool buffer);
 int WriteFatCluster(struct fat_data* fat, int cluster, bool buffer);
 int ReadFatEntry(struct fat_data* fat, int entry, uint32_t* output);
 int WriteFatEntry(struct fat_data* fat, int entry, uint32_t value);
+
+struct fat_data LoadFatData(uint8_t* boot_sector, struct open_file* disk);

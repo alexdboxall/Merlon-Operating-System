@@ -28,6 +28,9 @@
 
 #define ARCH_MAX_CPU_ALLOWED    16
 
+#undef ARCH_BIG_ENDIAN
+#define ARCH_LITTLE_ENDIAN
+
 
 #include <machine/gdt.h>
 #include <machine/idt.h>
