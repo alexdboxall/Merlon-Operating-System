@@ -294,7 +294,7 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
     int penalty = (entry->global ? 3 : 0) + entry->times_swapped * 8;
 
     if (entry->relocatable) {
-        return 0;   /* @@@ TODO: 150 */
+        return 150;
 
     } else if (entry->cow) {
         return 80 + penalty;

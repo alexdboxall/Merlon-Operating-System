@@ -566,7 +566,7 @@ int WriteFile(struct open_file* file, struct transfer* io) {
 	return VnodeOpWrite(file->node, io);
 }
 
-int PAGEABLE_CODE_SECTION CloseFile(struct open_file* file) {
+int CloseFile(struct open_file* file) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (file == NULL || file->node == NULL) {

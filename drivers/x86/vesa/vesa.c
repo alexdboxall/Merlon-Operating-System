@@ -184,11 +184,11 @@ void AppendNumberToStringX(char* str, int num) {
         num_str[0] = (num / 10000) + '0';
         num_str[1] = ((num / 1000) % 10) + '0';
         num_str[2] = ((num / 100) % 10) + '0';
-        num_str[4] = ((num / 10) % 10) + '0';
-        num_str[5] = (num % 10) + '0';
+        num_str[3] = ((num / 10) % 10) + '0';
+        num_str[4] = (num % 10) + '0';
 
     } else {
-        strcat(str, "99999");
+        strcat(str, "99999+");
         return;
     }
 

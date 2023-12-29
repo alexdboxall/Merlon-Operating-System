@@ -231,12 +231,16 @@ void* AcpiOsMapMemory(ACPI_PHYSICAL_ADDRESS PhysicalAddress, ACPI_SIZE Length)
 {	
     LogWriteSerial("AcpiOsMapMemory 0x%X 0x%X\n", (uint32_t) PhysicalAddress, (uint32_t) Length);
     
-    size_t virt = MapVirt(PhysicalAddress & ~(ARCH_PAGE_SIZE - 1), 0, Length, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+    int extra = (PhysicalAddress & (ARCH_PAGE_SIZE - 1));
+    size_t virt = MapVirt(PhysicalAddress & ~(ARCH_PAGE_SIZE - 1), 0, Length + extra, VM_READ | VM_WRITE | VM_LOCK | VM_MAP_HARDWARE, NULL, 0);
+    LogWriteSerial("Got virt: 0x%X\nReturning: 0x%X\n", virt, virt | (PhysicalAddress & (ARCH_PAGE_SIZE - 1)));
     return (void*) (size_t) (virt | (PhysicalAddress & (ARCH_PAGE_SIZE - 1)));
 }
 
 void AcpiOsUnmapMemory(void* where, ACPI_SIZE length)
 {
+    LogWriteSerial("AcpiOsUnmapMemory\n");
+
     UnmapVirt(((size_t) where) & ~(ARCH_PAGE_SIZE - 1), length);
 }
 
@@ -249,11 +253,13 @@ ACPI_STATUS AcpiOsGetPhysicalAddress(void* LogicalAddress, ACPI_PHYSICAL_ADDRESS
 
 void* AcpiOsAllocate(ACPI_SIZE Size)
 {
-    return AllocHeap(Size);;
+    LogWriteSerial("AcpiOsAllocate %d\n", Size);
+    return AllocHeap(Size);
 }
 
 void AcpiOsFree(void* Memory)
 {
+    LogWriteSerial("AcpiOsFree\n");
     FreeHeap(Memory);
 }
 
@@ -372,7 +378,7 @@ void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags)
 
 ACPI_STATUS AcpiOsInstallInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler, void* Context)
 {
-    PanicEx(PANIC_NOT_IMPLEMENTED, "acpi: AcpiOsInstallInterruptHandler - how are we going to do context??");
+    LogDeveloperWarning("acpi: AcpiOsInstallInterruptHandler - NOT IMPLEMENTED!!");
     return AE_OK;
 }
 

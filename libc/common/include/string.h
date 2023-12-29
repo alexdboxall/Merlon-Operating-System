@@ -27,6 +27,7 @@ int memcmp(const void* s1, const void* s2, size_t n);
 int strcmp(const char* s1, const char* s2);
 void* memchr(const void* s, int c, size_t n);
 int strncmp(const char* s1, const char* s2, size_t n);
+char* strchr(const char* s, int c);
 
 void* memset(void* addr, int c, size_t n);
 size_t strlen(const char* str);
@@ -40,7 +41,6 @@ char* strdup_pageable(const char* str);
 #ifndef COMPILE_KERNEL
 int strcoll(const char* s1, const char* s2);
 size_t strxfrm(char* restrict dst, const char* restrict src, size_t n);
-char* strchr(const char* s, int c);
 size_t strcspn(const char* s1, const char* s2);
 char* strpbrk(const char* s1, const char* s2);
 char* strrchr(const char* s, int c);

@@ -180,6 +180,17 @@ char* strncpy(char* restrict dst, const char* restrict src, size_t n)
 	return ret;
 }
 
+char* strchr(const char* s, int c)
+{
+	do {
+		if (*s == (char) c) {
+			return (char*) s;
+		}
+	} while (*s++);
+
+	return NULL;
+}
+
 #ifdef COMPILE_KERNEL
 char* strdup_pageable(const char* str){
 	char* copy = (char*) AllocHeapEx(strlen(str) + 1, HEAP_ALLOW_PAGING);
@@ -197,17 +208,6 @@ char* strdup(const char* str)
 }
 
 #ifndef COMPILE_KERNEL
-
-char* strchr(const char* s, int c)
-{
-	do {
-		if (*s == (char) c) {
-			return (char*) s;
-		}
-	} while (*s++);
-
-	return NULL;
-}
 
 char* strerror(int err)
 {

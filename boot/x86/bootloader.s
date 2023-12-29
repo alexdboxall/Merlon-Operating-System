@@ -676,7 +676,7 @@ create_multiboot_tables:
 	cmp eax, 1
 	je short .good
 	mov [edi + 20], dword 2
-	je short .type_done
+	jmp short .type_done
 .good:
 	mov [edi + 20], dword 1
 .type_done:
