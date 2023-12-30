@@ -57,6 +57,7 @@ void DeferUntilIrql(int irql, void(*handler)(void*), void* context);
 int GetIrql(void);
 int RaiseIrql(int level);
 void LowerIrql(int level);
+int GetNumberInDeferQueue(void);
 
 void InitIrql(void);
 

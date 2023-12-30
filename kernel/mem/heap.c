@@ -372,6 +372,7 @@ static size_t GetBlockSize(struct block* block) {
 }
 
 void DbgPrintListStats(void) {
+    LogWriteSerial("\nDbgPrintListStats:\n");
     for (int i = 0; i < TOTAL_NUM_FREE_LISTS; ++i) {
         struct block* unswap = GetHeap(false)[i];
         struct block* swap = GetHeap(true)[i];
@@ -381,23 +382,31 @@ void DbgPrintListStats(void) {
         size_t swap_blocks = 0;
         size_t swap_size = 0;
 
+        int timeout = 0;
         while (unswap) {
             ++unswap_blocks;
             unswap_size += GetBlockSize(unswap);
             unswap = unswap->next;
+            if (timeout >= 100000) {
+                PanicEx(PANIC_ASSERTION_FAILURE, "double free detected!");
+            }
         }
 
+        timeout = 0;
         while (swap) {
             ++swap_blocks;
             swap_size += GetBlockSize(swap);
             swap = swap->next;
+            if (timeout >= 100000) {
+                PanicEx(PANIC_ASSERTION_FAILURE, "double free detected!");
+            }
         }
 
         if ((unswap_blocks | swap_blocks) != 0) {
-            LogWriteSerial("Bucket %d [0x%X]: unswappable %d / 0x%X. swappable %d / 0x%X\n", i, free_list_block_sizes[i], unswap_blocks, unswap_size, swap_blocks, swap_size);
+            LogWriteSerial("    Bucket %d [0x%X]: unswappable %d / 0x%X. swappable %d / 0x%X\n", i, free_list_block_sizes[i], unswap_blocks, unswap_size, swap_blocks, swap_size);
         }
     }
-    LogWriteSerial("\n");
+    LogWriteSerial("\n\n");
 }
 
 /**
@@ -563,7 +572,7 @@ static struct block* AddBlock(struct block* block) {
         block->next = NULL;
         MarkFree(block);
         MarkSwappability(block, swappable);
-
+    
         return AddBlock(block);
     
     } else if (!IsAllocated(prev_block) && IsAllocated(next_block)) {
@@ -724,7 +733,6 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     return AllocateBlock(head_list[sys_index], sys_index, user_requested_size);
 }
 
-
 static size_t unfreeable_pageable_area = 0;
 static size_t unfreeable_nonpageable_area = 0;
 static size_t unfreeable_pageable_ptr = 0;
@@ -771,6 +779,9 @@ static struct thread* entry_thread = NULL;
  */
 void* AllocHeapEx(size_t size, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
+
+    //LogWriteSerial("AllocHeapEx: %d\n", size);
+    //DbgPrintListStats();
 
     /*
      * We cannot allocate zero blocks (as it would be useless, and couldn't be freed.)
@@ -826,6 +837,10 @@ void* AllocHeapEx(size_t size, int flags) {
 #ifndef NDEBUG
     outstanding_allocations++;
 #endif
+
+    //LogWriteSerial("Alloc done!\n");
+    //DbgPrintListStats();
+
     if (acquired) {
         entry_thread = NULL;
         ReleaseSpinlockIrql(&heap_lock);
@@ -854,6 +869,8 @@ void* AllocHeapZero(size_t size) {
 void FreeHeap(void* ptr) {
     MAX_IRQL(IRQL_SCHEDULER);
 
+    //LogWriteSerial("FreeHeap: 0x%X\n", ptr);
+
     /*
      * Guard against NULL, as the standard says: "If ptr is a null pointer, no action occurs"
      */
@@ -881,6 +898,7 @@ void FreeHeap(void* ptr) {
         acquired = true;
         entry_thread = GetThread();
     }
+
     AddBlock(block);
 
 #ifndef NDEBUG

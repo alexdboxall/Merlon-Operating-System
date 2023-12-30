@@ -32,10 +32,14 @@ int RegisterIrqHandler(int irq_num, irq_handler_t handler) {
  *
  * @param required_irql The IRQL that this device handler needs to run at. Set to 0 if no change is needed.
  */
-__attribute__((no_instrument_function)) void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* context) {
+void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* context) {
     int irql = RaiseIrql(required_irql);
     ArchSendEoi(irq_num);     // must wait until we have raised
 
+    if (irq_num != 32) {
+        LogWriteSerial("IRQ %d\n", irq_num);
+    }
+    
     if (irq_table[irq_num] != NULL) {
         struct linked_list_node* iter = LinkedListGetFirstNode(irq_table[irq_num]);
         while (iter != NULL) {

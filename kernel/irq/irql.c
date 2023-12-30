@@ -135,6 +135,10 @@ void PostponeScheduleUntilStandardIrql(void) {
  * Requires TFW_SP_AFTER_HEAP or later.
  */
 void InitIrql(void) {
-    GetCpu()->deferred_functions = PriorityQueueCreate(16, true, sizeof(struct irql_deferment));
+    GetCpu()->deferred_functions = PriorityQueueCreate(32, true, sizeof(struct irql_deferment));
     GetCpu()->init_irql_done = true;
+}
+
+int GetNumberInDeferQueue(void) {
+    return PriorityQueueGetUsedSize(GetCpu()->deferred_functions);
 }

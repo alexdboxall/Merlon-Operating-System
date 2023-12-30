@@ -17,6 +17,8 @@
 #include <timer.h>
 #include <panic.h>
 #include <sys/stat.h>
+#include <machine/regs.h>
+#include <machine/pic.h>
 #include <machine/portio.h>
 #include <machine/interrupt.h>
 
@@ -376,30 +378,281 @@ void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags)
     ReleaseSpinlockIrql((struct spinlock*) Handle);
 }
 
+struct acpica_interrupt_handler {
+    ACPI_OSD_HANDLER handler;
+    void* context;
+    bool valid;
+};
+
+static struct acpica_interrupt_handler acpica_interrupt_handlers[32];
+
+static int HandleAcpicaInterrupt(int num) {
+    MAX_IRQL(IRQL_PAGE_FAULT);
+
+    if (num >= 32) {
+        return 1;
+    }
+
+    if (acpica_interrupt_handlers[num].valid) {
+        LogWriteSerial("running an acpica interrupt handler! (IRQ %d)\n", num);
+        UINT32 res = acpica_interrupt_handlers[num].handler(acpica_interrupt_handlers[num].context);
+        if (res == ACPI_INTERRUPT_HANDLED) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    } else {
+        return 1;
+    }
+}
+
+static int acpica_caught_irq = -1;
+
+static int AcpicaInterruptCatcher(struct x86_regs* regs) {
+    /*
+     * We can't actually run the handler right now, as we're in IRQL_DRIVER or above.
+     * And ACPICA has no concept of IRQL, so it could do whatever. Instead, we'll just set a flag,
+     * and the mainloop of the ACPICA thread can poll for it (every 100ms). 
+     */
+    int num = regs->int_no - PIC_IRQ_BASE;
+    if (acpica_caught_irq == -1) {
+        acpica_caught_irq = num;
+    } else {
+        PanicEx(PANIC_DRIVER_FAULT, "second acpica interrupt caught before first one done");
+    }
+} 
+
 ACPI_STATUS AcpiOsInstallInterruptHandler(UINT32 InterruptLevel, ACPI_OSD_HANDLER Handler, void* Context)
 {
-    LogDeveloperWarning("acpi: AcpiOsInstallInterruptHandler - NOT IMPLEMENTED!!");
+    LogWriteSerial("AcpiOsInstallInterruptHandler\n");
+
+    if (InterruptLevel >= 32 || Handler == NULL) {
+        return AE_BAD_PARAMETER;
+    }
+
+    if (acpica_interrupt_handlers[InterruptLevel].valid) {
+        return AE_ALREADY_EXISTS;
+    }
+
+    LogWriteSerial("ACPICA is installing an interrupt handler for IRQ %d\n", InterruptLevel);
+
+    acpica_interrupt_handlers[InterruptLevel].handler = Handler;
+    acpica_interrupt_handlers[InterruptLevel].context = Context;
+    acpica_interrupt_handlers[InterruptLevel].valid = true;
+
+    RegisterIrqHandler(PIC_IRQ_BASE + InterruptLevel, AcpicaInterruptCatcher);
+
     return AE_OK;
 }
 
 ACPI_STATUS AcpiOsRemoveInterruptHandler(UINT32 InterruptNumber, ACPI_OSD_HANDLER Handler)
 {
-    PanicEx(PANIC_NOT_IMPLEMENTED, "acpi: AcpiOsRemoveInterruptHandler");
+    LogWriteSerial("AcpiOsRemoveInterruptHandler\n");
+
+    if (InterruptNumber >= 32 || Handler == NULL) {
+        return AE_BAD_PARAMETER;
+    }
+
+    if (!acpica_interrupt_handlers[InterruptNumber].valid) {
+        return AE_NOT_EXIST;
+    }
+
+    if (acpica_interrupt_handlers[InterruptNumber].handler != Handler) {
+        return AE_BAD_PARAMETER;
+    }
+
+    acpica_interrupt_handlers[InterruptNumber].valid = false;
     return AE_OK;
 }
 
 void AcpiOsVprintf(const char* format, va_list list)
 {
-
+    LogWriteSerial("AcpiOsVprintf: %s\n", format);
 }
 
 void AcpiOsPrintf(const char* format, ...)
 {
-    
+    LogWriteSerial("AcpiOsPrintf: %s\n", format);
 }
 
-void InitAcpica() {
+static void AcpicaSleep(void) {
+	AcpiEnterSleepStatePrep(2);
+	AcpiEnterSleepState(2);
+
+	//the computer sleeps here (execution stops here until awoken)
+
+	AcpiLeaveSleepStatePrep(2);
+	AcpiLeaveSleepState(2);
+}
+
+static void AcpicaShutdown(void) {
+    ACPI_STATUS a = AcpiEnterSleepStatePrep(5);
+	if (a != AE_OK) {
+		return;
+	}
+	asm volatile ("cli");
+	a = AcpiEnterSleepState(5);
+}
+
+static ACPI_STATUS AcpicaPowerButtonHandler(void*) {
+    LogWriteSerial("AcpicaPowerButtonHandler\n");
+}
+
+static ACPI_STATUS AcpicaPowerNotifyHandler(void*) {
+    LogWriteSerial("AcpicaPowerNotifyHandler\n");
+}
+
+static ACPI_STATUS AcpicaLidNotifyHandler(void*) {
+    LogWriteSerial("AcpicaLidNotifyHandler\n");
+}
+
+static ACPI_STATUS AcpicaSleepNotifyHandler(void*) {
+    LogWriteSerial("AcpicaSleepNotifyHandler\n");
+}
+
+static void AcpicaGlobalEventHandler(uint32_t type, ACPI_HANDLE device, uint32_t number, void* context) {
+    LogWriteSerial("AcpicaGlobalEventHandler\n");
+    
+	if (type == ACPI_EVENT_TYPE_FIXED && number == ACPI_EVENT_POWER_BUTTON) {
+		AcpicaSleep();
+	}
+	if (type == ACPI_EVENT_TYPE_FIXED && number == ACPI_EVENT_SLEEP_BUTTON) {
+		AcpicaShutdown();
+	}
+}
+
+static ACPI_STATUS RegisterAcpicaObject(ACPI_HANDLE parent, ACPI_HANDLE obj, ACPI_DEVICE_INFO* info) {
+    (void) parent;
+    (void) obj;
+    (void) info;
+
+    ACPI_STATUS res;
+
+    if (info == NULL) {
+        return AE_OK;
+    }
+
+    LogWriteSerial("found an ACPI object...\n");
+
+    if (info->Type == ACPI_TYPE_DEVICE) {
+        const char* hid = (info->Valid & ACPI_VALID_HID) ? info->HardwareId.String : NULL;
+    
+        if (hid != NULL) {
+            int hid_length = info->HardwareId.Length;
+
+            if (!strncmp(hid, "PNP0C0C", hid_length)) {
+                res = AcpiInstallNotifyHandler(obj, ACPI_ALL_NOTIFY, AcpicaPowerNotifyHandler, NULL);
+                if (res != AE_OK) {
+                    LogDeveloperWarning("FAILURE AcpiInstallNotifyHandler(PNP0C0C)");
+                    if (res == AE_NO_MEMORY) {
+                        return AE_NO_MEMORY;
+                    }
+                }
+            }
+
+            if (!strncmp(hid, "PNP0C0D", hid_length)) {
+                res = AcpiInstallNotifyHandler(obj, ACPI_ALL_NOTIFY, AcpicaLidNotifyHandler, NULL);
+                if (res != AE_OK) {
+                    LogDeveloperWarning("FAILURE AcpicaLidNotifyHandler(PNP0C0D)");
+                    if (res == AE_NO_MEMORY) {
+                        return AE_NO_MEMORY;
+                    }
+                }
+            }
+
+            if (!strncmp(hid, "PNP0C0E", hid_length)) {
+                res = AcpiInstallNotifyHandler(obj, ACPI_ALL_NOTIFY, AcpicaSleepNotifyHandler, NULL);
+                if (res != AE_OK) {
+                    LogDeveloperWarning("FAILURE AcpicaLidNotifyHandler(PNP0C0E)");
+                    if (res == AE_NO_MEMORY) {
+                        return AE_NO_MEMORY;
+                    }
+                }
+            }
+        }
+    }
+
+    return AE_OK;
+}
+
+// *********************************************************************************************
+//
+// From here:
+// https://github.com/vvaltchev/tilck/blob/master/modules/acpi/acpi_module.c#L392
+//
+// *********************************************************************************************
+
+static ACPI_STATUS AcpicaWalkSingleObject(ACPI_HANDLE parent, ACPI_HANDLE obj) {
+    ACPI_DEVICE_INFO* info;
+    ACPI_STATUS res = AcpiGetObjectInfo(obj, &info);
+
+    if (ACPI_FAILURE(res)) {
+        return res;
+    }
+
+    res = RegisterAcpicaObject(parent, obj, info);
+
+    ACPI_FREE(info);
+
+    if (res == AE_NO_MEMORY) {
+        return res;
+    }
+
+    return AE_OK;
+}
+
+static ACPI_STATUS AcpicaWalkNamespace(void)
+{
+    ACPI_HANDLE parent = NULL;
+    ACPI_HANDLE child = NULL;
+    ACPI_STATUS res;
+
+    while (true) {
+        res = AcpiGetNextObject(ACPI_TYPE_ANY, parent, child, &child);
+
+        if (ACPI_FAILURE(res)) {
+            /*
+             * No more children. If this is root, we must stop. Otherwise, go back upwards.
+             */
+            if (parent == NULL) {
+                break;
+            }
+
+            child = parent;
+            AcpiGetParent(parent, &parent);
+            continue;
+        }
+
+        res = AcpicaWalkSingleObject(parent, child);
+        if (ACPI_FAILURE(res)) {
+            return res;
+        }
+
+        res = AcpiGetNextObject(ACPI_TYPE_ANY, child, NULL, NULL);
+        if (ACPI_SUCCESS(res)) {
+            parent = child;
+            child = NULL;
+        }
+    }
+
+    return AE_OK;
+}
+
+// *********************************************************************************************
+//  END 
+// *********************************************************************************************
+
+
+void AcpicaThread(void*) {
     LogWriteSerial("ACPICA.SYS loaded\n");
+
+    AcpiDbgLevel = (ACPI_NORMAL_DEFAULT | ACPI_LV_EVENTS) & ~ACPI_LV_REPAIR;
+    AcpiGbl_DisableAutoRepair = true;
+
+    for (int i = 0; i < 32; ++i) {
+        acpica_interrupt_handlers[i].valid = false;
+    }
 
     ACPI_STATUS a = AcpiInitializeSubsystem();
     if (ACPI_FAILURE(a)) {
@@ -410,27 +663,6 @@ void InitAcpica() {
 	a = AcpiInitializeTables(NULL, 16, true);
     if (ACPI_FAILURE(a)) {
         LogDeveloperWarning("FAILURE AcpiInitializeTables");
-        return;
-    }
-
-	a = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
-									   ACPI_ADR_SPACE_SYSTEM_MEMORY, ACPI_DEFAULT_HANDLER, NULL, NULL);
-    if (ACPI_FAILURE(a)) {
-        LogDeveloperWarning("FAILURE AcpiInstallAddressSpaceHandler ACPI_ADR_SPACE_SYSTEM_MEMORY");
-        return;
-    }
-
-	a = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
-									   ACPI_ADR_SPACE_SYSTEM_IO, ACPI_DEFAULT_HANDLER, NULL, NULL);
-    if (ACPI_FAILURE(a)) {
-        LogDeveloperWarning("FAILURE AcpiInstallAddressSpaceHandler ACPI_ADR_SPACE_SYSTEM_IO");
-        return;
-    }
-
-	a = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
-									   ACPI_ADR_SPACE_PCI_CONFIG, ACPI_DEFAULT_HANDLER, NULL, NULL);
-    if (ACPI_FAILURE(a)) {
-        LogDeveloperWarning("FAILURE AcpiInstallAddressSpaceHandler ACPI_ADR_SPACE_PCI_CONFIG");
         return;
     }
 
@@ -445,12 +677,167 @@ void InitAcpica() {
         LogDeveloperWarning("FAILURE AcpiEnableSubsystem");
         return;
     }
-    
+
+    a = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
+									   ACPI_ADR_SPACE_SYSTEM_MEMORY, ACPI_DEFAULT_HANDLER, NULL, NULL);
+
+	a = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
+									   ACPI_ADR_SPACE_SYSTEM_IO, ACPI_DEFAULT_HANDLER, NULL, NULL);
+
+	a = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
+									   ACPI_ADR_SPACE_PCI_CONFIG, ACPI_DEFAULT_HANDLER, NULL, NULL);
+
 	a = AcpiInitializeObjects(ACPI_FULL_INITIALIZATION);
     if (ACPI_FAILURE(a)) {
         LogDeveloperWarning("FAILURE AcpiInitializeObjects");
         return;
     }
 
+    a = AcpiInstallFixedEventHandler(ACPI_EVENT_POWER_BUTTON, AcpicaPowerButtonHandler, NULL);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiInstallFixedEventHandler(ACPI_EVENT_POWER_BUTTON)");
+    }
+
+    a = AcpicaWalkNamespace();
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpicaWalkNamespace");
+        return;
+    }
+
+    a = AcpiInstallGlobalEventHandler(AcpicaGlobalEventHandler, NULL);
+	if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiInstallGlobalEventHandler");
+        return;
+    }
+
+    a = AcpiUpdateAllGpes();
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiUpdateAllGpes");
+        return;
+    }
+
+    ACPI_BUFFER buffer;
+    ACPI_SYSTEM_INFO sysinfo;
+    buffer.Length = sizeof(ACPI_SYSTEM_INFO);
+    buffer.Pointer = &sysinfo;
+    a = AcpiGetSystemInfo(&buffer);
+    if (ACPI_FAILURE(a)) {
+        LogDeveloperWarning("FAILURE AcpiGetSystemInfo");
+    } else {
+        if (sysinfo.Flags == ACPI_SYS_MODE_ACPI) {
+            LogWriteSerial("This system supports ACPI mode.\n");
+        } else {
+            LogWriteSerial("This system does not support ACPI mode.\n");
+        }
+    }
+
+    bool using_apic = false;
+    ACPI_STATUS status;
+    ACPI_OBJECT_LIST params;
+    ACPI_OBJECT arg;
+
+    params.Count = 1;
+    params.Pointer = &arg;
+
+    arg.Type = ACPI_TYPE_INTEGER;
+    arg.Integer.Value = using_apic ? 1 : 0;
+
+    status = AcpiEvaluateObject(NULL, (ACPI_STRING) "\\_PIC", &params, NULL);
+    if (ACPI_FAILURE(status) && status != AE_NOT_FOUND) {
+        LogWriteSerial("status = 0x%X\n", status);
+        LogDeveloperWarning("ACPI failure AcpiEvaluateObject(\\_PIC)");
+
+    } else if (status == AE_NOT_FOUND) {
+        LogWriteSerial("\\_PIC method not found.\n");
+
+    } else {
+        LogWriteSerial("\\_PIC method success.\n");
+    }
+
+	a = AcpiWriteBitRegister(ACPI_BITREG_SCI_ENABLE, 1);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiWriteBitRegister(ACPI_BITREG_SCI_ENABLE, 1)");
+        return;
+    }
+
+	a = AcpiWriteBitRegister(ACPI_BITREG_POWER_BUTTON_ENABLE, 1);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiWriteBitRegister(ACPI_BITREG_POWER_BUTTON_ENABLE, 1)");
+        return;
+    }
+
+	a = AcpiWriteBitRegister(ACPI_BITREG_SLEEP_BUTTON_ENABLE, 1);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiWriteBitRegister(ACPI_BITREG_SLEEP_BUTTON_ENABLE, 1)");
+        return;
+    }
+
+	a = AcpiEnableEvent(ACPI_EVENT_SLEEP_BUTTON, 0);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiEnableEvent(ACPI_EVENT_SLEEP_BUTTON)");
+        return;
+    }
+
+	a = AcpiEnableEvent(ACPI_EVENT_POWER_BUTTON, 0);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiEnableEvent(ACPI_EVENT_POWER_BUTTON)");
+        return;
+    }
+    
+    ACPI_EVENT_STATUS event_status;
+    a = AcpiGetEventStatus(ACPI_EVENT_POWER_BUTTON, &event_status);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiGetEventStatus(ACPI_EVENT_POWER_BUTTON)");
+    } else {
+        if (event_status & ACPI_EVENT_FLAG_STATUS_SET) {
+            LogWriteSerial("Event ACPI_EVENT_POWER_BUTTON has occured.\n");
+        } else if (event_status & ACPI_EVENT_FLAG_ENABLED) {
+            LogWriteSerial("Event ACPI_EVENT_POWER_BUTTON is enabled.\n");
+        } else if (event_status & ACPI_EVENT_FLAG_HAS_HANDLER) {
+            LogWriteSerial("Event ACPI_EVENT_POWER_BUTTON has a handler.\n");
+        }
+    }
+
+    UINT32 retv;
+    a = AcpiReadBitRegister(ACPI_BITREG_SCI_ENABLE, &retv);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiReadBitRegister(ACPI_BITREG_SCI_ENABLE)");
+    } else {
+        LogWriteSerial("Register ACPI_BITREG_SCI_ENABLE has value: 0x%X", retv);
+    }
+
+    a = AcpiReadBitRegister(ACPI_BITREG_POWER_BUTTON_ENABLE, &retv);
+    if (a != AE_OK) {
+        LogDeveloperWarning("FAILURE AcpiReadBitRegister(ACPI_BITREG_POWER_BUTTON_ENABLE)");
+    } else {
+        LogWriteSerial("Register ACPI_BITREG_POWER_BUTTON_ENABLE has value: 0x%X", retv);
+    }
+
     LogWriteSerial("ACPICA.SYS fully initialised\n");
+
+    struct spinlock irq_caught_lock;
+    InitSpinlock(&irq_caught_lock, "acpica irq", IRQL_HIGH);
+
+    /*
+     * Poll for any IRQs that have been raised, and execute the ACPICA handler if needed.
+     * We do this as we can't run the handlers from the IRQ context for IRQL reasons.
+     */
+    while (true) {
+        int irql = AcquireSpinlockIrql(&irq_caught_lock);
+        if (acpica_caught_irq != -1) {
+            int irq = acpica_caught_irq;
+            acpica_caught_irq = -1;
+            ReleaseSpinlockIrql(&irq_caught_lock);
+            HandleAcpicaInterrupt(irq);
+
+        } else {
+            ReleaseSpinlockIrql(&irq_caught_lock);
+        }
+
+        SleepMilli(100);
+    }
+}
+
+void InitAcpica(void) {
+    CreateThread(AcpicaThread, NULL, GetVas(), "acpcia");
 }

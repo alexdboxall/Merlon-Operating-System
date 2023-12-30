@@ -213,19 +213,9 @@ static int QuickRelocationTableComparator(const void* a_, const void* b_) {
 void SortQuickRelocationTable(struct quick_relocation_table* table) {
 	struct quick_relocation* entries = table->entries;
 	qsort_pageable((void*) entries, table->used_entries, sizeof(struct quick_relocation), QuickRelocationTableComparator);
-
-	LogWriteSerial("Sorted the quick relocation table! Now has:\n");
-	size_t prev = 0;
-	for (int i = 0; i < table->used_entries; ++i) {
-		LogWriteSerial("    0x%X -> 0x%X\n", table->entries[i].address, table->entries[i].value);
-		(void) prev;
-		assert(table->entries[i].address > prev);
-		prev = table->entries[i].address;
-	}
 }
 
 void AddToQuickRelocationTable(struct quick_relocation_table* table, size_t addr, size_t val) {
-	LogWriteSerial("adding to quick relocation table: 0x%X -> 0x%X\n", addr, val);
 	assert(table->used_entries < table->total_entries);
 	table->entries[table->used_entries].address = addr;
 	table->entries[table->used_entries].value = val;
@@ -247,8 +237,6 @@ static int BinarySearchComparator(const void* a_, const void* b_) {
 
     size_t page_a = a.address / ARCH_PAGE_SIZE;
     size_t page_b = b.address / ARCH_PAGE_SIZE;
-
-    LogWriteSerial("BSC: Comparing 0x%X with 0x%X\n", page_a, page_b);
 
     if (page_a > page_b) {
         return 1;

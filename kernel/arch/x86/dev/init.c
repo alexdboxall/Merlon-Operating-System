@@ -1,4 +1,5 @@
 #include <machine/dev.h>
+#include <machine/portio.h>
 #include <driver.h>
 #include <panic.h>
 #include <log.h>

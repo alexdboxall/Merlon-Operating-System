@@ -93,7 +93,7 @@ void ArchSetIrql(int irql) {
         /*
          * Allow everything to go through.
          */
-        DisablePicLines(0x0000);
+         DisablePicLines(0x0000);
     }
 
     ArchEnableInterrupts();

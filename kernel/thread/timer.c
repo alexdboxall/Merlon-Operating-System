@@ -41,7 +41,9 @@ void ReceivedTimer(uint64_t nanos) {
         PostponeScheduleUntilStandardIrql();
     }
 
-    DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
+    if (GetNumberInDeferQueue() < 8) {
+        DeferUntilIrql(IRQL_STANDARD, HandleSleepWakeups, (void*) &system_time);
+    }
 }
 
 uint64_t GetSystemTimer(void) {

@@ -123,7 +123,8 @@
         "complex": "c",
         "util.h": "c",
         "video.h": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "dev.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

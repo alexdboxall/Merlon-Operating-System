@@ -13,6 +13,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+static struct semaphore* mounting_mutex = NULL;
+
 static struct open_file* disks[FF_VOLUMES] = {0};
 static int disk_sector_sizes[FF_VOLUMES] = {0};
 static int disk_sector_counts[FF_VOLUMES] = {0};
@@ -94,7 +96,13 @@ DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void *buff) {
 }
 
 void* ff_memalloc(UINT msize) {
-	return AllocHeap((size_t) msize);
+	LogWriteSerial("ff_memalloc 0x%X\n", msize);
+	/*
+	 * The heap is only used for LFN stuff - and this doesn't occur on f_read or f_write.
+	 * These are the only two that would be called from a page fault, and therefore it's okay for
+	 * this data to be paged out.
+	 */
+	return AllocHeapEx((size_t) msize, HEAP_ALLOW_PAGING);
 }
 
 void ff_memfree(void* mblock) {
@@ -127,6 +135,7 @@ struct vnode_data {
 	FATFS* fatfs_drive;
 	FIL* fatfs_file;
 	FATDIR* fatfs_dir;
+	int disk_num;
 };
 
 static int CheckOpen(struct vnode*, const char* name, int) {
@@ -186,8 +195,42 @@ static int Readdir(struct vnode*, struct transfer*) {
     return ENOSYS;
 }
 
-static int Write(struct vnode*, struct transfer*) {
-    return EROFS;
+static int Write(struct vnode* node, struct transfer* io) {
+    struct vnode_data* data = node->data;
+
+	uint8_t buffer[TRANSFER_CHUNK_SIZE];
+	while (io->length_remaining > 0) {
+		UINT amount = io->length_remaining > TRANSFER_CHUNK_SIZE ? TRANSFER_CHUNK_SIZE : io->length_remaining;
+
+		int kres = PerformTransfer(buffer, io, amount);
+		if (kres != 0) {
+			return kres;
+		}
+
+		UINT br;
+		FRESULT fres = f_write(data->fatfs_file, buffer, amount, &br);
+		if (fres == FR_DISK_ERR) {
+			return EIO;
+		} else if (fres == FR_WRITE_PROTECTED) {
+			return EROFS;
+		} else if (fres == FR_INT_ERR) {
+			return EIO;
+		} else if (fres == FR_DENIED) {
+			return EINVAL;
+		} else if (fres == FR_INVALID_OBJECT) {
+			return EINVAL;
+		} else if (fres == FR_TIMEOUT) {
+			return ETIMEDOUT;
+		} else if (fres != 0) {
+			return EIO;
+		}
+
+		if (br != amount) {
+			return EIO;
+		}
+	}
+
+	return 0;
 }
 
 static int Create(struct vnode*, struct vnode**, const char*, int, mode_t) {
@@ -240,21 +283,29 @@ static struct vnode* CreateFatFsVnode() {
     return CreateVnode(dev_ops);
 }
 
-int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) {   
+int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) { 
+	if (mounting_mutex == NULL) {
+		mounting_mutex = CreateMutex("fatfsmnt");
+	}  
 
 	struct vnode* node = CreateFatFsVnode();
     struct vnode_data* data = AllocHeap(sizeof(struct vnode_data));
     
-    data->fatfs_drive = AllocHeap(sizeof(FATFS));
+    data->fatfs_drive = AllocHeapEx(sizeof(FATFS), HEAP_ALLOW_PAGING | HEAP_FORCE_PAGING);
     data->fatfs_file = NULL;
     data->fatfs_dir = NULL;
     node->data = data;
 
 	*out = CreateOpenFile(node, 0, 0, true, false);
 
-	// TODO: this needs a mutex to protect from here until a return value
+	int mtxres = AcquireMutex(mounting_mutex, 2500);
+	if (mtxres != 0) {
+		return ENOTSUP;
+	}
 
 	uint8_t id = next_fatfs_volume;
+
+	data->disk_num = id;
 
 	struct stat st;
 	VnodeOpStat(raw_device->node, &st);
@@ -272,15 +323,13 @@ int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) {
 	if (res != 0) {
 		disks[id] = NULL;
 		CloseFile(*out);
-		FreeHeap(data->fatfs_drive);
-		FreeHeap(data);
 		*out = NULL;
-		// ReleaseMutex
+		ReleaseMutex(mounting_mutex);
 		return ENOTSUP;
 	}
 
 	next_fatfs_volume++;
-	// ReleaseMutex
+	ReleaseMutex(mounting_mutex);
 
     return 0;
 }

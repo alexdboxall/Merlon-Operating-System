@@ -12,6 +12,7 @@
 #include <heap.h>
 
 #include <fs/demofs/demofs.h>
+#include <fs/fatfs/fatfs.h>
 
 
 #define MAX_REGISTERED_FILESYSTEMS 8
@@ -28,6 +29,7 @@ static struct semaphore* fs_table_lock;
 void InitFilesystemTable(void) {
     num_filesystems = 0;
     fs_table_lock = CreateMutex("fs table");
+    RegisterFilesystem("fat", FatFsMountCreator);
     RegisterFilesystem("demofs", DemofsMountCreator);
 }
 
