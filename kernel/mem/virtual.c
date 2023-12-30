@@ -847,6 +847,17 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
 }
 
 static void BringIntoMemoryFromFile(struct vas_entry* entry) {
+    // TODO: I still don't think we should be marking it as present here
+    /*
+     * I think we need to leave it as is, and mark the page as 'retry-me'
+     * This page fault then calls deferRead, which reads to a temporary page, then in a lock
+     * it transfers it to the correct page, and all of this flag setting (including setting 'retry-me'
+     * to false).
+     * 
+     * If some other thread faults on this page, and the 'retry-me' flag is set, then it just 
+     * calls schedule in a loop until the 'retry-me' flag is cleared, then it retries the page fault
+     * (i.e. just returns). 
+     */
     entry->physical = AllocPhys();
     entry->allocated = true;
     entry->allow_temp_write = true;
@@ -854,6 +865,7 @@ static void BringIntoMemoryFromFile(struct vas_entry* entry) {
     entry->swapfile = false;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
+    LogWriteSerial("About to defer a disk read... %s\n", entry->relocatable ? "RELOCATABLE" : "NON-RELOCATABLE");
 
     DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset, false);
 }
@@ -861,9 +873,9 @@ static void BringIntoMemoryFromFile(struct vas_entry* entry) {
 static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     assert(!entry->file);
 
-    // TODO: probably should not make the page actually present until it is read in from memory
-    //       (in case some other thread tries to use it, e.g. for the keyboard / display) - alternatively,
-    //       you could actually make VAS locking useful and use mutexes, so it could just lock it here
+    // TODO: @@@
+    // see comment above...
+
     uint64_t offset = entry->swapfile_offset;
     entry->physical = AllocPhys();
     entry->allocated = true;
@@ -883,16 +895,19 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
     assert(IsSpinlockHeld(&vas->lock));
 
     if (entry->cow && allow_cow) {
+        LogWriteSerial("COW\n");
         BringIntoMemoryFromCow(entry);
         return 0;
     }
 
     if (entry->file && !entry->in_ram) {
+        LogWriteSerial("FILE\n");
         BringIntoMemoryFromFile(entry);
         return 0;
     }
 
     if (entry->swapfile) {
+        LogWriteSerial("SWAP\n");
         BringIntoMemoryFromSwapfile(entry);
         return 0;
     }
@@ -900,6 +915,7 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
     // TODO: otherwise, as an entry exists, it just needs to be allocated-on-read/write (the default) and cleared to zero
     //       (it's not a non-paged area, as an entry for it exists)
     if (!entry->in_ram) {
+        LogWriteSerial("BLANK\n");
         entry->physical = AllocPhys();
         entry->allocated = true;
         entry->in_ram = true;
@@ -917,7 +933,7 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
     return EINVAL;
 }
 
-void LockVirtEx(struct vas* vas, size_t virtual) {
+bool LockVirtEx(struct vas* vas, size_t virtual) {
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
 
     if (!entry->in_ram) {
@@ -928,7 +944,9 @@ void LockVirtEx(struct vas* vas, size_t virtual) {
         assert(entry->in_ram);
     }
 
+    bool old_lock = entry->lock;
     entry->lock = true;
+    return old_lock;
 }
 
 void UnlockVirtEx(struct vas* vas, size_t virtual) {
@@ -936,11 +954,12 @@ void UnlockVirtEx(struct vas* vas, size_t virtual) {
     entry->lock = false;
 }
 
-void LockVirt(size_t virtual) {
+bool LockVirt(size_t virtual) {
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
-    LockVirtEx(vas, virtual);
+    bool res = LockVirtEx(vas, virtual);
     ReleaseSpinlockIrql(&vas->lock);
+    return res;
 }
 
 void UnlockVirt(size_t virtual) {
@@ -1183,6 +1202,15 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     if (entry == NULL) {
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
+    }
+
+    if (entry->load_in_progress) {
+        --handling_page_fault;
+        LogWriteSerial("TRIED TO ACCESS A PAGE THAT HAD A DEFERRED DISK READ APPLIED TO IT. IDLING...\n");
+        ReleaseSpinlockIrql(&vas->lock);
+        Schedule();
+        LogWriteSerial("...WILL NOW RETRY THE 'LOAD IN PROGRESS' PAGE...\n");
+        return;
     }
 
     /*

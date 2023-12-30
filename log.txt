@@ -47,6 +47,8 @@ Adding mapping at 0xC401D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 Page fault: cr2 0xC401D1FE, eip 0xC01024C3, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -67,16 +69,19 @@ Adding mapping at 0xC4022000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 Page fault: cr2 0xC401E000, eip 0xC010313F, nos-err 0x0
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4022FF4, eip 0xC010314D, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4021FAC, eip 0xC010314D, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 ide poll delay...
 
@@ -139,6 +144,7 @@ Adding mapping at 0xC4043000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 Page fault: cr2 0xC4024004, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 ide poll delay...
 Adding mapping at 0xC4044000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
@@ -177,18 +183,24 @@ Adding mapping at 0xC4060000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4061000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC4044000, eip 0xC010FD08, nos-err 0x0
+Page fault: cr2 0xC4044000, eip 0xC010FDE6, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
  ----> FINISHED RELOADING FROM DISK 0xC4044000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4060FB0, eip 0xC010FD50, nos-err 0x0
+Page fault: cr2 0xC4060FB0, eip 0xC010FE2E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -198,8 +210,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC40612F8, eip 0xC010FD62, nos-err 0x0
+Page fault: cr2 0xC40612F8, eip 0xC010FE40, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -208,44 +223,53 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC405B1F0, eip 0xC010FDF8, nos-err 0x0
+Page fault: cr2 0xC405B1F0, eip 0xC010FED6, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
  ----> FINISHED RELOADING FROM DISK 0xC405B000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC405E48F, eip 0xC0106893, nos-err 0x0
+Page fault: cr2 0xC405E48F, eip 0xC01068FB, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
  ----> FINISHED RELOADING FROM DISK 0xC405E000
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4025000, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4026000, eip 0xC011317A, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4027004, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC405F001, eip 0xC0106893, nos-err 0x0
+Page fault: cr2 0xC405F001, eip 0xC01068FB, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
  ----> FINISHED RELOADING FROM DISK 0xC405F000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC405C000, eip 0xC010FDF8, nos-err 0x0
+Page fault: cr2 0xC405C000, eip 0xC010FED6, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
  ----> FINISHED RELOADING FROM DISK 0xC405C000
 ===> EXIT PAGE FAULT.
@@ -253,63 +277,75 @@ ide poll delay...
 
 Page fault: cr2 0xC4028000, eip 0xC011300E, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4029000, eip 0xC011317A, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC402A000, eip 0xC011317A, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC402B000, eip 0xC011300E, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC405D000, eip 0xC010FDF8, nos-err 0x0
+Page fault: cr2 0xC405D000, eip 0xC010FED6, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
  ----> FINISHED RELOADING FROM DISK 0xC405D000
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC402C000, eip 0xC011317A, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC402D000, eip 0xC011317A, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC402E000, eip 0xC011300E, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC402F000, eip 0xC011300E, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4030004, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4031000, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4032000, eip 0xC011317A, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 Requiring driver: sys:/vesa.sys
 loading driver...
@@ -319,8 +355,12 @@ Adding mapping at 0xC4067000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4068000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC4066000, eip 0xC010F737, nos-err 0x0
+Page fault: cr2 0xC4066000, eip 0xC010F813, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -336,6 +376,9 @@ RELOCATION POINT AT 0xC4069000
 
 Page fault: cr2 0xC4067000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -349,12 +392,14 @@ ide poll delay...
 
 Page fault: cr2 0xC4069000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4068000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -367,12 +412,14 @@ ide poll delay...
 
 Page fault: cr2 0xC406A000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 Adding mapping at 0xC406C000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 
-Page fault: cr2 0xC406C000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC406C000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 ArchLoadDriver returned 0
 Adding mapping at 0xC406D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
@@ -380,9 +427,10 @@ Adding mapping at 0xC406E000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC406F000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC406D000, eip 0xC010FD08, nos-err 0x0
+Page fault: cr2 0xC406D000, eip 0xC010FDE6, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -393,8 +441,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC406F9C0, eip 0xC010FD50, nos-err 0x0
+Page fault: cr2 0xC406F9C0, eip 0xC010FE2E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -406,6 +457,7 @@ ide poll delay...
 
 Page fault: cr2 0xC406B018, eip 0xC4069446, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 Requiring driver: sys:/cmnvideo.sys
 loading driver...
@@ -416,8 +468,11 @@ Adding mapping at 0xC4072000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4073000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC4070000, eip 0xC010F737, nos-err 0x0
+Page fault: cr2 0xC4070000, eip 0xC010F813, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -436,8 +491,8 @@ Adding mapping at 0xC4074000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 
 Page fault: cr2 0xC4072000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -449,12 +504,14 @@ ide poll delay...
 
 Page fault: cr2 0xC4075000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4073000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -468,12 +525,15 @@ ide poll delay...
 
 Page fault: cr2 0xC4076000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 Adding mapping at 0xC4078000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 
-Page fault: cr2 0xC4074080, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC4074080, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -484,8 +544,9 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4078000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC4078000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 ArchLoadDriver returned 0
 Adding mapping at 0xC4079000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
@@ -494,9 +555,10 @@ Adding mapping at 0xC407B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC407C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC4079000, eip 0xC010FD08, nos-err 0x0
+Page fault: cr2 0xC4079000, eip 0xC010FDE6, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -504,8 +566,13 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC407C638, eip 0xC010FD50, nos-err 0x0
+Page fault: cr2 0xC407C638, eip 0xC010FE2E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -517,6 +584,7 @@ ide poll delay...
 
 Page fault: cr2 0xC4033004, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 1024 x 768. depth = 8
 Adding mapping at 0xC407D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFD000000
@@ -724,10 +792,10 @@ Adding mapping at 0xC4144000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A3000
 
 Page fault: cr2 0xC4077000, eip 0xC4074456, nos-err 0x0
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 Requiring driver: sys:/ps2.sys
 loading driver...
-ide poll delay...
 Adding mapping at 0xC4145000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4146000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4147000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
@@ -735,8 +803,10 @@ Adding mapping at 0xC4148000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4149000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC4145000, eip 0xC010F737, nos-err 0x0
+Page fault: cr2 0xC4145000, eip 0xC010F813, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -754,6 +824,12 @@ RELOCATION POINT AT 0xC414A000
 
 Page fault: cr2 0xC4146000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -763,11 +839,16 @@ ide poll delay...
 
 Page fault: cr2 0xC414A000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4147000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -778,11 +859,16 @@ ide poll delay...
 
 Page fault: cr2 0xC414B000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4148000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -795,11 +881,15 @@ ide poll delay...
 
 Page fault: cr2 0xC414C000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4149000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -810,12 +900,14 @@ ide poll delay...
 
 Page fault: cr2 0xC414D000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 Adding mapping at 0xC414E000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 
-Page fault: cr2 0xC414E000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC414E000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 ArchLoadDriver returned 0
 Adding mapping at 0xC414F000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
@@ -825,8 +917,11 @@ Adding mapping at 0xC4152000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4153000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC414F000, eip 0xC010FD08, nos-err 0x0
+Page fault: cr2 0xC414F000, eip 0xC010FDE6, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -836,10 +931,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4153844, eip 0xC010FD50, nos-err 0x0
+Page fault: cr2 0xC4153844, eip 0xC010FE2E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -923,12 +1018,14 @@ Adding mapping at 0xC4199000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC419A000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC419B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC419C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC419D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC419E000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC4154000, eip 0xC010F737, nos-err 0x0
+Page fault: cr2 0xC4154000, eip 0xC010F813, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -937,8 +1034,6 @@ ide poll delay...
 ide poll delay...
  ----> FINISHED RELOADING FROM DISK 0xC4154000
 ===> EXIT PAGE FAULT.
-Adding mapping at 0xC419D000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
-Adding mapping at 0xC419E000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
 Adding mapping at 0xC419F000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
 Adding mapping at 0xC41A0000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
 Adding mapping at 0xC41A1000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
@@ -986,9 +1081,11 @@ Adding mapping at 0xC41CA000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
 Adding mapping at 0xC41CB000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
 Adding mapping at 0xC41CC000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
 Adding mapping at 0xC41CD000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
-RELOCATION POINT AT 0xC419D000
-Adding mapping at 0xC419D000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC419E000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
+Adding mapping at 0xC41CE000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xC41CF000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xC41D0000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+Adding mapping at 0xC41D1000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+RELOCATION POINT AT 0xC419F000
 Adding mapping at 0xC419F000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 Adding mapping at 0xC41A0000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 Adding mapping at 0xC41A1000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
@@ -1023,54 +1120,54 @@ Adding mapping at 0xC41BD000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 Adding mapping at 0xC41BE000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 Adding mapping at 0xC41BF000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 Adding mapping at 0xC41C0000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C1000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C2000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C3000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C4000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C5000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C6000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C7000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C8000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41C9000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
-Adding mapping at 0xC41CA000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
 
 
-Page fault: cr2 0xC4183000, eip 0xC0101219, nos-err 0x0
+Page fault: cr2 0xC4177000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4183000
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4177000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41CB000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC41C1000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4184000, eip 0xC0101219, nos-err 0x0
+Page fault: cr2 0xC4178000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4184000
+ ----> FINISHED RELOADING FROM DISK 0xC4178000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41CC000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC41C2000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC419C628, eip 0xC010F985, nos-err 0x0
+Page fault: cr2 0xC4179000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1078,19 +1175,84 @@ ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC419C000
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4179000
 ===> EXIT PAGE FAULT.
-Adding mapping at 0xC41CE000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
-Adding mapping at 0xC41CF000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
-Adding mapping at 0xC41D0000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
-Adding mapping at 0xC41D1000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
-Adding mapping at 0xC41D2000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
-Adding mapping at 0xC41D3000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
-Adding mapping at 0xC41D4000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 
-Page fault: cr2 0xC417D938, eip 0xC010FA47, nos-err 0x0
+Page fault: cr2 0xC41C3000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC417A000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC417A000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41C4000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC417B000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC417B000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41C5000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC417C000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC417C000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41C6000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC417D000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1103,27 +1265,204 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC419D192, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41C7000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC419D000
+BLANK
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41CE000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC417E000, eip 0xC0101219, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC417E000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC419E0C7, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41C8000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC417F000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC417F000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41C9000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4180000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4180000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41CA000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4181000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4181000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41CB000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4182000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4182000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41CC000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4183000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4183000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41CD000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4184000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4184000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41CE000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4185000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4185000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41CF000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4186000, eip 0xC0101219, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4186000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41D0000, eip 0xC0101219, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC419E238, eip 0xC010FA61, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1132,10 +1471,19 @@ ide poll delay...
 ide poll delay...
  ----> FINISHED RELOADING FROM DISK 0xC419E000
 ===> EXIT PAGE FAULT.
+Adding mapping at 0xC41D2000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+Adding mapping at 0xC41D3000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+Adding mapping at 0xC41D4000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+Adding mapping at 0xC41D5000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+Adding mapping at 0xC41D6000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+Adding mapping at 0xC41D7000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+Adding mapping at 0xC41D8000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
 
 
-Page fault: cr2 0xC419F07C, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC419F192, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1147,8 +1495,16 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A0097, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41D2000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41A00C7, eip 0xC010FC3E, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1160,8 +1516,12 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A1003, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41A107C, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1171,20 +1531,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC417E000, eip 0xC010FA47, nos-err 0x0
+Page fault: cr2 0xC41A2097, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC417E000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41A201C, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1195,8 +1546,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A3002, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41A3003, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1208,8 +1562,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A4019, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41A401C, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1220,8 +1577,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A5006, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41A5002, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1232,13 +1592,13 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41CF000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC41A6019, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41A6003, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1248,8 +1608,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A7068, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41A7006, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1261,8 +1624,18 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A8127, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41D3000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41A8003, eip 0xC010FC3E, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1272,10 +1645,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41A9046, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41A9068, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1286,20 +1659,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC417F000, eip 0xC010FA47, nos-err 0x0
+Page fault: cr2 0xC41AA127, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC417F000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41AA010, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1309,8 +1672,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41AB0DF, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41AB046, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1322,10 +1687,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41AC009, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41AC010, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1334,9 +1699,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41AD030, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41AD0DF, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1347,15 +1713,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41D0000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC41AE009, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41AE000, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1366,9 +1727,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41AF102, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41AF030, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1380,8 +1742,16 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B004C, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41D4000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41B0000, eip 0xC010FC3E, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1394,8 +1764,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B118C, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41B1102, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1408,20 +1780,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4180000, eip 0xC010FA47, nos-err 0x0
+Page fault: cr2 0xC41B204C, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4180000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41B2008, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1432,10 +1794,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B31DE, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41B318C, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1445,9 +1807,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B402B, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41B4002, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1456,8 +1819,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B50E4, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41B51AF, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1469,8 +1834,12 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B602C, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41B6052, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1481,13 +1850,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41D1000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC41B70B5, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41B700D, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1498,9 +1864,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B801E, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41B8000, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1512,8 +1879,16 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41B90C3, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41D5000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41B9095, eip 0xC010FC3E, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1523,21 +1898,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4181000, eip 0xC010FA47, nos-err 0x0
+Page fault: cr2 0xC41BA027, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4181000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41BA0FD, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1549,8 +1914,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41BB11F, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41BB094, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1562,8 +1930,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41BC012, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41BC0CE, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1573,13 +1944,12 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41D2000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC41BD0F0, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41BD008, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1589,20 +1959,11 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4182000, eip 0xC010FA47, nos-err 0x0
+Page fault: cr2 0xC41BE008, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
 ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4182000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC41BE5EC, eip 0xC010FB62, nos-err 0x0
-===> ENTER PAGE FAULT
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1613,8 +1974,18 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41BF000, eip 0xC010FB62, nos-err 0x0
+Page fault: cr2 0xC41D6000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41BF004, eip 0xC010FC3E, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1625,13 +1996,31 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41D3000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC41C05AC, eip 0xC010FC3E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC41C0000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41D4000, eip 0xC0106A3B, nos-err 0x2
+Page fault: cr2 0xC41D7000, eip 0xC0106AA3, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC41D8000, eip 0xC0106AA3, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 !!!!!!!!!!!!!!!!!!!!
@@ -1647,11 +2036,13 @@ Page fault: cr2 0xC41D4000, eip 0xC0106A3B, nos-err 0x2
 
 Page fault: cr2 0xC401FF24, eip 0xC010314D, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 
 Page fault: cr2 0xC4020000, eip 0xC0101219, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 
 !!!!!!!!!!!!!!!!!!!!
@@ -1673,20 +2064,16 @@ Page fault: cr2 0xC4020000, eip 0xC0101219, nos-err 0x2
 
 >>> KERNEL DEVELOPER WARNING:
     AllocHeapEx called with allocation of size 0x3050. You should consider using MapVirt.
-Adding mapping at 0xC41D5000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x164000
-Adding mapping at 0xC41D6000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x163000
-Adding mapping at 0xC41D7000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000
-Adding mapping at 0xC41D8000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x161000
-Adding mapping at 0xC41D9000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x160000
-Adding mapping at 0xC41DA000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15F000
-Adding mapping at 0xC41DB000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15E000
-Adding mapping at 0xC41DC000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15D000
-Adding mapping at 0xC41DD000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15C000
+Adding mapping at 0xC41D9000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14F000
+Adding mapping at 0xC41DA000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14E000
+Adding mapping at 0xC41DB000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14D000
+Adding mapping at 0xC41DC000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14C000
+Adding mapping at 0xC41DD000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14B000
+Adding mapping at 0xC41DE000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000
+Adding mapping at 0xC41DF000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x149000
+Adding mapping at 0xC41E0000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x148000
+Adding mapping at 0xC41E1000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x147000
 ArchLoadDriver returned 0
-Adding mapping at 0xC41DE000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
-Adding mapping at 0xC41DF000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
-Adding mapping at 0xC41E0000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
-Adding mapping at 0xC41E1000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC41E2000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC41E3000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC41E4000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
@@ -1756,10 +2143,18 @@ Adding mapping at 0xC4223000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4224000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4225000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 Adding mapping at 0xC4226000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC4227000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC4228000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC4229000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC422A000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC422B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+Adding mapping at 0xC422C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
 
 
-Page fault: cr2 0xC41DE000, eip 0xC010FD08, nos-err 0x0
+Page fault: cr2 0xC41E2000, eip 0xC010FDE6, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1767,13 +2162,14 @@ ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41DE000
+ ----> FINISHED RELOADING FROM DISK 0xC41E2000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4226634, eip 0xC010FD50, nos-err 0x0
+Page fault: cr2 0xC422C244, eip 0xC010FE2E, nos-err 0x0
 ===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1781,50 +2177,14 @@ ide poll delay...
 ide poll delay...
 ide poll delay...
 ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4226000
+ ----> FINISHED RELOADING FROM DISK 0xC422C000
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC420FD4C, eip 0xC010FDF8, nos-err 0x0
+Page fault: cr2 0xC4215920, eip 0xC010FED6, nos-err 0x0
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC420F000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4214EA8, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4214000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC421000C, eip 0xC010FDF8, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4210000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4215000, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -1835,177 +2195,10 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC4034000, eip 0xC0113155, nos-err 0x2
+Page fault: cr2 0xC421AA9C, eip 0xC01068FB, nos-err 0x0
 ===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4035000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC421100C, eip 0xC010FDF8, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4211000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4036000, eip 0xC011317A, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4216000, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4216000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4037000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4038000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4039004, eip 0xC0113155, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4212005, eip 0xC010FDFF, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4212000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC403A000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4217000, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4217000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC403B000, eip 0xC011317A, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC403C000, eip 0xC011317A, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC403D000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC403E000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC403F004, eip 0xC0113155, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4218000, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4218000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4213005, eip 0xC010FDFF, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4213000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4040000, eip 0xC0113155, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4041000, eip 0xC011300E, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4042000, eip 0xC011317A, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4043000, eip 0xC0113155, nos-err 0x2
-===> ENTER PAGE FAULT
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC4219000, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4219000
-===> EXIT PAGE FAULT.
-
-
-Page fault: cr2 0xC421A000, eip 0xC0106893, nos-err 0x0
-===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
 ide poll delay...
 ide poll delay...
 ide poll delay...
@@ -2017,35 +2210,254 @@ ide poll delay...
 ===> EXIT PAGE FAULT.
 
 
-Page fault: cr2 0xC41C2FE0, eip 0xC01012AE, nos-err 0x0
+Page fault: cr2 0xC4034000, eip 0xC0113155, nos-err 0x2
 ===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41C2000
+BLANK
 ===> EXIT PAGE FAULT.
-Adding mapping at 0xC4227000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x148000
-Adding mapping at 0xC4228000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x149000
-Adding mapping at 0xC4229000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14F000
-Adding mapping at 0xC422A000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x155000
+
+
+Page fault: cr2 0xC4216000, eip 0xC010FED6, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4216000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC421B000, eip 0xC01068FB, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC421B000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4035000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4217000, eip 0xC010FED6, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4217000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4036000, eip 0xC011317A, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4037000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC421C000, eip 0xC01068FB, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC421C000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4038000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4039004, eip 0xC0113155, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC403A000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC403B000, eip 0xC011317A, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4218000, eip 0xC010FED6, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4218000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC403C000, eip 0xC011317A, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC421D000, eip 0xC01068FB, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC421D000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC403D000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC403E000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC403F004, eip 0xC0113155, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4040000, eip 0xC0113155, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC421E000, eip 0xC01068FB, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC421E000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4219000, eip 0xC010FED6, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4219000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4041000, eip 0xC011300E, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4042000, eip 0xC011317A, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4043000, eip 0xC0113155, nos-err 0x2
+===> ENTER PAGE FAULT
+BLANK
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC421F000, eip 0xC01068FB, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC421F000
+===> EXIT PAGE FAULT.
+
+
+Page fault: cr2 0xC4220000, eip 0xC01068FB, nos-err 0x0
+===> ENTER PAGE FAULT
+FILE
+About to defer a disk read... NON-RELOCATABLE
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4220000
+===> EXIT PAGE FAULT.
+Adding mapping at 0xC422D000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17D000
+Adding mapping at 0xC422E000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A000
+Adding mapping at 0xC422F000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B000
+Adding mapping at 0xC4230000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x141000
 NOS Kernel
 Copyright Alex Boxall 2022-2023
 
-884 / 1164 KB used (24% free)
+932 / 1164 KB used (19% free)
 
-Adding mapping at 0xC422B000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15B000
-Adding mapping at 0xC422C000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17B000
-Adding mapping at 0xC422D000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16B000
-Adding mapping at 0xC422E000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14E000
+Adding mapping at 0xC4231000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x146000
+Adding mapping at 0xC4232000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x191000
+Adding mapping at 0xC4233000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x187000
+Adding mapping at 0xC4234000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x181000
 ACPICA.SYS loaded
 
 
-Page fault: cr2 0xC41CD704, eip 0xC41B1776, nos-err 0x2
+Page fault: cr2 0xC41D1704, eip 0xC41B3747, nos-err 0x2
 ===> ENTER PAGE FAULT
+BLANK
 ===> EXIT PAGE FAULT.
 AcpiOsInitialize
 AcpiOsAllocate 16
@@ -2056,33 +2468,7 @@ AcpiOsAllocate 16
 AcpiOsCreateLock
 AcpiOsCreateLock
 AcpiOsCreateLock
-
-
-Page fault: cr2 0xC41C1BF8, eip 0xC0101278, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41C1000
-===> EXIT PAGE FAULT.
 AcpiOsAllocate 28
-
-
-Page fault: cr2 0xC41C4BB8, eip 0xC0101278, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41C4000
-===> EXIT PAGE FAULT.
 AcpiOsAllocate 28
 AcpiOsAllocate 28
 AcpiOsAllocate 28
@@ -2104,109 +2490,77 @@ AcpiOsFree
 AcpiOsAllocate 112
 AcpiOsGetRootPointer
 AcpiOsMapMemory 0x40E 0x2
-Adding mapping at 0xC422F000. flags = 0x93, rwxgu'lfia = 11010'1011. p 0x19A000
-Got virt: 0xC422F000
-Returning: 0xC422F40E
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x4930 0x400
-Adding mapping at 0xC4230000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x4000
-Got virt: 0xC4230000
-Returning: 0xC4230930
-
-
-Page fault: cr2 0xC41C38C4, eip 0xC01011ED, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41C3000
-===> EXIT PAGE FAULT.
+Adding mapping at 0xC4235000. flags = 0x93, rwxgu'lfia = 11010'1011. p 0x19A000
+Got virt: 0xC4235000
+Returning: 0xC423540E
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0xE0000 0x20000
-Adding mapping at 0xC4231000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE0000
-Adding mapping at 0xC4232000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE1000
-Adding mapping at 0xC4233000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE2000
-Adding mapping at 0xC4234000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE3000
-Adding mapping at 0xC4235000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE4000
-Adding mapping at 0xC4236000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE5000
-Adding mapping at 0xC4237000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE6000
-Adding mapping at 0xC4238000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE7000
-Adding mapping at 0xC4239000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE8000
-Adding mapping at 0xC423A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE9000
-Adding mapping at 0xC423B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEA000
-Adding mapping at 0xC423C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEB000
-Adding mapping at 0xC423D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEC000
-Adding mapping at 0xC423E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xED000
-Adding mapping at 0xC423F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEE000
-Adding mapping at 0xC4240000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEF000
-Adding mapping at 0xC4241000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF0000
-Adding mapping at 0xC4242000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF1000
-Adding mapping at 0xC4243000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF2000
-Adding mapping at 0xC4244000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF3000
-Adding mapping at 0xC4245000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF4000
-Adding mapping at 0xC4246000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF5000
-Adding mapping at 0xC4247000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF6000
-Adding mapping at 0xC4248000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF7000
-Adding mapping at 0xC4249000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF8000
-Adding mapping at 0xC424A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF9000
-Adding mapping at 0xC424B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFA000
-Adding mapping at 0xC424C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFB000
-Adding mapping at 0xC424D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFC000
-Adding mapping at 0xC424E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFD000
-Adding mapping at 0xC424F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFE000
-Adding mapping at 0xC4250000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFF000
-Got virt: 0xC4231000
-Returning: 0xC4231000
+Adding mapping at 0xC4236000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE0000
+Adding mapping at 0xC4237000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE1000
+Adding mapping at 0xC4238000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE2000
+Adding mapping at 0xC4239000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE3000
+Adding mapping at 0xC423A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE4000
+Adding mapping at 0xC423B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE5000
+Adding mapping at 0xC423C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE6000
+Adding mapping at 0xC423D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE7000
+Adding mapping at 0xC423E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE8000
+Adding mapping at 0xC423F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE9000
+Adding mapping at 0xC4240000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEA000
+Adding mapping at 0xC4241000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEB000
+Adding mapping at 0xC4242000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEC000
+Adding mapping at 0xC4243000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xED000
+Adding mapping at 0xC4244000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEE000
+Adding mapping at 0xC4245000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xEF000
+Adding mapping at 0xC4246000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF0000
+Adding mapping at 0xC4247000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF1000
+Adding mapping at 0xC4248000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF2000
+Adding mapping at 0xC4249000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF3000
+Adding mapping at 0xC424A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF4000
+Adding mapping at 0xC424B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF5000
+Adding mapping at 0xC424C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF6000
+Adding mapping at 0xC424D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF7000
+Adding mapping at 0xC424E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF8000
+Adding mapping at 0xC424F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF9000
+Adding mapping at 0xC4250000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFA000
+Adding mapping at 0xC4251000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFB000
+Adding mapping at 0xC4252000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFC000
+Adding mapping at 0xC4253000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFD000
+Adding mapping at 0xC4254000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFE000
+Adding mapping at 0xC4255000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xFF000
+Got virt: 0xC4236000
+Returning: 0xC4236000
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0xF59C0 0x24
-Adding mapping at 0xC4251000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF5000
-Got virt: 0xC4251000
-Returning: 0xC42519C0
-AcpiOsPrintf: 
-
-Page fault: cr2 0xC41C5203, eip 0xC0106D77, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41C5000
-===> EXIT PAGE FAULT.
-ACPI: 
+Adding mapping at 0xC4256000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF5000
+Got virt: 0xC4256000
+Returning: 0xC42569C0
+AcpiOsPrintf: ACPI: 
 AcpiOsVprintf: RSDP 0x%8.8X%8.8X %06X (v%.2d %-6.6s)
 AcpiOsPrintf: 
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1C40 0x24
-Adding mapping at 0xC4252000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4252000
-Returning: 0xC4252C40
+Adding mapping at 0xC4257000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4257000
+Returning: 0xC4257C40
 AcpiOsPrintf: ACPI: 
 AcpiOsVprintf: %-4.4s 0x%8.8X%8.8X %06X (v%.2d %-6.6s %-8.8s %08X %-4.4s %08X)
 AcpiOsPrintf: 
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1C40 0x34
-Adding mapping at 0xC4253000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4253000
-Returning: 0xC4253C40
+Adding mapping at 0xC4258000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4258000
+Returning: 0xC4258C40
 AcpiOsMapMemory 0x1E1AF4 0x24
-Adding mapping at 0xC4254000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4254000
-Returning: 0xC4254AF4
+Adding mapping at 0xC4259000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4259000
+Returning: 0xC4259AF4
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1AF4 0x74
-Adding mapping at 0xC4255000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4255000
-Returning: 0xC4255AF4
+Adding mapping at 0xC425A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC425A000
+Returning: 0xC425AAF4
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
 AcpiOsPrintf: ACPI: 
@@ -2215,24 +2569,24 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1AF4 0x74
-Adding mapping at 0xC4256000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4256000
-Returning: 0xC4256AF4
+Adding mapping at 0xC425B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC425B000
+Returning: 0xC425BAF4
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E0040 0x24
-Adding mapping at 0xC4257000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Got virt: 0xC4257000
-Returning: 0xC4257040
+Adding mapping at 0xC425C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Got virt: 0xC425C000
+Returning: 0xC425C040
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E0040 0x1AB4
-Adding mapping at 0xC4258000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Adding mapping at 0xC4259000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4258000
-Returning: 0xC4258040
+Adding mapping at 0xC425D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Adding mapping at 0xC425E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC425D000
+Returning: 0xC425D040
 AcpiOsMapMemory 0x1E1AF4 0x74
-Adding mapping at 0xC425A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC425A000
-Returning: 0xC425AAF4
+Adding mapping at 0xC425F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC425F000
+Returning: 0xC425FAF4
 AcpiOsUnmapMemory
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
@@ -2242,41 +2596,14 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E0000 0x24
-Adding mapping at 0xC425B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Got virt: 0xC425B000
-Returning: 0xC425B000
+Adding mapping at 0xC4260000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Got virt: 0xC4260000
+Returning: 0xC4260000
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E0000 0x40
-Adding mapping at 0xC425C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Got virt: 0xC425C000
-Returning: 0xC425C000
-AcpiOsMapMemory 0x1E1AF4 0x74
-Adding mapping at 0xC425D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC425D000
-Returning: 0xC425DAF4
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E0040 0x1AB4
-Adding mapping at 0xC425E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Adding mapping at 0xC425F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC425E000
-Returning: 0xC425E040
-AcpiOsUnmapMemory
-AcpiOsTableOverride
-AcpiOsPhysicalTableOverride
-AcpiOsPrintf: ACPI: 
-AcpiOsVprintf: %-4.4s 0x%8.8X%8.8X %06X
-AcpiOsPrintf: 
-
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E1B68 0x24
-Adding mapping at 0xC4260000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4260000
-Returning: 0xC4260B68
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E1B68 0x78
-Adding mapping at 0xC4261000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Adding mapping at 0xC4261000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
 Got virt: 0xC4261000
-Returning: 0xC4261B68
+Returning: 0xC4261000
 AcpiOsMapMemory 0x1E1AF4 0x74
 Adding mapping at 0xC4262000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
 Got virt: 0xC4262000
@@ -2288,10 +2615,37 @@ Adding mapping at 0xC4264000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
 Got virt: 0xC4263000
 Returning: 0xC4263040
 AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E0000 0x40
-Adding mapping at 0xC4265000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+AcpiOsTableOverride
+AcpiOsPhysicalTableOverride
+AcpiOsPrintf: ACPI: 
+AcpiOsVprintf: %-4.4s 0x%8.8X%8.8X %06X
+AcpiOsPrintf: 
+
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E1B68 0x24
+Adding mapping at 0xC4265000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
 Got virt: 0xC4265000
-Returning: 0xC4265000
+Returning: 0xC4265B68
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E1B68 0x78
+Adding mapping at 0xC4266000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4266000
+Returning: 0xC4266B68
+AcpiOsMapMemory 0x1E1AF4 0x74
+Adding mapping at 0xC4267000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4267000
+Returning: 0xC4267AF4
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E0040 0x1AB4
+Adding mapping at 0xC4268000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Adding mapping at 0xC4269000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4268000
+Returning: 0xC4268040
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E0000 0x40
+Adding mapping at 0xC426A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Got virt: 0xC426A000
+Returning: 0xC426A000
 AcpiOsUnmapMemory
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
@@ -2301,34 +2655,34 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1BE0 0x24
-Adding mapping at 0xC4266000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4266000
-Returning: 0xC4266BE0
+Adding mapping at 0xC426B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC426B000
+Returning: 0xC426BBE0
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1BE0 0x38
-Adding mapping at 0xC4267000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4267000
-Returning: 0xC4267BE0
-AcpiOsMapMemory 0x1E1AF4 0x74
-Adding mapping at 0xC4268000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4268000
-Returning: 0xC4268AF4
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E0040 0x1AB4
-Adding mapping at 0xC4269000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Adding mapping at 0xC426A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4269000
-Returning: 0xC4269040
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E0000 0x40
-Adding mapping at 0xC426B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Got virt: 0xC426B000
-Returning: 0xC426B000
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E1B68 0x78
 Adding mapping at 0xC426C000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
 Got virt: 0xC426C000
-Returning: 0xC426CB68
+Returning: 0xC426CBE0
+AcpiOsMapMemory 0x1E1AF4 0x74
+Adding mapping at 0xC426D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC426D000
+Returning: 0xC426DAF4
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E0040 0x1AB4
+Adding mapping at 0xC426E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Adding mapping at 0xC426F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC426E000
+Returning: 0xC426E040
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E0000 0x40
+Adding mapping at 0xC4270000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Got virt: 0xC4270000
+Returning: 0xC4270000
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E1B68 0x78
+Adding mapping at 0xC4271000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4271000
+Returning: 0xC4271B68
 AcpiOsUnmapMemory
 AcpiOsAllocate 224
 AcpiOsFree
@@ -2340,39 +2694,39 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1C18 0x24
-Adding mapping at 0xC426D000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC426D000
-Returning: 0xC426DC18
+Adding mapping at 0xC4272000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4272000
+Returning: 0xC4272C18
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x1E1C18 0x28
-Adding mapping at 0xC426E000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC426E000
-Returning: 0xC426EC18
-AcpiOsMapMemory 0x1E1AF4 0x74
-Adding mapping at 0xC426F000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC426F000
-Returning: 0xC426FAF4
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E0040 0x1AB4
-Adding mapping at 0xC4270000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Adding mapping at 0xC4271000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4270000
-Returning: 0xC4270040
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E0000 0x40
-Adding mapping at 0xC4272000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Got virt: 0xC4272000
-Returning: 0xC4272000
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E1B68 0x78
 Adding mapping at 0xC4273000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
 Got virt: 0xC4273000
-Returning: 0xC4273B68
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x1E1BE0 0x38
+Returning: 0xC4273C18
+AcpiOsMapMemory 0x1E1AF4 0x74
 Adding mapping at 0xC4274000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
 Got virt: 0xC4274000
-Returning: 0xC4274BE0
+Returning: 0xC4274AF4
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E0040 0x1AB4
+Adding mapping at 0xC4275000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Adding mapping at 0xC4276000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4275000
+Returning: 0xC4275040
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E0000 0x40
+Adding mapping at 0xC4277000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Got virt: 0xC4277000
+Returning: 0xC4277000
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E1B68 0x78
+Adding mapping at 0xC4278000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4278000
+Returning: 0xC4278B68
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x1E1BE0 0x38
+Adding mapping at 0xC4279000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC4279000
+Returning: 0xC4279BE0
 AcpiOsUnmapMemory
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
@@ -2388,10 +2742,10 @@ AcpiOsAllocate 48
 AcpiOsAllocate 48
 AcpiOsAllocate 48
 AcpiOsMapMemory 0x1E0040 0x1AB4
-Adding mapping at 0xC4275000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Adding mapping at 0xC4276000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
-Got virt: 0xC4275000
-Returning: 0xC4275040
+Adding mapping at 0xC427A000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Adding mapping at 0xC427B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E1000
+Got virt: 0xC427A000
+Returning: 0xC427A040
 AcpiOsAllocate 48
 AcpiOsAllocate 52
 AcpiOsAllocate 2
@@ -2967,14 +3321,14 @@ AcpiOsAllocate 48
 AcpiOsAllocate 28
 AcpiOsAllocate 48
 AcpiOsAllocate 48
+Adding mapping at 0xC427C000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19A000
+Adding mapping at 0xC427D000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18B000
+Adding mapping at 0xC427E000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x185000
+Adding mapping at 0xC427F000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17F000
 AcpiOsAllocate 28
 AcpiOsAllocate 28
 AcpiOsAllocate 48
 AcpiOsAllocate 48
-Adding mapping at 0xC4277000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x147000
-Adding mapping at 0xC4278000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x146000
-Adding mapping at 0xC4279000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x145000
-Adding mapping at 0xC427A000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x144000
 AcpiOsAllocate 28
 AcpiOsAllocate 28
 AcpiOsAllocate 28
@@ -3289,9 +3643,9 @@ AcpiOsReadPort
 AcpiOsWritePort
 AcpiOsReadPort
 AcpiOsMapMemory 0x1E0000 0x40
-Adding mapping at 0xC427B000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
-Got virt: 0xC427B000
-Returning: 0xC427B000
+Adding mapping at 0xC4280000. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1E0000
+Got virt: 0xC4280000
+Returning: 0xC4280000
 AcpiOsReadPort
 AcpiOsWritePort
 AcpiOsReadPort
@@ -3433,18 +3787,6 @@ AcpiOsFree
 AcpiOsFree
 AcpiOsAllocate 76
 AcpiOsAllocate 52
-
-
-Page fault: cr2 0xC41C068D, eip 0xC41B00F1, nos-err 0x0
-===> ENTER PAGE FAULT
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC41C0000
-===> EXIT PAGE FAULT.
 AcpiOsAllocate 8
 AcpiOsFree
 AcpiOsFree
@@ -7859,28 +8201,414 @@ Event ACPI_EVENT_POWER_BUTTON is enabled.
 AcpiOsReadPort
 Register ACPI_BITREG_SCI_ENABLE has value: 0x1AcpiOsReadPort
 Register ACPI_BITREG_POWER_BUTTON_ENABLE has value: 0x1ACPICA.SYS fully initialised
-IRQ 41
-running an acpica interrupt handler! (IRQ 9)
-AcpiOsReadPort
-AcpiOsReadPort
-AcpicaGlobalEventHandler
-AcpiOsAllocate 52
-AcpiOsAllocate 8
-AcpiOsFree
-AcpiOsFree
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsWritePort
-AcpiOsReadPort
-AcpiOsWritePort
-AcpiOsEnterSleep
-AcpiOsWritePort
-AcpiOsReadPort
-AcpiOsReadPort
-AcpiOsReadPort
-AcpiOsReadPort
+IRQ 33
+Adding mapping at 0xC4281000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x17B000
+Adding mapping at 0xC4282000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x79000
+Adding mapping at 0xC4283000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x78000
+Adding mapping at 0xC4284000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x77000
+Adding mapping at 0xC4285000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x76000
+Adding mapping at 0xC4286000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x75000
+Adding mapping at 0xC4287000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x74000
+Adding mapping at 0xC4288000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x73000
+IRQ 33
+IRQ 33
+Adding mapping at 0xC4289000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x72000
+Adding mapping at 0xC428A000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x71000
+Adding mapping at 0xC428B000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x70000
+Adding mapping at 0xC428C000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x6F000
+Adding mapping at 0xC428D000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x6E000
+Adding mapping at 0xC428E000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x6D000
+Adding mapping at 0xC428F000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x6C000
+Adding mapping at 0xC4290000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x6B000
+IRQ 33
+IRQ 33
+Adding mapping at 0xC4291000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x6A000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC4075000 TO SWAP: DISK INDEX 0x2 (offset 0x2000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC4299000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x68000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+
+
+Page fault: cr2 0xC4075070, eip 0xC4074332, nos-err 0x0
+===> ENTER PAGE FAULT
+SWAP
+deferring EvictPagesIfNeeded (pages_left = 31)
+ ----> RELOADING SWAP TO VIRT 0xC4075000: DISK INDEX 0x2 (offset 0x2000)
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+IRQ 33
+ide poll delay...
+ide poll delay...
+ ----> WRITING VIRT 0xC41D5000 TO SWAP: DISK INDEX 0x4 (offset 0x4000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC429A000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x68000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ ----> FINISHED RELOADING FROM DISK 0xC4075000
+===> EXIT PAGE FAULT.
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4292000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x69000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D7000 TO SWAP: DISK INDEX 0x2 (offset 0x2000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC429B000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x15D000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4293000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x68000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D4000 TO SWAP: DISK INDEX 0x8 (offset 0x8000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC429C000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x153000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4294000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x15D000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D8000 TO SWAP: DISK INDEX 0x9 (offset 0x9000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC429D000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x167000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4295000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x153000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D2000 TO SWAP: DISK INDEX 0xB (offset 0xB000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC429E000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x152000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4296000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x167000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D1000 TO SWAP: DISK INDEX 0xC (offset 0xC000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC429F000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x179000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4297000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x152000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D6000 TO SWAP: DISK INDEX 0xD (offset 0xD000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42A0000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x7F000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC4298000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x179000
+IRQ 33
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41CD000 TO SWAP: DISK INDEX 0xE (offset 0xE000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42A9000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x156000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+IRQ 33
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A1000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x7F000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41D3000 TO SWAP: DISK INDEX 0xF (offset 0xF000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42AA000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x182000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A2000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x156000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41CA000 TO SWAP: DISK INDEX 0x10 (offset 0x10000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42AB000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x170000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A3000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x182000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41CC000 TO SWAP: DISK INDEX 0x11 (offset 0x11000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42AC000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x188000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A4000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x170000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C9000 TO SWAP: DISK INDEX 0x12 (offset 0x12000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42AD000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x184000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A5000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x188000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C6000 TO SWAP: DISK INDEX 0x13 (offset 0x13000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42AE000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x18A000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A6000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x184000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C8000 TO SWAP: DISK INDEX 0x15 (offset 0x15000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42AF000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x190000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A7000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x18A000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41CF000 TO SWAP: DISK INDEX 0x16 (offset 0x16000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42B0000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x18C000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42A8000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x190000
+IRQ 33
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C2000 TO SWAP: DISK INDEX 0x18 (offset 0x18000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42B9000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x17E000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B1000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x18C000
+IRQ 33
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41CE000 TO SWAP: DISK INDEX 0x19 (offset 0x19000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42BA000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x1A1000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B2000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x17E000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41CB000 TO SWAP: DISK INDEX 0x1A (offset 0x1A000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42BB000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x180000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B3000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x1A1000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C7000 TO SWAP: DISK INDEX 0x1B (offset 0x1B000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42BC000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x186000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B4000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x180000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC414B000 TO SWAP: DISK INDEX 0x1C (offset 0x1C000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42BD000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x18E000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+Adding mapping at 0xC42B5000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x186000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC414A000 TO SWAP: DISK INDEX 0x1D (offset 0x1D000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42BE000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x19D000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B6000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x18E000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC414E000 TO SWAP: DISK INDEX 0x1E (offset 0x1E000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42BF000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x19F000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B7000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x19D000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C4000 TO SWAP: DISK INDEX 0x1F (offset 0x1F000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42C0000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x198000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42B8000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x19F000
+IRQ 33
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC4078000 TO SWAP: DISK INDEX 0x20 (offset 0x20000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42C9000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x194000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+IRQ 33
+Adding mapping at 0xC42C1000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x198000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC406C000 TO SWAP: DISK INDEX 0x21 (offset 0x21000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42CA000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x1A9000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42C2000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x194000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC4076000 TO SWAP: DISK INDEX 0x22 (offset 0x22000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42CB000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x1B8000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42C3000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x1A9000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C1000 TO SWAP: DISK INDEX 0x23 (offset 0x23000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42CC000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x1AB000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42C4000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x1B8000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC406A000 TO SWAP: DISK INDEX 0x24 (offset 0x24000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42CD000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x19E000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42C5000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x1AB000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC4040000 TO SWAP: DISK INDEX 0x25 (offset 0x25000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42CE000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x1B3000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+Adding mapping at 0xC42C6000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x19E000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC406B000 TO SWAP: DISK INDEX 0x26 (offset 0x26000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42CF000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x142000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42C7000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x1B3000
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC41C5000 TO SWAP: DISK INDEX 0x27 (offset 0x27000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42D0000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x1C0000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+Adding mapping at 0xC42C8000. flags = 0x11, rwxgu'lfia = 10010'1011. p 0x142000
+
+
+Page fault: cr2 0xC406B018, eip 0xC40690A4, nos-err 0x0
+===> ENTER PAGE FAULT
+SWAP
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ----> RELOADING SWAP TO VIRT 0xC406B000: DISK INDEX 0x26 (offset 0x26000)
+ ///=> About to start evicting pages...
+ ----> WRITING VIRT 0xC4077000 TO SWAP: DISK INDEX 0x28 (offset 0x28000)
+deferring EvictPagesIfNeeded (pages_left = 31)
+Adding mapping at 0xC42D1000. flags = 0x213, rwxgu'lfia = 11010'1011. p 0x192000
+ ///=> EvictPagesIfNeeded was called, but nobody's home!...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+ide poll delay...
+
+
+Page fault: cr2 0x7830206D, eip 0xC0105893, nos-err 0x0
+===> ENTER PAGE FAULT
+PANIC 8 
+
+Page fault: cr2 0x0, eip 0xC0106E53, nos-err 0x0
+===> ENTER PAGE FAULT
+OOPS! vas
+PANIC 9 assertion failure
+
+
+ *** KERNEL PANIC ***
+
+0x9 - assertion failure

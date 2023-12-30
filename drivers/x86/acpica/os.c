@@ -22,6 +22,18 @@
 #include <machine/portio.h>
 #include <machine/interrupt.h>
 
+/*
+ * TODO: some bad news ... 
+ * "He who holds a spinlock must be locked into virtual memory" (otherwise code at IRQL_SCHEDULER+ i.e. the critical section
+ * could be paged out...).
+ * 
+ * Holding mutexes should be fine, but spinlocks are a big no no. How often does ACPICA use spinlocks? Is it controlled
+ * by AML? Can it get away with a less strong locking mechanism??
+ * 
+ * Or, the ACPICA spec seems to think a single threaded mode is okay and means spinlocks et. al. can just be no-ops.
+ * How would that work?
+ */
+
 #include "acpi.h"
 
 ACPI_STATUS AcpiOsInitialize()
@@ -407,9 +419,9 @@ static int HandleAcpicaInterrupt(int num) {
     }
 }
 
-static int acpica_caught_irq = -1;
+static int LOCKED_DRIVER_DATA acpica_caught_irq = -1;
 
-static int AcpicaInterruptCatcher(struct x86_regs* regs) {
+static int LOCKED_DRIVER_CODE AcpicaInterruptCatcher(struct x86_regs* regs) {
     /*
      * We can't actually run the handler right now, as we're in IRQL_DRIVER or above.
      * And ACPICA has no concept of IRQL, so it could do whatever. Instead, we'll just set a flag,
@@ -644,6 +656,33 @@ static ACPI_STATUS AcpicaWalkNamespace(void)
 // *********************************************************************************************
 
 
+/*
+ * "He who acquires a spinlock must be locked"
+ */
+static void LOCKED_DRIVER_CODE PollIrqs() {
+    struct spinlock irq_caught_lock;
+    InitSpinlock(&irq_caught_lock, "acpica irq", IRQL_HIGH);
+
+    /*
+     * Poll for any IRQs that have been raised, and execute the ACPICA handler if needed.
+     * We do this as we can't run the handlers from the IRQ context for IRQL reasons.
+     */
+    while (true) {
+        int irql = AcquireSpinlockIrql(&irq_caught_lock);
+        if (acpica_caught_irq != -1) {
+            int irq = acpica_caught_irq;
+            acpica_caught_irq = -1;
+            ReleaseSpinlockIrql(&irq_caught_lock);
+            HandleAcpicaInterrupt(irq);
+
+        } else {
+            ReleaseSpinlockIrql(&irq_caught_lock);
+        }
+
+        SleepMilli(100);
+    }
+}
+
 void AcpicaThread(void*) {
     LogWriteSerial("ACPICA.SYS loaded\n");
 
@@ -815,27 +854,7 @@ void AcpicaThread(void*) {
 
     LogWriteSerial("ACPICA.SYS fully initialised\n");
 
-    struct spinlock irq_caught_lock;
-    InitSpinlock(&irq_caught_lock, "acpica irq", IRQL_HIGH);
-
-    /*
-     * Poll for any IRQs that have been raised, and execute the ACPICA handler if needed.
-     * We do this as we can't run the handlers from the IRQ context for IRQL reasons.
-     */
-    while (true) {
-        int irql = AcquireSpinlockIrql(&irq_caught_lock);
-        if (acpica_caught_irq != -1) {
-            int irq = acpica_caught_irq;
-            acpica_caught_irq = -1;
-            ReleaseSpinlockIrql(&irq_caught_lock);
-            HandleAcpicaInterrupt(irq);
-
-        } else {
-            ReleaseSpinlockIrql(&irq_caught_lock);
-        }
-
-        SleepMilli(100);
-    }
+    PollIrqs();
 }
 
 void InitAcpica(void) {

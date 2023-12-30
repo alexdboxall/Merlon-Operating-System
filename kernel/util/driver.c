@@ -275,13 +275,38 @@ static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t 
         entry += 1;
     }
 
+
+    /*
+     * We also need to lock these, as (and YES this has actually happened before):
+     *   - if the relocation is on the boundary of the next one, and the next one is not present
+     *   - and the next one is relocatable
+     * Then:
+     *   - we make the next page writable
+     *   - we try to do the straddle relocation
+     *   - that causes a fault on the next page (not present)
+     *   - that one is also relocatable, so it enables writing on that page
+     *   - it finishes, and unmarks it as writable
+     *   - we fail to do the relocation, as it is no longer writable
+     * 
+     * By locking it first, we force the relocations on the second page to happen first, and then we can
+     * mark it as writable.
+     */
+    
+    /*
+     * We just lock this page and the next one, just in case there is a straddler.
+     * 
+     * @@@
+     * TODO: we need to only do this if there is actually a straddler. otherwise, we will end up bringing
+     *       the entire driver into memory (as loading the next page will load the next one, and so forth)
+     */
+
+
     bool needs_write_low = (GetVirtPermissions(virtual) & VM_WRITE) == 0;
-	bool needs_write_high = (GetVirtPermissions(virtual + sizeof(size_t) - 1) & VM_WRITE) == 0;
+    bool needs_write_high = false;
+    bool need_unlock_high = false;
+    
 	if (needs_write_low) {
-		SetVirtPermissions(virtual, VM_WRITE, 0);
-	}
-	if (needs_write_high) {
-		SetVirtPermissions(virtual + sizeof(size_t) - 1, VM_WRITE, 0);
+    	SetVirtPermissions(virtual, VM_WRITE, 0);
 	}
 
     size_t final_address = table->entries[table->used_entries - 1].address;
@@ -290,6 +315,17 @@ static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t 
         || (entry->address - sizeof(size_t) + 1) == virtual / ARCH_PAGE_SIZE) {
 
         LogWriteSerial("reapplying relocation: 0x%X -> 0x%X\n", entry->address, entry->value);
+
+        if ((entry->address + sizeof(size_t) + 1) / ARCH_PAGE_SIZE != virtual / ARCH_PAGE_SIZE) {
+            LogWriteSerial("NEEDS LOCK HIGH! 0x%X 0x%X\n", virtual, virtual + ARCH_PAGE_SIZE);
+            need_unlock_high = !LockVirt(virtual + ARCH_PAGE_SIZE);
+            LogWriteSerial("LOCKED THE HIGH PAGE.\n");
+            needs_write_high = (GetVirtPermissions(virtual + ARCH_PAGE_SIZE) & VM_WRITE) == 0;
+            if (needs_write_high) {
+                LogWriteSerial("NEEDS WRITE HIGH!\n");
+                SetVirtPermissions(virtual + ARCH_PAGE_SIZE, VM_WRITE, 0);
+            }
+        }
 
         size_t* ref = (size_t*) entry->address;
         *ref = entry->value;
@@ -304,9 +340,11 @@ static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t 
 		SetVirtPermissions(virtual, 0, VM_WRITE);
 	}
 	if (needs_write_high) {
-		SetVirtPermissions(virtual + sizeof(size_t) - 1, 0, VM_WRITE);
+		SetVirtPermissions(virtual + ARCH_PAGE_SIZE, 0, VM_WRITE);
 	}
-
+    if (need_unlock_high) {
+        UnlockVirt(virtual + ARCH_PAGE_SIZE);
+    }
 }
 
 void PerformDriverRelocationOnPage(struct vas*, size_t relocation_base, size_t virt) {

@@ -41,6 +41,8 @@ struct vas_entry {
     uint8_t times_swapped   : 1;
     uint8_t first_load      : 1;
 
+    uint8_t load_in_progress: 1;        /* someone else is deferring a read into this page - keep trying the access until flag clears */
+
     off_t file_offset;
     struct open_file* file_node;
     size_t physical;
@@ -56,9 +58,9 @@ struct vas;
 
 size_t BytesToPages(size_t bytes);
 
-void LockVirt(size_t virtual);
+bool LockVirt(size_t virtual);
 void UnlockVirt(size_t virtual);
-void LockVirtEx(struct vas* vas, size_t virtual);
+bool LockVirtEx(struct vas* vas, size_t virtual);
 void UnlockVirtEx(struct vas* vas, size_t virtual);
 
 void SetVirtPermissions(size_t virtual, int set, int clear);
