@@ -381,13 +381,15 @@ void AcpiOsDeleteLock(ACPI_HANDLE Handle)
 
 ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle)
 {
-    AcquireSpinlockIrql((struct spinlock*) Handle);
+    LogWriteSerial("AcpiOsAcquireLock\n");
+    //AcquireSpinlockIrql((struct spinlock*) Handle);
     return 0;
 }
 
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags)
 {
-    ReleaseSpinlockIrql((struct spinlock*) Handle);
+    //ReleaseSpinlockIrql((struct spinlock*) Handle);
+    LogWriteSerial("AcpiOsReleaseLock\n");
 }
 
 struct acpica_interrupt_handler {

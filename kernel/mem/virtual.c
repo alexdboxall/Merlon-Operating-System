@@ -116,10 +116,16 @@ struct defer_disk_access {
 };
 
 static void PerformDeferredAccess(void* data) {
+    LogWriteSerial("PDA\n");
     struct defer_disk_access* access = (struct defer_disk_access*) data;
-    struct transfer tr = CreateKernelTransfer((void*) access->address, ARCH_PAGE_SIZE, access->offset, access->direction);
 
     bool write = access->direction == TRANSFER_WRITE;
+    size_t target_address = access->address;
+    if (!write) {
+        target_address = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
+    }
+
+    struct transfer tr = CreateKernelTransfer((void*) target_address, ARCH_PAGE_SIZE, access->offset, access->direction);
 
     int res = (write ? WriteFile : ReadFile)(access->file, &tr);
     if (res != 0) {
@@ -132,32 +138,51 @@ static void PerformDeferredAccess(void* data) {
     } else {
         struct vas* vas = GetVas();
         AcquireSpinlockIrql(&vas->lock);
+
         struct vas_entry* entry = GetVirtEntry(vas, access->address);
+        entry->lock = true;
+
+        if (entry->swapfile || entry->file) {
+            entry->physical = AllocPhys();
+            entry->allocated = true;
+            entry->allow_temp_write = true;
+            entry->in_ram = true;
+            entry->swapfile = false;
+            ArchUpdateMapping(vas, entry);
+            ArchFlushTlb(vas);
+        }
+
+        inline_memcpy((void*) access->address, (const char*) target_address, ARCH_PAGE_SIZE);
+        
         entry->allow_temp_write = false;
         if (access->deallocate_swap_on_read) {
             DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
         }
         bool holy_shit = entry->relocatable && !entry->first_load;
-        if (!holy_shit) {
-            entry->lock = false;
-        }
-
         /*
          * Need to keep page locked if we're doing relocations on it - otherwise by the time that we actually 
          * load in all the data we need to do the relocations (e.g. ELF headers, the symbol table), we have probably
          * already swapped out the page we are relocating (which leads to us getting nowhere).
          */
-        entry->first_load = false;
         ArchUpdateMapping(vas, entry);
         ArchFlushTlb(vas);
+        if (!holy_shit) {
+            entry->first_load = false;
+            entry->load_in_progress = false;
+            entry->lock = false;
+        }
         ReleaseSpinlockIrql(&vas->lock);
 
-        // TODO: locks here need to be adjusted to include the below within it, but that needs recursive mutexes
+        UnmapVirt(target_address, ARCH_PAGE_SIZE);
 
         if (holy_shit) {
             LogWriteSerial(" ----> ABOUT TO PERFORM RELOCATION FIXUPS\n");
             PerformDriverRelocationOnPage(vas, entry->relocation_base, access->address);
-            UnlockVirt(access->address);
+            AcquireSpinlockIrql(&vas->lock);
+            entry->first_load = false;
+            entry->load_in_progress = false;
+            UnlockVirtEx(vas, access->address);
+            ReleaseSpinlockIrql(&vas->lock);
             LogWriteSerial(" ----> PERFORMED RELOCATION FIXUPS\n");
         }
         
@@ -185,8 +210,6 @@ static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset
 }
 
 static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset, bool deallocate_swap_on_read) {
-    LockVirtEx(GetVas(), new_addr);
-
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
@@ -551,6 +574,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->user = (flags & VM_USER) ? 1 : 0;
     entry->relocatable = (flags & VM_RELOCATABLE) ? 1 : 0;
     entry->allow_temp_write = false;
+    entry->load_in_progress = false;
     entry->global = !(flags & VM_LOCAL);
     entry->physical = physical;
     entry->ref_count = 1;
@@ -858,15 +882,17 @@ static void BringIntoMemoryFromFile(struct vas_entry* entry) {
      * calls schedule in a loop until the 'retry-me' flag is cleared, then it retries the page fault
      * (i.e. just returns). 
      */
+
+    /*
     entry->physical = AllocPhys();
     entry->allocated = true;
     entry->allow_temp_write = true;
     entry->in_ram = true;
-    entry->swapfile = false;
+    entry->swapfile = false;*/
+
+    entry->load_in_progress = true;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
-    LogWriteSerial("About to defer a disk read... %s\n", entry->relocatable ? "RELOCATABLE" : "NON-RELOCATABLE");
-
     DeferDiskRead(entry->virtual, entry->file_node, entry->file_offset, false);
 }
 
@@ -877,17 +903,20 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     // see comment above...
 
     uint64_t offset = entry->swapfile_offset;
+
+    /*
     entry->physical = AllocPhys();
     entry->allocated = true;
     entry->in_ram = true;
     entry->allow_temp_write = true;
-    entry->swapfile = false;
+    entry->swapfile = false;*/
+    entry->load_in_progress = true;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
-
     LogWriteSerial(" ----> RELOADING SWAP TO VIRT 0x%X: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
 
     DeferDiskRead(entry->virtual, GetSwapfile(), offset, true);
+    LogWriteSerial("scheduled DDR\n");
 }
 
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {
@@ -1190,14 +1219,20 @@ void InitVirt(void) {
 int handling_page_fault = 0;
 
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
-    LogWriteSerial("===> ENTER PAGE FAULT\n");
+    LogWriteSerial("===> ENTER PAGE FAULT");
+
+    if (GetIrql() >= IRQL_SCHEDULER) {
+        PanicEx(PANIC_INVALID_IRQL, "page fault while IRQL >= IRQL_SCHEDULER. is some clown holding a spinlock while "
+                                    "executing pageable code? or calling AllocHeapEx wrong with a lock held?");
+    }
 
     (void) fault_type;
 
-    ++handling_page_fault;
-
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
+    ++handling_page_fault;
+
+    LogWriteSerial(" %d\n", handling_page_fault);
     struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
 
     if (entry == NULL) {
@@ -1231,9 +1266,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     --handling_page_fault;
     ReleaseSpinlockIrql(&vas->lock);
-    LogWriteSerial("===> EXIT PAGE FAULT.\n");
-
-    // TODO: try to evict pages here if running low...
+    LogWriteSerial("===> EXIT PAGE FAULT. IRQL = %d\n", GetIrql());
 }
 
 /**
