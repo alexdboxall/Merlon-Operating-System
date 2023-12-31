@@ -2,10 +2,11 @@
 #include <panic.h>
 #include <arch.h>
 #include <log.h>
+#include <errno.h>
 #include <debug.h>
 #include <irql.h>
 
-static char* message_table[_PANIC_HIGHEST_VALUE] = {
+static const char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_UNKNOWN] 							= "unknown",
 	[PANIC_IMPOSSIBLE_RETURN] 					= "impossible return",
 	[PANIC_MANUALLY_INITIATED]					= "manually initiated",
@@ -38,12 +39,28 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_REQUIRED_DRIVER_NOT_FOUND]			= "a required driver could not be loaded",
 	[PANIC_NO_LOW_MEMORY]						= "not enough conventional memory to satisfy request",
 	[PANIC_OUT_OF_SWAPFILE]						= "out of swapfile space",
+	[PANIC_PROGRAM_LOADER]						= "failed to load the program loader",
 };
+
+static void (*graphical_panic_handler)(int, const char*) = NULL;
+
+int SetGraphicalPanicHandler(void (*handler)(int, const char*)) {
+	if (graphical_panic_handler == NULL) {
+		graphical_panic_handler = handler;
+		return 0;
+
+	} else {
+		return EALREADY;
+	}
+}
+
+const char* GetPanicMessageFromCode(int code) {
+	return code < _PANIC_HIGHEST_VALUE ? message_table[code] : "";
+}
 
 [[noreturn]] void Panic(int code)
 {
-	char* msg = code < _PANIC_HIGHEST_VALUE ? message_table[code] : "";
-	PanicEx(code, msg);
+	PanicEx(code, GetPanicMessageFromCode(code));
 }
 
 [[noreturn]] void PanicEx(int code, const char* message) {
@@ -56,6 +73,10 @@ static char* message_table[_PANIC_HIGHEST_VALUE] = {
 
 	RaiseIrql(IRQL_HIGH);
 	LogWriteSerial("\n\n *** KERNEL PANIC ***\n\n0x%X - %s\n", code, message);
+
+	if (graphical_panic_handler != NULL) {
+		graphical_panic_handler(code, message);
+	}
 
 	while (1) {
 		ArchDisableInterrupts();

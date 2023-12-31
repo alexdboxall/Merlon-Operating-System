@@ -1,8 +1,10 @@
 #include <machine/dev.h>
 #include <machine/portio.h>
 #include <driver.h>
+#include <thread.h>
 #include <panic.h>
 #include <log.h>
+#include <virtual.h>
 
 static size_t Loadx86Driver(const char* filename, const char* init) {
     int res = RequireDriver(filename);
@@ -18,6 +20,15 @@ static size_t Loadx86Driver(const char* filename, const char* init) {
     return addr;
 }
 
+static void LoadSlowDriversInBackground(void*) {
+    /*
+     * To make the OS boot faster, we'll load the less critical, and slower, drivers in
+     * in a new thread. This means we can continue initialising the rest of the OS while
+     * drivers load.
+     */ 
+    ((void(*)()) (Loadx86Driver("sys:/acpica.sys", "InitAcpica")))();
+}
+
 void ArchInitDev(bool fs) {
     if (!fs) {
         InitIde();
@@ -26,6 +37,6 @@ void ArchInitDev(bool fs) {
         ((void(*)()) (Loadx86Driver("sys:/vesa.sys", "InitVesa")))();
         ((void(*)()) (Loadx86Driver("sys:/ps2.sys", "InitPs2")))();
         //((void(*)()) (Loadx86Driver("sys:/vga.sys", "InitVga")))();
-        ((void(*)()) (Loadx86Driver("sys:/acpica.sys", "InitAcpica")))();
+        CreateThread(LoadSlowDriversInBackground, NULL, GetVas(), "drvloader");
     }
 }

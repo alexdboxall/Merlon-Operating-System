@@ -206,8 +206,10 @@ next_sector:
 
 
 preferred_modes_table:
-	;db 0x17		; FOR TESTING
-	db 0x05		; FOR REAL H/W
+	db 0x18		; FOR TESTING (depth = 24/32)
+	db 0x16		; FOR TESTING (depth = 15)
+	db 0x17		; FOR TESTING (depth = 16)
+	db 0x05		; FOR REAL H/W (depth = 8)
 
 	db 0x07
 

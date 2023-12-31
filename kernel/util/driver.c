@@ -291,15 +291,6 @@ static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t 
      * By locking it first, we force the relocations on the second page to happen first, and then we can
      * mark it as writable.
      */
-    
-    /*
-     * We just lock this page and the next one, just in case there is a straddler.
-     * 
-     * @@@
-     * TODO: we need to only do this if there is actually a straddler. otherwise, we will end up bringing
-     *       the entire driver into memory (as loading the next page will load the next one, and so forth)
-     */
-
 
     bool needs_write_low = (GetVirtPermissions(virtual) & VM_WRITE) == 0;
     bool needs_write_high = false;

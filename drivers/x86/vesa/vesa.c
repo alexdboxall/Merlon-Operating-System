@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <log.h>
 #include <vfs.h>
+#include <panic.h>
 #include <voidptr.h>
 #include <thread.h>
 #include <physical.h>
@@ -44,7 +45,11 @@ struct vesa_data {
 };
 
 static struct LOCKED_DRIVER_DATA semaphore* data_lock = NULL;
-static struct vesa_data* data = NULL;
+
+/*
+ * Needs to be locked so the panic handler will work. 
+ */
+static struct LOCKED_DRIVER_DATA vesa_data* data = NULL;
 
 void (*GenericVideoDrawConsoleCharacter)(uint8_t*, int, int, int, int, uint32_t, uint32_t, char) = NULL;
 void (*GenericVideoPutpixel)(uint8_t*, int, int, int, int, uint32_t);
@@ -246,6 +251,104 @@ void ShowRAMUsage(void*) {
     }
 }
 
+
+static void LOCKED_DRIVER_CODE PanicPutpixel(int x, int y, uint32_t colour) {
+    uint8_t* position = data->framebuffer_virtual + y * data->pitch;
+    int depth = data->depth_in_bits;
+    if (depth == 24) {
+        position += x * 3;
+        *position++ = (colour >> 0) & 0xFF;
+        *position++ = (colour >> 8) & 0xFF;
+        *position = (colour >> 16) & 0xFF;
+
+    } else if (depth == 32) {
+        position += x * 4;
+        *position++ = (colour >> 0) & 0xFF;
+        *position++ = (colour >> 8) & 0xFF;
+        *position = (colour >> 16) & 0xFF;
+
+    } else if (depth == 15 || depth == 16) {
+        position += x * 2;
+        *position++ = (colour >> 0) & 0xFF;
+        *position = (colour >> 8) & 0xFF;
+
+    } else {
+        position += x;
+        *position = colour & 0xFF;
+    }
+}
+
+// 0-9 = digits; 10 = underscore; 11+ = uppercase 
+static uint8_t LOCKED_DRIVER_DATA panic_font[16 * (26 + 10 + 1)];
+
+static void LOCKED_DRIVER_CODE PanicDrawCharacter(int pixel_x, int pixel_y, uint32_t adjusted_colour, char c) {
+    if (c == ' ') {
+        return;
+    }
+    if (c >= 'a' && c <= 'z') {
+        c -= 32;
+    }
+    
+    int char_index;
+    if (c >= 'A' && c <= 'Z') {
+        char_index = 11 + c - 'A';
+    } else if (c >= '0' && c <= '9') {
+        char_index = c - '0';
+    } else {
+        char_index = 10;
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        uint8_t font_char = panic_font[char_index * 16 + i];
+
+        for (int j = 0; j < 8; ++j) {
+            if (font_char & 0x80) {
+                PanicPutpixel(pixel_x + j, pixel_y + i, adjusted_colour);
+            }
+            font_char <<= 1;
+        }
+    }
+}
+
+static void LOCKED_DRIVER_CODE PanicHandler(int code, const char* message) {
+    (void) code;
+    (void) message;
+
+    uint32_t fg_col = 0xFFFFFF;
+    uint32_t bg_col = 0x0000AA;
+
+    if (data->depth_in_bits == 8) {
+        bg_col = 0x1;
+        fg_col = 0xF;
+
+    } else if (data->depth_in_bits == 15 || data->depth_in_bits == 16) {
+        bg_col = 0x15;
+        fg_col = data->depth_in_bits == 15 ? 0x7FFF : 0xFFFF;
+    }
+
+    for (int y = 0; y < data->height; ++y) {
+        for (int x = 0; x < data->width; ++x) {
+            PanicPutpixel(x, y, bg_col);
+        }
+    }
+
+    const char* panic_msg = "KERNEL PANIC";
+    for (int i = 0; panic_msg[i]; ++i) {
+        PanicDrawCharacter(32 + i * 8, 32, fg_col, panic_msg[i]);
+    }
+
+    int code_x = 32 + 3 * 8;
+    for (int i = 0; i < 4; ++i) {
+        PanicDrawCharacter(code_x, 64, fg_col, (code % 10) + '0');
+        code /= 10;
+        code_x -= 8;
+    }
+
+    for (int i = 0; message[i]; ++i) {
+        PanicDrawCharacter(32 + i * 8, 64 + 16, fg_col, message[i]);
+    }
+}
+
 /*
 * Set up the hardware, and install the device into the virtual filesystem.
 */
@@ -256,6 +359,17 @@ void InitVesa(void) {
     GenericVideoPutpixel = (void (*)(uint8_t*, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutpixel");
     GenericVideoDrawConsoleCharacter = (void (*)(uint8_t*, int, int, int, int, uint32_t, uint32_t, char)) GetSymbolAddress("GenericVideoDrawConsoleCharacter");
     GenericVideoPutrect = (void (*)(uint8_t*, int, int, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutrect");
+
+    uint8_t* code_page_437 = (uint8_t*) GetSymbolAddress("CodePage437Font");
+    for (int i = 0; i < 16 * 10; ++i) {
+        panic_font[i] = code_page_437[((int) '0') * 16 + i];
+    }
+    for (int i = 0; i < 16; ++i) {
+        panic_font[i + 16 * 10] = code_page_437[((int) '_') * 16 + i];
+    }
+    for (int i = 0; i < 16 * 26; ++i) {
+        panic_font[i + 16 * 11] = code_page_437[((int) 'A') * 16 + i];
+    }
 
     //auto HsvToRgb = (uint32_t (*)(int, int, int)) GetSymbolAddress("HsvToRgb");
 
@@ -292,6 +406,7 @@ void InitVesa(void) {
     driver.puts = DrvConsolePuts;
     InitVideoConsole(driver);
 
+    SetGraphicalPanicHandler(PanicHandler);
     CreateThread(ShowRAMUsage, NULL, GetVas(), "ram usage");
 
     /*int LINES_PER_SECTION = 50;

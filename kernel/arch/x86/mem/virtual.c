@@ -30,7 +30,7 @@ static size_t first_page_table[1024] __attribute__((aligned(ARCH_PAGE_SIZE)));
 static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 	size_t* page_dir = vas->arch_data->v_page_directory;
 	size_t page_dir_phys = AllocPhys();
-	page_dir[table_num] = page_dir_phys | x86_PAGE_PRESENT | x86_PAGE_WRITE;
+	page_dir[table_num] = page_dir_phys | x86_PAGE_PRESENT | x86_PAGE_WRITE | x86_PAGE_USER;
 	ArchFlushTlb(vas);
 	inline_memset((void*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE), 0, ARCH_PAGE_SIZE);
 }
@@ -80,6 +80,7 @@ void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry) {
 	 */
 	if ((!entry->cow && entry->write) || entry->allow_temp_write) flags |= x86_PAGE_WRITE;
 	if (entry->in_ram) flags |= x86_PAGE_PRESENT;
+	if (entry->user) flags |= x86_PAGE_USER;
 
 	x86MapPage(vas, entry->physical, entry->virtual, flags);
 }

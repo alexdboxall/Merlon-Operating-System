@@ -11,6 +11,7 @@
 #include <panic.h>
 #include <stdlib.h>
 #include <process.h>
+#include <progload.h>
 #include <dev.h>
 #include <vfs.h>
 #include <transfer.h>
@@ -51,6 +52,13 @@
 		PutsConsole("Command not found: ");
 		PutsConsole(bf);
         PutsConsole("\n");
+
+        if (bf[0] == 'u' || bf[0] == 'U') {
+            CreateThread(ThreadExecuteInUsermode, NULL, CreateVas(), "test user thread");
+            
+        } else if (bf[0] == 'p' || bf[0] == 'P') {
+            Panic(PANIC_MANUALLY_INITIATED);
+        }
 
         if (GetFreePhysKilobytes() < 16) {
             PutsConsole("Less than 16 KB left\n");
@@ -99,6 +107,7 @@ void InitThread(void*) {
     InitSwapfile();
     InitSymbolTable();
     ArchInitDev(true);
+    InitProgramLoader();
     InitUserspace();
 
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);

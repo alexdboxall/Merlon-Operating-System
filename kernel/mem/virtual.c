@@ -116,7 +116,8 @@ struct defer_disk_access {
 };
 
 static void PerformDeferredAccess(void* data) {
-    LogWriteSerial("PDA\n");
+    // TODO: see comment in BringIntoMemoryFromFile
+
     struct defer_disk_access* access = (struct defer_disk_access*) data;
 
     bool write = access->direction == TRANSFER_WRITE;
@@ -871,25 +872,9 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
 }
 
 static void BringIntoMemoryFromFile(struct vas_entry* entry) {
-    // TODO: I still don't think we should be marking it as present here
-    /*
-     * I think we need to leave it as is, and mark the page as 'retry-me'
-     * This page fault then calls deferRead, which reads to a temporary page, then in a lock
-     * it transfers it to the correct page, and all of this flag setting (including setting 'retry-me'
-     * to false).
-     * 
-     * If some other thread faults on this page, and the 'retry-me' flag is set, then it just 
-     * calls schedule in a loop until the 'retry-me' flag is cleared, then it retries the page fault
-     * (i.e. just returns). 
-     */
-
-    /*
-    entry->physical = AllocPhys();
-    entry->allocated = true;
-    entry->allow_temp_write = true;
-    entry->in_ram = true;
-    entry->swapfile = false;*/
-
+    // TODO: either here, or in the actual deferred access func, need to ensure that if you try to
+    //       go past the end of the file, you just get zeros (either in the end of a half-filled file page,
+    //       or just entirely new pages past the end of the file)
     entry->load_in_progress = true;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
@@ -899,24 +884,13 @@ static void BringIntoMemoryFromFile(struct vas_entry* entry) {
 static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     assert(!entry->file);
 
-    // TODO: @@@
-    // see comment above...
-
     uint64_t offset = entry->swapfile_offset;
-
-    /*
-    entry->physical = AllocPhys();
-    entry->allocated = true;
-    entry->in_ram = true;
-    entry->allow_temp_write = true;
-    entry->swapfile = false;*/
     entry->load_in_progress = true;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
     LogWriteSerial(" ----> RELOADING SWAP TO VIRT 0x%X: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
 
     DeferDiskRead(entry->virtual, GetSwapfile(), offset, true);
-    LogWriteSerial("scheduled DDR\n");
 }
 
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow) {

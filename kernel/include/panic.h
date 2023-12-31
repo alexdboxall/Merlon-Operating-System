@@ -100,10 +100,14 @@ enum {
     PANIC_REQUIRED_DRIVER_NOT_FOUND,
     PANIC_NO_LOW_MEMORY,
     PANIC_OUT_OF_SWAPFILE,
+    PANIC_PROGRAM_LOADER,
 
     _PANIC_HIGHEST_VALUE
 };
 
 
-export _Noreturn void PanicEx(int code, const char* message);
-export _Noreturn void Panic(int code);
+_Noreturn void PanicEx(int code, const char* message);
+_Noreturn void Panic(int code);
+
+const char* GetPanicMessageFromCode(int code);
+int SetGraphicalPanicHandler(void (*handler)(int, const char*));

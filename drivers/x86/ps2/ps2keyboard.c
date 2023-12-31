@@ -194,6 +194,8 @@ void InitPs2Keyboard(void) {
     bool translation_on = Ps2ControllerGetConfiguration() & (1 << 6);
     int scancode_set = Ps2KeyboardGetScancodeSet();
 
+    LogWriteSerial("Keybrd: translation is %s, and scancode set %d\n", translation_on ? "on" : "off", scancode_set);
+
     if (scancode_set == 3 || scancode_set == -1) {
         int res = Ps2KeyboardSetScancodeSet(translation_on ? 2 : 1);
         if (res != 0) {

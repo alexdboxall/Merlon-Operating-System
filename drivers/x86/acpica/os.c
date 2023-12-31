@@ -24,7 +24,7 @@
 
 /*
  * TODO: some bad news ... 
- * "He who holds a spinlock must be locked into virtual memory" (otherwise code at IRQL_SCHEDULER+ i.e. the critical section
+ * "The one who holds a spinlock must be locked into virtual memory" (otherwise code at IRQL_SCHEDULER+ i.e. the critical section
  * could be paged out...).
  * 
  * Holding mutexes should be fine, but spinlocks are a big no no. How often does ACPICA use spinlocks? Is it controlled
@@ -381,7 +381,7 @@ void AcpiOsDeleteLock(ACPI_HANDLE Handle)
 
 ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle)
 {
-    LogWriteSerial("AcpiOsAcquireLock\n");
+    LogDeveloperWarning("AcpiOsAcquireLock\n");
     //AcquireSpinlockIrql((struct spinlock*) Handle);
     return 0;
 }
@@ -389,7 +389,7 @@ ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle)
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags)
 {
     //ReleaseSpinlockIrql((struct spinlock*) Handle);
-    LogWriteSerial("AcpiOsReleaseLock\n");
+    LogDeveloperWarning("AcpiOsReleaseLock\n");
 }
 
 struct acpica_interrupt_handler {
@@ -427,7 +427,7 @@ static int LOCKED_DRIVER_CODE AcpicaInterruptCatcher(struct x86_regs* regs) {
     /*
      * We can't actually run the handler right now, as we're in IRQL_DRIVER or above.
      * And ACPICA has no concept of IRQL, so it could do whatever. Instead, we'll just set a flag,
-     * and the mainloop of the ACPICA thread can poll for it (every 100ms). 
+     * and the mainloop of the ACPICA thread can poll for it (every 200ms). 
      */
     int num = regs->int_no - PIC_IRQ_BASE;
     if (acpica_caught_irq == -1) {
@@ -681,7 +681,7 @@ static void LOCKED_DRIVER_CODE PollIrqs() {
             ReleaseSpinlockIrql(&irq_caught_lock);
         }
 
-        SleepMilli(100);
+        SleepMilli(200);
     }
 }
 
@@ -844,14 +844,14 @@ void AcpicaThread(void*) {
     if (a != AE_OK) {
         LogDeveloperWarning("FAILURE AcpiReadBitRegister(ACPI_BITREG_SCI_ENABLE)");
     } else {
-        LogWriteSerial("Register ACPI_BITREG_SCI_ENABLE has value: 0x%X", retv);
+        LogWriteSerial("Register ACPI_BITREG_SCI_ENABLE has value: 0x%X\n", retv);
     }
 
     a = AcpiReadBitRegister(ACPI_BITREG_POWER_BUTTON_ENABLE, &retv);
     if (a != AE_OK) {
         LogDeveloperWarning("FAILURE AcpiReadBitRegister(ACPI_BITREG_POWER_BUTTON_ENABLE)");
     } else {
-        LogWriteSerial("Register ACPI_BITREG_POWER_BUTTON_ENABLE has value: 0x%X", retv);
+        LogWriteSerial("Register ACPI_BITREG_POWER_BUTTON_ENABLE has value: 0x%X\n", retv);
     }
 
     LogWriteSerial("ACPICA.SYS fully initialised\n");

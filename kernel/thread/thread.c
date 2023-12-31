@@ -106,7 +106,7 @@ static void CreateKernelStacks(struct thread* thr, int kernel_stack_kb) {
     thr->stack_pointer = ArchPrepareStack(thr->kernel_stack_top);
 }
 
-/*static*/ size_t CreateUserStack(int size) {
+static size_t CreateUserStack(int size) {
     /*
     * All user stacks share the same area of virtual memory, but have different
     * mappings to physical memory.
@@ -114,7 +114,7 @@ static void CreateKernelStacks(struct thread* thr, int kernel_stack_kb) {
 
     int total_bytes = BytesToPages(size) * ARCH_PAGE_SIZE;
     size_t stack_base = ARCH_USER_STACK_LIMIT - total_bytes;
-    size_t actual_base = MapVirt(0, stack_base, total_bytes, VM_READ | VM_WRITE | VM_USER, NULL, 0);
+    size_t actual_base = MapVirt(0, stack_base, total_bytes, VM_READ | VM_WRITE | VM_USER | VM_LOCAL, NULL, 0);
     
     assert(stack_base == actual_base);
     (void) actual_base;     // the assert gets taken out on release mode, so make the compiler happy
@@ -216,6 +216,19 @@ struct thread* GetThread(void) {
 static void UpdateTimesliceExpiry(void) {
     struct thread* thr = GetThread();
     thr->timeslice_expiry = GetSystemTimer() + (thr->priority == 255 ? 0 : (20 + thr->priority / 4) * 1000000ULL);
+}
+
+void ThreadExecuteInUsermode(void* arg) {
+    (void) arg;
+
+    size_t user_stack = CreateUserStack(USER_STACK_MAX_SIZE);
+
+    LockScheduler();
+    GetThread()->stack_pointer = user_stack;
+    UnlockScheduler();
+
+    ArchFlushTlb(GetVas());
+    ArchSwitchToUsermode(ARCH_PROG_LOADER_BASE, user_stack);
 }
 
 void ThreadInitialisationHandler(void) {

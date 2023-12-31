@@ -103,6 +103,8 @@ void HandleSleepWakeups(void* sys_time_ptr); // used internally between timer.c 
 void InitIdle(void);
 void InitCleaner(void);
 
+void ThreadExecuteInUsermode(void* arg);
+
 /*
  * A thread can lock itself onto the current cpu. Task switches *STILL OCCUR*, but we ensure that
  * next time this task runs, it will go back to this cpu.

@@ -9,6 +9,7 @@
 #include <machine/pic.h>
 #include <machine/portio.h>
 #include <machine/interrupt.h>
+#include "ps2keyboard.h"
 
 #define PS2_STATUS_BIT_OUT_FULL		1
 #define PS2_STATUS_BIT_IN_FULL		2
@@ -178,7 +179,6 @@ void InitPs2(void) {
 
     bool has_port2 = Ps2ControllerDetectPort2();
 
-    extern void InitPs2Keyboard(void);
     InitPs2Keyboard();
     if (has_port2) {
         LogWriteSerial("we have a second PS/2 port\n");

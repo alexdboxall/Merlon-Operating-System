@@ -15,6 +15,7 @@
 *	- ARCH_MAX_CPU_ALLOWED
 *	- ARCH_MAX_RAM_KBS
 *	- ARCH_BIG_ENDIAN or ARCH_LITTLE_ENDIAN
+*	- the address in the kernel area, ARCH_PROG_LOADER_BASE, where the program loader lives
 * 	- the valid user area, via ARCH_USER_AREA_BASE and ARCH_USER_AREA_LIMIT
 * 	- the valid kernel area, via ARCH_KRNL_SBRK_BASE and ARCH_KRNL_SBRK_LIMIT
 *    		(the kernel and user areas must not overlap, but ARCH_USER_AREA_LIMIT may equal ARCH_KRNL_SBRK_BASE
@@ -98,6 +99,8 @@ int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quic
 void ArchLoadSymbols(struct open_file* file, size_t adjust);
 void ArchSwitchThread(struct thread* old, struct thread* new);
 size_t ArchPrepareStack(size_t addr);
+
+void ArchSwitchToUsermode(size_t entry_point, size_t user_stack);
 
 void ArchInitDev(bool fs);
 

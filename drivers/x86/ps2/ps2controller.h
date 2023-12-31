@@ -2,8 +2,8 @@
 
 #include <common.h>
 
-EXPORT void InitPs2(void);
-NO_EXPORT void Ps2ControllerSetIrqEnable(bool enable, bool port2);
+void InitPs2(void);
+void Ps2ControllerSetIrqEnable(bool enable, bool port2);
 void Ps2ControllerDisableDevice(bool port2);
 void Ps2ControllerEnableDevice(bool port2);
 uint8_t Ps2DeviceRead(void);
