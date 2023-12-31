@@ -66,8 +66,8 @@ void UnlockVirtEx(struct vas* vas, size_t virtual);
 void SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos);
-void UnmapVirt(size_t virtual, size_t bytes);
-void UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages);
+int UnmapVirt(size_t virtual, size_t bytes);
+int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages);
 size_t GetPhysFromVirt(size_t virtual);
 void SetTemporaryWriteEnable(size_t virtual, bool value);
 

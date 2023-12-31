@@ -72,7 +72,6 @@ app_all:
         $(MAKE) -C $$dir build; \
     done
 	
-	
 driver_header:
 	mkdir $(BUILD_DRIVER_SOURCE_DIR)
 	mkdir $(BUILD_DRIVER_SOURCE_DIR)/drivers

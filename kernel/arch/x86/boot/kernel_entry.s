@@ -165,8 +165,6 @@ KernelEntryPoint:
     mov eax, [0x1000 + 40]
     mov [vesa_framebuffer], eax
 
-    ; TODO: map grub table into low memory
-
 	; Remove the identity paging and flush the TLB so the changes take effect
 	mov [boot_page_directory], dword 0
 	mov ecx, cr3

@@ -136,7 +136,7 @@ int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uin
     return 0;
 }  
 
-int WriteStringToUsermode(char* trusted_string, char* untrusted_buffer, uint64_t max_length) {
+int WriteStringToUsermode(const char* trusted_string, char* untrusted_buffer, uint64_t max_length) {
     struct transfer tr = CreateTransferWritingToUser(untrusted_buffer, max_length, 0);
     int result;
 
@@ -145,7 +145,7 @@ int WriteStringToUsermode(char* trusted_string, char* untrusted_buffer, uint64_t
      * as we need to ensure the null terminator fits.
      */
     uint64_t size = strlen(trusted_string) < max_length ? strlen(trusted_string) : max_length - 1;
-    result = PerformTransfer(trusted_string, &tr, size);
+    result = PerformTransfer((void*) trusted_string, &tr, size);
 
     if (result != 0) {
         return result;
@@ -155,7 +155,7 @@ int WriteStringToUsermode(char* trusted_string, char* untrusted_buffer, uint64_t
     return PerformTransfer(&zero, &tr, 1);
 }
 
-int ReadStringFromUsermode(char* trusted_buffer, char* untrusted_string, uint64_t max_length) {
+int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, uint64_t max_length) {
     struct transfer tr = CreateTransferReadingFromUser(untrusted_string, max_length, 0);
     size_t i = 0;
 
@@ -172,6 +172,24 @@ int ReadStringFromUsermode(char* trusted_buffer, char* untrusted_string, uint64_
     }
     
     return 0;
+}
+
+int WriteWordToUsermode(size_t* location, size_t value) {
+    struct transfer io = CreateTransferWritingToUser(location, sizeof(size_t), 0);
+    int res = PerformTransfer(&value, &io, sizeof(size_t));
+    if (io.length_remaining != 0) {
+        return EINVAL;
+    }
+    return res;
+}
+
+int ReadWordFromUsermode(size_t* location, size_t* output) {
+    struct transfer io = CreateTransferReadingFromUser(location, sizeof(size_t), 0);
+    int res = PerformTransfer(output, &io, sizeof(size_t));
+    if (io.length_remaining != 0) {
+        return EINVAL;
+    }
+    return res;
 }
 
 static struct transfer CreateTransfer(void* addr, uint64_t length, uint64_t offset, int direction, int type) {
@@ -196,10 +214,10 @@ struct transfer CreateTransferWritingToUser(void* untrusted_addr, uint64_t lengt
     return CreateTransfer(untrusted_addr, length, offset, TRANSFER_READ, TRANSFER_USERMODE);
 }
 
-struct transfer CreateTransferReadingFromUser(void* untrusted_addr, uint64_t length, uint64_t offset) {
+struct transfer CreateTransferReadingFromUser(const void* untrusted_addr, uint64_t length, uint64_t offset) {
     /*
      * When we "read from the user", we are doing so because the user is trying to *write* to the kernel.
      * i.e. as they are writing to the kernel, it is an "untrusted write" (i.e. a TRANSFER_WRITE).
      */
-    return CreateTransfer(untrusted_addr, length, offset, TRANSFER_WRITE, TRANSFER_USERMODE);
+    return CreateTransfer((void*) untrusted_addr, length, offset, TRANSFER_WRITE, TRANSFER_USERMODE);
 }

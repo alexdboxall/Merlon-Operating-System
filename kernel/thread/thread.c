@@ -228,7 +228,11 @@ void ThreadExecuteInUsermode(void* arg) {
     UnlockScheduler();
 
     ArchFlushTlb(GetVas());
-    ArchSwitchToUsermode(ARCH_PROG_LOADER_BASE, user_stack);
+    ArchSwitchToUsermode(ARCH_PROG_LOADER_ENTRY, user_stack, arg);
+}
+
+struct process* CreateUsermodeProcess(struct process* parent, const char* filename) {
+    return CreateProcessWithEntryPoint(GetPid(parent), ThreadExecuteInUsermode, (void*) filename);
 }
 
 void ThreadInitialisationHandler(void) {

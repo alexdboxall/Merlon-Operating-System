@@ -150,21 +150,21 @@ TFW_CREATE_TEST(WaitOnZombieTest2) { TFW_IGNORE_UNUSED
 TFW_CREATE_TEST(WaitOnManyTest1) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread5, (void*) (size_t) 0);
-    SleepMilli(3000);
+    SleepMilli(6000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitOnManyTest2) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread5, (void*) (size_t) 1);
-    SleepMilli(3000);
+    SleepMilli(6000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitOnManyTest3) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread5, (void*) (size_t) 2);
-    SleepMilli(3000);
+    SleepMilli(6000);
     assert(ok);
 }
 

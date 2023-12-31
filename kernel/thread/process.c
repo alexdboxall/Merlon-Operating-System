@@ -8,6 +8,7 @@
 #include <avl.h>
 #include <panic.h>
 #include <semaphore.h>
+#include <filedes.h>
 #include <spinlock.h>
 #include <heap.h>
 #include <process.h>
@@ -22,6 +23,7 @@ struct process {
     struct avl_tree* threads;
     struct semaphore* lock;
     struct semaphore* killed_children_semaphore;
+    struct filedes_table* filedes_table;
     int retv;
     bool terminated;
 };
@@ -121,6 +123,7 @@ struct process* PAGEABLE_CODE_SECTION CreateProcess(pid_t parent_pid) {
     prcss->retv = 0;
     prcss->terminated = false;
     prcss->pid = InsertIntoProcessTable(prcss);
+    prcss->filedes_table = CreateFileDescriptorTable();
 
     if (parent_pid != 0) {
         struct process* parent = GetProcessFromPid(parent_pid);
@@ -149,6 +152,9 @@ struct process* PAGEABLE_CODE_SECTION ForkProcess(void) {
 
     // TODO: there are probably more things to copy over in the future (e.g. list of open file descriptors, etc.)
     //       the open files, etc.
+
+
+    // TODO: copy file descriptor table
 
     new_process->vas = CopyVas();
     //TODO: need to grab the first thread (I don't think we've ordered threads by thread id yet in the AVL)
@@ -409,12 +415,23 @@ struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(voi
 /**
  * Returns the process id (pid) of a given process.
  * 
- * @param prcss The process to get the pid of
- * @return The process id
+ * @param prcss The process to get the pid of. If this is NULL, zero is returned.
+ * @return The process id.
  * 
  * @note MAX_IRQL(IRQL_HIGH) 
  */
 pid_t GetPid(struct process* prcss) {
     MAX_IRQL(IRQL_HIGH);
+    if (prcss == NULL) {
+        return 0;
+    }
     return prcss->pid;
+}
+
+struct filedes_table* GetFileDescriptorTable(struct process* prcss) {
+    if (prcss == NULL) {
+        return NULL;
+    }
+
+    return prcss->filedes_table;
 }

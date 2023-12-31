@@ -124,7 +124,9 @@
         "util.h": "c",
         "video.h": "c",
         "system_error": "c",
-        "dev.h": "c"
+        "dev.h": "c",
+        "mman.h": "c",
+        "progload.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

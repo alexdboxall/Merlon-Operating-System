@@ -123,7 +123,7 @@ static void PerformDeferredAccess(void* data) {
     bool write = access->direction == TRANSFER_WRITE;
     size_t target_address = access->address;
     if (!write) {
-        target_address = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
+        target_address = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE, NULL, 0);
     }
 
     struct transfer tr = CreateKernelTransfer((void*) target_address, ARCH_PAGE_SIZE, access->offset, access->direction);
@@ -525,18 +525,6 @@ static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
 static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, struct open_file* file, off_t pos) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    /*
-     *                                                      OF TOTAL        OF PARENT
-     *  MapVirt                                             100%            100%                    11933330 ms
-     *      AddMapping                                      96%                 96%         
-     *          Before InsertIntoAvl                        4%                      3.8%
-     *          InsertIntoAvl                               46%                     44%
-     *          ArchAddMapping                              0%                      0%
-     *          ReleaseSpinlockIrql                         46%                     44%             5533278 ms
-     * 
-     * 
-     */
-
     assert(!(file != NULL && (flags & VM_FILE) == 0));
 
     struct vas_entry* entry = AllocHeapZero(sizeof(struct vas_entry));
@@ -603,6 +591,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     if ((flags & VM_RECURSIVE) == 0) {
         AcquireSpinlockIrql(&vas->lock);
     }
+    LogWriteSerial("about to insert into AVL. flags & VM_RECURSIVE = %d\n", flags & VM_RECURSIVE);
     InsertIntoAvl(vas, entry);
     ArchAddMapping(vas, entry);
     if ((flags & VM_RECURSIVE) == 0) {
@@ -918,6 +907,10 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
     // TODO: otherwise, as an entry exists, it just needs to be allocated-on-read/write (the default) and cleared to zero
     //       (it's not a non-paged area, as an entry for it exists)
     if (!entry->in_ram) {
+        // TODO: check if read fault in non-readable page...
+        // TODO: check if write fault in non-writable page...
+        // TODO: check if exec fault in non-exectuable page...
+
         LogWriteSerial("BLANK\n");
         entry->physical = AllocPhys();
         entry->allocated = true;
@@ -1020,11 +1013,15 @@ int GetVirtPermissions(size_t virtual) {
     return permissions;
 }
 
-void UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
+int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
     bool needs_tlb_flush = false;
 
     for (size_t i = 0; i < pages; ++i) {
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
+        if (entry == NULL) {
+            return ENOMEM;
+        }
+        assert(entry->ref_count > 0);
         entry->ref_count--;
 
         if (entry->ref_count == 0) {
@@ -1055,15 +1052,18 @@ void UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
     if (needs_tlb_flush) {
         ArchFlushTlb(vas);
     }
+
+    return 0;
 }
 
-void UnmapVirt(size_t virtual, size_t bytes) {
+int UnmapVirt(size_t virtual, size_t bytes) {
     size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     struct vas* vas = GetVas();
 
     AcquireSpinlockIrql(&vas->lock);
-    UnmapVirtEx(vas, virtual, pages);
+    int res = UnmapVirtEx(vas, virtual, pages);
     ReleaseSpinlockIrql(&vas->lock);
+    return res;
 }
 
 static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
@@ -1200,8 +1200,6 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
                                     "executing pageable code? or calling AllocHeapEx wrong with a lock held?");
     }
 
-    (void) fault_type;
-
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
     ++handling_page_fault;
@@ -1210,6 +1208,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
 
     if (entry == NULL) {
+        // TODO: detect usermode thread being run, and termine it if so
         Panic(PANIC_PAGE_FAULT_IN_NON_PAGED_AREA);
     }
 
@@ -1235,6 +1234,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     int result = BringIntoMemory(vas, entry, fault_type & VM_WRITE);
     if (result != 0) {
+        // TODO: detect usermode thread being run, and termine it if so
         Panic(PANIC_UNKNOWN);
     }
 

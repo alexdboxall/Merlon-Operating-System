@@ -33,9 +33,12 @@ int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uin
 /*
 * max_length of 0 means unbounded
 */
-int WriteStringToUsermode(char* trusted_string, char* untrusted_buffer, uint64_t max_length);
-int ReadStringFromUsermode(char* trusted_buffer, char* untrusted_string, uint64_t max_length);
+int WriteStringToUsermode(const char* trusted_string, char* untrusted_buffer, uint64_t max_length);
+int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, uint64_t max_length);
+
+int WriteWordToUsermode(size_t* location, size_t value);
+int ReadWordFromUsermode(size_t* location, size_t* output);
 
 struct transfer CreateKernelTransfer(void* addr, uint64_t length, uint64_t offset, int direction);
 struct transfer CreateTransferWritingToUser(void* untrusted_addr, uint64_t length, uint64_t offset);
-struct transfer CreateTransferReadingFromUser(void* untrusted_addr, uint64_t length, uint64_t offset);
+struct transfer CreateTransferReadingFromUser(const void* untrusted_addr, uint64_t length, uint64_t offset);

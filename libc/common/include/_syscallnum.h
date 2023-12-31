@@ -1,0 +1,16 @@
+#pragma once
+
+enum system_call_numbers {
+    SYSCALL_YIELD,
+    SYSCALL_TERMINATE,
+    SYSCALL_MAPVIRT,
+    SYSCALL_UNMAPVIRT,
+    SYSCALL_OPEN,
+    SYSCALL_READ,
+    SYSCALL_WRITE,
+    SYSCALL_CLOSE,
+    SYSCALL_SEEK,
+
+    _SYSCALL_NUM_ENTRIES
+};
+

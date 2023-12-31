@@ -25,8 +25,7 @@
 
 /*
  * Next steps:
- * - running any old ring 3 program
- * - dynamic linker
+ * - program loader / dynamic linker
  * - system call interface (KRNLAPI.LIB) 
  * - C standard library
  * - complete-enough CLI OS
@@ -54,22 +53,16 @@
         PutsConsole("\n");
 
         if (bf[0] == 'u' || bf[0] == 'U') {
-            CreateThread(ThreadExecuteInUsermode, NULL, CreateVas(), "test user thread");
-            
+            CreateUsermodeProcess(NULL, "sys:/init.exe");
+
         } else if (bf[0] == 'p' || bf[0] == 'P') {
             Panic(PANIC_MANUALLY_INITIATED);
-        }
 
-        if (GetFreePhysKilobytes() < 16) {
-            PutsConsole("Less than 16 KB left\n");
-            MapVirt(0, 0, 4096, VM_LOCK | VM_READ, NULL, 0);
-
-        } else {
+        } else if (bf[0] == 'e' || bf[0] == 'E') {
             MapVirt(0, 0, 8 * 4096, VM_LOCK | VM_READ, NULL, 0);
         }
-
+        
 		PutsConsole("drv0:/> ");
-
     }
 }
 

@@ -18,7 +18,7 @@ struct priority_queue {
     int element_width;
     int qwords_per_element;       // includes the + 1 for the priority
     bool max;
-    uint64_t* array;     // length is: capacity * qwords_per_element
+    uint64_t* array;              // length is: capacity * qwords_per_element
 };
 
 struct priority_queue* PriorityQueueCreate(int capacity, bool max, int element_width) {

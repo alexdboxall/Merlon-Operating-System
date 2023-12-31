@@ -8,16 +8,13 @@ COMPILE_FLAGS = -c -Os -fno-strict-aliasing -Wall -Wextra -Wpedantic -Werror -Wc
 LINK_FLAGS = -Wl,-Map=progload.map -nostartfiles -nostdlib -lgcc 
 
 COBJECTS = $(patsubst %.c, %.o, $(wildcard *.c) $(wildcard */*.c) $(wildcard */*/*.c) $(wildcard */*/*/*.c) $(wildcard **/*.c))
-ASMOBJECTS = $(patsubst %.s, %.oo, $(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s) $(wildcard **/*.s))
 
 build: $(COBJECTS) $(ASMOBJECTS)
-	$(CC) -T ../../../source/machine/progload.ld -o $(DRIVER_NAME) $^ $(LINK_FLAGS)
+	$(AS) init.s -o init.o -felf32
+	$(CC) -T ../../../source/machine/progload.ld -o $(DRIVER_NAME) init.o $^ $(LINK_FLAGS)
 	cp $(DRIVER_NAME) ../../../output/drivers
 	
 %.o: %.c
 	$(CC) $(CPPDEFINES) $(COMPILE_FLAGS) $^ -o $@ 
 	rm $^
 
-%.oo: %.s
-	$(AS) -felf32 $^ -o $@ 
-	rm $^

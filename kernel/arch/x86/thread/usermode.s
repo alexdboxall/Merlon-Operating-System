@@ -12,6 +12,10 @@ ArchSwitchToUsermode:
     ; And a user stack pointer
     mov ecx, [esp + 8]
 
+    ; And initial argument. For x86, we'll just store this in EDX, and the
+    ; program can just read that value.
+    mov edx, [esp + 12]
+
     ; Usermode data segment
     mov ax, 0x23
     mov ds, ax

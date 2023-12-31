@@ -10,6 +10,7 @@
 #include <machine/portio.h>
 #include <machine/interrupt.h>
 #include <errno.h>
+#include <driver.h>
 
 static void x86EnableNMIs(void) {
     outb(0x70, inb(0x70) & 0x7F);
@@ -42,14 +43,25 @@ static void x86Reboot(void) {
 }
 
 static void x86Shutdown(void) {
+    size_t acpicaShutdown = GetSymbolAddress("AcpicaShutdown");
+    if (acpicaShutdown != 0) {
+        ((void (*)(void)) acpicaShutdown)();
+    }
+
     /*
-     * These ones work on emulators/hypervisors only. Once we get ACPICA, we'll put a little code here to
-     * detect if ACPICA.SYS has been loaded, and we'll do a proper shutdown instead.
+     * Some emulators have ways of doing a shutdown if we don't have ACPI support yet.
      */
     outw(0xB004, 0x2000);       // Bochs and old QEMU
     outw(0x0604, 0x2000);       // New QEMU
     outw(0x4004, 0x3400);       // VirtualBox
     outw(0x0600, 0x0034);       // Cloud Hypervisor
+}
+
+static void x86Sleep(void) {
+    size_t acpicaSleep = GetSymbolAddress("AcpicaSleep");
+    if (acpicaSleep != 0) {
+        ((void (*)(void)) acpicaSleep)();
+    }
 }
 
 int ArchSetPowerState(int power_state) {
@@ -60,6 +72,10 @@ int ArchSetPowerState(int power_state) {
     case ARCH_POWER_STATE_SHUTDOWN:
         x86Shutdown();
         break;
+    case ARCH_POWER_STATE_SLEEP: {
+        x86Sleep();
+        break;
+    }
     default:
         return EINVAL;
     }

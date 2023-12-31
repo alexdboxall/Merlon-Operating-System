@@ -206,9 +206,9 @@ next_sector:
 
 
 preferred_modes_table:
-	db 0x18		; FOR TESTING (depth = 24/32)
-	db 0x16		; FOR TESTING (depth = 15)
-	db 0x17		; FOR TESTING (depth = 16)
+	;db 0x18		; FOR TESTING (depth = 24/32)
+	;db 0x16		; FOR TESTING (depth = 15)
+	;db 0x17		; FOR TESTING (depth = 16)
 	db 0x05		; FOR REAL H/W (depth = 8)
 
 	db 0x07
@@ -431,7 +431,7 @@ dw 0xAA55
 bits 16
 jmp short vbr_dummy
 nop
-db "DUMMYVBR"
+db "DEMOFS  "
 dw 0x200
 db 0x1
 dw 0x187E
@@ -450,7 +450,7 @@ dw 0
 dd 2
 dw 1
 dw 6
-db "DUMMY DUMMY "
+db "DEMOFSDEMOFS"
 db 0x80
 db 0x00
 db 0x28

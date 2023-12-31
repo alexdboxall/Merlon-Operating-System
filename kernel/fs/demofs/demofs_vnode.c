@@ -8,6 +8,7 @@
 #include <transfer.h>
 #include <string.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <fs/demofs/demofs_private.h>
 
@@ -157,8 +158,34 @@ static struct vnode* CreateDemoFsVnode() {
     return CreateVnode(dev_ops);
 }
 
+static int CheckForDemofsSignature(struct open_file* raw_device) {
+    struct stat st;
+	VnodeOpStat(raw_device->node, &st);
+
+    uint8_t* buffer = AllocHeapEx(st.st_blksize, HEAP_ALLOW_PAGING);
+    struct transfer io = CreateKernelTransfer(buffer, st.st_blksize, 8 * st.st_blksize, TRANSFER_READ);
+    int res = ReadFile(raw_device, &io);
+    if (res != 0) {
+        FreeHeap(buffer);
+        return ENOTSUP;
+    }
+
+    /*
+     * Check for the DemoFS signature.
+     */
+    if (buffer[0] != 'D' || buffer[1] != 'E' || buffer[2] != 'M' || buffer[3] != 'O') {
+        FreeHeap(buffer);
+        return ENOTSUP;
+    }
+
+    return 0;
+}
+
 int DemofsMountCreator(struct open_file* raw_device, struct open_file** out) {   
-    // TODO: you'd actually want to check if the disk is a DemoFs disk, and return something non-zero if so
+	int sig_check = CheckForDemofsSignature(raw_device);
+    if (sig_check != 0) {
+        return sig_check;
+    }
     
 	struct vnode* node = CreateDemoFsVnode();
     struct vnode_data* data = AllocHeap(sizeof(struct vnode_data));

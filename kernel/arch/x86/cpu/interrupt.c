@@ -6,9 +6,11 @@
 #include <irq.h>
 #include <irql.h>
 #include <virtual.h>
+#include <syscall.h>
 #include <panic.h>
 #include <console.h>
 
+#define ISR_SYSTEM_CALL 96
 #define ISR_PAGE_FAULT  14
 #define ISR_NMI         2
 
@@ -52,19 +54,15 @@ void x86HandleInterrupt(struct x86_regs* r) {
     } else if (num == ISR_NMI) {
         Panic(PANIC_NON_MASKABLE_INTERRUPT);
 
+    } else if (num == ISR_SYSTEM_CALL) {
+        r->eax = HandleSystemCall(r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi);
+
     } else {
         LogWriteSerial("Got interrupt %d.\n", num);
+
+        // TODO: check if user thread, and if so, just kill it
         Panic(PANIC_UNHANDLED_KERNEL_EXCEPTION);
     }
-
-    /*
-    if (protection fault, etc. || page fault unhandled) {
-        RespondToUnhandledFault
-    } else if (syscall) {
-        RespondToSyscall(...)
-    }
-
-    */
 }
 
 void ArchSendEoi(int irq_num) {

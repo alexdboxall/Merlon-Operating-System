@@ -490,7 +490,7 @@ void AcpiOsPrintf(const char* format, ...)
     LogWriteSerial("AcpiOsPrintf: %s\n", format);
 }
 
-static void AcpicaSleep(void) {
+void AcpicaSleep(void) {
 	AcpiEnterSleepStatePrep(2);
 	AcpiEnterSleepState(2);
 
@@ -500,7 +500,7 @@ static void AcpicaSleep(void) {
 	AcpiLeaveSleepState(2);
 }
 
-static void AcpicaShutdown(void) {
+void AcpicaShutdown(void) {
     ACPI_STATUS a = AcpiEnterSleepStatePrep(5);
 	if (a != AE_OK) {
 		return;
@@ -510,11 +510,11 @@ static void AcpicaShutdown(void) {
 }
 
 static ACPI_STATUS AcpicaPowerButtonHandler(void*) {
-    LogWriteSerial("AcpicaPowerButtonHandler\n");
+    ArchSetPowerState(ARCH_POWER_STATE_SHUTDOWN);
 }
 
 static ACPI_STATUS AcpicaPowerNotifyHandler(void*) {
-    LogWriteSerial("AcpicaPowerNotifyHandler\n");
+    ArchSetPowerState(ARCH_POWER_STATE_SHUTDOWN);
 }
 
 static ACPI_STATUS AcpicaLidNotifyHandler(void*) {
@@ -522,17 +522,17 @@ static ACPI_STATUS AcpicaLidNotifyHandler(void*) {
 }
 
 static ACPI_STATUS AcpicaSleepNotifyHandler(void*) {
-    LogWriteSerial("AcpicaSleepNotifyHandler\n");
+    ArchSetPowerState(ARCH_POWER_STATE_SLEEP);
 }
 
 static void AcpicaGlobalEventHandler(uint32_t type, ACPI_HANDLE device, uint32_t number, void* context) {
     LogWriteSerial("AcpicaGlobalEventHandler\n");
     
 	if (type == ACPI_EVENT_TYPE_FIXED && number == ACPI_EVENT_POWER_BUTTON) {
-		AcpicaSleep();
+		ArchSetPowerState(ARCH_POWER_STATE_SLEEP);
 	}
 	if (type == ACPI_EVENT_TYPE_FIXED && number == ACPI_EVENT_SLEEP_BUTTON) {
-		AcpicaShutdown();
+	    ArchSetPowerState(ARCH_POWER_STATE_SHUTDOWN);
 	}
 }
 
