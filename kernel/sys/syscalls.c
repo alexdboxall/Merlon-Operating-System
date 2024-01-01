@@ -16,6 +16,7 @@ static const char* syscall_names[_SYSCALL_NUM_ENTRIES] = {
 	[SYSCALL_CLOSE] = "close",
 	[SYSCALL_SEEK] = "seek",
 	[SYSCALL_DUP] = "dup",
+	[SYSCALL_TELL] = "tell",
 };
 
 static const system_call_t system_call_table[_SYSCALL_NUM_ENTRIES] = {
@@ -27,8 +28,9 @@ static const system_call_t system_call_table[_SYSCALL_NUM_ENTRIES] = {
 	[SYSCALL_READ] = SysRead,
 	[SYSCALL_WRITE] = SysWrite,
 	[SYSCALL_CLOSE] = SysClose,
-	[SYSCALL_SEEK] = NULL,
+	[SYSCALL_SEEK] = SysSeek,
 	[SYSCALL_DUP] = SysDup,
+	[SYSCALL_TELL] = SysTell,
 };
 
 int HandleSystemCall(int call, size_t a, size_t b, size_t c, size_t d, size_t e) {

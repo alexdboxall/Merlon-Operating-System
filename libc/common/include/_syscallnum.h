@@ -11,6 +11,7 @@ enum system_call_numbers {
     SYSCALL_CLOSE,
     SYSCALL_SEEK,
     SYSCALL_DUP,
+    SYSCALL_TELL,
 
     _SYSCALL_NUM_ENTRIES
 };

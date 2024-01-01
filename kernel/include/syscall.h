@@ -14,3 +14,4 @@ int SysWrite(size_t, size_t, size_t, size_t, size_t);
 int SysClose(size_t, size_t, size_t, size_t, size_t);
 int SysSeek(size_t, size_t, size_t, size_t, size_t);
 int SysDup(size_t, size_t, size_t, size_t, size_t);
+int SysTell(size_t, size_t, size_t, size_t, size_t);

@@ -127,7 +127,8 @@
         "dev.h": "c",
         "mman.h": "c",
         "progload.h": "c",
-        "filedes.h": "c"
+        "filedes.h": "c",
+        "unistd.h": "c"
     },
     "files.exclude": {
         "**/.git": true,
