@@ -13,7 +13,9 @@
 #include <panic.h>
 #include <common.h>
 #include <threadlist.h>
+#include <avl.h>
 #include <priorityqueue.h>
+#include <progload.h>
 #include <semaphore.h>
 #include <process.h>
 
@@ -37,7 +39,7 @@ static struct spinlock innermost_lock;
 *
 * On x86, allocating a 4MB region only requires one page table, hence we'll use that.
 */
-#define USER_STACK_MAX_SIZE BytesToPages(1024 * 1024 * 4) * ARCH_PAGE_SIZE
+#define USER_STACK_MAX_SIZE BytesToPages(1024 * 256 /* 1024 * 1024 * 4 */) * ARCH_PAGE_SIZE
 
 
 #define TIMESLICE_LENGTH_MS 50
@@ -219,7 +221,12 @@ static void UpdateTimesliceExpiry(void) {
 }
 
 void ThreadExecuteInUsermode(void* arg) {
-    (void) arg;
+    LogWriteSerial("executing in usermode, the VAS is 0x%X\n", GetVas());
+    int res = CopyProgramLoaderIntoAddressSpace();
+    if (res != 0) {
+        LogDeveloperWarning("COULDN'T LOAD PROGRAM LOADER!\n");
+        TerminateThread(GetThread());
+    }
 
     size_t user_stack = CreateUserStack(USER_STACK_MAX_SIZE);
 
@@ -299,10 +306,6 @@ void AssertSchedulerLockHeld(void) {
 }
 
 __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread) {
-    if (new_thread->vas != old_thread->vas) {
-        SetVas(new_thread->vas);
-    }
-
     new_thread->state = THREAD_STATE_RUNNING;
     ThreadListDeleteTop(&ready_list);
 
@@ -313,6 +316,11 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
      */
     struct cpu* cpu = GetCpu();
     AcquireSpinlockIrql(&innermost_lock);
+
+    if (new_thread->vas != old_thread->vas) {
+        LogWriteSerial("setting vas to 0x%X\n", new_thread->vas);
+        SetVas(new_thread->vas);
+    }
 
     cpu->current_thread = new_thread;
     cpu->current_vas = new_thread->vas;
@@ -330,6 +338,8 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
 static void ScheduleWithLockHeld(void) {
     EXACT_IRQL(IRQL_SCHEDULER);
     AssertSchedulerLockHeld();
+
+    LogWriteSerial("schedule...\n");
 
     struct thread* old_thread = GetThread();
     struct thread* new_thread = ready_list.head;

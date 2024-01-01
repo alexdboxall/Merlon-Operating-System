@@ -36,6 +36,9 @@ static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 }
 
 static size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
+	if (vas != GetVas()) {
+		LogDeveloperWarning("NON-LOCAL VAS x86GetPageEntry!!! THIS ISN'T GOING TO WORK AS-IS!\n");
+	}
 	size_t table_num = virtual / 0x400000;
 	size_t page_num = (virtual % 0x400000) / ARCH_PAGE_SIZE;
 	size_t* page_dir = vas->arch_data->v_page_directory;
@@ -48,7 +51,10 @@ static size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
 }
 
 static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int flags) {
-	//LogWriteSerial("x86MapPage v 0x%X -> p 0x%X [0x%X]\n", virtual, physical, flags);
+	if (vas != GetVas()) {
+		LogDeveloperWarning("NON-LOCAL VAS x86MapPage!!! THIS ISN'T GOING TO WORK AS-IS!\n");
+	}
+	LogWriteSerial("x86MapPage v 0x%X -> p 0x%X [0x%X]. vas 0x%X\n", virtual, physical, flags, vas);
 	*x86GetPageEntry(vas, virtual) = physical | flags;
 }
 
@@ -119,9 +125,18 @@ void ArchFlushTlb(struct vas* vas) {
 }
 
 void ArchInitVas(struct vas* vas) {
+	LogWriteSerial("creating a new VAS!\n");
 	vas->arch_data = AllocHeap(sizeof(platform_vas_data_t));
-	vas->arch_data->p_page_directory = ((size_t) kernel_page_directory) - 0xC0000000;
-	vas->arch_data->v_page_directory = kernel_page_directory;
+	// TODO: @@@ get rid of VM_USER here...
+	vas->arch_data->v_page_directory = (size_t*) MapVirt(0, 0, ARCH_PAGE_SIZE, VM_READ | VM_WRITE | VM_USER | VM_LOCK, NULL, 0);
+	vas->arch_data->p_page_directory = GetPhysFromVirt((size_t) vas->arch_data->v_page_directory);
+
+	for (int i = 768; i < 1023; ++i) {
+		vas->arch_data->v_page_directory[i] = kernel_page_directory[i];
+	}
+	vas->arch_data->v_page_directory[1023] = ((size_t) vas->arch_data->p_page_directory) | x86_PAGE_PRESENT | x86_PAGE_WRITE;
+
+	LogWriteSerial("p 0x%X v 0x%X\n", vas->arch_data->p_page_directory, vas->arch_data->v_page_directory);
 }
 
 void ArchInitVirt(void) {

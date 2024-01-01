@@ -3,7 +3,7 @@ OUTPUT_FORMAT("binary")
 
 SECTIONS
 {
-	. = 0xFF800000;
+	. = 0xBFC00000;
 	
 	.text ALIGN(4096) : AT (ADDR (.text))
 	{

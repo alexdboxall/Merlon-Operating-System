@@ -38,10 +38,13 @@ struct vas_entry {
     uint8_t global          : 1;
     uint8_t allow_temp_write: 1;        /* used internally - allows the system to write to otherwise read-only pages to, e.g. reload from disk */
     uint8_t relocatable     : 1;        /* from a relocated driver file             */
-    uint8_t times_swapped   : 1;
     uint8_t first_load      : 1;
-
     uint8_t load_in_progress: 1;        /* someone else is deferring a read into this page - keep trying the access until flag clears */
+    
+    uint8_t times_swapped   : 4;
+    uint8_t                 : 4;
+
+    int num_pages;                      /* only used for non-allocated or (TODO: hardware mapped) to reduce the number of AVL entries */
 
     off_t file_offset;
     struct open_file* file_node;

@@ -4,683 +4,561 @@ Allowing range: 0x1000 -> 0x7FFFF to be used
 At 0x9FC00, we have type 2
 At 0xF0000, we have type 2
 At 0x100000, we have type 1
-Allowing range: 0x144000 -> 0x1DFFFF to be used
+Allowing range: 0x145000 -> 0x1DFFFF to be used
 At 0x1E0000, we have type 2
 At 0xFFFC0000, we have type 2
 can access 284 MB of kernel virtual memory
-Adding mapping at 0xC4000000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x48000
+Adding mapping at 0xC4000000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x48000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4001000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x13C000
+x86MapPage v 0xC4000000 -> p 0x48000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4001000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x49000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4002000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x13B000
+x86MapPage v 0xC4001000 -> p 0x49000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4002000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4003000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x13A000
+x86MapPage v 0xC4002000 -> p 0x4A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4003000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4004000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x139000
+x86MapPage v 0xC4003000 -> p 0x4B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4004000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-MOUNTED TO THE VFS: rand
-MOUNTED TO THE VFS: null
-Adding mapping at 0xC4005000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x138000
+x86MapPage v 0xC4004000 -> p 0x4C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4005000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4006000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x137000
+x86MapPage v 0xC4005000 -> p 0x4D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4006000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4007000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x136000
+x86MapPage v 0xC4006000 -> p 0x4E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4007000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4008000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DF000
+x86MapPage v 0xC4007000 -> p 0x4F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4008000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x50000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4009000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DE000
+x86MapPage v 0xC4008000 -> p 0x50000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4009000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x51000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC400A000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DD000
+x86MapPage v 0xC4009000 -> p 0x51000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x52000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC400B000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DC000
+x86MapPage v 0xC400A000 -> p 0x52000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x53000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC400C000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DB000
+x86MapPage v 0xC400B000 -> p 0x53000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x54000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC400D000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DA000
+x86MapPage v 0xC400C000 -> p 0x54000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x55000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC400E000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D9000
+x86MapPage v 0xC400D000 -> p 0x55000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x56000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC400F000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D8000
+x86MapPage v 0xC400E000 -> p 0x56000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x57000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4010000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D7000
+x86MapPage v 0xC400F000 -> p 0x57000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4010000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x58000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4011000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D6000
+x86MapPage v 0xC4010000 -> p 0x58000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4011000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x59000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4012000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D5000
+x86MapPage v 0xC4011000 -> p 0x59000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4012000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x5A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4013000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D4000
+x86MapPage v 0xC4012000 -> p 0x5A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4013000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x5B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4014000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D3000
+x86MapPage v 0xC4013000 -> p 0x5B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4014000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x5C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4015000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D2000
+x86MapPage v 0xC4014000 -> p 0x5C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4015000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x5D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4016000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D1000
+x86MapPage v 0xC4015000 -> p 0x5D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4016000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x5E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4017000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D0000
+x86MapPage v 0xC4016000 -> p 0x5E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4017000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x5F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4018000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CF000
+x86MapPage v 0xC4017000 -> p 0x5F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4018000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x60000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-MOUNTED TO THE VFS: con
-IRQ 46
-Adding mapping at 0xC4019000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CE000
+x86MapPage v 0xC4018000 -> p 0x60000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4019000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x61000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC401A000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CD000
+x86MapPage v 0xC4019000 -> p 0x61000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x62000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC401B000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CC000
+x86MapPage v 0xC401A000 -> p 0x62000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x63000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC401C000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CB000
+x86MapPage v 0xC401B000 -> p 0x63000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x64000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-MOUNTED TO THE VFS: raw-hd0
-Adding mapping at 0xC401D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC401C000 -> p 0x64000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x65000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC401D1FE, eip 0xC01024C3, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC401E000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CA000
+x86MapPage v 0xC401D000 -> p 0x65000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x66000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC401D000
-===> EXIT PAGE FAULT. IRQL = 0
-found a partition! 0x0 -> 0x800000
-MOUNTED TO THE VFS: drv0
-found a partition! 0x800000 -> 0x30D4000
-ide poll delay...
-MOUNTED TO THE VFS: sys
-MOUNTED TO THE VFS: swap
-Adding mapping at 0xC401F000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000
+x86MapPage v 0xC401E000 -> p 0x66000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x67000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4020000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401F000 -> p 0x67000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4001000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x68000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4021000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4001000 -> p 0x68000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4002000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x69000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4022000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4002000 -> p 0x69000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4003000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4023000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4003000 -> p 0x6A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4004000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4024000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4004000 -> p 0x6B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4005000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4025000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4005000 -> p 0x6C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4006000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4026000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4006000 -> p 0x6D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4007000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4027000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4007000 -> p 0x6E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4008000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4028000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4008000 -> p 0x6F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4009000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x70000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4029000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4009000 -> p 0x70000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x71000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC402A000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC400A000 -> p 0x71000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x72000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC402B000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC400B000 -> p 0x72000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x73000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC402C000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC400C000 -> p 0x73000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x74000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC402D000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC400D000 -> p 0x74000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x75000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC402E000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC400E000 -> p 0x75000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x76000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC402F000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC400F000 -> p 0x76000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4010000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x77000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4030000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4010000 -> p 0x77000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4011000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x78000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4031000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4011000 -> p 0x78000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4012000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4032000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4012000 -> p 0x79000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4013000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4033000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4013000 -> p 0x7A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4014000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4034000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4014000 -> p 0x7B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4015000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4035000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4015000 -> p 0x7C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4016000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4036000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4016000 -> p 0x7D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4017000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4037000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4017000 -> p 0x7E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4018000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4038000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4018000 -> p 0x7F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4019000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x143000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4039000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4019000 -> p 0x143000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x144000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC403A000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401A000 -> p 0x144000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x145000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC403B000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401B000 -> p 0x145000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x146000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC403C000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401C000 -> p 0x146000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x147000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC403D000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401D000 -> p 0x147000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x148000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC403E000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401E000 -> p 0x148000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x149000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC403F000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC401F000 -> p 0x149000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4020000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC4020004, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-Adding mapping at 0xC4040000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4020000 -> p 0x14A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4021000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4041000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4021000 -> p 0x14B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4022000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4042000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4022000 -> p 0x14C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4023000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4043000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4023000 -> p 0x14D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4024000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4044000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4024000 -> p 0x14E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4025000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4045000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4025000 -> p 0x14F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4026000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x150000
+IRQ 33
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4046000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4026000 -> p 0x150000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4027000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x151000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4047000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4027000 -> p 0x151000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4028000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x152000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4048000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4028000 -> p 0x152000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4029000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4049000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4029000 -> p 0x153000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x154000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC405F000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C8000
+x86MapPage v 0xC402A000 -> p 0x154000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x155000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4060000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C7000
+x86MapPage v 0xC402B000 -> p 0x155000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x156000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4061000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C6000
+x86MapPage v 0xC402C000 -> p 0x156000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x157000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4062000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C5000
+x86MapPage v 0xC402D000 -> p 0x157000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x158000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC404A000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC402E000 -> p 0x158000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x159000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC404B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC402F000 -> p 0x159000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4030000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC404C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4030000 -> p 0x15A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4031000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC404D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4031000 -> p 0x15B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4032000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC404E000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4032000 -> p 0x15C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4005000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC404F000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4005000 -> p 0x15D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4006000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4050000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4006000 -> p 0x15E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4007000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x15F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4051000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4007000 -> p 0x15F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4008000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x160000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4052000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4008000 -> p 0x160000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4009000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x161000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4053000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4009000 -> p 0x161000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4054000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC400A000 -> p 0x162000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x163000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4055000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC400B000 -> p 0x163000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x164000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4056000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC400C000 -> p 0x164000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x165000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4057000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC400D000 -> p 0x165000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x166000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4058000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC400E000 -> p 0x166000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x167000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4059000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC400F000 -> p 0x167000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4010000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x168000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC405A000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4010000 -> p 0x168000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4011000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x169000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC405B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4011000 -> p 0x169000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4012000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC405C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4012000 -> p 0x16A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4013000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC405D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4013000 -> p 0x16B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4014000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC405E000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4014000 -> p 0x16C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4015000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC4040000, eip 0xC01105F3, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4063000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C4000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4040000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC405E588, eip 0xC011063B, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4064000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C4000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC405E000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC40581F8, eip 0xC01106E3, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4065000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C4000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4058000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC405B787, eip 0xC0106B94, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4066000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C4000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC405B000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4021000, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4022000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC405C000, eip 0xC0106B94, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4067000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BE000
-about to insert into AVL. flags & VM_RECURSIVE = 0
- ----> FINISHED RELOADING FROM DISK 0xC405C000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4023000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4059008, eip 0xC01106E3, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4068000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BC000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4059000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4024000, eip 0xC011400E, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4025000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4026000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC405A001, eip 0xC01106EA, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4069000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B8000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC405A000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4027000, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC405D000, eip 0xC0106B94, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC406A000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B6000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC405D000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4028000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4029004, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC402A000, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC402B000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC402C000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC402D000, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC402E000, eip 0xC011417A, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC402F004, eip 0xC0114155, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-Requiring driver: sys:/vesa.sys
-loading driver...
-Adding mapping at 0xC406B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4015000 -> p 0x16D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4016000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC406C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4016000 -> p 0x16E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4017000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC406D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4017000 -> p 0x16F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4018000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x170000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC406E000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4018000 -> p 0x170000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4019000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x171000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC406F000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4019000 -> p 0x171000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x172000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC406B000, eip 0xC0110020, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4070000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C2000
+x86MapPage v 0xC401A000 -> p 0x172000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x173000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC406B000
-===> EXIT PAGE FAULT. IRQL = 0
-Adding mapping at 0xC4071000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC401B000 -> p 0x173000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x174000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4072000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC401C000 -> p 0x174000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x175000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4073000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC401D000 -> p 0x175000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x176000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4074000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC401E000 -> p 0x176000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x177000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4075000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC401F000 -> p 0x177000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4020000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x178000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-RELOCATION POINT AT 0xC4071000
-
-
-Page fault: cr2 0xC406C000, eip 0xC0101219, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4076000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C2000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC406C000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4071000, eip 0xC0101219, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC406D000, eip 0xC0101219, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4077000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C0000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC406D000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4072000, eip 0xC0101219, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC406E000, eip 0xC0101219, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4078000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BB000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC406E000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4073000, eip 0xC0101219, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC406F000, eip 0xC0101219, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4079000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C3000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC406F000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4074000, eip 0xC0101219, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-Adding mapping at 0xC407A000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4020000 -> p 0x178000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4021000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x179000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC407A000, eip 0xC0106D3C, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-ArchLoadDriver returned 0
-Adding mapping at 0xC407B000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4021000 -> p 0x179000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4022000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17A000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC407C000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4022000 -> p 0x17A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4023000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17B000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC407D000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4023000 -> p 0x17B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4024000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17C000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC407E000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4024000 -> p 0x17C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4025000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC407F000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4025000 -> p 0x17D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4026000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17E000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC407B000, eip 0xC01105F3, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4080000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AD000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC407B000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC407FCC0, eip 0xC011063B, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4081000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AD000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC407F000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4075018, eip 0xC4071446, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-Requiring driver: sys:/cmnvideo.sys
-loading driver...
-ide poll delay...
-Adding mapping at 0xC4082000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4026000 -> p 0x17E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4027000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17F000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4083000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4027000 -> p 0x17F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4028000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x180000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4084000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4028000 -> p 0x180000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4029000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x181000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4085000. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0
+x86MapPage v 0xC4029000 -> p 0x181000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x182000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC4082000, eip 0xC0110020, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC4086000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C1000
+x86MapPage v 0xC402A000 -> p 0x182000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x183000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4082000
-===> EXIT PAGE FAULT. IRQL = 0
-Adding mapping at 0xC4087000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC402B000 -> p 0x183000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x184000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4088000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC402C000 -> p 0x184000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x185000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC4089000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC402D000 -> p 0x185000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x186000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-Adding mapping at 0xC408A000. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0
+x86MapPage v 0xC402E000 -> p 0x186000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x187000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-RELOCATION POINT AT 0xC4087000
-Adding mapping at 0xC4087000. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0
+x86MapPage v 0xC402F000 -> p 0x187000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4030000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x188000
 about to insert into AVL. flags & VM_RECURSIVE = 0
-
-
-Page fault: cr2 0xC4084000, eip 0xC0101219, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC408B000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C1000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4084000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4088000, eip 0xC0101219, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4085000, eip 0xC0101219, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC408C000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B5000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
-ide poll delay...
- ----> FINISHED RELOADING FROM DISK 0xC4085000
-===> EXIT PAGE FAULT. IRQL = 0
-
-
-Page fault: cr2 0xC4089000, eip 0xC0101219, nos-err 0x2
-===> ENTER PAGE FAULT 1
-BLANK
-===> EXIT PAGE FAULT. IRQL = 0
-Adding mapping at 0xC408D000. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0
+x86MapPage v 0xC4030000 -> p 0x188000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4031000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x189000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4031000 -> p 0x189000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4032000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18A000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4032000 -> p 0x18A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4033000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18B000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4033000 -> p 0x18B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4034000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18C000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4034000 -> p 0x18C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4035000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18D000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4035000 -> p 0x18D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4036000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18E000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4036000 -> p 0x18E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4009000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18F000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4009000 -> p 0x18F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x190000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC400A000 -> p 0x190000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x191000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC400B000 -> p 0x191000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x192000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC400C000 -> p 0x192000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x193000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC400D000 -> p 0x193000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x194000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC400E000 -> p 0x194000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC400F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x195000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC400F000 -> p 0x195000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4010000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x196000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4010000 -> p 0x196000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4011000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x197000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4011000 -> p 0x197000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4012000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x198000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4012000 -> p 0x198000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4013000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x199000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4013000 -> p 0x199000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4014000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19A000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4014000 -> p 0x19A000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4015000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19B000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4015000 -> p 0x19B000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4016000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19C000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4016000 -> p 0x19C000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4017000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19D000
 about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4017000 -> p 0x19D000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4018000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19E000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4018000 -> p 0x19E000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4019000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19F000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4019000 -> p 0x19F000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A0000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC401A000 -> p 0x1A0000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A1000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC401B000 -> p 0x1A1000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A2000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC401C000 -> p 0x1A2000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A3000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC401D000 -> p 0x1A3000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A4000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC401E000 -> p 0x1A4000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC401F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A5000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC401F000 -> p 0x1A5000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4020000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A6000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4020000 -> p 0x1A6000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4021000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A7000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4021000 -> p 0x1A7000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4022000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A8000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4022000 -> p 0x1A8000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4023000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A9000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4023000 -> p 0x1A9000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4024000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AA000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4024000 -> p 0x1AA000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4025000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AB000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4025000 -> p 0x1AB000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4026000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AC000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4026000 -> p 0x1AC000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4027000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AD000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4027000 -> p 0x1AD000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4028000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AE000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4028000 -> p 0x1AE000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4029000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AF000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4029000 -> p 0x1AF000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B0000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC402A000 -> p 0x1B0000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402B000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B1000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC402B000 -> p 0x1B1000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402C000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B2000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC402C000 -> p 0x1B2000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402D000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B3000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC402D000 -> p 0x1B3000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402E000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B4000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC402E000 -> p 0x1B4000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC402F000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B5000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC402F000 -> p 0x1B5000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4030000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B6000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4030000 -> p 0x1B6000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4031000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B7000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4031000 -> p 0x1B7000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4032000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B8000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4032000 -> p 0x1B8000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4033000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B9000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4033000 -> p 0x1B9000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4034000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BA000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4034000 -> p 0x1BA000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4035000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BB000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4035000 -> p 0x1BB000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4036000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BC000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4036000 -> p 0x1BC000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4037000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BD000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4037000 -> p 0x1BD000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4038000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BE000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4038000 -> p 0x1BE000 [0x3]. vas 0xC0141080
+Adding mapping at 0xC4039000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BF000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+x86MapPage v 0xC4039000 -> p 0x1BF000 [0x3]. vas 0xC0141080
+deferring EvictPagesIfNeeded (pages_left = 32)
+ ///=> About to start evicting pages...
+Adding mapping at 0xC403A000 to vas 0xC0141080. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C0000
+about to insert into AVL. flags & VM_RECURSIVE = 0
+PANIC 22 heap allocation cannot be completed without faulting
+
 
+ *** KERNEL PANIC ***
 
-Page fault: cr2 0xC4087080, eip 0xC011044B, nos-err 0x0
-===> ENTER PAGE FAULT 1
-FILE
-Adding mapping at 0xC408E000. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AA000
-about to insert into AVL. flags & VM_RECURSIVE = 0
-ide poll delay...
-ide poll delay...
+0x16 - heap allocation cannot be completed without faulting

@@ -28,7 +28,7 @@ __attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*hand
         handler(context);
 
     } else if (irql > GetIrql()) {
-        Panic(PANIC_INVALID_IRQL);
+        PanicEx(PANIC_INVALID_IRQL, "invalid irql on DeferUntilIrql");
 
     } else {
         if (GetCpu()->init_irql_done) {
@@ -58,7 +58,7 @@ __attribute__((no_instrument_function)) int RaiseIrql(int level) {
     int existing_level = cpu->irql;
 
     if (level < existing_level) {
-        Panic(PANIC_INVALID_IRQL);
+        PanicEx(PANIC_INVALID_IRQL, "invalid irql on RaiseIrql");
     }
 
     cpu->irql = level;
@@ -77,7 +77,7 @@ __attribute__((no_instrument_function)) void LowerIrql(int target_level) {
     int current_level = cpu->irql;
 
     if (target_level > current_level) {
-        Panic(PANIC_INVALID_IRQL);
+        PanicEx(PANIC_INVALID_IRQL, "invalid irql on LowerIrql");
     }
 
     while (cpu->init_irql_done && PriorityQueueGetUsedSize(deferred_functions) > 0) {
