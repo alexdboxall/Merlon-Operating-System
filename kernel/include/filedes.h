@@ -2,7 +2,7 @@
 
 #include <common.h>
 
-#define MAX_FD_PER_PROCESS 1024
+#define MAX_FD_PER_PROCESS 200
 
 struct open_file;
 struct filedes_table;

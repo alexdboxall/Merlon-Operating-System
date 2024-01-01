@@ -10,6 +10,8 @@
 #include <irql.h>
 
 // TODO: switch this over from spinlock to mutex - it will work a lot better for HandleFileDescriptorsOnExec
+//       and for the dup() calls... and would also allow the table be in pageable memory (which lets us increase
+//       MAX_FD_PER_PROCESS from 200 to e.g. 1024
 
 struct filedes_entry {
     /*
@@ -93,7 +95,8 @@ int RemoveFileDescriptor(struct filedes_table* table, struct open_file* file) {
 
 int GetFileFromDescriptor(struct filedes_table* table, int fd, struct open_file** out) {
     if (out == NULL || fd < 0 || fd >= MAX_FD_PER_PROCESS) {
-        return EINVAL;
+        *out = NULL;
+        return out == NULL ? EINVAL : EBADF;
     }
 
     AcquireSpinlockIrql(&table->lock);
@@ -101,7 +104,7 @@ int GetFileFromDescriptor(struct filedes_table* table, int fd, struct open_file*
     ReleaseSpinlockIrql(&table->lock);
 
     *out = result;
-    return result == NULL ? EINVAL : 0;
+    return result == NULL ? EBADF : 0;
 }
 
 int HandleFileDescriptorsOnExec(struct filedes_table* table) {

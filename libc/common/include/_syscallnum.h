@@ -10,6 +10,7 @@ enum system_call_numbers {
     SYSCALL_WRITE,
     SYSCALL_CLOSE,
     SYSCALL_SEEK,
+    SYSCALL_DUP,
 
     _SYSCALL_NUM_ENTRIES
 };
