@@ -628,6 +628,19 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     LogWriteSerial("about to insert into AVL. flags & VM_RECURSIVE = %d\n", flags & VM_RECURSIVE);
     InsertIntoAvl(vas, entry);
     ArchAddMapping(vas, entry);
+
+    if (entry->lock && (flags & VM_MAP_HARDWARE) == 0) {
+        if (GetVas() == vas) {
+            /*
+             * Need to zero out the page - this must happen on first load in, and as we have to load in
+             * locked pages now, we must do it now.
+             */
+            memset((void*) entry->virtual, 0, entry->num_pages * ARCH_PAGE_SIZE);
+        } else {
+            LogDeveloperWarning("yuck. PAGE HAS NOT BEEN ZEROED!\n");
+        }
+    }
+
     if ((flags & VM_RECURSIVE) == 0) {
         ReleaseSpinlockIrql(&vas->lock);
     }
@@ -707,6 +720,9 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
 
 /**
  * Creates a virtual memory mapping.
+ * 
+ * All mapped pages will be zeroed out (either on first use, or if locked, when allocated) - except if VM_MAP_HARDWARE or
+ * VM_FILE is set. If VM_FILE is set, reading beyond the end of the file, but within the page limit, will read zeroes.
  * 
  * @param vas       The virtual address space to map this page to
  * @param physical  Only used if VM_LOCK is specified in flags. Determines the physical page that will back the
