@@ -902,6 +902,9 @@ size_t GetPhysFromVirt(size_t virtual) {
     return result;
 }
 
+// TODO: make this take in a 'how many to leave in the original entry' parameter (which in many cases will be 1)
+//       but in things like UnmapVirt it will let us unmap many at a time. And if you have things like SetPermissionsMany(..)
+//       it wil help with that by not forcing a split
 static void SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, struct vas_entry* entry) {
     if (entry->num_pages == 1) {
         return;
@@ -1192,9 +1195,6 @@ int GetVirtPermissions(size_t virtual) {
     if (entry_ptr == NULL) {
         ReleaseSpinlockIrql(&vas->lock);
         return 0;
-    }
-    if (entry_ptr->num_pages > 1) {
-        SplitLargePageEntryIntoMultiple(vas, virtual, entry_ptr);
     }
     struct vas_entry entry = *entry_ptr;
     ReleaseSpinlockIrql(&vas->lock);
