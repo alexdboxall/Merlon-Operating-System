@@ -95,6 +95,7 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct ope
 					return EINVAL;
 				}
 				if (pages > 0) {
+					LogWriteSerial("doing the little fiddly thing...\n");
 					UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
 					size_t v = MapVirt(relocation_point, addr, pages * ARCH_PAGE_SIZE, VM_RELOCATABLE | VM_FILE | page_flags, file, offset);
 					if (v != addr) {
@@ -218,6 +219,7 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	}
 
 	*ref = val;
+	LogWriteSerial("relocating 0x%X -> 0x%X\n", addr, val);
 	AddToQuickRelocationTable(table, addr, val);
 	
 	if (needs_write_low) {

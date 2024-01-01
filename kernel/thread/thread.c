@@ -39,7 +39,7 @@ static struct spinlock innermost_lock;
 *
 * On x86, allocating a 4MB region only requires one page table, hence we'll use that.
 */
-#define USER_STACK_MAX_SIZE BytesToPages(1024 * 256 /* 1024 * 1024 * 4 */) * ARCH_PAGE_SIZE
+#define USER_STACK_MAX_SIZE BytesToPages(1024 * 1024 * 4) * ARCH_PAGE_SIZE
 
 
 #define TIMESLICE_LENGTH_MS 50
@@ -318,7 +318,6 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
     AcquireSpinlockIrql(&innermost_lock);
 
     if (new_thread->vas != old_thread->vas) {
-        LogWriteSerial("setting vas to 0x%X\n", new_thread->vas);
         SetVas(new_thread->vas);
     }
 
@@ -338,8 +337,6 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
 static void ScheduleWithLockHeld(void) {
     EXACT_IRQL(IRQL_SCHEDULER);
     AssertSchedulerLockHeld();
-
-    LogWriteSerial("schedule...\n");
 
     struct thread* old_thread = GetThread();
     struct thread* new_thread = ready_list.head;

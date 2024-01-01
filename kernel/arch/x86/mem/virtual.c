@@ -88,7 +88,13 @@ void ArchUpdateMapping(struct vas* vas, struct vas_entry* entry) {
 	if (entry->in_ram) flags |= x86_PAGE_PRESENT;
 	if (entry->user) flags |= x86_PAGE_USER;
 
-	x86MapPage(vas, entry->physical, entry->virtual, flags);
+	if (entry->num_pages > 1) {
+		for (int i = 0; i < entry->num_pages; ++i) {
+			x86MapPage(vas, entry->physical == 0 ? 0 : (entry->physical + i * ARCH_PAGE_SIZE), entry->virtual + i * ARCH_PAGE_SIZE, flags);
+		}
+	} else {
+		x86MapPage(vas, entry->physical, entry->virtual, flags);
+	}
 }
 
 void ArchGetPageUsageBits(struct vas* vas, struct vas_entry* vas_entry, bool* accessed, bool* dirty) {

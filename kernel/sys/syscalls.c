@@ -5,7 +5,7 @@
 
 typedef int (*system_call_t)(size_t, size_t, size_t, size_t, size_t);
 
-static const char* syscall_names[_SYSCALL_NUM_ENTRIES] = {
+const char* syscall_names[_SYSCALL_NUM_ENTRIES] = {
 	[SYSCALL_YIELD] = "yield",
 	[SYSCALL_TERMINATE] = "terminate",
 	[SYSCALL_MAPVIRT] = "map_virt",
@@ -37,8 +37,6 @@ int HandleSystemCall(int call, size_t a, size_t b, size_t c, size_t d, size_t e)
 	if (call >= _SYSCALL_NUM_ENTRIES) {
 		return ENOSYS;
 	}
-
-	LogWriteSerial("Calling system call: %s, with args 0x%X 0x%X 0x%X 0x%X 0x%X\n", syscall_names[call], a, b, c, d, e);
 
 	if (system_call_table[call] == NULL) {
 		return ENOSYS;

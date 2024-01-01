@@ -22,6 +22,7 @@
 #include <vfs.h>
 #include <errno.h>
 
+static void SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, struct vas_entry* entry);
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual);
 
 /**
@@ -50,20 +51,27 @@ static int VirtAvlComparator(void* a, void* b) {
     struct vas_entry* a_entry = (struct vas_entry*) a;
     struct vas_entry* b_entry = (struct vas_entry*) b;
 
+    assert((a_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
+    assert((b_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
+
     if (a_entry->virtual == b_entry->virtual) {
         return 0;
     }
 
-    assert((a_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
-    assert((b_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
-
     /*
      * Check for overlapping regions for multi-page entries, and count that as 'equal'.
      */
-    if (a_entry->virtual >= b_entry->virtual && a_entry->virtual < b_entry->virtual + b_entry->num_pages * ARCH_PAGE_SIZE) {
+
+    size_t a_page = a_entry->virtual / ARCH_PAGE_SIZE;
+    size_t b_page = b_entry->virtual / ARCH_PAGE_SIZE;
+
+    //LogWriteSerial("AvlCompare: 0x%X >= 0x%X && 0x%X < 0x%X + 0x%X (0x%X)\n", a_page, b_page, a_page, b_page, b_entry->num_pages, b_page + b_entry->num_pages);
+    //LogWriteSerial("        ... 0x%X >= 0x%X && 0x%X < 0x%X + 0x%X (0x%X)\n", b_page, a_page, b_page, a_page, a_entry->num_pages, a_page + a_entry->num_pages);
+
+    if (a_page >= b_page && a_page < b_page + b_entry->num_pages) {
         return 0;
     }
-    if (b_entry->virtual >= a_entry->virtual && b_entry->virtual < a_entry->virtual + a_entry->num_pages * ARCH_PAGE_SIZE) {
+    if (b_page >= a_page && b_page < a_page + a_entry->num_pages) {
         return 0;
     }
 
@@ -74,6 +82,9 @@ void SetTemporaryWriteEnable(size_t virtual, bool value) {
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
     struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    if (entry->num_pages > 1) {
+        SplitLargePageEntryIntoMultiple(vas, virtual, entry);
+    }
     entry->allow_temp_write = value;
     ArchUpdateMapping(vas, entry);
     ArchFlushTlb(vas);
@@ -156,6 +167,7 @@ static void PerformDeferredAccess(void* data) {
         AcquireSpinlockIrql(&vas->lock);
 
         struct vas_entry* entry = GetVirtEntry(vas, access->address);
+        assert(entry->num_pages == 1);
         entry->lock = true;
 
         if (entry->swapfile || entry->file) {
@@ -541,7 +553,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     MAX_IRQL(IRQL_SCHEDULER);
 
     if (number > 1) {
-        LogWriteSerial("Adding multi-page mapping!\n");
+        LogDeveloperWarning("Adding multi-page mapping!\n");
     }
 
     assert(!(file != NULL && (flags & VM_FILE) == 0));
@@ -590,6 +602,8 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->file_node = file;
     entry->swapfile = false;
     entry->first_load = entry->relocatable;
+
+    LogWriteSerial("NUMBER OF PAGES IS %d (%s)\n", number, number == 1 ? "one" : "NOT ONE!");
     entry->num_pages = number;
 
     if (entry->relocatable) {
@@ -623,6 +637,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
     bool in_use = false;
 
     struct vas_entry dummy;
+    dummy.num_pages = 1;
     dummy.virtual = virtual;
 
     /*
@@ -783,21 +798,15 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
         }
     }
 
-    // TODO: in the future, we'd want to alloc VM_MAP_HARDWARE to also use this, but we haven't implemented 
-    //       that yet (as it must also use physical). Note that VM_MAP_HARDWARE -> VM_LOCK, so this condition
-    //       will need to change to:
-    //
-    //          (((flags & VM_LOCK) == 0) || (flags & VM_MAP_HARDWARE)) && pages >= 3
-
     /*
      * No point doing the multi-page mapping with only 2 pages, as the splitting cost is probably
      * going to be greater than actually just adding 2 pages in the first place.
      * 
      * May want to increase this value furher in the future (e.g. maybe to 4 or 8)?
      */
-    bool multi_page_mapping = ((flags & VM_LOCK) == 0) && pages >= 3;
+    bool multi_page_mapping = (((flags & VM_LOCK) == 0) || ((flags & VM_MAP_HARDWARE) != 0)) && pages >= 3;
 
-    for (size_t i = 0; i < multi_page_mapping ? 1 : pages; ++i) {
+    for (size_t i = 0; i < (multi_page_mapping ? 1 : pages); ++i) {
         AddMapping(
             vas, 
             (flags & VM_RELOCATABLE) ? physical : (physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE)), 
@@ -837,6 +846,7 @@ size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct 
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
     struct vas_entry dummy;
+    dummy.num_pages = 1;
 #ifndef NDEBUG   
     dummy.physical = 0xBAADC0DE;
 #endif
@@ -848,6 +858,8 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
     if (res == NULL) {
         AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
         res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
+
+        //LogWriteSerial("GetVirtEntry(0x%X) = virt 0x%X. phys 0x%X. %d pages\n", virtual, res->virtual, res->physical, res->num_pages);
         ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
         assert(res != NULL);
     }
@@ -857,9 +869,98 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
 size_t GetPhysFromVirt(size_t virtual) {
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
-    size_t result = GetVirtEntry(GetVas(), virtual)->physical;
+    struct vas_entry* entry = GetVirtEntry(GetVas(), virtual);
+    size_t result = entry->physical;
+
+    /*
+     * Handle mappings of more than 1 page at a time by adding the extra offset
+     * from the start of the mapping. 
+     */
+    size_t target_page = virtual / ARCH_PAGE_SIZE;
+    size_t entry_page = entry->virtual / ARCH_PAGE_SIZE;
+    if (entry_page < target_page) {
+        result += (target_page - entry_page) * ARCH_PAGE_SIZE;
+    }
+
     ReleaseSpinlockIrql(&vas->lock);
     return result;
+}
+
+static void SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, struct vas_entry* entry) {
+    if (entry->num_pages == 1) {
+        return;
+    }
+
+    if (entry->ref_count != 1) {
+        LogDeveloperWarning("Splitting multi-mapping with ref_count != 1, this hasn't been tested!\n");
+    }
+
+    LogWriteSerial("Splitting multi pages!\n");
+
+    assert(!entry->in_ram);
+    assert(!entry->allocated);
+    assert(!entry->swapfile);
+
+    size_t entry_page = entry->virtual / ARCH_PAGE_SIZE;
+    size_t target_page = virtual / ARCH_PAGE_SIZE;
+
+    /*
+     * Split off anything before this page.
+     */
+    if (entry_page < target_page) {
+        size_t num_beforehand = target_page - entry_page;
+
+        LogWriteSerial("There were %d pages before the target...\n", num_beforehand);
+
+        struct vas_entry* pre_entry = AllocHeap(sizeof(struct vas_entry));
+        *pre_entry = *entry;
+
+        pre_entry->num_pages = num_beforehand;
+        entry->num_pages -= num_beforehand;
+        entry->virtual += num_beforehand * ARCH_PAGE_SIZE;
+
+        /*
+         * For the future when we support multi-mapping for VM_MAP_HARDWARE
+         */
+        if (entry->physical != 0) {
+            entry->physical += num_beforehand * ARCH_PAGE_SIZE;
+        }
+
+        if (entry->file) {
+            entry->file_offset += num_beforehand * ARCH_PAGE_SIZE;
+        }
+
+        InsertIntoAvl(vas, pre_entry);
+    }
+
+    /*
+     * There's now no pages beforehand. Now we need to check if there are any other pages
+     * after this.
+     */
+    if (entry->num_pages > 1) {
+        LogWriteSerial("There are still %d pages...\n", entry->num_pages);
+        
+        struct vas_entry* post_entry = AllocHeap(sizeof(struct vas_entry));
+        *post_entry = *entry;
+
+        post_entry->num_pages--;
+        entry->num_pages = 1;
+
+        post_entry->virtual += ARCH_PAGE_SIZE;
+
+        /*
+         * For the future when we support multi-mapping for VM_MAP_HARDWARE
+         */
+        if (entry->physical != 0) {
+            post_entry->physical += ARCH_PAGE_SIZE;
+        }
+
+        if (entry->file) {
+            post_entry->file_offset += ARCH_PAGE_SIZE;
+        }
+
+        InsertIntoAvl(vas, post_entry);
+    }
 }
 
 static void BringIntoMemoryFromCow(struct vas_entry* entry) {
@@ -895,10 +996,13 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
     inline_memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
 }
 
-static void BringIntoMemoryFromFile(struct vas_entry* entry) {
-    // TODO: either here, or in the actual deferred access func, need to ensure that if you try to
-    //       go past the end of the file, you just get zeros (either in the end of a half-filled file page,
-    //       or just entirely new pages past the end of the file)
+static void BringIntoMemoryFromFile(struct vas_entry* entry, size_t faulting_virt) {
+    // TODO: need to test that you're allowed to read past the end of the file (even into other pages)
+    //       if the size mapped allows it, and just get zeros
+
+    if (entry->num_pages > 1) {
+        SplitLargePageEntryIntoMultiple(GetVas(), faulting_virt, entry);
+    }
     entry->load_in_progress = true;
     ArchUpdateMapping(GetVas(), entry);
     ArchFlushTlb(GetVas());
@@ -915,75 +1019,6 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
     LogWriteSerial(" ----> RELOADING SWAP TO VIRT 0x%X: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
 
     DeferDiskRead(entry->virtual, GetSwapfile(), offset, true);
-}
-
-static void SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, struct vas_entry* entry) {
-    if (entry->num_pages == 1) {
-        return;
-    }
-
-    LogWriteSerial("Splitting multi pages!\n");
-
-    assert(!entry->in_ram);
-    assert(!entry->allocated);
-    assert(!entry->swapfile);
-
-    size_t entry_page = entry->virtual / ARCH_PAGE_SIZE;
-    size_t target_page = virtual / ARCH_PAGE_SIZE;
-
-    /*
-     * Split off anything before this page.
-     */
-    if (entry_page < target_page) {
-        size_t num_beforehand = target_page - entry_page;
-
-        struct vas_entry* pre_entry = AllocHeap(sizeof(struct vas_entry));
-        *pre_entry = *entry;
-
-        pre_entry->num_pages = num_beforehand;
-        entry->num_pages -= num_beforehand;
-        entry->virtual += num_beforehand * ARCH_PAGE_SIZE;
-
-        /*
-         * For the future when we support multi-mapping for VM_MAP_HARDWARE
-         */
-        if (entry->physical != 0) {
-            entry->physical += num_beforehand * ARCH_PAGE_SIZE;
-        }
-
-        if (entry->file) {
-            entry->file_offset += num_beforehand * ARCH_PAGE_SIZE;
-        }
-
-        InsertIntoAvl(vas, pre_entry);
-    }
-
-    /*
-     * There's now no pages beforehand. Now we need to check if there are any other pages
-     * after this.
-     */
-    if (entry->num_pages > 1) {
-        struct vas_entry* post_entry = AllocHeap(sizeof(struct vas_entry));
-        *post_entry = *entry;
-
-        post_entry->num_pages--;
-        entry->num_pages = 1;
-
-        post_entry->virtual += ARCH_PAGE_SIZE;
-
-        /*
-         * For the future when we support multi-mapping for VM_MAP_HARDWARE
-         */
-        if (entry->physical != 0) {
-            post_entry->physical += ARCH_PAGE_SIZE;
-        }
-
-        if (entry->file) {
-            post_entry->file_offset += ARCH_PAGE_SIZE;
-        }
-
-        InsertIntoAvl(vas, post_entry);
-    }
 }
 
 static void FailVirt(void) {
@@ -1010,7 +1045,7 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
     if (entry->file && !entry->in_ram) {
         LogWriteSerial("FILE\n");
         assert(entry->num_pages == 1);
-        BringIntoMemoryFromFile(entry);
+        BringIntoMemoryFromFile(entry, faulting_virt);
         return 0;
     }
 
@@ -1065,18 +1100,13 @@ bool LockVirtEx(struct vas* vas, size_t virtual) {
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
 
     if (!entry->in_ram) {
-        int res;
-        for (int i = 0; i < entry->num_pages; ++i) {
-            if (i != 0) {
-                entry = GetVirtEntry(vas, (virtual + i * ARCH_PAGE_SIZE) & ~(ARCH_PAGE_SIZE - 1));
-            }
-            
-            res = BringIntoMemory(vas, entry, true, (virtual + i * ARCH_PAGE_SIZE) & ~(ARCH_PAGE_SIZE - 1), 0);
-            if (res != 0) {
-                Panic(PANIC_CANNOT_LOCK_MEMORY);
-            }
+        if (entry->num_pages > 1) {
+            SplitLargePageEntryIntoMultiple(vas, virtual, entry);
         }
-        
+        int res = BringIntoMemory(vas, entry, true, virtual, 0);
+        if (res != 0) {
+            Panic(PANIC_CANNOT_LOCK_MEMORY);
+        }
         assert(entry->in_ram);
     }
 
@@ -1087,6 +1117,9 @@ bool LockVirtEx(struct vas* vas, size_t virtual) {
 
 void UnlockVirtEx(struct vas* vas, size_t virtual) {
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
+    if (entry->num_pages > 1) {
+        SplitLargePageEntryIntoMultiple(vas, virtual, entry);
+    }
     entry->lock = false;
 }
 
@@ -1118,6 +1151,13 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
     AcquireSpinlockIrql(&vas->lock);
 
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
+    if (entry == NULL) {
+        LogWriteSerial("[SetVirtPermissions] got null back. virt = 0x%X, setting 0x%X, clearing 0x%X\n", virtual, set, clear);
+        PanicEx(PANIC_ASSERTION_FAILURE, "[SetVirtPermissions] got null back for virt entry");
+    }
+    if (entry->num_pages > 1) {
+        SplitLargePageEntryIntoMultiple(vas, virtual, entry);
+    }
     entry->read = (set & VM_READ) ? true : (clear & VM_READ ? false : entry->read);
     entry->write = (set & VM_WRITE) ? true : (clear & VM_WRITE ? false : entry->write);
     entry->exec = (set & VM_EXEC) ? true : (clear & VM_EXEC ? false : entry->exec);
@@ -1136,6 +1176,9 @@ int GetVirtPermissions(size_t virtual) {
     if (entry_ptr == NULL) {
         ReleaseSpinlockIrql(&vas->lock);
         return 0;
+    }
+    if (entry_ptr->num_pages > 1) {
+        SplitLargePageEntryIntoMultiple(vas, virtual, entry_ptr);
     }
     struct vas_entry entry = *entry_ptr;
     ReleaseSpinlockIrql(&vas->lock);
@@ -1161,12 +1204,18 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
         if (entry == NULL) {
             return ENOMEM;
         }
+        if (entry->num_pages > 1) {
+            SplitLargePageEntryIntoMultiple(vas, virtual, entry);
+        }
         assert(entry->ref_count > 0);
         entry->ref_count--;
 
         if (entry->ref_count == 0) {
             //LogWriteSerial("Removing mapping at 0x%X\n", virtual + i * ARCH_PAGE_SIZE);
 
+            if (entry->file && entry->write && entry->in_ram) { 
+                DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
+            }
             if (entry->in_ram) {
                 ArchUnmap(vas, entry);
                 needs_tlb_flush = true;
@@ -1175,9 +1224,6 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
                 assert(!entry->allocated);
                 DeallocateSwapfileIndex(entry->physical / ARCH_PAGE_SIZE);
             }
-            if (entry->file && entry->write) { 
-                DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
-            }
             if (entry->allocated) {
                 assert(!entry->swapfile);   // can't be on swap, as putting on swap clears allocated bit
                 DeallocPhys(entry->physical);
@@ -1185,7 +1231,7 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
 
             DeleteFromAvl(vas, entry);
             FreeHeap(entry);
-            FreeVirtRange(vas, virtual + i * ARCH_PAGE_SIZE, 1);
+            FreeVirtRange(vas, virtual + i * ARCH_PAGE_SIZE, entry->num_pages);
         }
     }
 
