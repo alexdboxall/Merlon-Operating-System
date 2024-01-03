@@ -1,5 +1,7 @@
 #pragma once
 
+#include <assert.h>
+
 struct irql_deferment {
     void (*handler)(void*);
     void* context;

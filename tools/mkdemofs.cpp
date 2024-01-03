@@ -52,9 +52,6 @@ uint8_t* dummy_disk;
 
 int demofs_read_sector(uint8_t* buffer, int logical_sector)
 {
-    /*
-    * TODO: call the VFS, caching?
-    */
     memcpy(buffer, dummy_disk + logical_sector * SECTOR_SIZE, SECTOR_SIZE);
     return 0;
 }
@@ -62,9 +59,6 @@ int demofs_read_sector(uint8_t* buffer, int logical_sector)
 
 int demofs_write_sector(uint8_t* buffer, int logical_sector)
 {
-    /*
-    * TODO: call the VFS, caching?
-    */
     memcpy(dummy_disk + logical_sector * SECTOR_SIZE, buffer, SECTOR_SIZE);
     return 0;
 }
@@ -279,8 +273,6 @@ void listdir(struct demofs_data* fs, const char* name, const char* shortname, in
                 continue;
             listdir(fs, path, entry->d_name, inode);
         } else {
-            // TODO: write file
-
             FILE* f = fopen(path, "rb");
             fseek(f, 0, SEEK_END);
             long pos = ftell(f);

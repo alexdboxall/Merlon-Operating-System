@@ -57,7 +57,8 @@ struct thread {
     int schedule_policy;
     size_t canary_position;
     bool timed_out;
-    bool death_sentence;
+    bool needs_termination;
+    bool user_thread;           /* used to determine if a fault causes task termination or complete panic */
 
     struct semaphore* waiting_on_semaphore;
 

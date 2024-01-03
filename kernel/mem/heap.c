@@ -12,7 +12,6 @@
 #include <irql.h>
 #include <thread.h>
 
-
 #define BOOTSTRAP_AREA_SIZE (1024 * 16)
 #define MAX_EMERGENCY_BLOCKS 16
 
@@ -388,7 +387,7 @@ void DbgPrintListStats(void) {
             unswap_size += GetBlockSize(unswap);
             unswap = unswap->next;
             if (timeout >= 100000) {
-                PanicEx(PANIC_ASSERTION_FAILURE, "double free detected!");
+                Panic(PANIC_DOUBLE_FREE_DETECTED);
             }
         }
 
@@ -398,7 +397,7 @@ void DbgPrintListStats(void) {
             swap_size += GetBlockSize(swap);
             swap = swap->next;
             if (timeout >= 100000) {
-                PanicEx(PANIC_ASSERTION_FAILURE, "double free detected!");
+                Panic(PANIC_DOUBLE_FREE_DETECTED);
             }
         }
 
@@ -425,7 +424,7 @@ static void* GetSystemMemory(size_t size, int flags) {
 
     if (flags & HEAP_NO_FAULT) {
         if (flags & HEAP_ALLOW_PAGING) {
-            PanicEx(PANIC_OUT_OF_BOOTSTRAP_HEAP, "HEAP_NO_FAULT was set alongside HEAP_ALLOW_PAGING");
+            Panic(PANIC_CONFLICTING_ALLOCATION_REQUIREMENTS);
         }
         if (IsVirtInitialised()) {
             DeferUntilIrql(IRQL_STANDARD, RestoreEmergencyPages, NULL);
@@ -791,7 +790,7 @@ void* AllocHeapEx(size_t size, int flags) {
         return NULL;
     }
 
-    if (size >= WARNING_LARGE_REQUEST_SIZE) {
+    if (size >= WARNING_LARGE_REQUEST_SIZE && ((flags & HEAP_ALLOW_PAGING) == 0 || (flags & HEAP_NO_FAULT) != 0)) {
         LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should consider using MapVirt.\n", size);
     }
 

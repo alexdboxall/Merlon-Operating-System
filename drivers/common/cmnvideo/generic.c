@@ -52,8 +52,6 @@ void GenericVideoPutrect(uint8_t* virtual_framebuffer, int pitch, int depth, int
         uint8_t* start_pos = (uint8_t*) pos16;
         uint16_t mod_colour = ConvertToColourDepth(colour, depth);
 
-        // TODO: endianness (flip mod_colour's bytes if wrong)
-
 #ifdef ARCH_BIG_ENDIAN
         mod_colour = bswap_16(mod_colour);
 #endif

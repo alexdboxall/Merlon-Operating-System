@@ -6,6 +6,7 @@
 #include <thread.h>
 #include <linkedlist.h>
 #include <errno.h>
+#include <panic.h>
 
 #define HIGHEST_IRQ_NUM 256
 
@@ -61,4 +62,13 @@ void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* contex
     }
     
     LowerIrql(irql);
+}
+
+void UnhandledFault(void) {
+    if (GetThread()->user_thread) {
+        TerminateThread(GetThread());
+
+    } else {
+        Panic(PANIC_UNHANDLED_KERNEL_EXCEPTION);
+    }
 }

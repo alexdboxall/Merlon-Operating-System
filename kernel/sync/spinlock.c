@@ -23,7 +23,7 @@ void InitSpinlock(struct spinlock* lock, const char* name, int irql) {
 void AcquireSpinlockDirect(struct spinlock* lock) {
     if (lock->lock != 0) {
         LogWriteSerial("OOPS! %s\n", lock->name);
-        Panic(PANIC_ASSERTION_FAILURE);
+        Panic(PANIC_SPINLOCK_DOUBLE_ACQUISITION);
     }
     assert(lock->lock == 0);
 
@@ -32,6 +32,9 @@ void AcquireSpinlockDirect(struct spinlock* lock) {
 }
 
 void ReleaseSpinlockDirect(struct spinlock* lock) {
+    if (lock->lock == 0) {
+        Panic(PANIC_SPINLOCK_RELEASED_BEFORE_ACQUIRED);
+    }
     assert(lock->lock != 0);
     //assert(lock->owner == GetThread() || lock->irql == IRQL_HIGH);
     //lock->owner = NULL;

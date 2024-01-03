@@ -39,7 +39,6 @@ extern FILE* stderr;
 
 extern int fprintf(FILE* restrict stream, const char* restrict format, ...);
 
-// TODO: forward declaration for fprintf, extern FILE
 #define assert(condition) {if (!(condition)) {fprintf(stderr, "Assertion failed: %s, function %s, file %s, line %s.", __tostr(condition), __tostr(__func__), __tostr(__FILE__), __tostr(__LINE__));}}
 #endif
 

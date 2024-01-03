@@ -39,9 +39,11 @@
 #define ESPIPE          27          // Illegal seek
 #define ETIMEDOUT       28          // Operation timed out
 #define ENOBUFS         29          // No buffer space
+#define EBUSY			30			// Busy
 
 #ifndef COMPILE_KERNEL
 
+int* __thread_local_errno_();
 #define errno *__thread_local_errno_()
 
 #endif

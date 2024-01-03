@@ -16,6 +16,7 @@
 #define VM_LOCAL        256     /* indicates it's local to the VAS - i.e. not in kernel global memory */
 #define VM_RECURSIVE    512     /* assumes the VAS is already locked, so won't lock or unlock it */
 #define VM_RELOCATABLE  1024    /* needs driver fixups whenever swapped back in*/
+#define VM_EVICT_FIRST  2048
 
 #define VAS_NO_ARCH_INIT    1
 
@@ -42,9 +43,10 @@ struct vas_entry {
     uint8_t load_in_progress: 1;        /* someone else is deferring a read into this page - keep trying the access until flag clears */
     
     uint8_t times_swapped   : 4;
-    uint8_t                 : 4;
+    uint8_t evict_first     : 1;
+    uint8_t                 : 3;
 
-    int num_pages;                      /* only used for non-allocated or (TODO: hardware mapped) to reduce the number of AVL entries */
+    int num_pages;                      /* only used for non-allocated or hardware mapped to reduce the number of AVL entries */
 
     off_t file_offset;
     struct open_file* file_node;
@@ -72,7 +74,6 @@ size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct 
 int UnmapVirt(size_t virtual, size_t bytes);
 int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages);
 size_t GetPhysFromVirt(size_t virtual);
-void SetTemporaryWriteEnable(size_t virtual, bool value);
 
 struct vas* GetKernelVas(void);     // a kernel vas
 struct vas* GetVas(void);           // current vas

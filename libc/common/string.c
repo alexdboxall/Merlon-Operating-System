@@ -272,6 +272,8 @@ char* strerror(int err)
 		return "Operation timed out";
 	case ENOBUFS:
 		return "No buffer space";
+	case EBUSY:
+		return "Resource busy or locked";
 	default:
 		return "Unknown error";
 	}

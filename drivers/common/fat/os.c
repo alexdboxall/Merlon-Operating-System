@@ -18,7 +18,7 @@ static struct semaphore* mounting_mutex = NULL;
 static struct open_file* disks[FF_VOLUMES] = {0};
 static int disk_sector_sizes[FF_VOLUMES] = {0};
 static int disk_sector_counts[FF_VOLUMES] = {0};
-static uint8_t next_fatfs_volume = 0;		// TODO: this needs a lock
+static uint8_t next_fatfs_volume = 0;
 
 static struct semaphore* mutexes[FF_VOLUMES + 1];
 
@@ -116,7 +116,7 @@ int ff_mutex_create(int vol) {
 
 void ff_mutex_delete(int vol)
 {
-	DestroyMutex(mutexes[vol]);
+	DestroyMutex(mutexes[vol], SEM_DONT_CARE);
 }
 
 int ff_mutex_take(int vol) {

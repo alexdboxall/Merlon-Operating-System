@@ -59,9 +59,7 @@ void x86HandleInterrupt(struct x86_regs* r) {
 
     } else {
         LogWriteSerial("Got interrupt %d.\n", num);
-
-        // TODO: check if user thread, and if so, just kill it
-        Panic(PANIC_UNHANDLED_KERNEL_EXCEPTION);
+        UnhandledFault();
     }
 }
 

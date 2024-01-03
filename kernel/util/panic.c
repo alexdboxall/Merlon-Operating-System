@@ -40,6 +40,12 @@ static const char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_NO_LOW_MEMORY]						= "not enough conventional memory to satisfy request",
 	[PANIC_OUT_OF_SWAPFILE]						= "out of swapfile space",
 	[PANIC_PROGRAM_LOADER]						= "failed to load the program loader",
+	[PANIC_VAS_TRIED_TO_SELF_DESTRUCT]			= "tried to destroy the current virtual address space",
+	[PANIC_ACPI_AML]							= "acpi aml is invalid",
+	[PANIC_SPINLOCK_DOUBLE_ACQUISITION]			= "spinlock attempted to be locked while currently held",
+	[PANIC_SPINLOCK_RELEASED_BEFORE_ACQUIRED]	= "spinlock attempted to be released while not held",
+	[PANIC_DOUBLE_FREE_DETECTED]				= "heap memory freed twice",
+	[PANIC_CONFLICTING_ALLOCATION_REQUIREMENTS]	= "conflicting heap allocation requirements"
 };
 
 static void (*graphical_panic_handler)(int, const char*) = NULL;

@@ -11,7 +11,6 @@
 #include <panic.h>
 #include <log.h>
 
-
 struct semaphore {
     const char* name;
     int max_count;
@@ -167,18 +166,26 @@ void ReleaseSemaphore(struct semaphore* sem) {
  * would then try to acquire a deleted memory region, which is very bad).
  * 
  * @param sem The semaphore to destroy.
+ * @param flags One of SEM_DONT_CARE, SEM_REQUIRE_ZERO or SEM_REQUIRE_FULL. 
  * 
  * @maxirql IRQL_SCHEDULER
  */
-void DestroySemaphore(struct semaphore* sem) {
+int DestroySemaphore(struct semaphore* sem, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     LockScheduler();
-    if (sem->current_count != 0) {
-        Panic(PANIC_SEMAPHORE_DESTROY_WHILE_HELD);
+    if (flags == SEM_REQUIRE_ZERO && sem->current_count != 0) {
+        UnlockScheduler();
+        return EBUSY;
     }
+    if (flags == SEM_REQUIRE_FULL && sem->current_count != sem->max_count) {
+        UnlockScheduler();
+        return EBUSY;
+    }
+    
     FreeHeap(sem);
     UnlockScheduler();
+    return 0;
 }
 
 /**

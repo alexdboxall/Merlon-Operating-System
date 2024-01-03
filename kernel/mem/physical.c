@@ -179,7 +179,7 @@ void DeallocPhys(size_t addr) {
 void DeallocPhysContiguous(size_t addr, size_t bytes) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+    size_t pages = BytesToPages(bytes);
     for (size_t i = 0; i < pages; ++i) {
         DeallocPhys(addr);
         addr += ARCH_PAGE_SIZE;
@@ -304,7 +304,7 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
         return 0;
     }
 
-    size_t pages = (bytes + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+    size_t pages = BytesToPages(bytes);
     size_t min_index = (min_addr + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
     size_t max_index = max_addr == 0 ? highest_valid_page_index + 1 : max_addr / ARCH_PAGE_SIZE;
     size_t count = 0;

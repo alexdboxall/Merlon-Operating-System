@@ -2,16 +2,12 @@
 #include <errno.h>
 #include <string.h>
 #include <common.h>
-#include <spinlock.h>
+#include <semaphore.h>
 #include <vfs.h>
 #include <fcntl.h>
 #include <log.h>
 #include <heap.h>
 #include <irql.h>
-
-// TODO: switch this over from spinlock to mutex - it will work a lot better for HandleFileDescriptorsOnExec
-//       and for the dup() calls... and would also allow the table be in pageable memory (which lets us increase
-//       MAX_FD_PER_PROCESS from 200 to e.g. 1024
 
 struct filedes_entry {
     /*
@@ -31,14 +27,15 @@ struct filedes_entry {
 * The table of all of the file descriptors in use by a process.
 */
 struct filedes_table {
-    struct spinlock lock;
-    struct filedes_entry entries[MAX_FD_PER_PROCESS];
+    struct semaphore* lock;
+    struct filedes_entry* entries;
 };
 
 struct filedes_table* CreateFileDescriptorTable(void) {
     struct filedes_table* table = AllocHeap(sizeof(struct filedes_table));
 
-    InitSpinlock(&table->lock, "filedes", IRQL_SCHEDULER);
+    table->lock = CreateMutex("filedes");
+    table->entries = AllocHeapEx(sizeof(struct filedes_entry) * MAX_FD_PER_PROCESS, HEAP_ALLOW_PAGING);
 
     for (int i = 0; i < MAX_FD_PER_PROCESS; ++i) {
         table->entries[i].file = NULL;
@@ -50,9 +47,9 @@ struct filedes_table* CreateFileDescriptorTable(void) {
 struct filedes_table* CopyFileDescriptorTable(struct filedes_table* original) {
     struct filedes_table* new_table = CreateFileDescriptorTable();
 
-    AcquireSpinlockIrql(&original->lock);
+    AcquireMutex(original->lock, -1);
     memcpy(new_table->entries, original->entries, sizeof(struct filedes_entry) * MAX_FD_PER_PROCESS);
-    ReleaseSpinlockIrql(&original->lock);
+    ReleaseMutex(original->lock);
     
     return new_table;
 }
@@ -62,34 +59,34 @@ int CreateFileDescriptor(struct filedes_table* table, struct open_file* file, in
         return EINVAL;
     }
 
-    AcquireSpinlockIrql(&table->lock);
+    AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < MAX_FD_PER_PROCESS; ++i) {
         if (table->entries[i].file == NULL) {
             table->entries[i].file = file;
             table->entries[i].flags = flags;
-            ReleaseSpinlockIrql(&table->lock);
+            ReleaseMutex(table->lock);
             *fd_out = i;
             return 0;
         }
     }
 
-    ReleaseSpinlockIrql(&table->lock);
+    ReleaseMutex(table->lock);
     return EMFILE;
 }
 
 int RemoveFileDescriptor(struct filedes_table* table, struct open_file* file) {
-    AcquireSpinlockIrql(&table->lock);
+    AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < MAX_FD_PER_PROCESS; ++i) {
         if (table->entries[i].file == file) {
             table->entries[i].file = NULL;
-            ReleaseSpinlockIrql(&table->lock);
+            ReleaseMutex(table->lock);
             return 0;
         }
     }
 
-    ReleaseSpinlockIrql(&table->lock);
+    ReleaseMutex(table->lock);
     return EINVAL;
 }
 
@@ -99,43 +96,42 @@ int GetFileFromDescriptor(struct filedes_table* table, int fd, struct open_file*
         return out == NULL ? EINVAL : EBADF;
     }
 
-    AcquireSpinlockIrql(&table->lock);
+    AcquireMutex(table->lock, -1);
     struct open_file* result = table->entries[fd].file;
-    ReleaseSpinlockIrql(&table->lock);
+    ReleaseMutex(table->lock);
 
     *out = result;
     return result == NULL ? EBADF : 0;
 }
 
 int HandleFileDescriptorsOnExec(struct filedes_table* table) {
-    AcquireSpinlockIrql(&table->lock);
+    AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < MAX_FD_PER_PROCESS; ++i) {
         if (table->entries[i].file != NULL) {
             if (table->entries[i].flags & FD_CLOEXEC) {
                 struct open_file* file = table->entries[i].file;
                 table->entries[i].file = NULL;
-                ReleaseSpinlockIrql(&table->lock);
                 int res = CloseFile(file);
                 if (res != 0) {
+                    ReleaseMutex(table->lock);
                     return res;
                 }
-                AcquireSpinlockIrql(&table->lock);
             }
         }
     }
 
-    ReleaseSpinlockIrql(&table->lock);
+    ReleaseMutex(table->lock);
     return 0;
 }
 
 int DuplicateFileDescriptor(struct filedes_table* table, int oldfd, int* newfd) {
-    AcquireSpinlockIrql(&table->lock);
+    AcquireMutex(table->lock, -1);
 
     struct open_file* original_file;
     int res = GetFileFromDescriptor(table, oldfd, &original_file);
     if (res != 0 || original_file == NULL) {
-        ReleaseSpinlockIrql(&table->lock);
+        ReleaseMutex(table->lock);
         return EBADF;
     }
 
@@ -143,18 +139,18 @@ int DuplicateFileDescriptor(struct filedes_table* table, int oldfd, int* newfd) 
         if (table->entries[i].file == NULL) {
             table->entries[i].file = original_file;
             table->entries[i].flags = 0;
-            ReleaseSpinlockIrql(&table->lock);
+            ReleaseMutex(table->lock);
             *newfd = i;
             return 0;
         }
     }
 
-    ReleaseSpinlockIrql(&table->lock);
+    ReleaseMutex(table->lock);
     return EMFILE;
 }
 
 int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd) {
-    AcquireSpinlockIrql(&table->lock);
+    AcquireMutex(table->lock, -1);
 
     struct open_file* original_file;
     int res = GetFileFromDescriptor(table, oldfd, &original_file);
@@ -164,7 +160,7 @@ int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd) 
     * and newfd is not closed."
     */
     if (res != 0 || original_file == NULL) {
-        ReleaseSpinlockIrql(&table->lock);
+        ReleaseMutex(table->lock);
         return EBADF;
     }
 
@@ -173,7 +169,7 @@ int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd) 
     * value as oldfd, then dup2() does nothing..."
     */
     if (oldfd == newfd) {
-        ReleaseSpinlockIrql(&table->lock);
+        ReleaseMutex(table->lock);
         return 0;
     }
 
@@ -185,13 +181,13 @@ int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd) 
         * before being reused; the close is performed silently (i.e., any
         * errors during the close are not reported by dup2())."
         */
-        CloseFile(current_file);        // TODO: table->lock needs to be a mutex, not a spinlock!!
+        CloseFile(current_file);
     }
 
     table->entries[newfd].file = original_file;
     table->entries[newfd].flags = 0;
     
-    ReleaseSpinlockIrql(&table->lock);
+    ReleaseMutex(table->lock);
     return 0;
 }
 
@@ -215,9 +211,11 @@ int DuplicateFileDescriptor3(struct filedes_table* table, int oldfd, int newfd, 
         return result;
     }
 
+    AcquireMutex(table->lock, -1);
     if (flags & O_CLOEXEC) {
         table->entries[newfd].flags |= FD_CLOEXEC;
     }
+    ReleaseMutex(table->lock);
 
     return 0;
 }

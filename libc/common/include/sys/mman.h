@@ -4,7 +4,6 @@
  * Through the system call, these will all just be combined into one set of flags, instead
  * of 2 like the mmap() wrapper will use.
  */
-
 #define PROT_NONE       0
 #define PROT_EXEC       (1 << 0)
 #define PROT_READ       (1 << 1)

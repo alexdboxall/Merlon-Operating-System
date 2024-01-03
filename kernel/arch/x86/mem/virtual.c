@@ -131,9 +131,7 @@ void ArchFlushTlb(struct vas* vas) {
 }
 
 void ArchInitVas(struct vas* vas) {
-	LogWriteSerial("creating a new VAS!\n");
 	vas->arch_data = AllocHeap(sizeof(platform_vas_data_t));
-	// TODO: @@@ get rid of VM_USER here...
 	vas->arch_data->v_page_directory = (size_t*) MapVirt(0, 0, ARCH_PAGE_SIZE, VM_READ | VM_WRITE | VM_USER | VM_LOCK, NULL, 0);
 	vas->arch_data->p_page_directory = GetPhysFromVirt((size_t) vas->arch_data->v_page_directory);
 
@@ -141,8 +139,6 @@ void ArchInitVas(struct vas* vas) {
 		vas->arch_data->v_page_directory[i] = kernel_page_directory[i];
 	}
 	vas->arch_data->v_page_directory[1023] = ((size_t) vas->arch_data->p_page_directory) | x86_PAGE_PRESENT | x86_PAGE_WRITE;
-
-	LogWriteSerial("p 0x%X v 0x%X\n", vas->arch_data->p_page_directory, vas->arch_data->v_page_directory);
 }
 
 void ArchInitVirt(void) {

@@ -68,8 +68,6 @@ static int MasterRead(struct vnode* node, struct transfer* tr) {
 static int MasterWrite(struct vnode* node, struct transfer* tr) {
     MAX_IRQL(IRQL_PAGE_FAULT);
 
-    // TODO: (perhaps if it is full, it doesn't block, and just returns ENOBUFS
-
     struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
 
     while (tr->length_remaining > 0) {
@@ -89,6 +87,8 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
 
     // TODO: this should try to be atomic (reduces no. of sem wakeups). maybe put a mutex around the flushed buffer (but I guess it can block
     // so it might be able to deadlock..?)
+
+    // could add a 'BlockingBufferAddMany' call?
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
         BlockingBufferAdd(master_internal->flushed_buffer, internal->line_buffer[i], true);
     }

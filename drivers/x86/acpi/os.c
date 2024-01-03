@@ -175,10 +175,10 @@ ACPI_STATUS AcpiOsSignal(UINT32 Function, void* Info)
 
     switch (Function) {
     case ACPI_SIGNAL_FATAL:
-        PanicEx(PANIC_DRIVER_FAULT, "acpi: AML fatal opcode");
+        PanicEx(PANIC_ACPI_AML, "acpi: AML fatal opcode");
         break;
     case ACPI_SIGNAL_BREAKPOINT:
-        PanicEx(PANIC_DRIVER_FAULT, "acpi: AML breakpoint\n");
+        PanicEx(PANIC_ACPI_AML, "acpi: AML breakpoint\n");
         break;
     default:
         PanicEx(PANIC_DRIVER_FAULT, "acpi: AcpiOsSignal");
@@ -327,7 +327,7 @@ ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits, UINT32 InitialUnits, ACPI_SEM
 
 ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_SEMAPHORE Handle)
 {
-    DestroySemaphore((struct semaphore*) Handle);
+    DestroySemaphore((struct semaphore*) Handle, SEM_DONT_CARE);
     return AE_OK;
 }
 
@@ -686,7 +686,7 @@ static void LOCKED_DRIVER_CODE PollIrqs() {
 }
 
 void AcpicaThread(void*) {
-    LogWriteSerial("ACPICA.SYS loaded\n");
+    LogWriteSerial("ACPI.SYS loaded\n");
 
     AcpiDbgLevel = (ACPI_NORMAL_DEFAULT | ACPI_LV_EVENTS) & ~ACPI_LV_REPAIR;
     AcpiGbl_DisableAutoRepair = true;
@@ -854,7 +854,7 @@ void AcpicaThread(void*) {
         LogWriteSerial("Register ACPI_BITREG_POWER_BUTTON_ENABLE has value: 0x%X\n", retv);
     }
 
-    LogWriteSerial("ACPICA.SYS fully initialised\n");
+    LogWriteSerial("ACPI.SYS fully initialised\n");
 
     PollIrqs();
 }

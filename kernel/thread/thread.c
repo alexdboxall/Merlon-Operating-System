@@ -183,9 +183,10 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->time_used = 0;
     thr->name = strdup(name);
     thr->priority = priority;
-    thr->death_sentence = false;
+    thr->needs_termination = false;
     thr->time_used = false;
     thr->waiting_on_semaphore = NULL;
+    thr->user_thread = false;
     thr->schedule_policy = policy;
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
     thr->vas = vas;
@@ -221,17 +222,19 @@ static void UpdateTimesliceExpiry(void) {
 }
 
 void ThreadExecuteInUsermode(void* arg) {
-    LogWriteSerial("executing in usermode, the VAS is 0x%X\n", GetVas());
+    struct thread* thr = GetThread();
+
     int res = CopyProgramLoaderIntoAddressSpace();
     if (res != 0) {
         LogDeveloperWarning("COULDN'T LOAD PROGRAM LOADER!\n");
-        TerminateThread(GetThread());
+        TerminateThread(thr);
     }
 
     size_t user_stack = CreateUserStack(USER_STACK_MAX_SIZE);
 
     LockScheduler();
-    GetThread()->stack_pointer = user_stack;
+    thr->stack_pointer = user_stack;
+    thr->user_thread = true;
     UnlockScheduler();
 
     ArchFlushTlb(GetVas());
@@ -396,7 +399,7 @@ void Schedule(void) {
      * a thread off another list if it's blocked, as we don't know what list it's on. This way, we just
      * signal that it needs terminating next time we allow it to run.
      */
-    if (GetThread()->death_sentence) {
+    if (GetThread()->needs_termination) {
         LogWriteSerial("Terminating a thread that was scheduled to die... stack at 0x%X\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
         TerminateThread(GetThread());
         Panic(PANIC_IMPOSSIBLE_RETURN);

@@ -42,7 +42,7 @@ static int ValidateCopy(const void* user_addr, size_t size, bool write) {
     * being accessed.
     */
     size_t initial_page = initial_address / ARCH_PAGE_SIZE;
-    size_t pages = (size + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+    size_t pages = BytesToPages(size);
 
     for (size_t i = 0; i < pages; ++i) {
         size_t page = initial_page + i;

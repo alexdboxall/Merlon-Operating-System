@@ -26,7 +26,7 @@ static void LoadSlowDriversInBackground(void*) {
      * in a new thread. This means we can continue initialising the rest of the OS while
      * drivers load.
      */ 
-    ((void(*)()) (Loadx86Driver("sys:/acpica.sys", "InitAcpica")))();
+    ((void(*)()) (Loadx86Driver("sys:/acpi.sys", "InitAcpica")))();
 }
 
 void ArchInitDev(bool fs) {
