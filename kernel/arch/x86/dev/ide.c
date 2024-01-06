@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <diskcache.h>
 #include <irql.h>
 #include <diskutil.h>
 
@@ -38,15 +39,12 @@ int IdeCheckError(struct ide_data* ide) {
 
     uint8_t status = inb(base + 0x7);
     if (status & 0x01) {
-        LogDeveloperWarning("[ide] unknown error\n");
         return EIO;
 
     } else if (status & 0x20) {
-        LogDeveloperWarning("[ide] driver write fault\n");
         return EIO;
 
     } else if (!(status & 0x08)) {
-        LogDeveloperWarning("[ide] meant to be ready for data, but isn't\n");
         return EIO;
     }
 
@@ -72,14 +70,9 @@ int IdePoll(struct ide_data* ide) {
     int timeout = 0;
     while (inb(base + 0x7) & 0x80) {
         if (timeout > 975) {
-            /*
-            * For the last 25 iterations, wait 10ms
-            */
-            LogWriteSerial("ide poll delay...\n");
             SleepMilli(10);
         }
         if (timeout++ > 1000) {
-            LogWriteSerial("IDE SHAT ITSELF!\n");
             return EIO;
         }
     }
@@ -92,7 +85,7 @@ int IdePoll(struct ide_data* ide) {
 * so we are limited to a 28 bit sector number (i.e. disks up to 128GB in size)
 */
 static int IdeIo(struct ide_data* ide, struct transfer* io) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
     int disk_num = ide->disk_num;
     
     /*
@@ -256,37 +249,12 @@ static int IdeGetNumSectors(struct ide_data* ide) {
     return sectors;
 }
 
-
-static int CheckOpen(struct vnode*, const char*, int) {
-    return 0;
-}
-
-static int Ioctl(struct vnode*, int, void*) {
-    return EINVAL;
-}
-
 static bool IsSeekable(struct vnode*) {
     return true;
 }
 
-static int IsTty(struct vnode*) {
-    return false;
-}
-
-static int Read(struct vnode* node, struct transfer* io) { 
-    struct ide_data* ide = node->data;  
-    if (io->direction != TRANSFER_READ) {
-        return EINVAL;
-    } 
-    return IdeIo(ide, io);
-}
-
-static int Write(struct vnode* node, struct transfer* io) {
-    struct ide_data* ide = node->data;  
-    if (io->direction != TRANSFER_WRITE) {
-        return EINVAL;
-    } 
-    return IdeIo(ide, io);
+static int ReadWrite(struct vnode* node, struct transfer* io) {
+    return IdeIo(node->data, io);
 }
 
 static int Create(struct vnode* node, struct vnode** partition, const char* name, int, mode_t) {
@@ -305,15 +273,10 @@ static int Follow(struct vnode* node, struct vnode** output, const char* name) {
     return res;
 }
 
-
-static uint8_t DirentType(struct vnode*) {
-    return DT_BLK;
-}
-
 static int Stat(struct vnode* node, struct stat* st) {
     struct ide_data* ide = node->data;  
 
-    st->st_mode = S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO;
+    st->st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO;
     st->st_atime = 0;
     st->st_blksize = ide->sector_size;
     st->st_blocks = ide->total_num_sectors;
@@ -330,31 +293,17 @@ static int Stat(struct vnode* node, struct stat* st) {
     return 0;
 }
 
-static int Truncate(struct vnode*, off_t) {
-    return EINVAL;
-}
-
 static int Close(struct vnode*) {
     return 0;
 }
 
-static int Readdir(struct vnode*, struct transfer*) {
-    return EINVAL;
-}
-
 static const struct vnode_operations dev_ops = {
-    .check_open     = CheckOpen,
-    .ioctl          = Ioctl,
     .is_seekable    = IsSeekable,
-    .is_tty         = IsTty,
-    .read           = Read,
-    .write          = Write,
+    .read           = ReadWrite,
+    .write          = ReadWrite,
     .close          = Close,
-    .truncate       = Truncate,
     .create         = Create,
     .follow         = Follow,
-    .dirent_type    = DirentType,
-    .readdir        = Readdir,
     .stat           = Stat,
 };
 
@@ -378,6 +327,6 @@ void InitIde(void) {
 
         node->data = ide;
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FIXED));
-        CreateDiskPartitions(CreateOpenFile(node, 0, 0, true, true));
+        CreateDiskPartitions(CreateDiskCache(CreateOpenFile(node, 0, 0, true, true)));
     }
 }

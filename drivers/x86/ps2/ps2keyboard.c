@@ -150,6 +150,11 @@ static int Ps2KeyboardGetScancodeSet(void) {
     Ps2DeviceWrite(0, false);
 
     uint8_t scancode_set = Ps2DeviceRead();
+    /*
+     * Technically we should get 0x43, 0x41 or 0x3F, but Bochs returns 1, 2, or
+     * 3 instead. There's probably some crusty USB to PS/2 emulation out there
+     * that acts the same, so we'll check for both.
+     */
     if (scancode_set == 0x43 || scancode_set == 1) {
         return 1;
     } else if (scancode_set == 0x41 || scancode_set == 2) {
@@ -164,12 +169,7 @@ static int Ps2KeyboardGetScancodeSet(void) {
 static int Ps2KeyboardSetScancodeSet(int num) {
     Ps2DeviceWrite(0xF0, false);
     Ps2DeviceWrite(num, false);
-
-    if (num == Ps2KeyboardGetScancodeSet()) {
-        return 0;
-    } else {
-        return EIO;
-    }
+    return num == Ps2KeyboardGetScancodeSet() ? 0 : EIO;
 }
 
 static void Ps2KeyboardSetTranslation(bool enable) {
@@ -215,7 +215,6 @@ void InitPs2Keyboard(void) {
             Ps2KeyboardSetScancodeSet(2);
             Ps2KeyboardSetTranslation(true);
         }
-
     }
 
     RegisterIrqHandler(PIC_IRQ_BASE + 1, Ps2KeyboardIrqHandler);

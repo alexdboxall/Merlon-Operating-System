@@ -51,9 +51,9 @@ static struct LOCKED_DRIVER_DATA semaphore* data_lock = NULL;
  */
 static struct LOCKED_DRIVER_DATA vesa_data* data = NULL;
 
-void (*GenericVideoDrawConsoleCharacter)(uint8_t*, int, int, int, int, uint32_t, uint32_t, char) = NULL;
-void (*GenericVideoPutpixel)(uint8_t*, int, int, int, int, uint32_t);
-void (*GenericVideoPutrect)(uint8_t*, int, int, int, int, int, int, uint32_t);
+void (*_GenericVideoDrawConsoleCharacter)(uint8_t*, int, int, int, int, uint32_t, uint32_t, char) = NULL;
+void (*_GenericVideoPutpixel)(uint8_t*, int, int, int, int, uint32_t);
+void (*_GenericVideoPutrect)(uint8_t*, int, int, int, int, int, int, uint32_t);
 
 /*
 * Moves the cursor position to a newline, handling the case where
@@ -74,7 +74,7 @@ static void vesa_newline() {
             (void*) AddVoidPtr(data->framebuffer_virtual, (128 + 16 + 16) * data->pitch), 
             data->pitch * (16 * SCREEN_HEIGHT - 16)
         );
-        GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 
+        _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 
             64 + 16, 
             (128 + SCREEN_HEIGHT * 16), 
             SCREEN_WIDTH * 8, 
@@ -88,11 +88,11 @@ static void vesa_newline() {
 }
 
 void VesaPutpixel(int x, int y, uint32_t colour) {
-    GenericVideoPutpixel(data->framebuffer_virtual, data->pitch, data->depth_in_bits, x, y, colour);
+    _GenericVideoPutpixel(data->framebuffer_virtual, data->pitch, data->depth_in_bits, x, y, colour);
 }
 
 static void vesa_render_character(char c) {
-    GenericVideoDrawConsoleCharacter(
+    _GenericVideoDrawConsoleCharacter(
         data->framebuffer_virtual, 
         data->pitch, 
         data->depth_in_bits, 
@@ -200,19 +200,6 @@ void AppendNumberToStringX(char* str, int num) {
     strcat(str, num_str);
 }
 
-/*
-d0000398: 50                           	push	eax
-d0000399: 6a 00                        	push	0
-d000039b: 68 db b9 0b 00               	push	768475
-d00003a0: 6a 40                        	push	64
-d00003a2: 56                           	push	esi
-d00003a3: ff 72 24                     	push	dword ptr [edx + 36]
-d00003a6: ff 72 1c                     	push	dword ptr [edx + 28]
-d00003a9: ff 72 14                     	push	dword ptr [edx + 20]
-d00003ac: ff 15 04 20 00 d0            	call	dword ptr [-805298172]
-			d00003ae:  R_386_32	GenericVideoDrawConsoleCharacter
-*/
-
 void ShowRAMUsage(void*) {
     while (true) {
         SleepMilli(250);
@@ -236,7 +223,7 @@ void ShowRAMUsage(void*) {
     
         for (int i = 0; buffer[i]; ++i) {
             AcquireMutex(data_lock, -1);
-            GenericVideoDrawConsoleCharacter(
+            _GenericVideoDrawConsoleCharacter(
                 data->framebuffer_virtual, 
                 data->pitch, 
                 data->depth_in_bits, 
@@ -250,7 +237,6 @@ void ShowRAMUsage(void*) {
         }   
     }
 }
-
 
 static void LOCKED_DRIVER_CODE PanicPutpixel(int x, int y, uint32_t colour) {
     uint8_t* position = data->framebuffer_virtual + y * data->pitch;
@@ -356,9 +342,9 @@ void InitVesa(void) {
     data_lock = CreateMutex("vesa");
     
     RequireDriver("sys:/cmnvideo.sys");
-    GenericVideoPutpixel = (void (*)(uint8_t*, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutpixel");
-    GenericVideoDrawConsoleCharacter = (void (*)(uint8_t*, int, int, int, int, uint32_t, uint32_t, char)) GetSymbolAddress("GenericVideoDrawConsoleCharacter");
-    GenericVideoPutrect = (void (*)(uint8_t*, int, int, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutrect");
+    _GenericVideoPutpixel = (void (*)(uint8_t*, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutpixel");
+    _GenericVideoDrawConsoleCharacter = (void (*)(uint8_t*, int, int, int, int, uint32_t, uint32_t, char)) GetSymbolAddress("GenericVideoDrawConsoleCharacter");
+    _GenericVideoPutrect = (void (*)(uint8_t*, int, int, int, int, int, int, uint32_t)) GetSymbolAddress("GenericVideoPutrect");
 
     uint8_t* code_page_437 = (uint8_t*) GetSymbolAddress("CodePage437Font");
     for (int i = 0; i < 16 * 10; ++i) {
@@ -423,7 +409,7 @@ void InitVesa(void) {
 
     auto special_bayer = (uint8_t (*)(int, int, uint16_t)) GetSymbolAddress("GetBayerAdjustedChannelForVeryHighQuality");
 
-    GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, 0x0bb9db /*0x3880F8*/);
+    _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, 0x0bb9db /*0x3880F8*/);
 
     /*struct open_file* img_file;
     OpenFile("sys:/bwsc.img", O_RDONLY, 0, &img_file);
@@ -460,12 +446,12 @@ void InitVesa(void) {
             green = special_bayer(x, 0, progress * 0x7F00 / 1000);
             blue = 0xAA + special_bayer(x, 0, progress * (0xFF00 - 0xAA00) / 1000);
         }
-        GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, x, 128 - 24, SEGMENT_WIDTH, 24, (green << 8) | blue);
+        _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, x, 128 - 24, SEGMENT_WIDTH, 24, (green << 8) | blue);
     }
 
-    GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64, 128, vesa_width - 128, vesa_height - (256 - 48), 0x000000);
+    _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64, 128, vesa_width - 128, vesa_height - (256 - 48), 0x000000);
     const char* titlebar = "New Operating System Kernel";
     for (int i = 0; titlebar[i]; ++i) {
-        GenericVideoDrawConsoleCharacter(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64 + 16 + i * 8, 128 - 24 + 5, 0x0000AA, 0xFFFFFF, titlebar[i]);
+        _GenericVideoDrawConsoleCharacter(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 64 + 16 + i * 8, 128 - 24 + 5, 0x0000AA, 0xFFFFFF, titlebar[i]);
     }
 }

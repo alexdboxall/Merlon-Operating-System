@@ -111,22 +111,12 @@ void Ps2ControllerEnableDevice(bool port2) {
 
 static int Ps2ControllerPerformSelfTest(void) {
     Ps2ControllerWrite(0xAA);
-    uint8_t res = Ps2ControllerRead();
-    if (res == 0x55) {
-        return 0;
-    } else {
-        return EIO;
-    }
+    return (Ps2ControllerRead() == 0x55) ? 0 : EIO;
 }
 
 int Ps2ControllerTestPort(bool port2) {
     Ps2ControllerWrite(port2 ? 0xA9 : 0xAB);
-    uint8_t res = Ps2ControllerRead();
-    if (res == 0x00) {
-        return 0;
-    } else {
-        return EIO;
-    }
+    return (Ps2ControllerRead() == 0x00) ? 0 : EIO;
 }
 
 static bool Ps2ControllerDetectPort2(void) {

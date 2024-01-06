@@ -186,7 +186,6 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->needs_termination = false;
     thr->time_used = false;
     thr->waiting_on_semaphore = NULL;
-    thr->user_thread = false;
     thr->schedule_policy = policy;
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
     thr->vas = vas;
@@ -234,7 +233,6 @@ void ThreadExecuteInUsermode(void* arg) {
 
     LockScheduler();
     thr->stack_pointer = user_stack;
-    thr->user_thread = true;
     UnlockScheduler();
 
     ArchFlushTlb(GetVas());

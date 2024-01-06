@@ -8,11 +8,10 @@
 #include <filedes.h>
 
 int SysClose(size_t fd, size_t, size_t, size_t, size_t) {
-	struct filedes_table* table = GetFileDescriptorTable(GetProcess());
 	struct open_file* file;
-	int res = GetFileFromDescriptor(table, fd, &file);
+	int res;
 
-	if (file == NULL || res != 0) {
+	if ((res = GetFileFromDescriptor(GetFileDescriptorTable(GetProcess()), fd, &file))) {
 		return res;
 	}
 

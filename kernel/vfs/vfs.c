@@ -15,7 +15,6 @@
 /*
 * Try not to have non-static functions that return in any way a struct vnode*, as it
 * probably means you need to use the reference/dereference functions.
-*
 */
 
 /*
@@ -287,7 +286,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	if (strlen(path) == 0) {
 		return EINVAL;
 	}
-	if (strlen(path) > MAX_PATH_LENGTH) {
+	if (strlen(path) >= MAX_PATH_LENGTH) {
 		return ENAMETOOLONG;
 	}
 
@@ -409,8 +408,8 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	return status;
 }
 
-int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
+    EXACT_IRQL(IRQL_STANDARD);   
 
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
 		return EINVAL;
@@ -465,25 +464,11 @@ int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, str
         return status;
     }
 
-	status = VnodeOpCheckOpen(node, name, flags & O_ACCMODE);
+	status = VnodeOpCheckOpen(node, name, flags & (O_ACCMODE | O_NONBLOCK));
     if (status) {
 		DereferenceVnode(node);
 		return status;
 	}
-
-    /*
-    * O_NONBLOCK has two meanings, one of which is to prevent open() from 
-    * blocking for a "long time" to open (e.g. serial ports). This usage of the flags
-    * does not get saved. As we don't block for a "long time" here, we can ignore
-    * this usage of the flag. We also don't want O_NONBLOCK to ever be saved to initial_flags,
-    * as that is where the second meaning gets used.
-    * 
-    * The call to VnodeOpCheckOpen could look at O_NONBLOCK and fail if it
-    * it was set but would block.
-    */
-    if (flags & O_NONBLOCK) {
-        flags &= ~O_NONBLOCK;
-    }
 
 	bool can_read = (flags & O_ACCMODE) != O_WRONLY;
 	bool can_write = (flags & O_ACCMODE) != O_RDONLY;
@@ -511,63 +496,47 @@ int PAGEABLE_CODE_SECTION OpenFile(const char* path, int flags, mode_t mode, str
 
     /* TODO: clear out the flags that don't normally get saved */
 
+	// TODO: may need to actually have a VnodeOpOpen, for things like FatFS.
+
 	*out = CreateOpenFile(node, mode, flags, can_read, can_write);
     return 0;
 }
 
-int ReadFile(struct open_file* file, struct transfer* io) {
-	MAX_IRQL(IRQL_PAGE_FAULT);
+
+static int FileAccess(struct open_file* file, struct transfer* io, bool write) {
+	EXACT_IRQL(IRQL_STANDARD);
 
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
 		return EINVAL;
 	}
-    if (!file->can_read) {
+    if ((!write && !file->can_read) || (write && !file->can_write)) {
         return EBADF;
     }
-
-	if (VnodeOpDirentType(file->node) == DT_DIR) {
-		return EISDIR;
+	
+	if (file->flags & O_NONBLOCK) {
+		int block_status = VnodeOpWait(file->node, (write ? VNODE_WAIT_WRITE : VNODE_WAIT_READ) | VNODE_WAIT_NON_BLOCK, 0);
+		if (block_status != 0) {
+			return block_status;
+		}
 	}
 
-	return VnodeOpRead(file->node, io);
+	if (write) {
+		return VnodeOpWrite(file->node, io);
+	} else {
+		return VnodeOpRead(file->node, io);
+	}
 }
 
-int PAGEABLE_CODE_SECTION ReadDirectory(struct open_file* file, struct transfer* io) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
-
-	if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
-		return EINVAL;
-	}
-    if (!file->can_read) {
-        return EBADF;
-    }
-
-	if (VnodeOpDirentType(file->node) != DT_DIR) {
-		return ENOTDIR;
-	}
-	
-	return VnodeOpReaddir(file->node, io);
+int ReadFile(struct open_file* file, struct transfer* io) {
+	return FileAccess(file, io, false);
 }
 
 int WriteFile(struct open_file* file, struct transfer* io) {
-	MAX_IRQL(IRQL_PAGE_FAULT);
-
-    if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
-		return EINVAL;
-	}
-    if (!file->can_write) {
-        return EBADF;
-    }
-
-	if (VnodeOpDirentType(file->node) == DT_DIR) {
-		return EISDIR;
-	}
-
-	return VnodeOpWrite(file->node, io);
+	return FileAccess(file, io, true);
 }
 
 int CloseFile(struct open_file* file) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+	EXACT_IRQL(IRQL_STANDARD);
 
     if (file == NULL || file->node == NULL) {
 		return EINVAL;
@@ -579,7 +548,7 @@ int CloseFile(struct open_file* file) {
 }
 
 int GetFileSize(struct open_file* file, off_t* size) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+	EXACT_IRQL(IRQL_STANDARD);
 
 	if (file == NULL || file->node == NULL || size == NULL) {
 		return EINVAL;

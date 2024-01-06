@@ -8,6 +8,7 @@
 #include <spinlock.h>
 #include <heap.h>
 #include <log.h>
+#include <semaphore.h>
 #include <voidptr.h>
 #include <irql.h>
 #include <thread.h>
@@ -16,7 +17,8 @@
 #define MAX_EMERGENCY_BLOCKS 16
 
 /*
- * For requests larger than this, we'll issue a warning to say that MapVirt is a much better choice.
+ * For non-pageable requests larger than this, we'll issue a warning to say that
+ * MapVirt is a much better choice.
  */
 #define WARNING_LARGE_REQUEST_SIZE (1024 * 3 + 512)
 
@@ -27,18 +29,58 @@ struct emergency_block {
 };
 
 /**
- * Used as a system block that can be used even before the virtual memory manager is setup.
+ * Used as a system block that can be used even before the virtual memory 
+ * manager is setup.
  */
 static uint8_t bootstrap_memory_area[BOOTSTRAP_AREA_SIZE] __attribute__ ((aligned(ARCH_PAGE_SIZE)));
 
 /*
- * Used to give us memory when we are not allowed to fault (i.e. can't allocate virtual memory).
+ * Used to give us memory when we are not allowed to fault (i.e. can't allocate
+ * virtual memory).
  */
 static struct emergency_block emergency_blocks[MAX_EMERGENCY_BLOCKS] = {
     {.address = bootstrap_memory_area, .size = BOOTSTRAP_AREA_SIZE, .valid = true}
 };
 
-static struct spinlock heap_lock;
+static struct semaphore* heap_lock;
+static struct spinlock heap_spinlock;
+static struct spinlock heap_locker_lock;
+static struct thread* lock_entry_threads[2];
+
+static bool LockHeap(bool paging) {
+    bool acquired = false;
+    struct thread* thr = GetThread();
+
+    AcquireSpinlockIrql(&heap_locker_lock);
+    if (lock_entry_threads[paging ? 1 : 0] != thr || lock_entry_threads[paging ? 1 : 0] == NULL) {
+        ReleaseSpinlockIrql(&heap_locker_lock);
+
+        if (paging) {
+            AcquireMutex(heap_lock, -1);
+        } else {
+            AcquireSpinlockIrql(&heap_spinlock);
+        }
+
+        lock_entry_threads[paging ? 1 : 0] = thr;
+        acquired = true;
+
+    } else {
+        ReleaseSpinlockIrql(&heap_locker_lock);
+    }
+
+    return acquired;
+}
+
+static void UnlockHeap(bool paging) {
+    lock_entry_threads[paging ? 1 : 0] = NULL;
+
+    if (paging) {
+        ReleaseMutex(heap_lock);
+
+    } else {
+        ReleaseSpinlockIrql(&heap_spinlock);
+    }   
+}
 
 static void* AllocateFromEmergencyBlocks(size_t size) {
     int smallest_block = -1;
@@ -67,8 +109,13 @@ static void* AllocateFromEmergencyBlocks(size_t size) {
     return address;
 }
 
+/*
+ * This function needs to be called with the heap lock held.
+ */
 static void AddBlockToBackupHeap(size_t size) {
+    UnlockHeap(false);
     void* address = (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+    LockHeap(false);
 
     int index_of_smallest_block = 0;
     for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
@@ -91,10 +138,6 @@ static void AddBlockToBackupHeap(size_t size) {
     emergency_blocks[index_of_smallest_block].address = address;
 }
 
-void ReserveHeapMemory(size_t size) {
-    AddBlockToBackupHeap(size);
-}
-
 static void RestoreEmergencyPages(void* context) {
     (void) context;
 
@@ -110,6 +153,7 @@ static void RestoreEmergencyPages(void* context) {
     size_t total_size = 0;
     size_t largest_block = 0;
     
+    LockHeap(false);
     for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
         if (emergency_blocks[i].valid) {
             size_t size = emergency_blocks[i].size;
@@ -125,6 +169,8 @@ static void RestoreEmergencyPages(void* context) {
         total_size += BOOTSTRAP_AREA_SIZE;
         largest_block = BOOTSTRAP_AREA_SIZE;
     }
+
+    UnlockHeap(false);
 }
 
 /**
@@ -184,9 +230,8 @@ int DbgGetOutstandingHeapAllocations(void) {
 #define MINIMUM_REQUEST_SIZE_INTERNAL (2 * sizeof(size_t))
 
 /**
- * NUM_INCREMENTAL_FREE_LISTS = how many of MINIMUM_REQUEST_SIZE_INTERNAL + ALIGNMENT * N we have
- * NUM_EXPONENTIAL_FREE_LISTS = how many of RoundUpPower2(MINIMUM_REQUEST_SIZE_INTERNAL + (ALIGNMENT * NUM_INCREMENTAL_FREE_LISTS)) << N
- * The last size should be larger than the max allocation size, as otherwise we could allocate larger than we have in the final list.
+ * The last size should be larger than the max allocation size, as otherwise we could allocate larger
+ * than we have in the final list.
  */
 #define TOTAL_NUM_FREE_LISTS 35
 
@@ -194,55 +239,16 @@ int DbgGetOutstandingHeapAllocations(void) {
  * An array which holds the minimum allocation sizes that each free list can hold.
  */
 static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
-    8,
-    16,
-    24,
-    32,
-    40,
-    48,
-    56,
-    64,
-    72,
-    80,                 
-    88,                 // 11 [10]
-    96,
-    104,
-    112,
-    120,
-    128,
-    160,
-    192,
-    224,
-    256,                
-    320,                // 21 [20]
-    384,
-    448,
-    512,
-    768,
-    1024,
-    1536,
-    2048,               // 28 [27]
-    1024 * 4,           // 29 [28]   
-    1024 * 8,           // 30 [29]
-    1024 * 16,          // 31 [30]
-    1024 * 32,          // 32 [31]
-    1024 * 64,          // 33 [32]
-    1024 * 128,         // 34 [33]
-    1024 * 256,         // 35 [34]
+    8,          16,         24,         32,
+    40,         48,         56,         64,
+    72,         80,         88,         96,
+    104,        112,        120,        128,
+    160,        192,        224,        256,                
+    320,        384,        448,        512,
+    768,        1024,       1536,       2048,       // 28 [27]
+    1024 * 4,   1024 * 8,   1024 * 16,  1024 * 32,  // 32 [31]
+    1024 * 64,  1024 * 128, 1024 * 256,
 };
-
-/*
-min index = 28
-   -> head_list[28] = 0x0
-   -> head_list[29] = 0x0
-   -> head_list[30] = 0x0
-   -> head_list[31] = 0x0
-   -> head_list[32] = 0x0
-   -> head_list[33] = 0x0
-   -> head_list[34] = 0x0
-2192, 2200 -> 4080
-C: head_list[27] = 0xC0118008
-*/
 
 /**
  * Used to work out which free list a block should be in, when we are *reading* a block.
@@ -264,11 +270,6 @@ static int GetSmallestListIndexThatFits(size_t size_without_metadata) {
  * so it should not normally be used to look up where a block should be.
  */
 static int GetInsertionIndex(size_t size_without_metadata) {
-    /*
-     * This will only fail if we somehow get a block that is smaller than the minimum
-     * possible size (i.e., something has gone very wrong.)
-     */
-
     assert(size_without_metadata >= free_list_block_sizes[0]);
 
     /*
@@ -279,10 +280,6 @@ static int GetInsertionIndex(size_t size_without_metadata) {
         return 0;
     }
   
-    /*
-     * Look until we go past the block size we need, and then return the previous
-     * value. This gives us the final block size that doesn't exceed the input value.
-     */
     for (int i = 0; i < TOTAL_NUM_FREE_LISTS - 1; ++i) {
         if (size_without_metadata <= free_list_block_sizes[i]) {
             return i - 1;
@@ -297,7 +294,6 @@ static int GetInsertionIndex(size_t size_without_metadata) {
  * the minimum request size that is internally supported, it will round it up to that size.
  */
 static size_t RoundUpSize(size_t size) {
-    /* Should have already been checked against. */
     assert(size != 0);
 
     if (size < MINIMUM_REQUEST_SIZE_INTERNAL) {
@@ -307,23 +303,14 @@ static size_t RoundUpSize(size_t size) {
     return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
 }
 
-/**
- * Marks a block as being free (unallocated).
- */
 static void MarkFree(struct block* block) {
     block->size &= ~1;
 }
 
-/**
- * Marks a block as being allocated.
- */
 static void MarkAllocated(struct block* block) {
     block->size |= 1;
 }
 
-/**
- * Returns true if the block is allocated, or false if it is free. 
- */
 static bool IsAllocated(struct block* block) {
     return block->size & 1;
 }
@@ -362,10 +349,6 @@ static struct block** GetHeapForBlock(struct block* block) {
  */
 static size_t GetBlockSize(struct block* block) {
     size_t size = block->size & ~3;
-
-    /*
-     * Ensure the other size tag matches. If it doesn't, there has been memory corruption.
-     */
     assert(*(((size_t*) block) + (size / sizeof(size_t)) - 1) == size);
     return size;
 }
@@ -409,10 +392,10 @@ void DbgPrintListStats(void) {
 }
 
 /**
- * Sets the *total* size of a given block. This does not do any checking, so the caller must be
- * careful to ensure that calling this doesn't leak memory (by setting it too small), or cause
- * double-allocation of the same area (by setting it too large). Carries the swappability and allocation
- * tags with it from the front to the back tags.
+ * Sets the *total* size of a given block. This does not do any checking, so the
+ * caller must be careful as setting the wrong size can corrupt the heap.
+ * Carries the swappability and allocation tags with it from the front to the 
+ * back tags.
  */
 static void SetSizeTags(struct block* block, size_t size) {
     block->size = (block->size & 3) | size;
@@ -420,8 +403,6 @@ static void SetSizeTags(struct block* block, size_t size) {
 }
 
 static void* GetSystemMemory(size_t size, int flags) {
-    EXACT_IRQL(IRQL_SCHEDULER);
-
     if (flags & HEAP_NO_FAULT) {
         if (flags & HEAP_ALLOW_PAGING) {
             Panic(PANIC_CONFLICTING_ALLOCATION_REQUIREMENTS);
@@ -437,15 +418,14 @@ static void* GetSystemMemory(size_t size, int flags) {
 
 /**
  * Allocates a new block from the system that is able to hold the amount of data
- * specified. Also allocated enough memory for fenceposts on either side of the data,
- * and sets up these fenceposts correctly.
+ * specified. Also allocated enough memory for fenceposts on either side of the 
+ * data, and sets up these fenceposts correctly.
  */
 static struct block* RequestBlock(size_t total_size, int flags) {
-    EXACT_IRQL(IRQL_SCHEDULER);
-
     /*
-     * We need to add the extra bytes for fenceposts to be added. We must do this before we
-     * round up to the nearest areana size (if we did it after, it wouldn't be aligned anymore).
+     * We need to add the extra bytes for fenceposts to be added. We must do 
+     * this before we round up to the nearest areana size (if we did it after, 
+     * it wouldn't be aligned anymore).
      */
     total_size += MINIMUM_REQUEST_SIZE_INTERNAL * 2;
     total_size = (total_size + ARCH_PAGE_SIZE - 1) & ~(ARCH_PAGE_SIZE - 1);
@@ -454,9 +434,6 @@ static struct block* RequestBlock(size_t total_size, int flags) {
         flags |= HEAP_NO_FAULT;
     }
 
-    /*
-     * Get memory from the system.
-     */
     struct block* block = (struct block*) GetSystemMemory(total_size, flags);
     if (block == NULL) {
         Panic(PANIC_OUT_OF_HEAP);
@@ -464,8 +441,8 @@ static struct block* RequestBlock(size_t total_size, int flags) {
 
     /*
      * Set the metadata for both the fenceposts and the main data block. 
-     * Keep in mind that total_size now includes the fencepost metadata (see top of function), so this
-     * sometimes needs to be subtracted off.
+     * Keep in mind that total_size now includes the fencepost metadata (see top
+     * of function), so this sometimes needs to be subtracted off.
      */
     struct block* left_fence = block;
     struct block* actual_block = (struct block*) (((size_t*) block) + MINIMUM_REQUEST_SIZE_INTERNAL / sizeof(size_t));
@@ -490,18 +467,14 @@ static struct block* RequestBlock(size_t total_size, int flags) {
 }
 
 /**
- * Removes a block from a free list. It needs to take in the exact free list's index (as opposed to calculating
- * it itself), as this may be used halfway though allocations or deallocations where the block isn't yet in
- * its correct block.
+ * Removes a block from a free list. It needs to take in the exact free list's 
+ * index (as opposed to calculating it itself), as this may be used halfway 
+ * though allocations or deallocations where the block isn't yet in its correct 
+ * block.
  */
 static void RemoveBlock(int free_list_index, struct block* block) {
-    EXACT_IRQL(IRQL_SCHEDULER);
-
     struct block** head_list = GetHeapForBlock(block);
 
-    /*
-     * Perform a standard linked list deletion. 
-     */
     if (block->prev == NULL && block->next == NULL) {
         assert(head_list[free_list_index] == block);
         head_list[free_list_index] = NULL;
@@ -520,17 +493,10 @@ static void RemoveBlock(int free_list_index, struct block* block) {
 }
 
 /**
- * Adds a block to its appropriate free list. It also coalesces the block with surrounding free blocks
- * if possible.
+ * Adds a block to its appropriate free list. It also coalesces the block with 
+ * surrounding free blocks if possible.
  */
 static struct block* AddBlock(struct block* block) {
-    EXACT_IRQL(IRQL_SCHEDULER);
-
-    /*
-     * Although this function is technically recursive (because it needs to shuffle blocks into different
-     * lists by calling itself again), but there are a constant number of free lists, so it is still
-     * coalescing in constant time.
-     */
     size_t size = GetBlockSize(block);
     struct block** head_list = GetHeapForBlock(block);
 
@@ -557,11 +523,6 @@ static struct block* AddBlock(struct block* block) {
         /*
          * Need to coalesce with the one on the right.
          */
-
-        /*
-         * Swappable and non-swappable blocks should be on entirely seperate heaps, and you can't look into
-         * the other because the fences should prevent anyone looking between them.
-         */
         bool swappable = IsOnSwappableHeap(block);
         assert(swappable == IsOnSwappableHeap(next_block));
     
@@ -578,11 +539,6 @@ static struct block* AddBlock(struct block* block) {
         /*
          * Need to coalesce with the one on the left.
          */
-
-         /*
-         * Swappable and non-swappable blocks should be on entirely seperate heaps, and you can't look into
-         * the other because the fences should prevent anyone looking between them.
-         */
         bool swappable = IsOnSwappableHeap(block);
         assert(swappable == IsOnSwappableHeap(prev_block));
 
@@ -598,11 +554,6 @@ static struct block* AddBlock(struct block* block) {
     } else {
         /*
          * Coalesce with blocks on both sides.
-         */
-
-        /*
-         * Swappable and non-swappable blocks should be on entirely seperate heaps, and you can't look into
-         * the other because the fences should prevent anyone looking between them.
          */
         bool swappable = IsOnSwappableHeap(block);
         assert(swappable == IsOnSwappableHeap(prev_block));
@@ -622,11 +573,11 @@ static struct block* AddBlock(struct block* block) {
 }
 
 /*
- * Allocates a block. The block to be allocated will be the first block in the given free
- * list, and that free list must be non-empty, and be able to fit the requested size.
+ * Allocates a block. The block to be allocated will be the first block in the 
+ * given free list, and that free list must be non-empty, and be able to fit the
+ * requested size.
  */
 static struct block* AllocateBlock(struct block* block, int free_list_index, size_t user_requested_size) {
-    EXACT_IRQL(IRQL_SCHEDULER);
     assert(block != NULL);
 
     size_t total_size = user_requested_size + METADATA_TOTAL_AMOUNT;
@@ -636,14 +587,15 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
 
     if (block_size - total_size < MINIMUM_REQUEST_SIZE_INTERNAL + METADATA_TOTAL_AMOUNT) {
         /*
-         * We can just remove from the list altogether if the sizes match up exactly,
-         * or if there would be so little left over that we can't form a new block.
+         * We can just remove from the list altogether if the sizes match up 
+         * exactly, or if there would be so little left over that we can't form 
+         * a new block.
          */
         RemoveBlock(free_list_index, block);
         /*
-         * Prevent memory leak (from having a hole in memory), but do it after removing
-         * the block, as this may change the list it needs to be in, and RemoveBlock
-         * will not like that.
+         * Prevent memory leak (from having a hole in memory), but do it after 
+         * removing the block, as this may change the list it needs to be in, 
+         * and RemoveBlock will not like that.
          */
         SetSizeTags(block, block_size);
         MarkAllocated(block);
@@ -651,8 +603,9 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
 
     } else {
         /*
-         * We must split the block into two. If no list change is needed, we can leave the 'leftover' parts in the list
-         * as is (just fixing up the size tags), and then return the new block.
+         * We must split the block into two. If no list change is needed, we can
+         * leave the 'leftover' parts in the list as is (just fixing up the size
+         * tags), and then return the new block.
          */
 
         RemoveBlock(free_list_index, block);
@@ -669,13 +622,14 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
         MarkSwappability(allocated_block, IsOnSwappableHeap(block));
 
         /*
-         * Must be done before we try to move around the leftovers (or else it will actually
-         * coalesce back into one block). 
+         * Must be done before we try to move around the leftovers (or else it 
+         * will coalesce back into one block). 
          */
         MarkAllocated(allocated_block);
 
         /*
-        * We need to remove the leftover block from this list, and add it to the correct list.
+        * We need to remove the leftover block from this list, and add it to the
+        * correct list.
         */
         MarkFree(block);
         AddBlock(block);
@@ -684,13 +638,11 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
 }
 
 /**
- * Allocates a block that can fit the user requested size. It will request new memory from the
- * system if required. If it returns NULL, then there is not enough memory of the system to
- * satisfy the request.
+ * Allocates a block that can fit the user requested size. It will request new 
+ * memory from the system if required. If it returns NULL, then there is not 
+ * enough memory of the system to satisfy the request.
  */
 static struct block* FindBlock(size_t user_requested_size, int flags) {
-    EXACT_IRQL(IRQL_SCHEDULER);
-
     struct block** head_list = GetHeap(flags & HEAP_ALLOW_PAGING);
     /*
      * Check the free lists in order, starting from the smallest one that will fit the block.
@@ -705,14 +657,6 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     }
 
     /*
-     * If we want paging (but not forcing it), but couldn't get it, try again without it.
-     * (that sentence I think was even more confusing than the code)
-     */
-    if ((flags & HEAP_ALLOW_PAGING) && !(flags & HEAP_FORCE_PAGING)) {
-        return FindBlock(user_requested_size, flags & ~HEAP_ALLOW_PAGING);
-    }
-
-    /*
      * If we can't find a block that will fit, then we must allocate more memory.
      */
     size_t total_size = free_list_block_sizes[min_index + 1] + METADATA_TOTAL_AMOUNT;
@@ -722,8 +666,8 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     struct block* sys_block = RequestBlock(total_size, flags);
 
     /*  
-     * Put the new memory in the free list (which ought to be empty, as wouldn't need to
-     * request new memory otherwise). Then we can allocate the block.
+     * Put the new memory in the free list (which ought to be empty, as wouldn't
+     * need to request new memory otherwise). Then we can allocate the block.
      */
     int sys_index = GetInsertionIndex(GetBlockSize(sys_block) - METADATA_TOTAL_AMOUNT);
 
@@ -732,117 +676,42 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     return AllocateBlock(head_list[sys_index], sys_index, user_requested_size);
 }
 
-static size_t unfreeable_pageable_area = 0;
-static size_t unfreeable_nonpageable_area = 0;
-static size_t unfreeable_pageable_ptr = 0;
-static size_t unfreeable_nonpageable_ptr = 0;
-
-#define MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED (1024 * 4)
-#define MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED (1024 * 128)
-
-static void* AllocUnfreeableMemory(size_t size, int flags) {
-    if (flags & HEAP_ALLOW_PAGING) {
-        if (unfreeable_pageable_area == 0) {
-            unfreeable_pageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED, VM_READ | VM_WRITE, NULL, 0);
-        }
-
-        if (size + unfreeable_pageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED) {
-            return NULL;
-        }
-
-        void* retv = (void*) (unfreeable_pageable_area + unfreeable_pageable_ptr);
-        unfreeable_pageable_ptr += size;
-        return retv;
-
-    } else {
-        if (unfreeable_nonpageable_area == 0) {
-            unfreeable_nonpageable_area = MapVirt(0, 0, MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
-        }
-
-        if (size + unfreeable_nonpageable_ptr >= MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED) {
-           return NULL;
-        }
-
-        void* retv = (void*) (unfreeable_nonpageable_area + unfreeable_nonpageable_ptr);
-        unfreeable_nonpageable_ptr += size;
-        return retv;
-    }
-}
-
-static struct thread* entry_thread = NULL;
-
 /**
- * Allocates memory on the heap. Unless you *really* know what you're doing, you should always
- * pass HEAP_NO_FAULT. AllocHeap passes this automatically, but this one doesn't (in case you
- * want to allocate from the pagable pool).
+ * Allocates memory on the heap. Unless you *really* know what you're doing, you
+ * should always pass HEAP_NO_FAULT. AllocHeap passes this automatically, but 
+ * this one doesn't (in case you want to allocate from the pagable pool).
  */
 void* AllocHeapEx(size_t size, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    //LogWriteSerial("AllocHeapEx: %d\n", size);
-    //DbgPrintListStats();
+    if (flags & HEAP_ALLOW_PAGING) {
+        if (GetIrql() != IRQL_STANDARD) {
+            PanicEx(PANIC_INVALID_IRQL, "cannot AllocHeapEx(HEAP_ALLOW_PAGING) in irql > IRQL_STANDARD");
+        }
+    }
 
-    /*
-     * We cannot allocate zero blocks (as it would be useless, and couldn't be freed.)
-     * Size cannot be negative as a size_t is an unsigned type.
-     */
     if (size == 0) {
         return NULL;
     }
-
     if (size >= WARNING_LARGE_REQUEST_SIZE && ((flags & HEAP_ALLOW_PAGING) == 0 || (flags & HEAP_NO_FAULT) != 0)) {
         LogDeveloperWarning("AllocHeapEx called with allocation of size 0x%X. You should consider using MapVirt.\n", size);
     }
-
     if (flags == 0) {
         LogDeveloperWarning("AllocHeapEx called with flags = 0. You probably meant to pass either HEAP_ALLOW_PAGING,"
                             "or HEAP_NO_FAULT. Passing neither is valid and it puts it on the locked heap, but allocation"
                             "may cause faults. This is unlikely to be what you want.");
     }
 
-    /*
-     * If they're the same, the lock is held, no so need for this to be atomic.
-     * If GetThread() == NULL, then no-one is going to bother us anyway.
-     * This is needed as with fault-able heaps, allocating a new block can cause it to jump back into the
-     * heap (for a non-fault-able block, so the recursion ends there).
-     */
-    bool acquired = false;
-    if (entry_thread != GetThread() || entry_thread == NULL) {
-        AcquireSpinlockIrql(&heap_lock);
-        acquired = true;
-        entry_thread = GetThread();
-    }
-    
-    if ((flags & HEAP_UNFREEABLE) && IsVirtInitialised()) {
-        void* res = AllocUnfreeableMemory(size, flags);
-        if (res != NULL) {
-            if (acquired) {
-                entry_thread = NULL;
-                ReleaseSpinlockIrql(&heap_lock);
-            }
-            return res;
-        }
-    }
-
+    bool acquired = LockHeap(flags & HEAP_ALLOW_PAGING);
     size = RoundUpSize(size);
-
-    if (flags & HEAP_FORCE_PAGING) {
-        flags |= HEAP_ALLOW_PAGING;
-    }
-
-
     struct block* block = FindBlock(size, flags);
 
 #ifndef NDEBUG
     outstanding_allocations++;
 #endif
 
-    //LogWriteSerial("Alloc done!\n");
-    //DbgPrintListStats();
-
     if (acquired) {
-        entry_thread = NULL;
-        ReleaseSpinlockIrql(&heap_lock);
+        UnlockHeap(flags & HEAP_ALLOW_PAGING);
     }
 
     assert(((size_t) block & (ALIGNMENT - 1)) == 0);
@@ -856,47 +725,26 @@ void* AllocHeapEx(size_t size, int flags) {
 }
 
 void* AllocHeap(size_t size) {
-    MAX_IRQL(IRQL_SCHEDULER);
     return AllocHeapEx(size, HEAP_NO_FAULT);
 }
 
 void* AllocHeapZero(size_t size) {
-    MAX_IRQL(IRQL_SCHEDULER);
     return AllocHeapEx(size, HEAP_ZERO | HEAP_NO_FAULT);
 }
 
 void FreeHeap(void* ptr) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    //LogWriteSerial("FreeHeap: 0x%X\n", ptr);
-
-    /*
-     * Guard against NULL, as the standard says: "If ptr is a null pointer, no action occurs"
-     */
     if (ptr == NULL) {
         return;
     }
 
-    size_t addr = (size_t) ptr;
-    if (addr >= unfreeable_pageable_area && addr < unfreeable_pageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE_UNLOCKED) {
-        LogDeveloperWarning("attempt to free non-freeable memory!\n");
-        return;
-    }
-    if (addr >= unfreeable_nonpageable_area && addr < unfreeable_nonpageable_area + MAX_UNFREEABLE_REGION_VIRT_SIZE_LOCKED) {
-        LogDeveloperWarning("attempt to free non-freeable memory!\n");
-        return;
-    }
-    
     struct block* block = SubVoidPtr(ptr, METADATA_LEADING_AMOUNT);
+    bool pagable = IsOnSwappableHeap(block);
     block->prev = NULL;
     block->next = NULL;
 
-    bool acquired = false;
-    if (entry_thread != GetThread() || entry_thread == NULL) {
-        AcquireSpinlockIrql(&heap_lock);
-        acquired = true;
-        entry_thread = GetThread();
-    }
+    bool acquired = LockHeap(pagable);
 
     AddBlock(block);
 
@@ -905,98 +753,15 @@ void FreeHeap(void* ptr) {
 #endif
 
     if (acquired) {
-        entry_thread = NULL;
-        ReleaseSpinlockIrql(&heap_lock);
+        UnlockHeap(pagable);
     }
 }
 
-/*
- * Completely untested. 
- */
-void* ReallocHeap(void* ptr, size_t new_size) {
-    MAX_IRQL(IRQL_SCHEDULER);
-
-    if (ptr == NULL || new_size == 0) {
-        LogDeveloperWarning("do not call ReallocHeap() with a NULL pointer or zero size!\n");
-        return NULL;
-    }
-
-    struct block* block = SubVoidPtr(ptr, METADATA_LEADING_AMOUNT);
-    size_t old_size = GetBlockSize(block);
-    new_size += METADATA_TOTAL_AMOUNT;
-
-    if (new_size == old_size) {
-        return ptr;
-
-    } else if (new_size < old_size) {
-        /*
-         * Not enough space to create a free block (sure, it may be possible to coalesce,
-         * but who really cares - that extra space will still be able to be allocated by someone
-         * else later on.
-         */
-        size_t freed_bytes = old_size - new_size;
-        if (freed_bytes < MINIMUM_REQUEST_SIZE_INTERNAL) {
-            return ptr;
-        }
-        
-        AcquireSpinlockIrql(&heap_lock);
-
-        /*
-         * Decrease the size of the current block, and add the leftovers as a new free block.
-         */
-        struct block* freed_area = (struct block*) (((size_t*) block) + (new_size / sizeof(size_t)));
-        SetSizeTags(block, new_size);
-        SetSizeTags(freed_area, freed_bytes);
-        MarkFree(freed_area);
-        AddBlock(freed_area);
-
-        ReleaseSpinlockIrql(&heap_lock);
-
-        return ptr;
-
-    } else {
-        /*
-         * We need to expand the block.
-         */
-        size_t bytes_to_expand_by = new_size - old_size;
-
-        struct block* next_block = (struct block*) (((size_t*) block) + old_size / sizeof(size_t));
-        size_t next_block_size = GetBlockSize(next_block);
-        size_t remainder_in_next = next_block_size - bytes_to_expand_by;
-
-        if (!IsAllocated(next_block) && next_block_size >= bytes_to_expand_by) {
-            AcquireSpinlockIrql(&heap_lock);
-
-            RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
-
-            /*
-             * If there is only going to be a tiny bit left in the next block after we allocate,
-             * we should just eat the entire next block.
-             */
-            if (remainder_in_next < METADATA_TOTAL_AMOUNT) {
-                SetSizeTags(block, old_size + next_block_size);
-
-            } else {
-                SetSizeTags(block, new_size);
-                SetSizeTags(next_block, remainder_in_next);
-                MarkFree(next_block);
-                AddBlock(next_block);
-            }
-
-            ReleaseSpinlockIrql(&heap_lock);
-            
-            return ptr;
-
-        } else {
-            void* new_ptr = AllocHeap(new_size - METADATA_TOTAL_AMOUNT);
-            inline_memcpy(ptr, new_ptr, new_size - METADATA_TOTAL_AMOUNT);
-            FreeHeap(ptr);
-            return new_ptr;
-        }
-    }
+void ReinitHeap(void) {
+    heap_lock = CreateMutex("heap");
 }
 
 void InitHeap(void) {
-    InitSpinlock(&heap_lock, "heap", IRQL_SCHEDULER);
+    InitSpinlock(&heap_spinlock, "heapspin", IRQL_SCHEDULER); 
+    InitSpinlock(&heap_locker_lock, "locker", IRQL_HIGH); 
 }
-

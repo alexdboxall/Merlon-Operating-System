@@ -20,6 +20,6 @@ int GetSemaphoreCount(struct semaphore* sem);
 #define CreateMutex(name) CreateSemaphore(name, 1, 0)
 #define AcquireMutex(mtx, timeout_ms) AcquireSemaphore(mtx, timeout_ms)
 #define ReleaseMutex(mtx) ReleaseSemaphore(mtx)
-#define DestroyMutex(mtx, mode) DestroySemaphore(mtx, mode)
+#define DestroyMutex(mtx) DestroySemaphore(mtx, SEM_REQUIRE_ZERO)
 
 void CancelSemaphoreOfThread(struct thread* thr);

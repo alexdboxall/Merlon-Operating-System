@@ -22,15 +22,10 @@
 * Remember to use INODE_TO_SECTOR. Note that inodes are only stored using 24 bits
 * anyway. 
 */
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
 int demofs_read_inode(struct demofs* fs, ino_t inode, uint8_t* buffer) {
     struct transfer io = CreateKernelTransfer(buffer, SECTOR_SIZE, SECTOR_SIZE * INODE_TO_SECTOR(inode), TRANSFER_READ);
     return ReadFile(fs->disk, &io);
 }
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 int demofs_read_file(struct demofs* fs, ino_t file, uint32_t file_size_left, struct transfer* io) {
     if (io->offset >= file_size_left) {
@@ -218,7 +213,11 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
     uint8_t buffer[SECTOR_SIZE];
 
     struct dirent dir;
-    assert(io->offset % sizeof(struct dirent) == 0);
+    
+    if (io->offset % sizeof(struct dirent) != 0) {
+        return EINVAL;
+    }
+
     int entry_number = io->offset / sizeof(struct dirent);
 
     /*

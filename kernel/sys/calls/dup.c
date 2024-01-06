@@ -6,9 +6,14 @@
 #include <vfs.h>
 #include <process.h>
 #include <filedes.h>
+#include <fcntl.h>
 
 int SysDup(size_t dup_num, size_t old_fd, size_t new_fd, size_t flags, size_t) {
 	struct filedes_table* table = GetFileDescriptorTable(GetProcess());
+
+	if ((flags & ~O_CLOEXEC) != 0) {
+		return EINVAL;
+	}
 
 	if (dup_num == 1) {
 		int result_fd;
@@ -20,11 +25,8 @@ int SysDup(size_t dup_num, size_t old_fd, size_t new_fd, size_t flags, size_t) {
 		return WriteWordToUsermode((size_t*) new_fd, result_fd);
 
 	} else if (dup_num == 2) {
-		return DuplicateFileDescriptor2(table, old_fd, new_fd);
+		return DuplicateFileDescriptor2(table, old_fd, new_fd, flags);
 		
-	} else if (dup_num == 3) {
-		return DuplicateFileDescriptor3(table, old_fd, new_fd, flags);
-
 	} else {
 		return EINVAL;
 	}

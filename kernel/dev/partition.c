@@ -12,14 +12,6 @@
 #include <virtual.h>
 #include <filesystem.h>
 
-/*
- * rawhd0:/
- * rawhd0:/part0
- * rawhd0:/part0/fs
- * rawhd0:/part1
- * rawhd0:/part1/fs
- */
-
 struct partition_data {
     struct open_file* fs;
     struct open_file* disk;
@@ -63,24 +55,8 @@ static int Write(struct vnode* node, struct transfer* tr) {
     return Access(node, tr, true);
 }
 
-static int Close(struct vnode*) {
-    return 0;
-}
-
-static int CheckOpen(struct vnode*, const char*, int) {
-    return 0;
-}
-
-static int Ioctl(struct vnode*, int, void*) {
-    return EINVAL;
-}
-
 static bool IsSeekable(struct vnode*) {
     return true;
-}
-
-static int IsTty(struct vnode*) {
-    return false;
 }
 
 static int Create(struct vnode* node, struct vnode** fs, const char*, int flags, mode_t mode) {
@@ -93,12 +69,10 @@ static int Create(struct vnode* node, struct vnode** fs, const char*, int flags,
     return 0;
 }
 
-static uint8_t DirentType(struct vnode*) {
-    return DT_BLK;
-}
-
 static int Stat(struct vnode* node, struct stat* st) {
     struct partition_data* partition = node->data;
+
+    LogWriteSerial("calling stat on a partition... bps = %d, len = %d\n", partition->disk_bytes_per_sector, partition->length_bytes);
 
     st->st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO;
     st->st_atime = 0;
@@ -116,10 +90,6 @@ static int Stat(struct vnode* node, struct stat* st) {
     return 0;
 }
 
-static int Truncate(struct vnode*, off_t) {
-    return EINVAL;
-}
-
 static int Follow(struct vnode* node, struct vnode** out, const char* name) {
     struct partition_data* partition = node->data;
 
@@ -135,31 +105,17 @@ static int Follow(struct vnode* node, struct vnode** out, const char* name) {
     return EINVAL;
 }
 
-static int Readdir(struct vnode*, struct transfer*) {
-    return EINVAL;
-}
-
 static const struct vnode_operations dev_ops = {
-    .check_open     = CheckOpen,
-    .ioctl          = Ioctl,
     .is_seekable    = IsSeekable,
-    .is_tty         = IsTty,
     .read           = Read,
     .write          = Write,
-    .close          = Close,
-    .truncate       = Truncate,
     .create         = Create,
     .follow         = Follow,
-    .dirent_type    = DirentType,
-    .readdir        = Readdir,
     .stat           = Stat,
 };
 
 struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64_t length, int id, int sector_size, int media_type, bool boot) {
     struct partition_data* data = AllocHeap(sizeof(struct partition_data));
-
-    LogWriteSerial("found a partition! 0x%X -> 0x%X\n", (int) start, (int) length);
-
     data->disk = disk;
     data->disk_bytes_per_sector = sector_size;
     data->id = id;
@@ -173,6 +129,7 @@ struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64
     node->data = data;
 
     struct open_file* partition = CreateOpenFile(node, 0, 0, true, true);
+    LogWriteSerial("created the partition...\n");
     MountFilesystemForDisk(partition);
     return partition;
 }
@@ -217,14 +174,6 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
     struct stat st;
     int res = VnodeOpStat(disk->node, &st);
     if (res != 0) {
-        return NULL;
-    }
-
-    /*
-     * Do not support floppy disks with partitions - they normally don't have one, and so trying to
-     * interpret the non-partition-table data as one could lead to invalid partitions being detected.
-     */
-    if (st.st_size <= 1024 * 2880 && st.st_blksize == 512) {
         return NULL;
     }
 

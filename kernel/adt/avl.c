@@ -1,4 +1,4 @@
-#include <stddef.h>
+#include <common.h>
 #include <assert.h>
 #include <heap.h>
 #include <avl.h>
@@ -16,8 +16,6 @@ struct avl_tree {
     avl_deletion_handler deletion_handler;
     avl_comparator equality_handler;
 };
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 static struct avl_node* AvlCreateNode(void* data, struct avl_node* restrict left, struct avl_node* restrict right) {
     struct avl_node* tree = AllocHeap(sizeof(struct avl_node));

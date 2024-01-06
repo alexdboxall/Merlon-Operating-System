@@ -3,6 +3,8 @@
 #include <_syscallnum.h>
 #include <thread.h>
 #include <transfer.h>
+#include <process.h>
+#include <filedes.h>
 #include <virtual.h>
 #include <_stdckdint.h>
 #include <sys/mman.h>
@@ -10,25 +12,9 @@
 int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t virtual_) {
 	size_t* userptr_virt = (size_t*) virtual_;
 
-	int safe_flags = VM_USER | VM_LOCAL;
-
-	if (flags & VM_READ) {
-		safe_flags |= VM_READ;
+	if (flags & ~(VM_READ | VM_WRITE | VM_EXEC | VM_FILE | VM_FIXED_VIRT)) {
+		return EINVAL;
 	}
-	if (flags & VM_WRITE) {
-		safe_flags |= VM_WRITE;
-	}
-	if (flags & VM_EXEC) {
-		safe_flags |= VM_EXEC;
-	}
-	if (flags & VM_FILE) {
-		safe_flags |= VM_FILE;
-	}
-	if (flags & VM_FIXED_VIRT) {
-		safe_flags |= VM_FIXED_VIRT;
-	}
-
-	(void) fd;
 
 	size_t target_virtual;
 	int res = ReadWordFromUsermode(userptr_virt, &target_virtual);
@@ -47,7 +33,15 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t virt
 		return EINVAL;
 	}
 
-	size_t output_virtual = MapVirt(0, target_virtual, bytes, safe_flags, NULL, offset);
+	struct open_file* file = NULL;
+	if (flags & VM_FILE) {
+		res = GetFileFromDescriptor(GetFileDescriptorTable(GetProcess()), fd, &file);
+		if (file == NULL || res != 0) {
+			return res;
+		}
+	}
+
+	size_t output_virtual = MapVirt(0, target_virtual, bytes, flags | VM_USER | VM_LOCAL, file, offset);
 	if (output_virtual == 0) {
 		return EINVAL;
 	}

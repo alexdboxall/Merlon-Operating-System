@@ -54,7 +54,7 @@ void TerminateThreadLockHeld(struct thread* thr) {
         DeferUntilIrql(IRQL_STANDARD, NotifyCleaner, NULL);
         
     } else {
-        /**
+        /*
          * We can't terminate it directly, as it may be on any queue somewhere else. Instead, we
          * will terminate it next time it is up for scheduling.
          */

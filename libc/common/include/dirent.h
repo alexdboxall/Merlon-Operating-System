@@ -6,17 +6,21 @@
 */
 
 #include <sys/types.h>
+#include <sys/stat.h>
 
 #define _DIRENT_HAVE_D_TYPE
 
+#define IFTODT(x) (x >> 15)
+#define DTTOIF(x) (x << 15)
+
 #define DT_UNKNOWN  0
-#define DT_REG      1
-#define DT_DIR      2
-#define DT_FIFO     3
-#define DT_SOCK     4
-#define DT_CHR      5
-#define DT_BLK      6
-#define DT_LNK      7
+#define DT_REG      IFTODT(S_IFREG)
+#define DT_DIR      IFTODT(S_IFDIR)
+#define DT_FIFO     IFTODT(S_IFIFO)
+#define DT_SOCK     IFTODT(S_IFSOCK)
+#define DT_CHR      IFTODT(S_IFCHR)
+#define DT_BLK      IFTODT(S_IFBLK)
+#define DT_LNK      IFTODT(S_IFLNK)
 
 struct dirent {
     ino_t d_ino;

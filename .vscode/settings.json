@@ -128,7 +128,15 @@
         "mman.h": "c",
         "progload.h": "c",
         "filedes.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "barrier": "c",
+        "latch": "c",
+        "limits": "cpp",
+        "semaphore": "cpp",
+        "forward_list": "c",
+        "scoped_allocator": "c",
+        "sched.h": "c",
+        "config.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

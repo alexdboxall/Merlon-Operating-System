@@ -20,19 +20,6 @@
 #define LINE_BUFFER_SIZE 300            // maximum length of a typed line
 #define FLUSHED_BUFFER_SIZE 500         // used to store any leftover after pressing '\n' that the program has yet to read
 
-/*
- * How PTYs work:
- * there is a subordinate and master end, both allow read and write
- * 
- * Subordinate end: like a 'terminal'. it reads what the master writes (and blocks for it), and writing to it
- *            writes to the screen. NEWLINE handling, backspace, etc. is handled here - it receives purely
- *            characters from the master. CANON and ECHO modes handled here
- * 
- * Master end: like a 'keyboard'. writing to it acts as sending keyboard presses to the screen. buffering is
- *             not done - i.e. every key (even e.g. BKSP, ^C) gets sent.
- *             reading from it? idk. probably nothing (or is it the screen??)
- */
-
 struct pty_master_internal_data {
     struct vnode* subordinate;
     struct blocking_buffer* display_buffer;
@@ -49,13 +36,9 @@ struct pty_subordinate_internal_data {
     int line_buffer_pos;
 };
 
-// read copies data from trusted to untrusted.
-
 // "THE SCREEN"
 static int MasterRead(struct vnode* node, struct transfer* tr) {  
-    MAX_IRQL(IRQL_PAGE_FAULT);
-
-    struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
+    struct pty_master_internal_data* internal = node->data;
     while (tr->length_remaining > 0) {
         char c = BlockingBufferGet(internal->display_buffer);
         PerformTransfer(&c, tr, 1);
@@ -66,9 +49,7 @@ static int MasterRead(struct vnode* node, struct transfer* tr) {
 
 // "THE KEYBOARD"
 static int MasterWrite(struct vnode* node, struct transfer* tr) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
-
-    struct pty_master_internal_data* internal = (struct pty_master_internal_data*) node->data;
+    struct pty_master_internal_data* internal = node->data;
 
     while (tr->length_remaining > 0) {
         char c;
@@ -79,14 +60,17 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     return 0;
 }
 
+static int MasterWait(struct vnode*, int, uint64_t) {
+    return ENOSYS;
+}
+
+static int SubordinateWait(struct vnode*, int, uint64_t) {
+    return ENOSYS;
+}
+
 static void FlushSubordinateLineBuffer(struct vnode* node) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
-
-    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
-    struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
-
-    // TODO: this should try to be atomic (reduces no. of sem wakeups). maybe put a mutex around the flushed buffer (but I guess it can block
-    // so it might be able to deadlock..?)
+    struct pty_subordinate_internal_data* internal = node->data;
+    struct pty_master_internal_data* master_internal = internal->master->data;
 
     // could add a 'BlockingBufferAddMany' call?
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
@@ -97,9 +81,7 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
-
-    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
+    struct pty_subordinate_internal_data* internal = node->data;
 
     if (internal->line_buffer_pos == 0) {
         return;
@@ -109,8 +91,7 @@ static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
-    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
+    struct pty_subordinate_internal_data* internal = node->data;
 
     if (internal->line_buffer_pos == LINE_BUFFER_SIZE) {
         Panic(PANIC_NOT_IMPLEMENTED);
@@ -123,13 +104,11 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
 }
 
 static void LineProcessor(void* sub_) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
-
     SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
     struct vnode* node = (struct vnode*) sub_;
-    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
-    struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
+    struct pty_subordinate_internal_data* internal = node->data;
+    struct pty_master_internal_data* master_internal = internal->master->data;
 
     while (true) {
         bool echo = internal->termios.c_lflag & ECHO;
@@ -168,9 +147,7 @@ static void LineProcessor(void* sub_) {
 }
 
 // "THE STDIN LINE BUFFER"
-static int SubordinateRead(struct vnode* node, struct transfer* tr) {    
-    MAX_IRQL(IRQL_PAGE_FAULT);   
-    
+static int SubordinateRead(struct vnode* node, struct transfer* tr) {        
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
@@ -191,8 +168,6 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
 
 // "WRITING TO STDOUT"
 static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
-
     struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
     struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
 
@@ -200,7 +175,6 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
         char c;
         int err = PerformTransfer(&c, tr, 1);
         if (err) {
-            LogDeveloperWarning("err A!\n");
             return err;
         }
 
@@ -210,32 +184,7 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
     return 0;
 }
 
-
-static int MasterCheckOpen(struct vnode*, const char*, int) {
-    return 0;
-}
-
-static int MasterIoctl(struct vnode*, int, void*) {
-    return EINVAL;
-}
-
-static bool MasterIsSeekable(struct vnode*) {
-    return false;
-}
-
-static int MasterIsTty(struct vnode*) {
-    return false;
-}
-
-static int MasterCreate(struct vnode*, struct vnode**, const char*, int, mode_t) {
-    return EINVAL;
-}
-
-static uint8_t MasterDirentType(struct vnode*) {
-    return DT_CHR;
-}
-
-static int MasterStat(struct vnode*, struct stat* st) {
+static int GenericStat(struct vnode*, struct stat* st) {
     st->st_mode = S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO;
     st->st_atime = 0;
     st->st_blksize = 0;
@@ -252,109 +201,23 @@ static int MasterStat(struct vnode*, struct stat* st) {
     return 0;
 }
 
-static int MasterTruncate(struct vnode*, off_t) {
-    return EINVAL;
-}
-
-static int MasterClose(struct vnode*) {
+static int SubordinateCheckTty(struct vnode*) {
     return 0;
-}
-
-static int MasterFollow(struct vnode*, struct vnode**, const char*) {
-    return ENOTDIR;
-}
-
-static int MasterReaddir(struct vnode*, struct transfer*) {
-    return EINVAL;
-}
-
-static int SubordinateCheckOpen(struct vnode*, const char*, int) {
-    return 0;
-}
-
-static int SubordinateIoctl(struct vnode*, int, void*) {
-    return EINVAL;
-}
-
-static bool SubordinateIsSeekable(struct vnode*) {
-    return false;
-}
-
-static int SubordinateIsTty(struct vnode*) {
-    return true;
-}
-
-static int SubordinateCreate(struct vnode*, struct vnode**, const char*, int, mode_t) {
-    return EINVAL;
-}
-
-static uint8_t SubordinateDirentType(struct vnode*) {
-    return DT_CHR;
-}
-
-static int SubordinateStat(struct vnode*, struct stat* st) {
-    st->st_mode = S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO;
-    st->st_atime = 0;
-    st->st_blksize = 0;
-    st->st_blocks = 0;
-    st->st_ctime = 0;
-    st->st_dev = 0xBABECAFE;
-    st->st_gid = 0;
-    st->st_ino = 0xCAFEBABE;
-    st->st_mtime = 0;
-    st->st_nlink = 1;
-    st->st_rdev = 0xCAFEDEAD;
-    st->st_size = 0;
-    st->st_uid = 0;
-    return 0;
-}
-
-static int SubordinateTruncate(struct vnode*, off_t) {
-    return EINVAL;
-}
-
-static int SubordinateClose(struct vnode*) {
-    return 0;
-}
-
-static int SubordinateFollow(struct vnode*, struct vnode**, const char*) {
-    return ENOTDIR;
-}
-
-static int SubordinateReaddir(struct vnode*, struct transfer*) {
-    return EINVAL;
 }
 
 static const struct vnode_operations master_operations = {
-    .check_open     = MasterCheckOpen,
-    .ioctl          = MasterIoctl,
-    .is_seekable    = MasterIsSeekable,
-    .is_tty         = MasterIsTty,
     .read           = MasterRead,
     .write          = MasterWrite,
-    .close          = MasterClose,
-    .truncate       = MasterTruncate,
-    .create         = MasterCreate,
-    .follow         = MasterFollow,
-    .dirent_type    = MasterDirentType,
-    .readdir        = MasterReaddir,
-    .stat           = MasterStat,
+    .stat           = GenericStat,
+    .wait           = MasterWait,
 };
 
 static const struct vnode_operations subordinate_operations = {
-    .check_open     = SubordinateCheckOpen,
-    .ioctl          = SubordinateIoctl,
-    .is_seekable    = SubordinateIsSeekable,
-    .is_tty         = SubordinateIsTty,
+    .check_tty      = SubordinateCheckTty,
     .read           = SubordinateRead,
     .write          = SubordinateWrite,
-    .close          = SubordinateClose,
-    .truncate       = SubordinateTruncate,
-    .create         = SubordinateCreate,
-    .follow         = SubordinateFollow,
-    .dirent_type    = SubordinateDirentType,
-    .readdir        = SubordinateReaddir,
-    .stat           = SubordinateStat,
+    .stat           = GenericStat,
+    .wait           = SubordinateWait,
 };
 
 void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {

@@ -15,6 +15,7 @@ int HandleFileDescriptorsOnExec(struct filedes_table* table);
 
 struct filedes_table* CreateFileDescriptorTable(void);
 struct filedes_table* CopyFileDescriptorTable(struct filedes_table* original);
+void DestroyFileDescriptorTable(struct filedes_table* table);
+
 int DuplicateFileDescriptor(struct filedes_table* table, int oldfd, int* newfd);
-int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd);
-int DuplicateFileDescriptor3(struct filedes_table* table, int oldfd, int newfd, int flags);
+int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd, int flags);

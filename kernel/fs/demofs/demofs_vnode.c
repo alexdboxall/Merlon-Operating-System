@@ -39,26 +39,17 @@ static bool IsSeekable(struct vnode*) {
     return true;
 }
 
-static int IsTty(struct vnode*) {
-    return false;
+static int CheckTty(struct vnode*) {
+    return ENOTTY;
 }
 
 static int Read(struct vnode* node, struct transfer* io) {    
     struct vnode_data* data = node->data;
     if (data->directory) {
-        return EISDIR;
+        return demofs_read_directory_entry(&data->fs, data->inode, io);
+    } else {
+        return demofs_read_file(&data->fs, data->inode, data->file_length, io);
     }
-
-    return demofs_read_file(&data->fs, data->inode, data->file_length, io);
-}
-
-static int Readdir(struct vnode* node, struct transfer* io) {
-    struct vnode_data* data = node->data;
-    if (!data->directory) {
-        return ENOTDIR;
-    }
-
-    return demofs_read_directory_entry(&data->fs, data->inode, io);
 }
 
 static int Write(struct vnode*, struct transfer*) {
@@ -67,11 +58,6 @@ static int Write(struct vnode*, struct transfer*) {
 
 static int Create(struct vnode*, struct vnode**, const char*, int, mode_t) {
     return EROFS;
-}
-
-static uint8_t DirentType(struct vnode* node) {
-    struct vnode_data* data = node->data;
-    return data->directory ? DT_DIR : DT_REG;
 }
 
 static int Stat(struct vnode* node, struct stat* stat) {
@@ -142,15 +128,13 @@ static const struct vnode_operations dev_ops = {
     .check_open     = CheckOpen,
     .ioctl          = Ioctl,
     .is_seekable    = IsSeekable,
-    .is_tty         = IsTty,
+    .check_tty      = CheckTty,
     .read           = Read,
     .write          = Write,
     .close          = Close,
     .truncate       = Truncate,
     .create         = Create,
     .follow         = Follow,
-    .dirent_type    = DirentType,
-    .readdir        = Readdir,
     .stat           = Stat,
 };
 

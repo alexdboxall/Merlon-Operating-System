@@ -17,25 +17,15 @@
  * Indicates that the allocated region is allowed to be swapped onto disk.
  * Must not be set with HEAP_NO_FAULT. Data allocated with this flag set can only be
  * accessed when IRQL = IRQL_STANDARD.
- *
- * HEAP_ALLOW_PAGING makes a best effort to put in on the swappable heap. If HEAP_FORCE_PAGING is set too/instead,
- * then it will allocate a new block if it is unable to get an existing swappable memory.
  */
 #define HEAP_ALLOW_PAGING   4   
-#define HEAP_FORCE_PAGING   8
-
-/*
- * Allocates to yet another pool where metadata is not kept. Cannot call FreeHeap or ReallocHeap on this memory.
- */
-#define HEAP_UNFREEABLE     16
 
 void* AllocHeap(size_t size);
 void* AllocHeapEx(size_t size, int flags);
 void* ReallocHeap(void* ptr, size_t size);
 void* AllocHeapZero(size_t size);
 void FreeHeap(void* ptr);
-void ReserveHeapMemory(size_t size);
-
+void ReinitHeap(void);
 void InitHeap(void);
 
 #ifndef NDEBUG

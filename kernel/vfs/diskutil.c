@@ -41,31 +41,23 @@ static char* type_strings[__DISKUTIL_NUM_TYPES] = {
 };
 
 /**
- * Initialises the disk utility functions. Must be called before any partitions are created
- * or any drive names are generated.
- * 
- * @maxirql IRQL_STANDARD 
+ * Initialises the disk utility functions. Must be called before any partitions
+ * are created or any drive names are generated.
  */
 void InitDiskUtil(void) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+    EXACT_IRQL(IRQL_STANDARD);   
     InitSpinlock(&type_table_lock, "diskutil", IRQL_SCHEDULER);
     memset(type_table, 0, sizeof(type_table));
 }
 
 /**
- * Given a string and an integer less than 1000, it converts the integer to a string,
- * and appends it to the end of the existing string, in place. The string should have enough 
- * buffer allocated to fit the number.
+ * Given a string and an integer less than 1000, it converts the integer to a
+ * string, and appends it to the end of the existing string, in place. The
+ * string should have enough buffer allocated to fit the number.
  * 
- * @param str The string to append the number to
- * @param num The number to append
- * @return 0 on success, or EINVAL if `num` is >= 1000, or `str is NULL. 
- * 
- * @maxirql IRQL_HIGH
+ * Returns 0 on success, else EINVAL.
  */
 static int AppendNumberToString(char* str, int num) {
-    MAX_IRQL(IRQL_HIGH);
-
     if (str == NULL || num >= 1000) {
         return EINVAL;
     }
@@ -90,9 +82,9 @@ static int AppendNumberToString(char* str, int num) {
 }
 
 /**
- * Returns the name the next-mounted filesystem should receive (e.g. drv0, drv1).
- * Each call to this function will return a different string. The caller is responsible for
- * freeing the returned string.
+ * Returns the name the next-mounted filesystem should receive (e.g. drv0, 
+ * drv1, etc.) Each call to this function will return a different string. The 
+ * caller is responsible for freeing the returned string.
  * 
  * @return A caller-free string representing the drive name.
  * 
@@ -164,17 +156,19 @@ static char* GetPartitionNameString(int index) {
  * @maxirql IRQL_STANDARD
  */
 void CreateDiskPartitions(struct open_file* disk) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+    EXACT_IRQL(IRQL_STANDARD);   
 
     struct open_file** partitions = GetPartitionsForDisk(disk);
 
     if (partitions == NULL || partitions[0] == NULL) {
-        off_t disk_size;
-        int res = GetFileSize(disk, &disk_size);
+        LogWriteSerial("no partition table...\n");
+        struct stat st;
+        int res = VnodeOpStat(disk->node, &st);
         if (res != 0) {
             return;
         }
-        struct vnode* whole_disk_partition = CreatePartition(disk, 0, disk_size, -1)->node;
+
+        struct vnode* whole_disk_partition = CreatePartition(disk, 0, st.st_size, 0, st.st_blksize, 0, false)->node;
         VnodeOpCreate(disk->node, &whole_disk_partition, GetPartitionNameString(0), 0, 0);
         return;
     }

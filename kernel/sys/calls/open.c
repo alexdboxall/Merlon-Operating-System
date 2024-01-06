@@ -10,44 +10,37 @@
 #include <vfs.h>
 #include <filedes.h>
 
-int SysOpen(size_t filename_, size_t flags, size_t mode, size_t fdout_, size_t) {
-	const char* userptr_filename = (const char*) filename_;
-	size_t* userptr_fdout = (size_t*) fdout_;
+#define ALLOWABLE_FLAGS (O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC | O_APPEND | O_NONBLOCK | O_CLOEXEC | O_DIRECT | O_ACCMODE)
 
+int SysOpen(size_t filename, size_t flags, size_t mode, size_t fdout, size_t) {
 	char path[400];
-	path[399] = 0;
-	int res = ReadStringFromUsermode(path, userptr_filename, 399);
-	if (res != 0) {
-		LogWriteSerial("SysOpen failed [A]: %d\n", res);
-		return res;
-	}
-
-	LogWriteSerial("trying to open: %s\n", path);
-
-	struct open_file* file;
-	res = OpenFile(path, flags, mode, &file);
-	
-	if (res != 0) {
-		LogWriteSerial("SysOpen failed [B]: %d\n", res);
-		return res;
-	}
-
 	int fd;
-	res = CreateFileDescriptor(GetFileDescriptorTable(GetProcess()), file, &fd, flags & FD_CLOEXEC);
-	if (res != 0) {
-		LogWriteSerial("SysOpen failed [C]: %d\n", res);
+	int res;
+
+	if (flags & ~ALLOWABLE_FLAGS) {
+		return EINVAL;
+	}
+
+	if ((res = ReadStringFromUsermode(path, (const char*) filename, 399))) {
+		return res;
+	}
+
+	struct open_file* file;	
+	if ((res = OpenFile(path, flags, mode, &file))) {
+		return res;
+	}
+
+	struct filedes_table* table = GetFileDescriptorTable(GetProcess());
+	if ((res = CreateFileDescriptor(table, file, &fd, flags & O_CLOEXEC))) {
 		CloseFile(file);
 		return res;
 	}	
 
-	res = WriteWordToUsermode(userptr_fdout, fd);
-	if (res != 0) {
-		LogWriteSerial("SysOpen failed [D]: %d\n", res);
+	if ((res = WriteWordToUsermode((size_t*) fdout, fd))) {
 		CloseFile(file);
-		RemoveFileDescriptor(GetFileDescriptorTable(GetProcess()), file);
+		RemoveFileDescriptor(table, file);
 		return res;
 	} 
 
-	LogWriteSerial("SysOpen succeeded with fd = %d\n", fd);
 	return 0;
 }

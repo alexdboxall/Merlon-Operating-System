@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #endif
 
-
 static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size, int (*compar)(const void *, const void *), bool allow_paging) {
     size_t count_1 = mid - low + 1;
     size_t count_2 = high - mid;
@@ -90,9 +89,6 @@ void* bsearch(const void* key, const void* base, size_t nmemb, size_t size, int 
     size_t high = nmemb - 1;
 
     while (low <= high) {
-#ifdef COMPILE_KERNEL
-        LogWriteSerial("bsearch: looking in %d -> %d\n", low, high);
-#endif
         size_t mid = low + (high - low) / 2;
         const void* mid_item = (const void*) (((uint8_t*) base) + size * mid);
         int compare_result = compar(key, mid_item);

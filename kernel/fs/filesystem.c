@@ -58,6 +58,8 @@ int RegisterFilesystem(char* fs_name, fs_mount_creator mount) {
 }
 
 int MountFilesystemForDisk(struct open_file* partition) {
+    LogWriteSerial("mouting filesystem for disk...\n");
+
     AcquireMutex(fs_table_lock, -1);
 
     struct open_file* fs = NULL;

@@ -19,39 +19,25 @@
  *                  current IRQL, or a panic will occur.
  * @param handler   The function to be run.
  * @param context   An arguement given to the handler function.
- * 
- * @max_irql IRQL_HIGH
- * 
  */
-__attribute__((no_instrument_function)) void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
+void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
     if (irql == GetIrql() || (irql == IRQL_STANDARD_HIGH_PRIORITY && GetIrql() == IRQL_STANDARD)) {
         handler(context);
 
     } else if (irql > GetIrql()) {
         PanicEx(PANIC_INVALID_IRQL, "invalid irql on DeferUntilIrql");
 
-    } else {
-        if (GetCpu()->init_irql_done) {
-            struct irql_deferment deferment;
-            deferment.context = context;
-            deferment.handler = handler;
-            PriorityQueueInsert(GetCpu()->deferred_functions, (void*) &deferment, irql);
-        }
+    } else if (GetCpu()->init_irql_done) {
+        struct irql_deferment deferment = {.context = context, .handler = handler};
+        PriorityQueueInsert(GetCpu()->deferred_functions, (void*) &deferment, irql);
     }
 }
 
-/**
- * Returns the CPU's current IRQL.
- *
- * @return The IRQL.
- * @max_irql IRQL_HIGH
- */
-__attribute__((no_instrument_function)) int GetIrql(void) {
+int GetIrql(void) {
     return GetCpu()->irql;
 }
 
-// Max IRQL: IRQL_HIGH
-__attribute__((no_instrument_function)) int RaiseIrql(int level) {
+int RaiseIrql(int level) {
     ArchDisableInterrupts();
 
     struct cpu* cpu = GetCpu();
@@ -67,10 +53,7 @@ __attribute__((no_instrument_function)) int RaiseIrql(int level) {
     return existing_level;
 }
 
-// Max IRQL: IRQL_HIGH
-__attribute__((no_instrument_function)) void LowerIrql(int target_level) {
-    // TODO: does this function need its own lock ? (e.g. for postponed_task_switch)    
-
+void LowerIrql(int target_level) {
     struct cpu* cpu = GetCpu();
     struct priority_queue* deferred_functions = cpu->deferred_functions;
 

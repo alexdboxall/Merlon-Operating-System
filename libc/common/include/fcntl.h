@@ -8,7 +8,13 @@
 #define O_NONBLOCK  128
 #define O_CLOEXEC   256
 #define O_DIRECT    512
-#define FD_CLOEXEC  1024
+
+/*
+ * Techincally, FD_CLOEXEC and O_CLOEXEC are different things: FD_CLOEXEC is a flag 
+ * that a file descriptor can have, and O_CLOEXEC is passed to open() to set that flag.
+ * But we can just treat them as the same thing.
+ */
+#define FD_CLOEXEC  O_CLOEXEC
 
 /*
 * O_RDONLY and O_WRONLY are *NOT* bitflags.

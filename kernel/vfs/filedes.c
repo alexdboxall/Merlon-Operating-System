@@ -18,7 +18,9 @@ struct filedes_entry {
     /*
     * The only flag that can live here is FD_CLOEXEC. All other flags live on the filesytem
     * level. This is because FD_CLOEXEC is a property of the file descriptor, not the underlying
-    * file itself. (This is important in how dup() works.)
+    * file itself. (This is important in how dup() works.). 
+    * 
+    * Note that we set FD_CLOEXEC == O_CLOEXEC.
     */
     int flags;
 };
@@ -54,8 +56,21 @@ struct filedes_table* CopyFileDescriptorTable(struct filedes_table* original) {
     return new_table;
 }
 
+void DestroyFileDescriptorTable(struct filedes_table* table) {
+    AcquireMutex(table->lock, -1);
+
+    for (int i = 0; i < MAX_FD_PER_PROCESS; ++i) {
+        if (table->entries[i].file != NULL) {
+            CloseFile(table->entries[i].file);
+        }
+    }
+
+    ReleaseMutex(table->lock);
+    DestroyMutex(table->lock);
+}
+
 int CreateFileDescriptor(struct filedes_table* table, struct open_file* file, int* fd_out, int flags) {
-    if ((flags & ~FD_CLOEXEC) != 0) {
+    if ((flags & ~O_CLOEXEC) != 0) {
         return EINVAL;
     }
 
@@ -109,7 +124,7 @@ int HandleFileDescriptorsOnExec(struct filedes_table* table) {
 
     for (int i = 0; i < MAX_FD_PER_PROCESS; ++i) {
         if (table->entries[i].file != NULL) {
-            if (table->entries[i].flags & FD_CLOEXEC) {
+            if (table->entries[i].flags & O_CLOEXEC) {
                 struct open_file* file = table->entries[i].file;
                 table->entries[i].file = NULL;
                 int res = CloseFile(file);
@@ -149,7 +164,11 @@ int DuplicateFileDescriptor(struct filedes_table* table, int oldfd, int* newfd) 
     return EMFILE;
 }
 
-int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd) {
+int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd, int flags) {
+    if (flags & ~O_CLOEXEC) {
+        return EINVAL;
+    }
+
     AcquireMutex(table->lock, -1);
 
     struct open_file* original_file;
@@ -185,37 +204,8 @@ int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd) 
     }
 
     table->entries[newfd].file = original_file;
-    table->entries[newfd].flags = 0;
+    table->entries[newfd].flags = flags;
     
     ReleaseMutex(table->lock);
-    return 0;
-}
-
-int DuplicateFileDescriptor3(struct filedes_table* table, int oldfd, int newfd, int flags) {
-    /*
-    * "If oldfd equals newfd, then dup3() fails with the error EINVAL."
-    */
-    if (oldfd == newfd) {
-        return EINVAL;
-    }
-
-    /*
-    * Ensure that only valid flags are passed in.
-    */
-    if ((flags & ~O_CLOEXEC) != 0) {
-        return EINVAL;
-    }
-
-    int result = DuplicateFileDescriptor2(table, oldfd, newfd);
-    if (result != 0) {
-        return result;
-    }
-
-    AcquireMutex(table->lock, -1);
-    if (flags & O_CLOEXEC) {
-        table->entries[newfd].flags |= FD_CLOEXEC;
-    }
-    ReleaseMutex(table->lock);
-
     return 0;
 }

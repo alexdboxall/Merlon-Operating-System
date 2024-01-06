@@ -72,10 +72,6 @@ static int VirtAvlComparator(void* a, void* b) {
     assert((a_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
     assert((b_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
 
-    if (a_entry->virtual == b_entry->virtual) {
-        return 0;
-    }
-
     /*
      * Check for overlapping regions for multi-mapping entries, and count that as equal. This allows us
      * to return the correct entry if one of them is part of a multi-mapping entry.
@@ -89,7 +85,7 @@ static int VirtAvlComparator(void* a, void* b) {
         return 0;
     }
 
-    return (a_entry->virtual < b_entry->virtual) ? -1 : 1;
+    return COMPARE_SIGN(a_entry->virtual, b_entry->virtual);
 }
 
 /**
@@ -690,9 +686,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
 static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
     bool in_use = false;
 
-    struct vas_entry dummy;
-    dummy.num_pages = 1;
-    dummy.virtual = virtual;
+    struct vas_entry dummy = {.num_pages = 1, .virtual = virtual};
 
     /*
      * We have to loop over the local one, and if it isn't there, the global one. We do this
@@ -871,6 +865,9 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
     bool multi_page_mapping = (((flags & VM_LOCK) == 0) || ((flags & VM_MAP_HARDWARE) != 0)) && pages >= 3;
 
     for (size_t i = 0; i < (multi_page_mapping ? 1 : pages); ++i) {
+        if (flags & VM_FILE) {
+            ReferenceOpenFile(file);
+        }
         AddMapping(
             vas, 
             (flags & VM_RELOCATABLE) ? physical : (physical == 0 ? 0 : (physical + i * ARCH_PAGE_SIZE)), 
@@ -891,27 +888,13 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
 
 /**
  * Creates a virtual memory mapping in the current virtual address space.
- * 
- * @param physical  See `MapVirtEx`
- * @param virtual   See `MapVirtEx`
- * @param pages     The minimum number of bytes to map
- * @param flags     See `MapVirtEx`
- * @param file      See `MapVirtEx`
- * @param pos       See `MapVirtEx`
- * 
- * @maxirql IRQL_SCHEDULER
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
-    MAX_IRQL(IRQL_SCHEDULER);
-    size_t pages = BytesToPages(bytes);
-    size_t ret = MapVirtEx(GetVas(), physical, virtual, pages, flags, file, pos);
-    return ret;
+    return MapVirtEx(GetVas(), physical, virtual, BytesToPages(bytes), flags, file, pos);
 }
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
-    struct vas_entry dummy;
-    dummy.num_pages = 1;
-    dummy.virtual = virtual & ~(ARCH_PAGE_SIZE - 1);
+    struct vas_entry dummy = {.num_pages = 1, .virtual = virtual & ~(ARCH_PAGE_SIZE - 1)};
 
     assert(IsSpinlockHeld(&vas->lock));
 
@@ -953,7 +936,9 @@ static size_t SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, s
         LogDeveloperWarning("Splitting multi-mapping with ref_count != 1, this hasn't been tested!\n");
     }
 
-    assert(!entry->in_ram);
+    /*
+     * Although it can't be allocated, it can be in RAM (e.g. for VM_MAP_HARDWARE).
+     */
     assert(!entry->allocated);
     assert(!entry->swapfile);
 
@@ -1100,7 +1085,6 @@ static void BringInBlankPage(struct vas* vas, struct vas_entry* entry, size_t fa
 }
 
 static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_cow, size_t faulting_virt, int fault_type) {
-    (void) vas;
     assert(IsSpinlockHeld(&vas->lock));
 
     if (entry->cow && allow_cow) {
@@ -1226,7 +1210,7 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
     for (size_t i = 0; i < pages; ++i) {
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
         if (entry == NULL) {
-            return ENOMEM;
+            return EINVAL;
         }
         
         SplitLargePageEntryIntoMultiple(vas, virtual, entry, 1);        // TODO: multi-pages
@@ -1237,6 +1221,7 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
         if (entry->ref_count == 0) {
             if (entry->file && entry->write && entry->in_ram) { 
                 DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
+                // TODO: after that DeferDiskWrite, we need to defer a DereferenceOpenFile(entry->file_node)
             }
             if (entry->in_ram) {
                 ArchUnmap(vas, entry);

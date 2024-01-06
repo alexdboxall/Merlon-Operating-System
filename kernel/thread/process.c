@@ -8,6 +8,7 @@
 #include <thread.h>
 #include <assert.h>
 #include <virtual.h>
+#include <sys/wait.h>
 #include <sys/types.h>
 #include <avl.h>
 #include <panic.h>
@@ -44,12 +45,7 @@ static struct semaphore* process_table_mutex;
 static int ProcessTableComparator(void* a_, void* b_) {
     struct process_table_node* a = a_;
     struct process_table_node* b = b_;
-
-    if (a->pid == b->pid) {
-        return 0;
-    }
-    
-    return a->pid < b->pid ? -1 : 1;
+    return COMPARE_SIGN(a->pid, b->pid);
 }
 
 static pid_t AllocateNextPid(void) {
@@ -80,8 +76,7 @@ static int InsertIntoProcessTable(struct process* prcss) {
 static void RemoveFromProcessTable(pid_t pid) {
     AcquireMutex(process_table_mutex, -1);
 
-    struct process_table_node dummy;
-    dummy.pid = pid;
+    struct process_table_node dummy = {.pid = pid};
     struct process_table_node* actual = AvlTreeGet(process_table, (void*) &dummy);
     AvlTreeDelete(process_table, (void*) actual);
     FreeHeap(actual);       // this was allocated on 'InsertIntoProcessTable'
@@ -171,7 +166,7 @@ static void ReapProcess(struct process* prcss) {
     (void) res;
     assert(res == 0);
     DestroyVas(prcss->vas);
-
+    DestroyFileDescriptorTable(prcss->filedes_table);
     RemoveFromProcessTable(prcss->pid);
     if (prcss->parent != 0) {
         struct process* parent = GetProcessFromPid(prcss->parent);
@@ -240,10 +235,9 @@ static void RecursivelyMakeChildrenOrphans(struct avl_node* node) {
     if (node == NULL) {
         return;
     }
-
+    
     RecursivelyMakeChildrenOrphans(AvlTreeGetLeft(node));
     RecursivelyMakeChildrenOrphans(AvlTreeGetRight(node));
-
     AdoptOrphan(GetProcessFromPid(1), AvlTreeGetData(node));
 }
 
@@ -260,12 +254,7 @@ static void RecursivelyKillRemainingThreads(struct avl_node* node) {
     RecursivelyKillRemainingThreads(AvlTreeGetLeft(node));
     RecursivelyKillRemainingThreads(AvlTreeGetRight(node));
 
-    struct thread* victim = (struct thread*) AvlTreeGetData(node);
-
-    /*
-     * We have already called terminate on the calling thread within `KillProcess`, 
-     * so no need to do it again.
-     */
+    struct thread* victim = AvlTreeGetData(node);
     if (victim->state != THREAD_STATE_TERMINATED && !victim->needs_termination) {
         TerminateThread(victim);
     }
@@ -304,14 +293,10 @@ static void KillProcessHelper(void* arg) {
     TerminateThread(GetThread());
 }
 
-
-
-
 /**
- * Deletes the process holding the thread currently running on this CPU, and all threads within that process.
- * If the process being deleted has child processes that still exist, their parent will change to the process with 
- * pid 1. If the process being deleted has a parent, then it becomes a zombie process until the parent reaps it
- * by calling `WaitProcess`. If the process being deleted has no parent, it will be reaped and deallocated immediately.
+ * Deletes the current process and all its threads. Child processes have their parent switched to pid 1.
+ * If the process being deleted has a parent, then it becomes a zombie process until the parent reaps it
+ * If the process being deleted has no parent, it will be reaped and deallocated immediately.
  * 
  * This function does not return.
  * 
@@ -346,18 +331,8 @@ struct process* GetProcess(void) {
     return thr == NULL ? NULL : thr->process;
 }
 
-/**
- * Creates a new process and an initial thread within the process.
- * 
- * @param parent        The process id of the process which will become the parent of the newly created process.
- *                          To create process without a parent, set to zero.
- * @param entry_point   The address to a function where the thread will begin execution from.
- * @param args          The argument to call the `entry_point` function with when the thread starts executing
- * 
- * @return The newly created process
- */
 struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* args) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+    EXACT_IRQL(IRQL_STANDARD);   
     struct process* prcss = CreateProcess(parent);
     struct thread* thr = CreateThread(entry_point, args, prcss->vas, "prcssinit");
     AddThreadToProcess(prcss, thr);
@@ -365,10 +340,8 @@ struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(voi
 }
 
 /**
- * Returns the file descriptor table of the given process.
- * 
- * @param prcss The process, or NULL.
- * @return The file descriptor table, or NULL if `prcss` is NULL.
+ * Returns the file descriptor table of the given process. Returns NULL if 
+ * `prcss` is null.
  */
 struct filedes_table* GetFileDescriptorTable(struct process* prcss) {
     if (prcss == NULL) {
@@ -379,18 +352,15 @@ struct filedes_table* GetFileDescriptorTable(struct process* prcss) {
 }
 
 /** 
- * Given a process id, returns the process object.
- * 
- * @param pid The process id
- * @return The process object, or NULL if the process id is invalid.
+ * Given a process id, returns the process object. Returns NULL for an invalid
+ * `pid`.
  */
 struct process* GetProcessFromPid(pid_t pid) {
     EXACT_IRQL(IRQL_STANDARD);
 
     AcquireMutex(process_table_mutex, -1);
 
-    struct process_table_node dummy;
-    dummy.pid = pid;
+    struct process_table_node dummy = {.pid = pid};
     struct process_table_node* node = AvlTreeGet(process_table, (void*) &dummy);
 
     ReleaseMutex(process_table_mutex);
@@ -399,28 +369,25 @@ struct process* GetProcessFromPid(pid_t pid) {
 }
 
 /**
- * Returns the process id of a given process.
- * 
- * @param prcss The process to get the id of. If this is NULL, zero is returned.
- * @return The process id, or 0.
+ * Returns the process id of a given process. If `prcss` is null, 0 is returned.
  */
 pid_t GetPid(struct process* prcss) {
     MAX_IRQL(IRQL_HIGH);
     return prcss == NULL ? 0 : prcss->pid;
 }
 
-
 pid_t WaitProcess(pid_t pid, int* status, int flags) {
     EXACT_IRQL(IRQL_STANDARD);   
-
-    (void) flags;
 
     struct process* prcss = GetProcess();
     
     pid_t result = 0;
     int failed_reaps = 0;
     while (result == 0) {
-        AcquireSemaphore(prcss->killed_children_semaphore, -1);
+        int res = AcquireSemaphore(prcss->killed_children_semaphore, (flags & WNOHANG) ? 0 : -1);
+        if (res != 0) {
+            break;
+        }
         LockProcess(prcss);
         result = RecursivelyTryReap(prcss, AvlTreeGetRootNode(prcss->children), pid, status);
         UnlockProcess(prcss);

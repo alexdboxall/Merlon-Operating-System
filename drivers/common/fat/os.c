@@ -116,7 +116,7 @@ int ff_mutex_create(int vol) {
 
 void ff_mutex_delete(int vol)
 {
-	DestroyMutex(mutexes[vol], SEM_DONT_CARE);
+	DestroyMutex(mutexes[vol]);
 }
 
 int ff_mutex_take(int vol) {
@@ -154,7 +154,7 @@ static bool IsSeekable(struct vnode*) {
     return true;
 }
 
-static int IsTty(struct vnode*) {
+static int CheckTty(struct vnode*) {
     return false;
 }
 
@@ -189,10 +189,6 @@ static int Read(struct vnode* node, struct transfer* io) {
 	}
 
 	return 0;
-}
-
-static int Readdir(struct vnode*, struct transfer*) {
-    return ENOSYS;
 }
 
 static int Write(struct vnode* node, struct transfer* io) {
@@ -237,10 +233,6 @@ static int Create(struct vnode*, struct vnode**, const char*, int, mode_t) {
     return EROFS;
 }
 
-static uint8_t DirentType(struct vnode*) {
-    return DT_UNKNOWN;
-}
-
 static int Stat(struct vnode*, struct stat*) {
     return ENOSYS;
 }
@@ -248,7 +240,6 @@ static int Stat(struct vnode*, struct stat*) {
 static int Truncate(struct vnode*, off_t) {
     return EROFS;
 }
-
 
 static int Close(struct vnode* node) {
     struct vnode_data* data = node->data;
@@ -267,15 +258,13 @@ static const struct vnode_operations dev_ops = {
     .check_open     = CheckOpen,
     .ioctl          = Ioctl,
     .is_seekable    = IsSeekable,
-    .is_tty         = IsTty,
+    .check_tty      = CheckTty,
     .read           = Read,
     .write          = Write,
     .close          = Close,
     .truncate       = Truncate,
     .create         = Create,
     .follow         = Follow,
-    .dirent_type    = DirentType,
-    .readdir        = Readdir,
     .stat           = Stat,
 };
 
@@ -291,7 +280,7 @@ int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) {
 	struct vnode* node = CreateFatFsVnode();
     struct vnode_data* data = AllocHeap(sizeof(struct vnode_data));
     
-    data->fatfs_drive = AllocHeapEx(sizeof(FATFS), HEAP_ALLOW_PAGING | HEAP_FORCE_PAGING);
+    data->fatfs_drive = AllocHeapEx(sizeof(FATFS), HEAP_ALLOW_PAGING);
     data->fatfs_file = NULL;
     data->fatfs_dir = NULL;
     node->data = data;

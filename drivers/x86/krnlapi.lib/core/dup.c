@@ -21,5 +21,9 @@ int dup2(int oldfd, int newfd) {
 }
 
 int dup3(int oldfd, int newfd, int flags) {
-    return dup_cleanup(_system_call(SYSCALL_DUP, 3, oldfd, newfd, flags, 0), newfd);
+    if (oldfd == newfd) {
+        errno = EINVAL;
+        return -1;
+    }
+    return dup_cleanup(_system_call(SYSCALL_DUP, 2, oldfd, newfd, flags, 0), newfd);
 }

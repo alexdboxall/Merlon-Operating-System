@@ -14,6 +14,7 @@
 #include <progload.h>
 #include <dev.h>
 #include <vfs.h>
+#include <diskcache.h>
 #include <transfer.h>
 #include <fcntl.h>
 #include <console.h>
@@ -35,6 +36,42 @@
  *          port zlib, nasm
  * - floppy driver
  * - FAT32 driver
+ * - floating point support (init and task switching)
+ * - disk caching
+ * - shutdown needs to close the entire VFS tree (e.g. so buffers can be flushed, etc).
+ * - recycling vnodes if opening same file more than once
+ * - initrd and boot system
+ * - more syscalls
+ * - VnodeOpWait, select/poll syscalls
+ * - everyone create vnodes and open files willy-nilly - check the reference counting, especially on closing is 
+ *      all correct (especially around the virtual memory manager...). does CloseFile do what you expect??
+ *      I THINK OPEN FILES SHOULD HOLD INCREMENT THE VNODE REFERENCE ON CREATION, AND DECREMENT WHEN THE OPEN FILE
+ *      GOES TO ZERO.
+ * 
+ *      that way it will go a bit like this:
+ *      
+ *          after call to:      vnode refs      openfile refs
+ *          Create vnode        1               0
+ *          Create openfile     2               1
+ *          Close openfile      1               0 -> gets destroyed
+ *          Close vnode         0 
+ * 
+ *          CloseFile() would do both the openfile and the vnode.
+ * 
+ *     And then if the VMM gets involved...
+ * 
+ *          after call to:      vnode refs      openfile refs
+ *          Create vnode        1               0
+ *          Create openfile     2               1
+ *          MapVirt(10 pgs)     2               11
+ *          CloseFile()         1               10
+ *          UnmapVirt(10 pgs)   1               0 -> gets destroyed, and in doing so,
+ *            ...               -> 0 gets destroyed
+ * 
+ *    OK - that's been implemented now... now to see if it works...
+ * 
+ * - MAP_FIXED, MAP_SHARED
+ * 
  */
 
  void DummyAppThread(void*) {
@@ -74,6 +111,13 @@ void InitUserspace(void) {
 }
 
 void InitThread(void*) {
+    ReinitHeap();
+    InitRandomDevice();
+    InitNullDevice();
+    InitConsole();
+    InitProcess();
+    InitDiskCaches();
+    
     InitFilesystemTable();
     ArchInitDev(false);
 
@@ -158,8 +202,6 @@ void KernelMain(void) {
     InitPhys();
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS);
 
-    InitHeap();
-
     /*
      * Allows deferments of functions to actually happen. IRQL is still usable beforehand though.
      */
@@ -169,6 +211,7 @@ void KernelMain(void) {
     InitScheduler();
     InitDiskUtil();
 
+    InitHeap();
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 
     InitBootstrapCpu();
@@ -182,10 +225,7 @@ void KernelMain(void) {
 
     InitOtherCpu();
     MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
-    InitRandomDevice();
-    InitNullDevice();
-    InitConsole();
-    InitProcess();
+
 
     CreateThreadEx(InitThread, NULL, GetVas(), "init", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0);
     StartMultitasking();

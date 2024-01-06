@@ -71,8 +71,8 @@ void GenericVideoPutrect(uint8_t* virtual_framebuffer, int pitch, int depth, int
             position = start_pos;
             start_pos += pitch;
             for (int i = 0; i < w; ++i) {
-                uint32_t bayer_colour = GetBayerAdjustedColour8(x + i, y + j, colour);
-                uint32_t mod_colour = ConvertToColourDepth(bayer_colour, depth);
+                uint32_t bayer = GetBayerAdjustedColour8(x + i, y + j, colour);
+                uint32_t mod_colour = ConvertToColourDepth(bayer, depth);
                 *position++ = mod_colour & 0xFF;
             }
         }

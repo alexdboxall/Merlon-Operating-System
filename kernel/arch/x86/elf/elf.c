@@ -411,7 +411,7 @@ void ArchLoadSymbols(struct open_file* file, size_t adjust) {
 		}
 
 		/*
-		 * No need for strdup, as it gets converted to the weird radix trie format.
+		 * No need for strdup, as the symbol table will call strdup anyway.
 		 */
         AddSymbol(string_table + symbol.st_name, symbol.st_value + adjust);
     }

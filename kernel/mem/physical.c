@@ -14,6 +14,7 @@
 
 #include <arch.h>
 #include <physical.h>
+#include <diskcache.h>
 #include <common.h>
 #include <spinlock.h>
 #include <assert.h>
@@ -165,6 +166,10 @@ void DeallocPhys(size_t addr) {
         PushIndex(page);
     }
 
+    if (pages_left > NUM_EMERGENCY_PAGES * 2) {
+        SetDiskCaches(DISKCACHE_NORMAL);
+    }
+    
     ReleaseSpinlockIrql(&phys_lock);
 }
 
@@ -206,11 +211,15 @@ static void EvictPagesIfNeeded(void* context) {
 
     extern int handling_page_fault;
     if (handling_page_fault > 0) {
-        LogWriteSerial(" ///=> EvictPagesIfNeeded was called, but nobody's home!...\n");
         return;
     }
 
-    LogWriteSerial(" ///=> About to start evicting pages...\n");
+    if (pages_left < NUM_EMERGENCY_PAGES) {
+        SetDiskCaches(DISKCACHE_TOSS);
+
+    } else if (pages_left < NUM_EMERGENCY_PAGES * 3 / 2) {
+        SetDiskCaches(DISKCACHE_REDUCE);
+    }
 
     int timeout = 0;
     while (pages_left < NUM_EMERGENCY_PAGES && timeout < 5) {

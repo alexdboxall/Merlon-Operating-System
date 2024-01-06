@@ -12,7 +12,6 @@ int RemoveVfsMount(const char* name);
 
 int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out);
 int ReadFile(struct open_file* file, struct transfer* io);
-int ReadDirectory(struct open_file* file, struct transfer* io);
 int WriteFile(struct open_file* file, struct transfer* io);
 int CloseFile(struct open_file* file);
 int GetFileSize(struct open_file* file, off_t* size);

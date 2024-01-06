@@ -7,8 +7,6 @@
 #include <arch.h>
 #include <log.h>
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
 static int ValidateCopy(const void* user_addr, size_t size, bool write) {
     size_t initial_address = (size_t) user_addr;
 
@@ -159,7 +157,7 @@ int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, u
     struct transfer tr = CreateTransferReadingFromUser(untrusted_string, max_length, 0);
     size_t i = 0;
 
-    while (max_length--) {
+    while (max_length-- > 1) {
         char c;
         int result = PerformTransfer(&c, &tr, 1);
         if (result != 0) {
@@ -171,6 +169,7 @@ int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, u
         }
     }
     
+    trusted_buffer[i] = 0;
     return 0;
 }
 

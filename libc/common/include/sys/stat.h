@@ -2,15 +2,15 @@
 
 #include <sys/types.h>
 
-#define S_IFMT	00100000
-#define S_IFBLK	00200000
-#define S_IFCHR	00300000
-#define S_IFIFO	00400000
-#define S_IFREG	00500000
-#define S_IFDIR	00600000
-#define S_IFLNK	00700000
+#define S_IFBLK	    00100000
+#define S_IFCHR	    00200000
+#define S_IFIFO	    00300000
+#define S_IFREG	    00400000
+#define S_IFDIR	    00500000
+#define S_IFLNK	    00600000
+#define S_IFSOCK	00700000
 
-#define _TYPE_MASK 0770000
+#define S_IFMT	    00700000
 
 #define S_IXOTH	00001
 #define S_IWOTH	00002
@@ -35,12 +35,12 @@
 #define S_IWRITE S_IWUSR
 #define S_IEXEC  S_IXUSR
 
-#define S_ISBLK(m)  (((m) & _TYPE_MASK) == S_IFBLK)
-#define S_ISCHR(m)  (((m) & _TYPE_MASK) == S_IFCHR)
-#define S_ISDIR(m)  (((m) & _TYPE_MASK) == S_IFDIR)
-#define S_ISFIFO(m) (((m) & _TYPE_MASK) == S_IFIFO)
-#define S_ISLNK(m)  (((m) & _TYPE_MASK) == S_IFLNK)
-#define S_ISREG(m)  (((m) & _TYPE_MASK) == S_IFREG)
+#define S_ISBLK(m)  (((m) & S_IFMT) == S_IFBLK)
+#define S_ISCHR(m)  (((m) & S_IFMT) == S_IFCHR)
+#define S_ISDIR(m)  (((m) & S_IFMT) == S_IFDIR)
+#define S_ISFIFO(m) (((m) & S_IFMT) == S_IFIFO)
+#define S_ISLNK(m)  (((m) & S_IFMT) == S_IFLNK)
+#define S_ISREG(m)  (((m) & S_IFMT) == S_IFREG)
 
 struct stat {
 

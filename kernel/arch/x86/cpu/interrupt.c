@@ -58,7 +58,7 @@ void x86HandleInterrupt(struct x86_regs* r) {
         r->eax = HandleSystemCall(r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi);
 
     } else {
-        LogWriteSerial("Got interrupt %d.\n", num);
+        LogWriteSerial("Got interrupt %d. (r->eip = 0x%X)\n", num, r->eip);
         UnhandledFault();
     }
 }
