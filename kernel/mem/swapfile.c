@@ -24,15 +24,14 @@ static int GetPagesRequiredForAllocationBitmap(void) {
     return (max_swapfile_size + accessable_per_page - 1) / accessable_per_page;
 }
 
-static void SetupSwapfileBitmap() {
+static void SetupSwapfileBitmap(void) {
     int num_pages_in_bitmap = GetPagesRequiredForAllocationBitmap();
     num_swapfile_bitmap_entries = 8 * num_pages_in_bitmap * ARCH_PAGE_SIZE;
     swapfile_bitmap = (uint8_t*) MapVirt(0, 0, num_pages_in_bitmap * ARCH_PAGE_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
 }
 
 void InitSwapfile(void) {
-    int res = OpenFile("swap:/", O_RDWR, 0, &swapfile);
-    if (res != 0) {
+    if (OpenFile("swap:/", O_RDWR, 0, &swapfile)) {
         Panic(PANIC_NO_FILESYSTEM);
     }
     

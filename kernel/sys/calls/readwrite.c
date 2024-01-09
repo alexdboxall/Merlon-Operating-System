@@ -19,12 +19,7 @@ int SysReadWrite(size_t fd, size_t size, size_t buffer, size_t br_out, size_t wr
 	}
 
 	if (write && (file->flags & O_APPEND)) {
-		struct stat st;
-        if ((res = VnodeOpStat(file->node, &st))) {
-            return res;
-        }
-
-        file->seek_position = st.st_size;
+        file->seek_position = file->node->stat.st_size;
 	}
 
 	struct transfer io = CreateTransferWritingToUser((uint8_t*) buffer, size, file->seek_position);

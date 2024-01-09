@@ -54,8 +54,6 @@ static void FloppyWriteCommand(struct floppy_data* flp, int cmd) {
             return;
         }
     }
-
-    LogWriteSerial("floppy_write_cmd: timeout\n");
 }
 
 static uint8_t FloppyReadData(struct floppy_data* flp) {
@@ -67,13 +65,10 @@ static uint8_t FloppyReadData(struct floppy_data* flp) {
         }
     }
 
-    LogWriteSerial("floppy_read_data: timeout\n");
     return 0;
 }
 
 static void FloppyCheckInterrupt(struct floppy_data* flp, int* st0, int* cyl) {
-    LogWriteSerial("FloppyCheckInterrupt\n");
-
     FloppyWriteCommand(flp, CMD_SENSE_INT);
     *st0 = FloppyReadData(flp);
     *cyl = FloppyReadData(flp);
@@ -82,18 +77,13 @@ static void FloppyCheckInterrupt(struct floppy_data* flp, int* st0, int* cyl) {
 /*
  * The state can be 0 (off), 1 (on) or 2 (currently on, but will shortly be turned off).
  */
-
 static volatile int floppy_motor_state = 0;
 static volatile int floppy_motor_ticks = 0;
 
 static void FloppyMotor(struct floppy_data* flp, bool state) {
-    LogWriteSerial("FloppyMotor\n");
-
-    int base = flp->base;
-
     if (state) {
         if (!floppy_motor_state) {
-            outb(base + FLOPPY_DOR, 0x1C);
+            outb(flp->base + FLOPPY_DOR, 0x1C);
             SleepMilli(150);
         }
         floppy_motor_state = 1;
@@ -106,33 +96,25 @@ static void FloppyMotor(struct floppy_data* flp, bool state) {
 
 static volatile bool floppy_got_irq = false;
 
-static void FloppyIrqWait() {
-    LogWriteSerial("FloppyIrqWait\n");
-
-    /*
-    * Wait for the interrupt to come. If it doesn't the system will probably
-    * lockup.
-    */
+static int FloppyIrqWait(void) {
+    int timeout = 0;
     while (!floppy_got_irq) {
         SleepMilli(10);
+        if (++timeout > 200) {
+            return ETIMEDOUT;
+        }
     }
 
-    /*
-    * Clear it for next time.
-    */
     floppy_got_irq = false;
+    return 0;
 }
 
 static int FloppyIrqHandler(struct x86_regs*) {
-    LogWriteSerial("FloppyIrqHandler\n");
-
     floppy_got_irq = true;
     return 0;
 }
 
 static void FloppyMotorControlThread(void*) {
-    LogWriteSerial("FloppyMotorControlThread\n");
-
     while (1) {
         SleepMilli(50);
         if (floppy_motor_state == 2) {
@@ -141,8 +123,8 @@ static void FloppyMotorControlThread(void*) {
                 /*
                 * Actually turn off the motor.
                 */
-                //outb(0x3F0 + FLOPPY_DOR, 0x0C);
-                //loppy_motor_state = 0;
+                outb(0x3F0 + FLOPPY_DOR, 0x0C);
+                floppy_motor_state = 0;
             }
         }
     }
@@ -176,14 +158,11 @@ static int FloppyCalibrate(struct floppy_data* flp) {
         }
     }
 
-    LogDeveloperWarning("couldn't calibrate floppy\n");
     FloppyMotor(flp, false);
     return EIO;
 }
 
 static void FloppyConfigure(struct floppy_data* flp) {
-    LogWriteSerial("FloppyConfigure\n");
-
     FloppyWriteCommand(flp, CMD_CONFIGURE);
     FloppyWriteCommand(flp, 0x00);
     FloppyWriteCommand(flp, 0x08);
@@ -191,8 +170,6 @@ static void FloppyConfigure(struct floppy_data* flp) {
 }
 
 static int FloppyReset(struct floppy_data* flp) {
-    LogWriteSerial("FloppyReset\n");
-
     int base = flp->base;
     outb(base + FLOPPY_DOR, 0x00);
     outb(base + FLOPPY_DOR, 0x0C);
@@ -217,14 +194,10 @@ static int FloppyReset(struct floppy_data* flp) {
     SleepMilli(300);
     FloppyMotor(flp, false);
 
-    int res = FloppyCalibrate(flp);
-    LogWriteSerial("FloppyReset: res = %d\n", res);
-    return res;
+    return FloppyCalibrate(flp);
 }
 
 static int FloppySeek(struct floppy_data* flp, int cylinder, int head) {
-    LogWriteSerial("FloppySeek\n");
-
     int st0, cyl;
     FloppyMotor(flp, true);
 
@@ -246,14 +219,11 @@ static int FloppySeek(struct floppy_data* flp, int cylinder, int head) {
         }
     }
 
-    LogWriteSerial("couldn't seek floppy\n");
     FloppyMotor(flp, false);
     return EIO;
 }
 
 static void FloppyDmaInit(void) {
-    LogWriteSerial("FloppyDmaInit\n");
-
     /*
     * Put the data at *physical address* 0x10000. The address can be anywhere 
     * under 24MB that doesn't cross a 64KB boundary. We choose this location as 
@@ -283,8 +253,6 @@ static void FloppyDmaInit(void) {
 }
 
 static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
-    LogWriteSerial("FloppyDoCylinder\n");
-
     /*
     * Move both heads to the correct cylinder.
     */
@@ -295,12 +263,10 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
     * This time, we'll try up to 20 times.
     */
     for (int i = 0; i < 20; ++i) {
-        LogWriteSerial("READ ATTEMPT %d\n", i + 1);
         FloppyMotor(flp, true);
 
         if (i % 5 == 3) {
             if (i % 10 == 8) {
-                LogWriteSerial("resetting floppy!\n");
                 FloppyReset(flp);
                 FloppyMotor(flp, true);
             }
@@ -347,9 +313,6 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
         * even longer.
         */
         if (st0 & 0xC0) {
-            static const char * status[] = { 0, "error", "invalid command", "drive not ready" };
-            LogWriteSerial("floppy_do_sector: status = %s\n", status[st0 >> 6]);
-            LogWriteSerial("st0 = 0x%X, st1 = 0x%X, st2 = 0x%X, bps = %d\n", st0, st1, st2, bps); 
             continue;
         }
         if (st1 & 0x80) {
@@ -377,15 +340,11 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
         return 0;
     }
 
-    LogWriteSerial("couldn't read floppy\n");
     FloppyMotor(flp, false);
     return EIO;
 }
 
-
-
 static int FloppyIo(struct floppy_data* flp, struct transfer* io) {
-    LogWriteSerial("FloppyIo\n");
     EXACT_IRQL(IRQL_STANDARD);
 
     if (io->direction == TRANSFER_WRITE) {
@@ -409,23 +368,17 @@ static int FloppyIo(struct floppy_data* flp, struct transfer* io) {
 
 next_sector:;
     /*
-    * Floppies use CHS (cylinder, head, sector) for addressing sectors instead of 
-    * LBA (linear block addressing). Hence we need to convert to CHS.
-    * 
-    * Head: which side of the disk it is on (i.e. either the top or bottom)
-    * Cylinder: which 'slice' (cylinder) of the disk we should look at
-    * Sector: which 'ring' (sector) of that cylinder we should look at
-    * 
+    * Floppies use CHS (cylinder, head, sector) for addressing sectors instead 
+    * of LBA (linear block addressing). Hence we need to convert to CHS.
     * Note that sector is 1-based, whereas cylinder and head are 0-based.
-    * Don't ask why.
     */
     int head = (lba % (18 * 2)) / 18;
     int cylinder = (lba / (18 * 2));
     int sector = (lba % 18) + 1;
 
     /*
-    * Cylinder 0 has some commonly used data, so cache it seperately for improved
-    * speed.
+    * Cylinder 0 has some commonly used data, so cache it seperately for 
+    * improved speed.
     */
     if (cylinder == 0) {
         if (!flp->got_cylinder_zero) {
@@ -464,9 +417,10 @@ next_sector:;
     }
     
     /*
-    * Read only read one sector, so we need to repeat the process if multiple sectors
-    * were requested. We could just do a larger copy above, but this is a bit simpler,
-    * as we don't need to worry about whether the entire request is on cylinder or not.
+    * Read only read one sector, so we need to repeat the process if multiple 
+    * sectors were requested. We could just do a larger copy above, but this is 
+    * a bit simpler, as we don't need to worry about whether the entire request 
+    * is on cylinder or not.
     */
     if (count > 0) {
         ++lba;
@@ -476,10 +430,6 @@ next_sector:;
 
     ReleaseMutex(floppy_lock);
     return 0;
-}
-
-static bool IsSeekable(struct vnode*) {
-    return true;
 }
 
 static int ReadWrite(struct vnode* node, struct transfer* io) {
@@ -502,35 +452,11 @@ static int Follow(struct vnode* node, struct vnode** output, const char* name) {
     return res;
 }
 
-static int Stat(struct vnode*, struct stat* st) {
-    st->st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO;
-    st->st_atime = 0;
-    st->st_blksize = 512;
-    st->st_blocks = 2880;
-    st->st_ctime = 0;
-    st->st_dev = 0xBABECAFE;
-    st->st_gid = 0;
-    st->st_ino = 0xCAFEBABE;
-    st->st_mtime = 0;
-    st->st_nlink = 1;
-    st->st_rdev = 0xCAFEDEAD;
-    st->st_size = 1024 * 1440;
-    st->st_uid = 0;
-    return 0;
-}
-
-static int Close(struct vnode*) {
-    return 0;
-}
-
 static const struct vnode_operations dev_ops = {
-    .is_seekable    = IsSeekable,
     .read           = ReadWrite,
     .write          = ReadWrite,
-    .close          = Close,
     .create         = Create,
     .follow         = Follow,
-    .stat           = Stat,
 };
 
 void InitFloppy(void) {
@@ -539,22 +465,28 @@ void InitFloppy(void) {
     CreateThread(FloppyMotorControlThread, NULL, GetVas(), "flpmotor");
 
     for (int i = 0; i < 1; ++i) {
-        struct vnode* node = CreateVnode(dev_ops);
+        struct vnode* node = CreateVnode(dev_ops, (struct stat) {
+            .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
+            .st_nlink = 1,
+            .st_blksize = 512,
+            .st_blocks = 2880,
+            .st_size = 512 * 2880
+        });
+
         struct floppy_data* flp = AllocHeap(sizeof(struct floppy_data));
+        *flp = (struct floppy_data) {
+            .disk_num = i, .base = 0x3F0, 
+            .stored_cylinder = -1, .got_cylinder_zero = false,
+            .cylinder_buffer = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+            .cylinder_zero   = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+        };
+        node->data = flp;
 
         RegisterIrqHandler(PIC_IRQ_BASE + 6, FloppyIrqHandler);
-
-        flp->disk_num          = 0;
-        flp->base              = 0x3F0;
-        flp->cylinder_buffer   = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
-        flp->cylinder_zero     = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
-        flp->got_cylinder_zero = false;
-        flp->stored_cylinder   = -1;
         FloppyReset(flp);
 
         InitDiskPartitionHelper(&flp->partitions);
 
-        node->data = flp;
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
         CreateDiskPartitions(CreateOpenFile(node, 0, 0, true, true));
     }

@@ -76,7 +76,7 @@ static void Heapify(struct priority_queue* queue, int i) {
 void PriorityQueueInsert(struct priority_queue* queue, void* elem, uint64_t priority) {
     if (queue->size == queue->capacity) {
         // I think this can happen when the OS is running too slowly! (the deferred function buffer actually fills up
-        // and overflows). Testing on real H/W from 1996, debug prints took about a second per character!!
+        // and overflows). Testing on real H/W from 1996, debug serial port accesses took about a second per character!!
         PanicEx(PANIC_PRIORITY_QUEUE, "insert called when full");
     }
 

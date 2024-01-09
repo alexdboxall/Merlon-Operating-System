@@ -112,8 +112,6 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         return EINVAL;
     }
 
-    AcquireSemaphore(ide_lock, -1);
-
     uint16_t base = disk_num >= 2 ? ide->secondary_base : ide->primary_base;
     uint16_t dev_ctrl_reg = disk_num >= 2 ? ide->secondary_alternative : ide->primary_alternative;
 
@@ -122,6 +120,8 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         // hardware limitation
         max_sectors_at_once = 255;
     }
+
+    AcquireSemaphore(ide_lock, -1);
 
     while (count > 0) {
         int sectors_in_this_transfer = count > max_sectors_at_once ? max_sectors_at_once : count;
@@ -180,7 +180,7 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
             IdePoll(ide);
 
             /*
-            * We need to flush the disk's cache if we are writing.
+            * We need to flush the (hardware) disk cache if we are writing.
             */
             outb(base + 0x7, 0xE7);
             IdePoll(ide);
@@ -212,7 +212,6 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
     }
 
     ReleaseSemaphore(ide_lock);
-
     return 0;
 }
 
@@ -249,10 +248,6 @@ static int IdeGetNumSectors(struct ide_data* ide) {
     return sectors;
 }
 
-static bool IsSeekable(struct vnode*) {
-    return true;
-}
-
 static int ReadWrite(struct vnode* node, struct transfer* io) {
     return IdeIo(node->data, io);
 }
@@ -273,56 +268,35 @@ static int Follow(struct vnode* node, struct vnode** output, const char* name) {
     return res;
 }
 
-static int Stat(struct vnode* node, struct stat* st) {
-    struct ide_data* ide = node->data;  
-
-    st->st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO;
-    st->st_atime = 0;
-    st->st_blksize = ide->sector_size;
-    st->st_blocks = ide->total_num_sectors;
-    st->st_ctime = 0;
-    st->st_dev = 0xBABECAFE;
-    st->st_gid = 0;
-    st->st_ino = 0xCAFEBABE;
-    st->st_mtime = 0;
-    st->st_nlink = 1;
-    st->st_rdev = 0xCAFEDEAD;
-    st->st_size = ide->sector_size * ide->total_num_sectors;
-    st->st_uid = 0;
-
-    return 0;
-}
-
-static int Close(struct vnode*) {
-    return 0;
-}
-
 static const struct vnode_operations dev_ops = {
-    .is_seekable    = IsSeekable,
-    .read           = ReadWrite,
-    .write          = ReadWrite,
-    .close          = Close,
-    .create         = Create,
-    .follow         = Follow,
-    .stat           = Stat,
+    .read   = ReadWrite,
+    .write  = ReadWrite,
+    .create = Create,
+    .follow = Follow,
 };
 
 void InitIde(void) {
     ide_lock = CreateMutex("ide");
 
     for (int i = 0; i < 1; ++i) {
-        struct vnode* node = CreateVnode(dev_ops);
         struct ide_data* ide = AllocHeap(sizeof(struct ide_data));
+        *ide = (struct ide_data) {
+            .disk_num = i, .sector_size = 512, .busmaster_base = 0x0000,
+            .primary_base   = 0x1F0, .primary_alternative   = 0x3F6,
+            .secondary_base = 0x170, .secondary_alternative = 0x376,
+            .transfer_buffer = (uint16_t*) MapVirt(0, 0, MAX_TRANSFER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+        };
 
-        ide->disk_num               = 0;
-        ide->primary_base           = 0x1F0;
-        ide->secondary_base         = 0x170;
-        ide->primary_alternative    = 0x3F6;
-        ide->secondary_alternative  = 0x376;
-        ide->busmaster_base         = 0x0;
-        ide->sector_size            = 512;
-        ide->total_num_sectors      = IdeGetNumSectors(ide);
-        ide->transfer_buffer        = (uint16_t*) MapVirt(0, 0, MAX_TRANSFER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+        ide->total_num_sectors = IdeGetNumSectors(ide);
+        
+        struct vnode* node = CreateVnode(dev_ops, (struct stat) {
+            .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
+            .st_nlink = 1,
+            .st_blksize = ide->sector_size,
+            .st_blocks = ide->total_num_sectors,
+            .st_size = ide->total_num_sectors * ide->sector_size,
+        });
+
         InitDiskPartitionHelper(&ide->partitions);
 
         node->data = ide;

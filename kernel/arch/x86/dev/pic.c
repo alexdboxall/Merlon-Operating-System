@@ -2,22 +2,6 @@
 #include <machine/portio.h>
 #include <arch.h>
 
-/*
-* x86/dev/pic.c - Programmable Interrupt Controller
-*
-* The PIC controlls the hardare raised interrupts (IRQs), i.e. those from 
-* 'external' devices such as the keyboard, system timer, disk, etc. Hence the
-* PIC must be configured before any external interrupts can be seen by the CPU.
-*
-* There are two quirks to certain IRQs. The first comes about by the fact that 
-* each system actually has two PICs - the primary PIC handling IRQs 0-7, and the
-* secondary PIC handling IRQs 8-15. They are connected (cascaded) to each other, 
-* using IRQ 2 for communication. Thus, an IRQ 2 will get to the CPU.
-*
-* The other quirk is the 'spurious interrupt', which can occur on IRQ 7 or 15. 
-* See pic_is_spurious for more details.
-*/
-
 #define PIC1_COMMAND    0x20
 #define PIC1_DATA       0x21
 #define PIC2_COMMAND    0xA0
@@ -30,14 +14,13 @@
 #define ICW1_INIT       0x10
 #define ICW4_8086       0x01
 
-
 /*
 * Delay for a short period of time, for use in betwwen IO calls to the PIC.
 * This is required as some PICs have a hard time keeping up with the speed 
 * of modern CPUs (the original PIC was introduced in 1976!).
 */
 static void IoWait(void) {
-    
+    asm volatile ("nop");
 }
 
 /*
@@ -51,17 +34,13 @@ static uint16_t ReadPicReg(int ocw3) {
 
 /*
 * Due to a race condition between the PIC and the CPU, we sometimes get a
-* 'spurious' interrupt sent to the CPU on IRQ 7 or 15. If an IRQ 7 or 15
-* arrives, we need to check if it an actual interrupt or a spurious interrupt.
-* Distinguishing them is important - spurious IRQs may cause drivers to misbehave,
-* and we don't need to send an EOI after a spurious interrupt.
+* 'spurious' interrupt sent to the CPU on IRQ 7 or 15. Distinguishing them is 
+* important - we don't need to send an EOI after a spurious interrupt.
 */
 bool IsPicIrqSpurious(int irq_num) {
     if (irq_num == PIC_IRQ_BASE + 7) {
         uint16_t isr = ReadPicReg(PIC_REG_ISR);
-        if (!(isr & (1 << 7))) {
-            return true;
-        }
+        return !(isr & (1 << 7));
 
     } else if (irq_num == PIC_IRQ_BASE + 15) {
         uint16_t isr = ReadPicReg(PIC_REG_ISR);
@@ -86,7 +65,6 @@ void SendPicEoi(int irq_num) {
     if (irq_num >= PIC_IRQ_BASE + 8) {
         outb(PIC2_COMMAND, PIC_EOI);
     }
-
     outb(PIC1_COMMAND, PIC_EOI);
 }
 
@@ -122,38 +100,21 @@ static void RemapPic(int offset) {
 }
 
 /**
- * Set which IRQ numbers are disabled. Overwrites the previous call to this function completely
- * (i.e. this is an 'equals' operation, not an 'and' or 'or'.)
- * 
- * @param irq_bitfield A bitfield of IRQs, where the lowest bit corresponds to IRQ0. For each bit,
- *                     a zero will enable the interrupt, and a one will disable the interrupt. 
- *                     To disable all lines, specify 0xFFFF. To enable all lines, specify 0x0000.
+ * Set which IRQ numbers are disabled. Overwrites the previous call to this
+ * function completely (i.e. this is 'equals', not an 'and' or 'or'.) To disable
+ * all lines, specify 0xFFFF. To enable all lines, specify 0x0000.
  */
 void DisablePicLines(uint16_t irq_bitfield) {
-    static uint16_t prev = 0xFFFF;      // we initially set it to 0, so this will be different
+    static uint16_t prev = 0xFFFF;
 
-    if (prev == irq_bitfield) {
-        return;
+    if (prev != irq_bitfield) {
+        outb(PIC1_DATA, irq_bitfield & 0xFF);
+        outb(PIC2_DATA, irq_bitfield >> 8);
+        prev = irq_bitfield;
     }
-
-    outb(PIC1_DATA, irq_bitfield & 0xFF);
-    outb(PIC2_DATA, irq_bitfield >> 8);
-    prev = irq_bitfield;
 }
 
-/*
-* Initialise the PIC.
-*/
 void InitPic(void) {
-    /*
-    * Remap the PIC so that interrupts 0-15 are mapped to 32-47.
-    * This way we don't have conflicts with the CPU exceptions which are
-    * hard-wired to these interrupt numbers.
-    */
     RemapPic(PIC_IRQ_BASE);
-
-    /*
-    * Now we can disable all masks, allowing interrupts to reach the CPU.
-    */
     DisablePicLines(0x0000);
 }

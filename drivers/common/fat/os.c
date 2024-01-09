@@ -150,14 +150,6 @@ static int Ioctl(struct vnode*, int, void*) {
     return EINVAL;
 }
 
-static bool IsSeekable(struct vnode*) {
-    return true;
-}
-
-static int CheckTty(struct vnode*) {
-    return false;
-}
-
 #define TRANSFER_CHUNK_SIZE 1024
 
 static int Read(struct vnode* node, struct transfer* io) {    
@@ -233,10 +225,6 @@ static int Create(struct vnode*, struct vnode**, const char*, int, mode_t) {
     return EROFS;
 }
 
-static int Stat(struct vnode*, struct stat*) {
-    return ENOSYS;
-}
-
 static int Truncate(struct vnode*, off_t) {
     return EROFS;
 }
@@ -257,19 +245,18 @@ static int Follow(struct vnode*, struct vnode**, const char*) {
 static const struct vnode_operations dev_ops = {
     .check_open     = CheckOpen,
     .ioctl          = Ioctl,
-    .is_seekable    = IsSeekable,
-    .check_tty      = CheckTty,
     .read           = Read,
     .write          = Write,
     .close          = Close,
     .truncate       = Truncate,
     .create         = Create,
     .follow         = Follow,
-    .stat           = Stat,
 };
 
 static struct vnode* CreateFatFsVnode() {
-    return CreateVnode(dev_ops);
+    struct vnode* node = CreateVnode(dev_ops, (struct stat){0});
+	// TODO: set node->stat correctly!!!
+	return node;
 }
 
 int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) { 
@@ -296,8 +283,7 @@ int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) {
 
 	data->disk_num = id;
 
-	struct stat st;
-	VnodeOpStat(raw_device->node, &st);
+	struct stat st = raw_device->node->stat;
 
 	disks[id] = raw_device;
 	disk_sector_counts[id] = st.st_blocks;

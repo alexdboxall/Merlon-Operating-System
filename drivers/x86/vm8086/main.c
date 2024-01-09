@@ -474,9 +474,8 @@ struct vm8086_monitor* CreateVm8086Task(const char* path) {
         return NULL;
     }
 
-    off_t file_size;
-    res = GetFileSize(file, &file_size);
-    if (res != 0 || file_size >= ARCH_PAGE_SIZE) {
+    off_t file_size = file->node->stat.st_size;
+    if (file_size >= ARCH_PAGE_SIZE) {
         CloseFile(file);
         return NULL;
     }

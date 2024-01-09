@@ -55,10 +55,6 @@ static int Write(struct vnode* node, struct transfer* tr) {
     return Access(node, tr, true);
 }
 
-static bool IsSeekable(struct vnode*) {
-    return true;
-}
-
 static int Create(struct vnode* node, struct vnode** fs, const char*, int flags, mode_t mode) {
     struct partition_data* partition = node->data;
     if (partition->fs != NULL) {
@@ -66,27 +62,6 @@ static int Create(struct vnode* node, struct vnode** fs, const char*, int flags,
     }
 
     partition->fs = CreateOpenFile(*fs, flags, mode, true, true);
-    return 0;
-}
-
-static int Stat(struct vnode* node, struct stat* st) {
-    struct partition_data* partition = node->data;
-
-    LogWriteSerial("calling stat on a partition... bps = %d, len = %d\n", partition->disk_bytes_per_sector, partition->length_bytes);
-
-    st->st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO;
-    st->st_atime = 0;
-    st->st_blksize = partition->disk_bytes_per_sector;
-    st->st_blocks = partition->length_bytes / partition->disk_bytes_per_sector;
-    st->st_ctime = 0;
-    st->st_dev = 0xBABECAFE;
-    st->st_gid = 0;
-    st->st_ino = 0xCAFEBABE;
-    st->st_mtime = 0;
-    st->st_nlink = 1;
-    st->st_rdev = 0xCAFEDEAD;
-    st->st_size = partition->length_bytes;
-    st->st_uid = 0;
     return 0;
 }
 
@@ -106,12 +81,10 @@ static int Follow(struct vnode* node, struct vnode** out, const char* name) {
 }
 
 static const struct vnode_operations dev_ops = {
-    .is_seekable    = IsSeekable,
     .read           = Read,
     .write          = Write,
     .create         = Create,
     .follow         = Follow,
-    .stat           = Stat,
 };
 
 struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64_t length, int id, int sector_size, int media_type, bool boot) {
@@ -125,11 +98,17 @@ struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64
     data->boot = boot;
     data->fs = NULL;
 
-    struct vnode* node = CreateVnode(dev_ops);
+    struct vnode* node = CreateVnode(dev_ops, (struct stat) {
+        .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
+        .st_blksize = sector_size,
+        .st_blocks = length / sector_size,
+        .st_nlink = 1,
+        .st_size = length
+    });
+
     node->data = data;
 
     struct open_file* partition = CreateOpenFile(node, 0, 0, true, true);
-    LogWriteSerial("created the partition...\n");
     MountFilesystemForDisk(partition);
     return partition;
 }
@@ -171,13 +150,9 @@ struct open_file* CreateMbrPartitionIfExists(struct open_file* disk, uint8_t* me
  * caller to free return value.
  */
 struct open_file** GetMbrPartitions(struct open_file* disk) {
-    struct stat st;
-    int res = VnodeOpStat(disk->node, &st);
-    if (res != 0) {
-        return NULL;
-    }
+    size_t block_size = disk->node->stat.st_blksize;
 
-    uint8_t* mem = (uint8_t*) MapVirt(0, 0, st.st_blksize, VM_READ | VM_FILE, disk, 0);
+    uint8_t* mem = (uint8_t*) MapVirt(0, 0, block_size, VM_READ | VM_FILE, disk, 0);
     if (mem == NULL) {
         return NULL;
     }
@@ -194,13 +169,13 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
 
     int partitions_found = 0;
     for (int i = 0; i < 4; ++i) {
-        struct open_file* partition = CreateMbrPartitionIfExists(disk, mem, i, st.st_blksize);
+        struct open_file* partition = CreateMbrPartitionIfExists(disk, mem, i, block_size);
         if (partition != NULL) {
             partitions[partitions_found++] = partition;
         }
     }
 
-    UnmapVirt((size_t) mem, st.st_blksize);
+    UnmapVirt((size_t) mem, block_size);
     
     return partitions;
 }

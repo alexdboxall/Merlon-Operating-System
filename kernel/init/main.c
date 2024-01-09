@@ -42,6 +42,9 @@
  * - recycling vnodes if opening same file more than once
  * - initrd and boot system
  * - more syscalls
+ * - document exactly what conditions need to be checked in the vnode_ops layer, and which ones are taken care of by
+ *      the VFS layer, so we don't get people checking the same thing twice
+ * - check all E... return codes... 
  * - VnodeOpWait, select/poll syscalls
  * - everyone create vnodes and open files willy-nilly - check the reference counting, especially on closing is 
  *      all correct (especially around the virtual memory manager...). does CloseFile do what you expect??
@@ -53,10 +56,10 @@
  *          after call to:      vnode refs      openfile refs
  *          Create vnode        1               0
  *          Create openfile     2               1
- *          Close openfile      1               0 -> gets destroyed
- *          Close vnode         0 
+ *          CloseFile()         1               0 -> gets destroyed
+ *               ->             0 
  * 
- *          CloseFile() would do both the openfile and the vnode.
+ *          CloseFile() closes both the openfile and the vnode.
  * 
  *     And then if the VMM gets involved...
  * 

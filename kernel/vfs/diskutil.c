@@ -161,13 +161,7 @@ void CreateDiskPartitions(struct open_file* disk) {
     struct open_file** partitions = GetPartitionsForDisk(disk);
 
     if (partitions == NULL || partitions[0] == NULL) {
-        LogWriteSerial("no partition table...\n");
-        struct stat st;
-        int res = VnodeOpStat(disk->node, &st);
-        if (res != 0) {
-            return;
-        }
-
+        struct stat st = disk->node->stat;
         struct vnode* whole_disk_partition = CreatePartition(disk, 0, st.st_size, 0, st.st_blksize, 0, false)->node;
         VnodeOpCreate(disk->node, &whole_disk_partition, GetPartitionNameString(0), 0, 0);
         return;

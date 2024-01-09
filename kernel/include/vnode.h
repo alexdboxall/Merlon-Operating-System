@@ -29,12 +29,6 @@ struct vnode;
 *   ioctl: default EINVAL
 *           Performs a miscellaneous operation on a file.
 *
-*   is_seekable: default EINVAL
-*           Returns true if seek can be called on the file.
-*
-*   check_tty: default ENOTTY
-*           Returns 0 if a terminal, or ENOTTY otherwise.
-*
 *   close: default 0
 *           Frees the vnode, as its reference count has hit zero.
 *
@@ -56,6 +50,10 @@ struct vnode;
 #define VNODE_WAIT_HAVE_TIMEOUT     (1 << 3)
 #define VNODE_WAIT_NON_BLOCK        (1 << 4)
 
+// TODO: the 'stat' data should live within the vnode... and then the stat
+// call just returns it... file operations can then just adjust the stat struct
+// as needed (e.g. when changing a file size in write).
+
 struct vnode_operations {
     int (*check_open)(struct vnode* node, const char* name, int flags);
     int (*read)(struct vnode* node, struct transfer* io);
@@ -65,12 +63,27 @@ struct vnode_operations {
     int (*truncate)(struct vnode* node, off_t offset);
     int (*create)(struct vnode* node, struct vnode** out, const char* name, int flags, mode_t mode);
     int (*follow)(struct vnode* node, struct vnode** out, const char* name);
-    int (*stat)(struct vnode* node, struct stat* st);
-    int (*check_tty)(struct vnode* node);
     int (*wait)(struct vnode* node, int flags, uint64_t timeout_ms);
 
-    bool (*is_seekable)(struct vnode* node);
-    uint8_t (*dirent_type)(struct vnode* node);
+    /*
+     * Must fail with EISDIR on directories. Should only decrement st.st_nlink, 
+     * and remove the link from the fileystem. On things like FAT, where hard 
+     * links are not supported, this can just decrement st.st_nlink, as we know
+     * that ops.delete is on its way, and that can properly delete it.
+     */
+    int (*unlink)(struct vnode* node);
+
+    /*
+     * Deletes a file or directory from the filesystem completely. For files, 
+     * the return value given will not propogate back to the VFS caller, as it 
+     * gets called in DestroyVnode(). For files, st.st_nlink will be 0 on
+     * call.
+     * 
+     * For directories, this function *must* check if the directory is non-empty
+     * and fail with ENOTEMPTY if so. st.st_nlink will be 1 on call - does not 
+     * need to be modified.
+     */
+    int (*delete)(struct vnode* node);
 };
 
 struct vnode {
@@ -78,13 +91,13 @@ struct vnode {
     void* data;
     int reference_count;
     struct spinlock reference_count_lock;
+    struct stat stat;
 };
-
 
 /*
 * Allocates a new vnode for a given set of operations.
 */
-struct vnode* CreateVnode(struct vnode_operations ops);
+struct vnode* CreateVnode(struct vnode_operations ops, struct stat st);
 void ReferenceVnode(struct vnode* node);
 void DereferenceVnode(struct vnode* node);
 
@@ -95,12 +108,11 @@ int VnodeOpCheckOpen(struct vnode* node, const char* name, int flags);
 int VnodeOpRead(struct vnode* node, struct transfer* io);
 int VnodeOpWrite(struct vnode* node, struct transfer* io);
 int VnodeOpIoctl(struct vnode* node, int command, void* buffer);
-bool VnodeOpIsSeekable(struct vnode* node);
-int VnodeOpCheckTty(struct vnode* node);
 int VnodeOpClose(struct vnode* node);
 int VnodeOpTruncate(struct vnode* node, off_t offset);
 uint8_t VnodeOpDirentType(struct vnode* node);
 int VnodeOpCreate(struct vnode* node, struct vnode** out, const char* name, int flags, mode_t mode);
 int VnodeOpFollow(struct vnode* node, struct vnode** out, const char* name);
-int VnodeOpStat(struct vnode* node, struct stat* st);
 int VnodeOpWait(struct vnode* node, int flags, uint64_t timeout_ms);
+int VnodeOpUnlink(struct vnode* node);
+int VnodeOpDelete(struct vnode* node);

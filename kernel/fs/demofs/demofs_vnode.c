@@ -35,14 +35,6 @@ static int Ioctl(struct vnode*, int, void*) {
     return EINVAL;
 }
 
-static bool IsSeekable(struct vnode*) {
-    return true;
-}
-
-static int CheckTty(struct vnode*) {
-    return ENOTTY;
-}
-
 static int Read(struct vnode* node, struct transfer* io) {    
     struct vnode_data* data = node->data;
     if (data->directory) {
@@ -60,26 +52,6 @@ static int Create(struct vnode*, struct vnode**, const char*, int, mode_t) {
     return EROFS;
 }
 
-static int Stat(struct vnode* node, struct stat* stat) {
-    struct vnode_data* data = node->data;
-
-    stat->st_atime = 0;
-    stat->st_blksize = 512;
-    stat->st_blocks = 0;
-    stat->st_ctime = 0;
-    stat->st_dev = 0xDEADDEAD;
-    stat->st_gid = 0;
-    stat->st_ino = data->inode;
-    stat->st_mode = (INODE_IS_DIR(data->inode) ? S_IFDIR : S_IFREG) | S_IRWXU | S_IRWXG | S_IRWXO;
-    stat->st_mtime = 0;
-    stat->st_nlink = 1;
-    stat->st_rdev = 0;
-    stat->st_size = data->file_length;
-    stat->st_uid = 0;
-
-    return 0;
-}
-
 static int Truncate(struct vnode*, off_t) {
     return EROFS;
 }
@@ -89,7 +61,7 @@ static int Close(struct vnode* node) {
     return 0;
 }
 
-static struct vnode* CreateDemoFsVnode();
+static struct vnode* CreateDemoFsVnode(ino_t, off_t);
 
 static int Follow(struct vnode* node, struct vnode** out, const char* name) {
     struct vnode_data* data = node->data;
@@ -106,13 +78,12 @@ static int Follow(struct vnode* node, struct vnode** out, const char* name) {
         * TODO: return existing vnode if someone opens the same file twice...
         */
     
-        struct vnode* child_node = CreateDemoFsVnode();
+        struct vnode* child_node = CreateDemoFsVnode(child_inode, file_length);
         struct vnode_data* child_data = AllocHeap(sizeof(struct vnode_data));
         child_data->inode = child_inode;
         child_data->fs = data->fs;
         child_data->file_length = file_length;
         child_data->directory = INODE_IS_DIR(child_inode);
-
         child_node->data = child_data;
 
         *out = child_node;
@@ -127,24 +98,26 @@ static int Follow(struct vnode* node, struct vnode** out, const char* name) {
 static const struct vnode_operations dev_ops = {
     .check_open     = CheckOpen,
     .ioctl          = Ioctl,
-    .is_seekable    = IsSeekable,
-    .check_tty      = CheckTty,
     .read           = Read,
     .write          = Write,
     .close          = Close,
     .truncate       = Truncate,
     .create         = Create,
     .follow         = Follow,
-    .stat           = Stat,
 };
 
-static struct vnode* CreateDemoFsVnode() {
-    return CreateVnode(dev_ops);
+static struct vnode* CreateDemoFsVnode(ino_t inode, off_t size) {
+    return CreateVnode(dev_ops, (struct stat) {
+        .st_mode = (INODE_IS_DIR(inode) ? S_IFDIR : S_IFREG) | S_IRWXU | S_IRWXG | S_IRWXO,
+        .st_nlink = 1,
+        .st_size = size,
+        .st_ino = inode,
+        .st_blksize = 512,      // the 'efficient' size
+    });
 }
 
 static int CheckForDemofsSignature(struct open_file* raw_device) {
-    struct stat st;
-	VnodeOpStat(raw_device->node, &st);
+    struct stat st = raw_device->node->stat;
 
     uint8_t* buffer = AllocHeapEx(st.st_blksize, HEAP_ALLOW_PAGING);
     struct transfer io = CreateKernelTransfer(buffer, st.st_blksize, 8 * st.st_blksize, TRANSFER_READ);
@@ -171,7 +144,7 @@ int DemofsMountCreator(struct open_file* raw_device, struct open_file** out) {
         return sig_check;
     }
     
-	struct vnode* node = CreateDemoFsVnode();
+	struct vnode* node = CreateDemoFsVnode(9 | (1 << 31), 0);
     struct vnode_data* data = AllocHeap(sizeof(struct vnode_data));
     
     data->fs.disk = raw_device;

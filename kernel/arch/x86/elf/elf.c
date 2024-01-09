@@ -310,16 +310,14 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
 }
 
 int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
 
-    off_t file_size;
-	int res = GetFileSize(file, &file_size);
+    off_t file_size = file->node->stat.st_size;
+    size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
+    int res = ElfLoad((void*) file_rgn, relocation_point, file, table);
 	if (res != 0) {
 		return res;
 	}
-
-    size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
-    res = ElfLoad((void*) file_rgn, relocation_point, file, table);
 
 	struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) file_rgn;
     struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) (file_rgn + elf_header->e_shoff);
@@ -344,19 +342,10 @@ int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quic
 }
 
 void ArchLoadSymbols(struct open_file* file, size_t adjust) {
-	off_t size;
-	int res = GetFileSize(file, &size);
-	if (res != 0) {
-		Panic(PANIC_BAD_KERNEL);
-	}
-
+	off_t size = file->node->stat.st_size;
 	size_t mem = MapVirt(0, 0, size, VM_READ | VM_FILE, file, 0);
-
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) mem;
 
-    /*
-    * These should never happen - otherwise our kernel shouldn't be running!
-    */
     if (!IsElfValid(elf_header) || elf_header->e_shoff == 0) {
 		Panic(PANIC_BAD_KERNEL);
     }

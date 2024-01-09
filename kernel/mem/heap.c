@@ -13,7 +13,7 @@
 #include <irql.h>
 #include <thread.h>
 
-#define BOOTSTRAP_AREA_SIZE (1024 * 16)
+#define BOOTSTRAP_SIZE (1024 * 16)
 #define MAX_EMERGENCY_BLOCKS 16
 
 /*
@@ -32,14 +32,14 @@ struct emergency_block {
  * Used as a system block that can be used even before the virtual memory 
  * manager is setup.
  */
-static uint8_t bootstrap_memory_area[BOOTSTRAP_AREA_SIZE] __attribute__ ((aligned(ARCH_PAGE_SIZE)));
+static uint8_t bootstrap_memory_area[BOOTSTRAP_SIZE] __attribute__ ((aligned(ARCH_PAGE_SIZE)));
 
 /*
  * Used to give us memory when we are not allowed to fault (i.e. can't allocate
  * virtual memory).
  */
 static struct emergency_block emergency_blocks[MAX_EMERGENCY_BLOCKS] = {
-    {.address = bootstrap_memory_area, .size = BOOTSTRAP_AREA_SIZE, .valid = true}
+    {.address = bootstrap_memory_area, .size = BOOTSTRAP_SIZE, .valid = true}
 };
 
 static struct semaphore* heap_lock;
@@ -164,39 +164,37 @@ static void RestoreEmergencyPages(void* context) {
         }
     }
 
-    while (largest_block < BOOTSTRAP_AREA_SIZE / 2 || total_size < BOOTSTRAP_AREA_SIZE) {
-        AddBlockToBackupHeap(BOOTSTRAP_AREA_SIZE);
-        total_size += BOOTSTRAP_AREA_SIZE;
-        largest_block = BOOTSTRAP_AREA_SIZE;
+    while (largest_block < BOOTSTRAP_SIZE / 2 || total_size < BOOTSTRAP_SIZE) {
+        AddBlockToBackupHeap(BOOTSTRAP_SIZE);
+        total_size += BOOTSTRAP_SIZE;
+        largest_block = BOOTSTRAP_SIZE;
     }
 
     UnlockHeap(false);
 }
 
 /**
- * Represents a section of memory that is either allocated or free. The memory address
- * it represents is itself, excluding the metadata at the start or end.
- *
- * See the report for further details.
+ * Represents a section of memory that is either allocated or free. The memory 
+ * address it represents is itself, excluding the metadata at the start or end.
  */
 struct block {
     /*
-     * The entire size of the block. The low 2 bits do not form part of the size,
-     * the low bit is set for allocated blocks, and the second lowest bit is indicates
-     * if it is on the swappable heap or not.
+     * The entire size of the block. The low 2 bits do not form part of the 
+     * size, the low bit is set for allocated blocks, and the second lowest bit 
+     * is indicates if it is on the swappable heap or not.
      */
     size_t size;
 
     /*
-     * Only here on free blocks. Allocated blocks use this as the start of allocated
-     * memory.
+     * Only here on free blocks. Allocated blocks use this as the start of 
+     * allocated memory.
      */
     struct block* next;
     struct block* prev;
 
     /*
-     * At position size - sizeof(size_t), there is the trailing size tag.
-     * There are no flags in the low bit of this value, unlike the heading size tag.
+     * At position size - sizeof(size_t), there is the trailing size tag. There
+     * are no flags in the low bit of this value, unlike the heading size tag.
      */
 };
 
@@ -217,22 +215,11 @@ int DbgGetOutstandingHeapAllocations(void) {
  * The amount of metadata at the start and end of allocated blocks. The next and free
  * pointers in free blocks do not count.
  */
-#define METADATA_LEADING_AMOUNT (sizeof(size_t))
-#define METADATA_TRIALING_AMOUNT (sizeof(size_t))
-#define METADATA_TOTAL_AMOUNT (METADATA_LEADING_AMOUNT + METADATA_TRIALING_AMOUNT)
+#define METADATA_LEADING (sizeof(size_t))
+#define METADATA_TRIALING (sizeof(size_t))
+#define METADATA_TOTAL (METADATA_LEADING + METADATA_TRIALING)
 
-/**
- * (THIS COMMENT IS ABOUT x86-64 - halve the byte values for x86)
-* Having blocks of size 8 is wasteful, as they need to be at least 32 bytes long total to fit
-* the metadata when free, but only need 16 bytes metadata when allocated. Therefore, we have
-* 8 spare bytes that are wasted.
-*/
 #define MINIMUM_REQUEST_SIZE_INTERNAL (2 * sizeof(size_t))
-
-/**
- * The last size should be larger than the max allocation size, as otherwise we could allocate larger
- * than we have in the final list.
- */
 #define TOTAL_NUM_FREE_LISTS 35
 
 /**
@@ -251,9 +238,9 @@ static size_t free_list_block_sizes[TOTAL_NUM_FREE_LISTS] = {
 };
 
 /**
- * Used to work out which free list a block should be in, when we are *reading* a block.
- * This rounds the size *up*, meaning it cannot be used to insert a block into a list.
- * NOT USED TO INSERT BLOCKS!! 
+ * Used to work out which free list a block should be in, when we are *reading*
+ * a block. This rounds the size *up*, meaning it cannot be used to insert a 
+ * block into a list. NOT USED TO INSERT BLOCKS!! 
  */
 static int GetSmallestListIndexThatFits(size_t size_without_metadata) {
     int i = 0;
@@ -266,8 +253,8 @@ static int GetSmallestListIndexThatFits(size_t size_without_metadata) {
 }
 
 /**
- * Calculates which free list a block should be inserted in. This one rounds *down*, and
- * so it should not normally be used to look up where a block should be.
+ * Calculates which free list a block should be inserted in. This rounds down,
+ * and so it should not normally be used to look up where a block should be.
  */
 static int GetInsertionIndex(size_t size_without_metadata) {
     assert(size_without_metadata >= free_list_block_sizes[0]);
@@ -290,8 +277,8 @@ static int GetInsertionIndex(size_t size_without_metadata) {
 }
 
 /**
- * Rounds up a user-supplied allocation size to the alignment. If the value is smaller than
- * the minimum request size that is internally supported, it will round it up to that size.
+ * Rounds up a user-supplied allocation size to the alignment. If it's less than
+ * the minimum size internally supported, we will round it up to that size.
  */
 static size_t RoundUpSize(size_t size) {
     assert(size != 0);
@@ -329,7 +316,8 @@ static bool IsOnSwappableHeap(struct block* block) {
 
 /**
  * Global arrays always initialise to zero (and therefore, to NULL).
- * Entries in free lists must have a user allocated size GREATER OR EQUAL TO the size in free_list_block_sizes.
+ * Entries in free lists must have a user allocated size GREATER OR EQUAL TO the
+ * size in free_list_block_sizes.
  */
 static struct block* _head_block[TOTAL_NUM_FREE_LISTS];
 static struct block* _head_block_swappable[TOTAL_NUM_FREE_LISTS];
@@ -344,51 +332,13 @@ static struct block** GetHeapForBlock(struct block* block) {
 
 
 /**
- * Given a block, returns its total size, including metadata. This takes into account
- * the flags on the size field and removes them from the return value. 
+ * Given a block, returns its total size, including metadata. This takes into 
+ * account the flags on the size field and removes them from the return value. 
  */
-static size_t GetBlockSize(struct block* block) {
+static size_t GetSize(struct block* block) {
     size_t size = block->size & ~3;
     assert(*(((size_t*) block) + (size / sizeof(size_t)) - 1) == size);
     return size;
-}
-
-void DbgPrintListStats(void) {
-    LogWriteSerial("\nDbgPrintListStats:\n");
-    for (int i = 0; i < TOTAL_NUM_FREE_LISTS; ++i) {
-        struct block* unswap = GetHeap(false)[i];
-        struct block* swap = GetHeap(true)[i];
-
-        size_t unswap_blocks = 0;
-        size_t unswap_size = 0;
-        size_t swap_blocks = 0;
-        size_t swap_size = 0;
-
-        int timeout = 0;
-        while (unswap) {
-            ++unswap_blocks;
-            unswap_size += GetBlockSize(unswap);
-            unswap = unswap->next;
-            if (timeout >= 100000) {
-                Panic(PANIC_DOUBLE_FREE_DETECTED);
-            }
-        }
-
-        timeout = 0;
-        while (swap) {
-            ++swap_blocks;
-            swap_size += GetBlockSize(swap);
-            swap = swap->next;
-            if (timeout >= 100000) {
-                Panic(PANIC_DOUBLE_FREE_DETECTED);
-            }
-        }
-
-        if ((unswap_blocks | swap_blocks) != 0) {
-            LogWriteSerial("    Bucket %d [0x%X]: unswappable %d / 0x%X. swappable %d / 0x%X\n", i, free_list_block_sizes[i], unswap_blocks, unswap_size, swap_blocks, swap_size);
-        }
-    }
-    LogWriteSerial("\n\n");
 }
 
 /**
@@ -497,10 +447,10 @@ static void RemoveBlock(int free_list_index, struct block* block) {
  * surrounding free blocks if possible.
  */
 static struct block* AddBlock(struct block* block) {
-    size_t size = GetBlockSize(block);
+    size_t size = GetSize(block);
     struct block** head_list = GetHeapForBlock(block);
 
-    int free_list_index = GetInsertionIndex(size - METADATA_TOTAL_AMOUNT);
+    int free_list_index = GetInsertionIndex(size - METADATA_TOTAL);
 
     size_t prev_block_size = *(((size_t*) block) - 1);
     struct block* prev_block = (struct block*) (((size_t*) block) - prev_block_size / sizeof(size_t));
@@ -526,8 +476,8 @@ static struct block* AddBlock(struct block* block) {
         bool swappable = IsOnSwappableHeap(block);
         assert(swappable == IsOnSwappableHeap(next_block));
     
-        RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
-        SetSizeTags(block, size + GetBlockSize(next_block));
+        RemoveBlock(GetInsertionIndex(GetSize(next_block) - METADATA_TOTAL), next_block);
+        SetSizeTags(block, size + GetSize(next_block));
         block->prev = NULL;
         block->next = NULL;
         MarkFree(block);
@@ -542,8 +492,8 @@ static struct block* AddBlock(struct block* block) {
         bool swappable = IsOnSwappableHeap(block);
         assert(swappable == IsOnSwappableHeap(prev_block));
 
-        RemoveBlock(GetInsertionIndex(GetBlockSize(prev_block) - METADATA_TOTAL_AMOUNT), prev_block);
-        SetSizeTags(prev_block, size + GetBlockSize(prev_block));
+        RemoveBlock(GetInsertionIndex(GetSize(prev_block) - METADATA_TOTAL), prev_block);
+        SetSizeTags(prev_block, size + GetSize(prev_block));
         prev_block->prev = NULL;
         prev_block->next = NULL;
         MarkFree(prev_block);
@@ -559,10 +509,10 @@ static struct block* AddBlock(struct block* block) {
         assert(swappable == IsOnSwappableHeap(prev_block));
         assert(swappable == IsOnSwappableHeap(next_block));
 
-        RemoveBlock(GetInsertionIndex(GetBlockSize(prev_block) - METADATA_TOTAL_AMOUNT), prev_block);
-        RemoveBlock(GetInsertionIndex(GetBlockSize(next_block) - METADATA_TOTAL_AMOUNT), next_block);
+        RemoveBlock(GetInsertionIndex(GetSize(prev_block) - METADATA_TOTAL), prev_block);
+        RemoveBlock(GetInsertionIndex(GetSize(next_block) - METADATA_TOTAL), next_block);
 
-        SetSizeTags(prev_block, size + GetBlockSize(prev_block) + GetBlockSize(next_block));
+        SetSizeTags(prev_block, size + GetSize(prev_block) + GetSize(next_block));
         prev_block->prev = NULL;
         prev_block->next = NULL;
         MarkFree(prev_block);
@@ -580,12 +530,12 @@ static struct block* AddBlock(struct block* block) {
 static struct block* AllocateBlock(struct block* block, int free_list_index, size_t user_requested_size) {
     assert(block != NULL);
 
-    size_t total_size = user_requested_size + METADATA_TOTAL_AMOUNT;
-    size_t block_size = GetBlockSize(block);
+    size_t total_size = user_requested_size + METADATA_TOTAL;
+    size_t block_size = GetSize(block);
 
     assert(block_size >= total_size);
 
-    if (block_size - total_size < MINIMUM_REQUEST_SIZE_INTERNAL + METADATA_TOTAL_AMOUNT) {
+    if (block_size - total_size < MINIMUM_REQUEST_SIZE_INTERNAL + METADATA_TOTAL) {
         /*
          * We can just remove from the list altogether if the sizes match up 
          * exactly, or if there would be so little left over that we can't form 
@@ -644,12 +594,8 @@ static struct block* AllocateBlock(struct block* block, int free_list_index, siz
  */
 static struct block* FindBlock(size_t user_requested_size, int flags) {
     struct block** head_list = GetHeap(flags & HEAP_ALLOW_PAGING);
-    /*
-     * Check the free lists in order, starting from the smallest one that will fit the block.
-     * If we find one with a free block, then we allocate the head of that list.
-     */
-    int min_index = GetSmallestListIndexThatFits(user_requested_size);
 
+    int min_index = GetSmallestListIndexThatFits(user_requested_size);
     for (int i = min_index; i < TOTAL_NUM_FREE_LISTS; ++i) {
         if (head_list[i] != NULL) {
             return AllocateBlock(head_list[i], i, user_requested_size);
@@ -657,20 +603,19 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
     }
 
     /*
-     * If we can't find a block that will fit, then we must allocate more memory.
+     * If we can't find a block that will fit, then we must allocate memory.
+     * Round up to the next block size, so we ensure we are in the next bucket.
+     * This avoids an issue if e.g. a user requests 2.1KB, and we allocate 3.9KB
+     * and it goes in the wrong bucket due to the two different indexes used.
      */
-    size_t total_size = free_list_block_sizes[min_index + 1] + METADATA_TOTAL_AMOUNT;
-    // round up to the size of the next block list size, so we guarantee we end up in the next bucket, to avoid
-    // an issue where the user requests, e.g. 2.1KB, and we allocate 3.9KB, which means due to the two lookup types,
-    // it gets it in the wrong bucket
+    size_t total_size = free_list_block_sizes[min_index + 1] + METADATA_TOTAL;
     struct block* sys_block = RequestBlock(total_size, flags);
 
     /*  
      * Put the new memory in the free list (which ought to be empty, as wouldn't
      * need to request new memory otherwise). Then we can allocate the block.
      */
-    int sys_index = GetInsertionIndex(GetBlockSize(sys_block) - METADATA_TOTAL_AMOUNT);
-
+    int sys_index = GetInsertionIndex(GetSize(sys_block) - METADATA_TOTAL);
     assert(head_list[sys_index] == NULL);
     head_list[sys_index] = sys_block;
     return AllocateBlock(head_list[sys_index], sys_index, user_requested_size);
@@ -683,11 +628,8 @@ static struct block* FindBlock(size_t user_requested_size, int flags) {
  */
 void* AllocHeapEx(size_t size, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
-
     if (flags & HEAP_ALLOW_PAGING) {
-        if (GetIrql() != IRQL_STANDARD) {
-            PanicEx(PANIC_INVALID_IRQL, "cannot AllocHeapEx(HEAP_ALLOW_PAGING) in irql > IRQL_STANDARD");
-        }
+        EXACT_IRQL(IRQL_STANDARD);
     }
 
     if (size == 0) {
@@ -716,7 +658,7 @@ void* AllocHeapEx(size_t size, int flags) {
 
     assert(((size_t) block & (ALIGNMENT - 1)) == 0);
 
-    void* ptr = AddVoidPtr(block, METADATA_LEADING_AMOUNT);
+    void* ptr = AddVoidPtr(block, METADATA_LEADING);
     if (flags & HEAP_ZERO) {
         inline_memset(ptr, 0, size);
     }
@@ -739,7 +681,7 @@ void FreeHeap(void* ptr) {
         return;
     }
 
-    struct block* block = SubVoidPtr(ptr, METADATA_LEADING_AMOUNT);
+    struct block* block = SubVoidPtr(ptr, METADATA_LEADING);
     bool pagable = IsOnSwappableHeap(block);
     block->prev = NULL;
     block->next = NULL;

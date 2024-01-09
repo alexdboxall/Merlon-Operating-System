@@ -33,11 +33,7 @@ int SysSeek(size_t fd, size_t pos_ptr, size_t whence, size_t, size_t) {
         offset += file->seek_position;
 
     } else if (whence == SEEK_END) {
-        struct stat st;
-        if ((res = VnodeOpStat(file->node, &st))) {
-            return res;
-        }
-        offset += st.st_size;
+        offset += file->node->stat.st_size;
 
     } else if (whence != SEEK_SET) {
         return EINVAL;

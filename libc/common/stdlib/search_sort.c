@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #endif
 
+// TODO: heap sort is probably better for kernel use due to it not requiring
+// additional memory. you do already have the heapify function in adt/priorityqueue.c
+// that could potentially be useful!
+
 static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size, int (*compar)(const void *, const void *), bool allow_paging) {
     size_t count_1 = mid - low + 1;
     size_t count_2 = high - mid;

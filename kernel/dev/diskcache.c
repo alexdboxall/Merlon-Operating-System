@@ -38,11 +38,6 @@ struct cache_data {
     return retv;
 }
 
-static void SynchroniseEntry(struct cache_entry* entry) {
-    // TODO: write to disk...
-    (void) entry;
-}
-
 static int Read(struct vnode* node, struct transfer* io) {   
     struct cache_data* data = node->data;
     
@@ -55,12 +50,12 @@ static int Read(struct vnode* node, struct transfer* io) {
 
 static int Write(struct vnode* node, struct transfer* io) {
     struct cache_data* data = node->data;
-    return VnodeOpWrite(data->underlying_disk->node, io);
-}
 
-static int Stat(struct vnode* node, struct stat* st) {
-    struct cache_data* data = node->data;
-    return VnodeOpStat(data->underlying_disk->node, st);
+    // TODO: update the disk cache. On writes, we will *ALWAYS* perform the
+    // write operation. this ensures we can actually return a status code back 
+    // to the caller. if writes were delayed until e.g. shutdown or a sync, then
+    // we would just need to return 0, even if, e.g. the drive was removed!
+    return VnodeOpWrite(data->underlying_disk->node, io);
 }
 
 static void TossCache(struct cache_data* data) {
@@ -91,45 +86,35 @@ static int Follow(struct vnode* node, struct vnode** out, const char* name) {
     return VnodeOpFollow(data->underlying_disk->node, out, name);
 }
 
-static bool IsSeekable(struct vnode*) {
-    return true;
-}
-
 static const struct vnode_operations dev_ops = {
     .read           = Read,
     .write          = Write,
-    .stat           = Stat,
     .close          = Close,
     .create         = Create,
     .follow         = Follow,
-    .is_seekable    = IsSeekable
 };
 
 void RemoveCacheEntryHandler(void* entry_) {
     struct cache_entry* entry = entry_;
-    SynchroniseEntry(entry);
     UnmapVirt(entry->cache_addr, entry->size);
-}
-
-static bool IsACacheableDisk(struct vnode* node) {
-    return VnodeOpDirentType(node) == DT_BLK && VnodeOpIsSeekable(node);
 }
 
 struct open_file* CreateDiskCache(struct open_file* underlying_disk)
 {
-    if (!IsACacheableDisk(underlying_disk->node)) {
-        /*
-         * Just 'pass-through' without the disk cache layer.
-         */
+    if (VnodeOpDirentType(underlying_disk->node) != DT_BLK) {
         return underlying_disk;
     }
 
-    struct vnode* node = CreateVnode(dev_ops);
+    // TODO: the disk cache needs a way of synchronising underlying_disk->stat
+    // either: allocate it dynamically and just point to the other one, or after
+    // each operation on the disk cache, we copy across the stats
+
+    struct vnode* node = CreateVnode(dev_ops, underlying_disk->node->stat);
     struct cache_data* data = AllocHeap(sizeof(struct cache_data));
     data->underlying_disk = underlying_disk;
     data->cache = AvlTreeCreate();
     data->lock = CreateMutex("vcache");
-    data->block_size = 4096;        // TODO: max of block size and ARCH_PAGE_SIZE
+    data->block_size = MAX(ARCH_PAGE_SIZE, underlying_disk->node->stat.st_blksize);
     AvlTreeSetDeletionHandler(data->cache, RemoveCacheEntryHandler);
     node->data = data;
 
@@ -160,17 +145,31 @@ void SetDiskCaches(int mode) {
         return;
     }
 
-    AcquireMutex(cache_list_lock, -1);
-
-    if (mode == DISKCACHE_REDUCE && current_mode == DISKCACHE_NORMAL) {
-        ReduceCacheAmounts(false);
-
-    } else if (mode == DISKCACHE_TOSS && current_mode != DISKCACHE_TOSS) {
-        ReduceCacheAmounts(true);
+    /*
+     * Prevent a lot of mutex acquisition and releasing that is unnecessary.
+     */
+    if (mode == current_mode) {
+        return;
     }
 
-    current_mode = mode;
-    ReleaseMutex(cache_list_lock);
+    /*
+     * It's okay to not acquire it - e.g. the PMM may call SetDiskCaches while
+     * this code is running anyway, so this avoids a deadlock. This function
+     * gets called a lot, so it will just change the cache mode a little later
+     * than expected.
+     */
+    int res = AcquireMutex(cache_list_lock, 0);
+    if (res == 0) {
+        if (mode == DISKCACHE_REDUCE && current_mode == DISKCACHE_NORMAL) {
+            ReduceCacheAmounts(false);
+
+        } else if (mode == DISKCACHE_TOSS && current_mode != DISKCACHE_TOSS) {
+            ReduceCacheAmounts(true);
+        }
+
+        current_mode = mode;
+        ReleaseMutex(cache_list_lock);
+    }
 }
 
 void InitDiskCaches(void) {

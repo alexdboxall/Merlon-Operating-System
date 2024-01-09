@@ -19,8 +19,9 @@ static bool is_elf_valid(struct Elf32_Ehdr* header) {
     return true;
 }
 
-
 static int load_program_headers(void* data, int fd) {
+    (void) fd;
+
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -78,4 +79,5 @@ int load_elf(const char* filename, size_t* entry_point) {
     *entry_point = elf_header->e_entry;
 
     close(fd);
+    return 0;
 }

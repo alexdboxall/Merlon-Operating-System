@@ -85,6 +85,9 @@ static struct avl_node* AvlBalance(struct avl_node* tree) {
 static struct avl_node* AvlInsert(struct avl_node* tree, void* data, avl_comparator comparator) {
     struct avl_node* new_tree;
     
+    // TODO: surely there's a better way that involves less node creation and 
+    // deletion...
+    
     assert(comparator != NULL);
     assert(tree != NULL);
 

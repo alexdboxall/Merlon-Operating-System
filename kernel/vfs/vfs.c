@@ -277,7 +277,7 @@ static void CleanupVnodeStack(struct stack_adt* stack) {
 * Given an absolute filepath, returns the vnode representing
 * the file, directory or device. 
 *
-* Should only be called by vfs_open as the reference count will be incremented.
+* Should be used carefully, as the reference count is incremented.
 */
 static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_parent) {
 	assert(path != NULL);
@@ -406,6 +406,28 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 
 	CleanupVnodeStack(previous_components);
 	return status;
+}
+
+int RemoveFileOrDirectory(const char* path, bool rmdir) {
+	struct vnode* node;
+	int res = GetVnodeFromPath(path, &node, false);
+	if (res != 0) {
+		return res;
+	}
+
+	bool is_dir = IFTODT(node->stat.st_mode) == DT_DIR;
+	if (rmdir && !is_dir) return ENOTDIR;
+	if (!rmdir && is_dir) return EISDIR;
+
+	if (rmdir) {
+		res = VnodeOpDelete(node);
+
+	} else {
+		res = node->stat.st_nlink > 0 ? VnodeOpUnlink(node) : ENOENT;
+	}
+
+	DereferenceVnode(node);
+	return res;
 }
 
 int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
@@ -544,22 +566,5 @@ int CloseFile(struct open_file* file) {
 
     DereferenceVnode(file->node);
 	DereferenceOpenFile(file);
-	return 0;
-}
-
-int GetFileSize(struct open_file* file, off_t* size) {
-	EXACT_IRQL(IRQL_STANDARD);
-
-	if (file == NULL || file->node == NULL || size == NULL) {
-		return EINVAL;
-	}
-	
-	struct stat st;
-	int res = VnodeOpStat(file->node, &st);
-	if (res != 0) {
-		return res;
-	}
-
-	*size = st.st_size;
 	return 0;
 }

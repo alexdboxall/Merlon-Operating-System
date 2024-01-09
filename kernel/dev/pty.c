@@ -20,7 +20,7 @@
 #define LINE_BUFFER_SIZE 300            // maximum length of a typed line
 #define FLUSHED_BUFFER_SIZE 500         // used to store any leftover after pressing '\n' that the program has yet to read
 
-struct pty_master_internal_data {
+struct master_data {
     struct vnode* subordinate;
     struct blocking_buffer* display_buffer;
     struct blocking_buffer* keybrd_buffer;
@@ -28,7 +28,7 @@ struct pty_master_internal_data {
     struct thread* line_processing_thread;
 };
 
-struct pty_subordinate_internal_data {
+struct sub_data {
     struct vnode* master;
     struct termios termios;
     char line_buffer[LINE_BUFFER_SIZE];
@@ -38,7 +38,7 @@ struct pty_subordinate_internal_data {
 
 // "THE SCREEN"
 static int MasterRead(struct vnode* node, struct transfer* tr) {  
-    struct pty_master_internal_data* internal = node->data;
+    struct master_data* internal = node->data;
     while (tr->length_remaining > 0) {
         char c = BlockingBufferGet(internal->display_buffer);
         PerformTransfer(&c, tr, 1);
@@ -49,7 +49,7 @@ static int MasterRead(struct vnode* node, struct transfer* tr) {
 
 // "THE KEYBOARD"
 static int MasterWrite(struct vnode* node, struct transfer* tr) {
-    struct pty_master_internal_data* internal = node->data;
+    struct master_data* internal = node->data;
 
     while (tr->length_remaining > 0) {
         char c;
@@ -69,8 +69,8 @@ static int SubordinateWait(struct vnode*, int, uint64_t) {
 }
 
 static void FlushSubordinateLineBuffer(struct vnode* node) {
-    struct pty_subordinate_internal_data* internal = node->data;
-    struct pty_master_internal_data* master_internal = internal->master->data;
+    struct sub_data* internal = node->data;
+    struct master_data* master_internal = internal->master->data;
 
     // could add a 'BlockingBufferAddMany' call?
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
@@ -81,7 +81,7 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
-    struct pty_subordinate_internal_data* internal = node->data;
+    struct sub_data* internal = node->data;
 
     if (internal->line_buffer_pos == 0) {
         return;
@@ -91,10 +91,9 @@ static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
 }
 
 static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
-    struct pty_subordinate_internal_data* internal = node->data;
+    struct sub_data* internal = node->data;
 
     if (internal->line_buffer_pos == LINE_BUFFER_SIZE) {
-        Panic(PANIC_NOT_IMPLEMENTED);
         return;
     }
 
@@ -107,8 +106,8 @@ static void LineProcessor(void* sub_) {
     SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
     struct vnode* node = (struct vnode*) sub_;
-    struct pty_subordinate_internal_data* internal = node->data;
-    struct pty_master_internal_data* master_internal = internal->master->data;
+    struct sub_data* internal = node->data;
+    struct master_data* master_internal = internal->master->data;
 
     while (true) {
         bool echo = internal->termios.c_lflag & ECHO;
@@ -117,9 +116,9 @@ static void LineProcessor(void* sub_) {
         char c = BlockingBufferGet(master_internal->keybrd_buffer);
 
         /*
-         * This must happen before we modify the line buffer (i.e. to add or backspace a character), as
-         * the backspace code here needs to check for a non-empty line (and so this must be done before we make 
-         * the line empty).
+         * Must happen before we modify the line buffer (i.e. to add / backspace 
+         * a character), as the backspace code needs to check for non-empty 
+         * lines (so this must be done before we make the line empty).
          */
         if (echo) {
             if (c == '\b' && canon) {
@@ -148,8 +147,8 @@ static void LineProcessor(void* sub_) {
 
 // "THE STDIN LINE BUFFER"
 static int SubordinateRead(struct vnode* node, struct transfer* tr) {        
-    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
-    struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
+    struct sub_data* internal = (struct sub_data*) node->data;
+    struct master_data* master_internal = (struct master_data*) internal->master->data;
 
     if (tr->length_remaining == 0) {
         return 0;
@@ -168,8 +167,8 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
 
 // "WRITING TO STDOUT"
 static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
-    struct pty_subordinate_internal_data* internal = (struct pty_subordinate_internal_data*) node->data;
-    struct pty_master_internal_data* master_internal = (struct pty_master_internal_data*) internal->master->data;
+    struct sub_data* internal = (struct sub_data*) node->data;
+    struct master_data* master_internal = (struct master_data*) internal->master->data;
 
     while (tr->length_remaining > 0) {
         char c;
@@ -184,48 +183,28 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
     return 0;
 }
 
-static int GenericStat(struct vnode*, struct stat* st) {
-    st->st_mode = S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO;
-    st->st_atime = 0;
-    st->st_blksize = 0;
-    st->st_blocks = 0;
-    st->st_ctime = 0;
-    st->st_dev = 0xBABECAFE;
-    st->st_gid = 0;
-    st->st_ino = 0xCAFEBABE;
-    st->st_mtime = 0;
-    st->st_nlink = 1;
-    st->st_rdev = 0xCAFEDEAD;
-    st->st_size = 0;
-    st->st_uid = 0;
-    return 0;
-}
-
-static int SubordinateCheckTty(struct vnode*) {
-    return 0;
-}
-
 static const struct vnode_operations master_operations = {
     .read           = MasterRead,
     .write          = MasterWrite,
-    .stat           = GenericStat,
     .wait           = MasterWait,
 };
 
 static const struct vnode_operations subordinate_operations = {
-    .check_tty      = SubordinateCheckTty,
     .read           = SubordinateRead,
     .write          = SubordinateWrite,
-    .stat           = GenericStat,
     .wait           = SubordinateWait,
 };
 
 void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
-    struct vnode* m = CreateVnode(master_operations);
-    struct vnode* s = CreateVnode(subordinate_operations);
+    struct stat st = (struct stat) {
+        .st_mode =  S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO,
+        .st_nlink = 1,
+    };
+    struct vnode* m = CreateVnode(master_operations, st);
+    struct vnode* s = CreateVnode(subordinate_operations, st);
     
-    struct pty_master_internal_data* m_data = AllocHeap(sizeof(struct pty_master_internal_data));
-    struct pty_subordinate_internal_data* s_data = AllocHeap(sizeof(struct pty_subordinate_internal_data));
+    struct master_data* m_data = AllocHeap(sizeof(struct master_data));
+    struct sub_data* s_data = AllocHeap(sizeof(struct sub_data));
 
     m_data->subordinate = s;
     m_data->display_buffer = BlockingBufferCreate(INTERNAL_BUFFER_SIZE);

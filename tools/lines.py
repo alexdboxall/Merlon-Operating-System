@@ -36,7 +36,7 @@ for path, subdirs, files in os.walk(os.getcwd()):
                 if l.find('assert') != -1:
                     asserts += 1
             lines += j
-            if n.find('kernel') != -1:
+            if n.find('kernel') != -1 and n.find('debug') == -1:
                 kernel += j
             if n.find('debug/tests/') != -1 or n.find('debug\\tests\\') != -1:
                 testing += j
@@ -44,6 +44,6 @@ for path, subdirs, files in os.walk(os.getcwd()):
                 platlines += j
         
 print('{} lines (of those, {}, or {}% are platform specific)'.format(lines, platlines, round(platlines * 100 / lines, 1)))
-print('{} lines come from the kernel'.format(kernel))
+print('{} lines come from the kernel (non-tests)'.format(kernel))
 print('{}% asserts, '.format(round(asserts * 100 / lines, 1)), '{}% comments, '.format(round(comments * 100 / lines, 1)), '{}% tests'.format(round(testing * 100 / lines, 1)))
 print('(does not include ACPICA)')
