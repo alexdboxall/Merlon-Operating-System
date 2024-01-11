@@ -1290,15 +1290,15 @@ static void WipeUsermodePagesRecursive(struct avl_node* node) {
     }
 
     struct vas_entry* entry = AvlTreeGetData(node);
-    if (entry->virtual >= ARCH_USER_STACK_LIMIT && entry->virtual < ARCH_PROG_LOADER_BASE) {
+    if (entry->virtual >= ARCH_USER_STACK_BASE && entry->virtual < ARCH_PROG_LOADER_LIMIT) {
         LogWriteSerial("WIPING A USERMODE PAGE ON EXEC: 0x%X\n", entry->virtual);
         DereferenceEntry(GetVas(), entry);
     }
 
-    if (entry->virtual >= ARCH_USER_STACK_LIMIT) {
+    if (entry->virtual >= ARCH_USER_STACK_BASE) {
         WipeUsermodePagesRecursive(AvlTreeGetLeft(node));
     }
-    if (entry->virtual < ARCH_PROG_LOADER_BASE) {
+    if (entry->virtual < ARCH_PROG_LOADER_LIMIT) {
         WipeUsermodePagesRecursive(AvlTreeGetRight(node));
     }
 }

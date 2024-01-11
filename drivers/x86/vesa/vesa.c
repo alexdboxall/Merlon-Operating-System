@@ -17,6 +17,8 @@
 #include <fcntl.h>
 #include <irql.h>
 
+#define BGCOL 0x00AAAA  //0x0bb9db
+
 /*
 * VESA Terminal and Video Driver for x86 Systems
 * 
@@ -229,7 +231,7 @@ void ShowRAMUsage(void*) {
                 data->depth_in_bits, 
                 64 + i * 8, 
                 64, 
-                0x0bb9db, 
+                BGCOL, 
                 0x000000, 
                 buffer[i]
             );
@@ -409,7 +411,7 @@ void InitVesa(void) {
 
     auto special_bayer = (uint8_t (*)(int, int, uint16_t)) GetSymbolAddress("GetBayerAdjustedChannelForVeryHighQuality");
 
-    _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, 0x0bb9db /*0x3880F8*/);
+    _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, BGCOL /*0x3880F8*/);
 
     /*struct open_file* img_file;
     OpenFile("sys:/bwsc.img", O_RDONLY, 0, &img_file);
