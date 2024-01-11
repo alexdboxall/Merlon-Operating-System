@@ -23,5 +23,7 @@ int dup3(int oldfd, int newfd, int flags);
 pid_t fork(void);
 
 int execve(const char* path, char* const argv[], char* const envp[]);
+int unlink(const char* path);
+int rmdir(const char* path);
 
 #endif

@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
@@ -110,11 +111,23 @@ static void loltest(void) {
 extern void dyn_fixup_asm(void);
 
 size_t resolve_address(char* name) {
-    if (!xstrcmp(name, "open")) return (size_t) open;
-    if (!xstrcmp(name, "write")) return (size_t) write;
+    if (!xstrcmp(name, "_exit")) return (size_t) _exit;
     if (!xstrcmp(name, "close")) return (size_t) close;
+    if (!xstrcmp(name, "dup")) return (size_t) dup;
+    if (!xstrcmp(name, "dup2")) return (size_t) dup2;
+    if (!xstrcmp(name, "dup3")) return (size_t) dup3;
+    if (!xstrcmp(name, "__thread_local_errno_")) return (size_t) __thread_local_errno_;
+    if (!xstrcmp(name, "execve")) return (size_t) execve;
+    if (!xstrcmp(name, "lseek")) return (size_t) lseek;
+    if (!xstrcmp(name, "mmap")) return (size_t) mmap;
+    if (!xstrcmp(name, "munmap")) return (size_t) munmap;
+    if (!xstrcmp(name, "mprotect")) return (size_t) mprotect;
+    if (!xstrcmp(name, "open")) return (size_t) open;
+    if (!xstrcmp(name, "read")) return (size_t) read;
+    if (!xstrcmp(name, "write")) return (size_t) write;
+    if (!xstrcmp(name, "unlink")) return (size_t) unlink;
+    if (!xstrcmp(name, "rmdir")) return (size_t) rmdir;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
-
     return (size_t) loltest;
 }
 
@@ -125,10 +138,8 @@ size_t dyn_fixup(struct dyn_data* link_info, size_t index) {
     struct Elf32_Sym symbol = symbol_table[relocation_entry.r_info >> 8];
     char* string_table = (char*) link_info->dynstr->sh_addr;
     char* name = string_table + symbol.st_name;
-
     size_t resolved_address = resolve_address(name);
-    // TODO: need to find the right address to write this back to...
-    //link_info->got[index / sizeof(size_t) + 2] = resolved_address;
+    *((size_t*) relocation_entry.r_offset) = resolved_address;
     return resolved_address;
 }
 

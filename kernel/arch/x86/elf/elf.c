@@ -80,15 +80,18 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct ope
 			 * kernel mode that we could use to redo the relocations.
 			 */
 			if ((flags & PF_W) || !driver) {
+
+				// TOOD: in the future, we should have all of the non-writable segments
+				// sharing the same vas_entry -> this means it would need to be global
+				// (even though in the user area) -> probably need to unmap and then remap
+				// the pages (and seperate this case from the driver case).
 				size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
 
 				for (size_t i = 0; i < pages; ++i) {
 					SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags | (driver ? 0 : VM_WRITE), VM_READ | VM_WRITE | VM_EXEC);
 				}
 
-				LogWriteSerial("about to write data to 0x%X (size 0x%X)\n", addr, size);
 				memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
-				LogWriteSerial("wrote the data...\n");
 
 				if (!driver && (flags & PF_W) == 0) {
 					for (size_t i = 0; i < pages; ++i) {

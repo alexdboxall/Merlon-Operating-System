@@ -55,4 +55,6 @@ lldiv_t lldiv(long long int numer, long long int denom);
 void* malloc(size_t size);
 void free(void* ptr);
 
+void _exit(int status);
+
 #endif

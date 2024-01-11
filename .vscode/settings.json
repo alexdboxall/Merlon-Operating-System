@@ -142,7 +142,8 @@
         "_syscallnum.h": "c",
         "diskutil.h": "c",
         "_stdckdint.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "stdio.h": "c"
     },
     "files.exclude": {
         "**/.git": true,
