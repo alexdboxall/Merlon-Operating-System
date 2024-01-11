@@ -223,7 +223,8 @@ static void UpdateTimesliceExpiry(void) {
 void ThreadExecuteInUsermode(void* arg) {
     struct thread* thr = GetThread();
 
-    int res = CopyProgramLoaderIntoAddressSpace();
+    size_t entry_point;
+    int res = LoadProgramLoaderIntoAddressSpace(&entry_point);
     if (res != 0) {
         LogDeveloperWarning("COULDN'T LOAD PROGRAM LOADER!\n");
         TerminateThread(thr);
@@ -236,7 +237,7 @@ void ThreadExecuteInUsermode(void* arg) {
     UnlockScheduler();
 
     ArchFlushTlb(GetVas());
-    ArchSwitchToUsermode(ARCH_PROG_LOADER_ENTRY, user_stack, arg);
+    ArchSwitchToUsermode(entry_point, user_stack, arg);
 }
 
 struct process* CreateUsermodeProcess(struct process* parent, const char* filename) {

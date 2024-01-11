@@ -54,7 +54,6 @@ static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int fla
 	if (vas != GetVas()) {
 		LogDeveloperWarning("NON-LOCAL VAS x86MapPage!!! THIS ISN'T GOING TO WORK AS-IS!\n");
 	}
-	LogWriteSerial("x86MapPage v 0x%X -> p 0x%X [0x%X]. vas 0x%X\n", virtual, physical, flags, vas);
 	*x86GetPageEntry(vas, virtual) = physical | flags;
 }
 

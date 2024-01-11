@@ -2,7 +2,7 @@ OUTPUT_FORMAT("elf32-i386")
 
 SECTIONS
 {
-	. = 0xD0000000;	
+	. = 0x0;	
 	
 	.text BLOCK(4096) : ALIGN(4096)
 	{

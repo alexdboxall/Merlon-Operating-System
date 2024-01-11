@@ -14,3 +14,6 @@ int SysClose(size_t, size_t, size_t, size_t, size_t);
 int SysSeek(size_t, size_t, size_t, size_t, size_t);
 int SysDup(size_t, size_t, size_t, size_t, size_t);
 int SysExit(size_t, size_t, size_t, size_t, size_t);
+int SysRemove(size_t, size_t, size_t, size_t, size_t);
+int SysMprotect(size_t, size_t, size_t, size_t, size_t);
+int SysPrepExec(size_t, size_t, size_t, size_t, size_t);

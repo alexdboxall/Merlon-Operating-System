@@ -274,6 +274,10 @@ char* strerror(int err)
 		return "No buffer space";
 	case EBUSY:
 		return "Resource busy or locked";
+	case ENOEXEC:
+		return "Invalid executable file";
+	case EUNRECOVERABLE:
+		return "Non returning operation has failed past point of no return";
 	default:
 		return "Unknown error";
 	}

@@ -6,5 +6,5 @@
 
 int SysExit(size_t status, size_t, size_t, size_t, size_t) {
 	KillProcess(status);
-	return EFAULT;
+	return EUNRECOVERABLE;
 }

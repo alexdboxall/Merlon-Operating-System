@@ -136,7 +136,10 @@
         "forward_list": "c",
         "scoped_allocator": "c",
         "sched.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "debug.h": "c",
+        "krnlapi.h": "c",
+        "_syscallnum.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

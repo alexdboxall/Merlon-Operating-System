@@ -284,7 +284,7 @@ void InitIde(void) {
             .disk_num = i, .sector_size = 512, .busmaster_base = 0x0000,
             .primary_base   = 0x1F0, .primary_alternative   = 0x3F6,
             .secondary_base = 0x170, .secondary_alternative = 0x376,
-            .transfer_buffer = (uint16_t*) MapVirt(0, 0, MAX_TRANSFER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+            .transfer_buffer = (uint16_t*) MapVirt(0, 0, MAX_TRANSFER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
         };
 
         ide->total_num_sectors = IdeGetNumSectors(ide);
@@ -296,10 +296,10 @@ void InitIde(void) {
             .st_blocks = ide->total_num_sectors,
             .st_size = ide->total_num_sectors * ide->sector_size,
         });
+        node->data = ide;
 
         InitDiskPartitionHelper(&ide->partitions);
 
-        node->data = ide;
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FIXED));
         CreateDiskPartitions(CreateDiskCache(CreateOpenFile(node, 0, 0, true, true)));
     }

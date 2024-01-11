@@ -17,6 +17,9 @@
 #define VM_RECURSIVE    512     /* assumes the VAS is already locked, so won't lock or unlock it */
 #define VM_RELOCATABLE  1024    /* needs driver fixups whenever swapped back in*/
 #define VM_EVICT_FIRST  2048
+#define VM_SHARED       4096    /* fork() will cause the memory to be shared */
+
+#define VMUN_ALLOW_NON_EXIST    1
 
 #define VAS_NO_ARCH_INIT    1
 
@@ -44,7 +47,8 @@ struct vas_entry {
     
     uint8_t times_swapped   : 4;
     uint8_t evict_first     : 1;
-    uint8_t                 : 3;
+    uint8_t share_on_fork   : 1;
+    uint8_t                 : 2;
 
     int num_pages;                      /* only used for non-allocated or hardware mapped to reduce the number of AVL entries */
 
@@ -68,11 +72,12 @@ void UnlockVirt(size_t virtual);
 bool LockVirtEx(struct vas* vas, size_t virtual);
 void UnlockVirtEx(struct vas* vas, size_t virtual);
 
-void SetVirtPermissions(size_t virtual, int set, int clear);
+int SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos);
+size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos, int* error);
 int UnmapVirt(size_t virtual, size_t bytes);
-int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages);
+int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags);
 size_t GetPhysFromVirt(size_t virtual);
 
 struct vas* GetKernelVas(void);     // a kernel vas

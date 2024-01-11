@@ -4,6 +4,7 @@
 #include <panic.h>
 #include <virtual.h>
 #include <arch.h>
+#include <debug.h>
 #include <string.h>
 #include <spinlock.h>
 #include <heap.h>
@@ -705,5 +706,6 @@ void ReinitHeap(void) {
 
 void InitHeap(void) {
     InitSpinlock(&heap_spinlock, "heapspin", IRQL_SCHEDULER); 
-    InitSpinlock(&heap_locker_lock, "locker", IRQL_HIGH); 
+    InitSpinlock(&heap_locker_lock, "locker", IRQL_HIGH);
+    MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 }

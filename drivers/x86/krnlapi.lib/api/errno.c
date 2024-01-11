@@ -1,5 +1,5 @@
 
-static int _real_errno;
+__thread int _real_errno;
 
 /*
  * TODO: make this per-thread.

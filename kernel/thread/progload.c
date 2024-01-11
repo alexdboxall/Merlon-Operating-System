@@ -20,20 +20,17 @@ static off_t program_loader_size;
 
 void InitProgramLoader(void) {
     struct open_file* file;
-    if (OpenFile("sys:/progload.exe", O_RDONLY, 0, &file)) {
-        PanicEx(PANIC_PROGRAM_LOADER, "program loader couldn't be loaded");
+    if (OpenFile("sys:/krnlapi.lib", O_RDONLY, 0, &file)) {
+        PanicEx(PANIC_PROGRAM_LOADER, "krnlapi.lib couldn't be loaded");
     }
 
     program_loader_size = file->node->stat.st_size;
     program_loader_addr = MapVirt(0, 0, program_loader_size, VM_READ | VM_FILE, file, 0);
+    CloseFile(file);
 }
 
-int CopyProgramLoaderIntoAddressSpace(void) {
-    size_t mem = MapVirt(0, ARCH_PROG_LOADER_BASE, program_loader_size, VM_READ | VM_EXEC | VM_WRITE | VM_USER | VM_LOCAL | VM_FIXED_VIRT, NULL, 0);
-    if (mem != ARCH_PROG_LOADER_BASE) {
-        return ENOMEM;
-    }
-
-    memcpy((void*) ARCH_PROG_LOADER_BASE, (void*) program_loader_addr, program_loader_size);
-    return 0;
+int LoadProgramLoaderIntoAddressSpace(size_t* entry_point) {
+    int res = ArchLoadProgramLoader((void*) program_loader_addr, entry_point);
+    LogWriteSerial("loading the program loader returned %d\n", res);
+    return res;
 }

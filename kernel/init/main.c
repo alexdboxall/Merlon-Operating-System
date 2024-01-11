@@ -34,12 +34,17 @@
  *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, pause, rmtree, rmdir, cls, copytree, link, 
  *                  ...ttyname, sleep, exit
  *          port zlib, nasm
+ * 
+ * 
+ * 
  * - floppy driver
  * - FAT32 driver
  * - floating point support (init and task switching)
  * - disk caching
  * - shutdown needs to close the entire VFS tree (e.g. so buffers can be flushed, etc).
- * - recycling vnodes if opening same file more than once
+ * - recycling vnodes if opening same file more than once (required by st_nlink)
+ *      -> probably a VFS-wide solution that uses AVL trees to cache the results of follow?
+ *      -> obviously need a way for FS drivers to keep it in sync, e.g. on deletion, ioctl, etc.
  * - initrd and boot system
  * - more syscalls
  * - document exactly what conditions need to be checked in the vnode_ops layer, and which ones are taken care of by
@@ -109,7 +114,7 @@
 void InitUserspace(void) {
     size_t free = GetFreePhysKilobytes();
     size_t total = GetTotalPhysKilobytes();
-    DbgScreenPrintf("NOS Kernel\nCopyright Alex Boxall 2022-2023\n\n%d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
+    DbgScreenPrintf("NOS Kernel\nCopyright Alex Boxall 2022-2024\n\n%d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
     CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
 }
 
@@ -186,50 +191,21 @@ static void InitSerialDebugging(void) {
 
 void KernelMain(void) {
     InitSerialDebugging();
-
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
-    /*
-     * Allows us to call GetCpu(), which allows IRQL code to work. Anything which uses
-     * IRQL (i.e. the whole system) relies on this, so this must be done first.
-     */
     InitCpuTable();
-    assert(GetIrql() == IRQL_STANDARD);
-
-    /*
-     * Initialise the testing framework if we're in debug mode.
-     */
     InitTfw();
-    MarkTfwStartPoint(TFW_SP_INITIAL);
-
     InitPhys();
-    MarkTfwStartPoint(TFW_SP_AFTER_PHYS);
-
-    /*
-     * Allows deferments of functions to actually happen. IRQL is still usable beforehand though.
-     */
     InitIrql();
     InitVfs();
     InitTimer();
     InitScheduler();
     InitDiskUtil();
-
     InitHeap();
-    MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
-
     InitBootstrapCpu();
-    MarkTfwStartPoint(TFW_SP_AFTER_BOOTSTRAP_CPU);
-
     InitVirt();
-    MarkTfwStartPoint(TFW_SP_AFTER_VIRT);
-
     ReinitPhys();
-    MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
-
     InitOtherCpu();
-    MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
-
-
     CreateThreadEx(InitThread, NULL, GetVas(), "init", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0);
     StartMultitasking();
 }

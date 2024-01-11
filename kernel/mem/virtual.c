@@ -1,14 +1,12 @@
 
-/**
- * mem/virtual.c - Virtual Memory Manager
- */
-
 #include <virtual.h>
 #include <avl.h>
+#include <debug.h>
 #include <heap.h>
 #include <common.h>
 #include <arch.h>
 #include <physical.h>
+#include <dirent.h>
 #include <assert.h>
 #include <panic.h>
 #include <string.h>
@@ -631,6 +629,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->exec = (flags & VM_EXEC) ? 1 : 0;
     entry->file = (flags & VM_FILE) ? 1 : 0;
     entry->user = (flags & VM_USER) ? 1 : 0;
+    entry->share_on_fork = (flags & VM_SHARED) ? 1 : 0;
     entry->evict_first = (flags & VM_EVICT_FIRST) ? 1 : 0;
     entry->relocatable = (flags & VM_RELOCATABLE) ? 1 : 0;
     entry->allow_temp_write = false;
@@ -693,7 +692,6 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
      * in separate loops to prevent the need to acquire both spinlocks at once, which could lead
      * to a deadlock.
      */
-
     AcquireSpinlockIrql(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
         if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
@@ -800,42 +798,72 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
  * 
  * @maxirql IRQL_SCHEDULER
  */
-static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos) {
+size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos, int* error) {
     MAX_IRQL(IRQL_SCHEDULER);
+
+    *error = 0;
 
     /*
      * We only specify a physical page when we need to map hardware directly (i.e. it's not
      * part of the available RAM the physical memory manager can give).
      */
     if (physical != 0 && (flags & (VM_MAP_HARDWARE | VM_RELOCATABLE)) == 0) {
+        *error = EINVAL;
         return 0;
     }
 
     if ((flags & VM_MAP_HARDWARE) && (flags & VM_FILE)) {
+        *error = EINVAL;
         return 0;
     }
 
     if ((flags & VM_MAP_HARDWARE) && (flags & VM_LOCK) == 0) {
+        *error = EINVAL;
         return 0;
     }
 
     if ((flags & VM_FILE) && file == NULL) {
+        *error = EBADF;
         return 0;
     }
     
     if ((flags & VM_FILE) == 0 && (file != NULL || pos != 0)) {
+        *error = EINVAL;
         return 0;
     }
 
     if ((flags & VM_RELOCATABLE) && (flags & VM_FILE) == 0) {
+        *error = EINVAL;
         return 0;
     }
 
     if ((flags & VM_RELOCATABLE) && physical == 0) {
+        *error = EINVAL;
         return 0;
     }
 
     if ((flags & VM_FILE) && (flags & VM_LOCK)) {
+        *error = EINVAL;
+        return 0;
+    }
+
+    if ((flags & VM_LOCK) && (flags & VM_SHARED)) {
+        *error = EINVAL;
+        return 0;
+    }
+
+    if ((flags & VM_FILE) && !(IFTODT(file->node->stat.st_mode) == DT_REG || IFTODT(file->node->stat.st_mode) == DT_BLK)) {
+        *error = EACCES;
+        return 0;
+    }
+    
+    if ((flags & VM_FILE) && !file->can_read) {
+        *error = EACCES;
+        return 0;
+    }
+
+    if ((flags & VM_FILE) && !file->can_write && (flags & VM_WRITE)) {
+        *error = EACCES;
         return 0;
     }
 
@@ -849,6 +877,7 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
         // TODO: need to lock here to make the israngeinuse and allocvirtrange to be atomic
         if (IsRangeInUse(vas, virtual, pages)) {
             if (flags & VM_FIXED_VIRT) {
+                *error = EEXIST;
                 return 0;
             }
 
@@ -890,7 +919,10 @@ static size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t
  * Creates a virtual memory mapping in the current virtual address space.
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
-    return MapVirtEx(GetVas(), physical, virtual, BytesToPages(bytes), flags, file, pos);
+    int error;
+    size_t mem = MapVirtEx(GetVas(), physical, virtual, BytesToPages(bytes), flags, file, pos, &error);
+    (void) error;
+    return mem;
 }
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
@@ -1150,13 +1182,12 @@ void UnlockVirt(size_t virtual) {
     ReleaseSpinlockIrql(&vas->lock);
 }
 
-void SetVirtPermissions(size_t virtual, int set, int clear) {
+int SetVirtPermissions(size_t virtual, int set, int clear) {
     /*
      * Only allow these flags to be set / cleared.
      */
     if ((set | clear) & ~(VM_READ | VM_WRITE | VM_EXEC | VM_USER)) {
-        assert(false);
-        return;
+        return EINVAL;
     }
     
     struct vas* vas = GetVas();
@@ -1164,7 +1195,13 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
 
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
     if (entry == NULL) {
-        PanicEx(PANIC_ASSERTION_FAILURE, "[SetVirtPermissions] got null back for virt entry");
+        ReleaseSpinlockIrql(&vas->lock);
+        return ENOMEM;
+    }
+
+    if (entry->file && !entry->file_node->can_write && (set & VM_WRITE) && !entry->relocatable) {
+        ReleaseSpinlockIrql(&vas->lock);
+        return EACCES;
     }
         
     SplitLargePageEntryIntoMultiple(vas, virtual, entry, 1);
@@ -1178,6 +1215,7 @@ void SetVirtPermissions(size_t virtual, int set, int clear) {
     ArchFlushTlb(vas);
 
     ReleaseSpinlockIrql(&vas->lock);
+    return 0;
 }
 
 int GetVirtPermissions(size_t virtual) {
@@ -1204,13 +1242,17 @@ int GetVirtPermissions(size_t virtual) {
     return permissions;
 }
 
-int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
+int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags) {
     bool needs_tlb_flush = false;
 
     for (size_t i = 0; i < pages; ++i) {
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
         if (entry == NULL) {
-            return EINVAL;
+            if (flags & VMUN_ALLOW_NON_EXIST) {
+                continue;
+            } else {
+                return EINVAL;
+            }
         }
         
         SplitLargePageEntryIntoMultiple(vas, virtual, entry, 1);        // TODO: multi-pages
@@ -1252,7 +1294,7 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages) {
 int UnmapVirt(size_t virtual, size_t bytes) {
     struct vas* vas = GetVas();
     AcquireSpinlockIrql(&vas->lock);
-    int res = UnmapVirtEx(vas, virtual, BytesToPages(bytes));
+    int res = UnmapVirtEx(vas, virtual, BytesToPages(bytes), 0);
     ReleaseSpinlockIrql(&vas->lock);
     return res;
 }
@@ -1273,6 +1315,7 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
         * is locked.
         */
         assert(entry->in_ram);
+        assert(!entry->share_on_fork);
 
         if (entry->allocated) {
             /*
@@ -1316,7 +1359,9 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
         * to it. The final process to release memory will ultimately 'win' and have its changes
         * perserved to disk (the others will get overwritten).
         */
-        entry->cow = true;
+        if (!entry->share_on_fork) {
+            entry->cow = true;
+        }
         entry->ref_count++;
 
         // again, no need to add to global - it's already there!
@@ -1366,6 +1411,8 @@ void InitVirt(void) {
 
     kernel_vas = GetVas();
     virt_initialised = true;
+    
+    MarkTfwStartPoint(TFW_SP_AFTER_VIRT);
 }
 
 

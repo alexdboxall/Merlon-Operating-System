@@ -3,6 +3,7 @@
 #include <physical.h>
 #include <diskcache.h>
 #include <common.h>
+#include <debug.h>
 #include <spinlock.h>
 #include <assert.h>
 #include <string.h>
@@ -308,6 +309,8 @@ void InitPhys(void) {
 			}
 		}
 	}
+
+    MarkTfwStartPoint(TFW_SP_AFTER_PHYS);
 }
 
 static void ReclaimBitmapSpace(void) {
@@ -328,7 +331,7 @@ static void ReclaimBitmapSpace(void) {
      */
     size_t unreachable_region = ((end_bitmap - ARCH_PAGE_SIZE * unreachable_bitmap_pages)) & ~(ARCH_PAGE_SIZE - 1);
 
-    while (num_unreachable_bitmap_pages--) {
+    while (unreachable_bitmap_pages--) {
         DeallocPhys(ArchVirtualToPhysical(unreachable_region));
         unreachable_region += ARCH_PAGE_SIZE;
         ++total_pages;
@@ -353,6 +356,7 @@ void ReinitPhys(void) {
     }
 
     ReclaimBitmapSpace();
+    MarkTfwStartPoint(TFW_SP_AFTER_PHYS_REINIT);
 }
 
 size_t GetTotalPhysKilobytes(void) {

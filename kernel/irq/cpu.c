@@ -4,6 +4,7 @@
 #include <heap.h>
 #include <string.h>
 #include <spinlock.h>
+#include <debug.h>
 #include <irql.h>
 
 static struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
@@ -42,6 +43,7 @@ void InitCpuTable(void) {
 void InitBootstrapCpu(void) {
     EXACT_IRQL(IRQL_STANDARD);
     ArchInitBootstrapCpu(cpu_table);
+    MarkTfwStartPoint(TFW_SP_AFTER_BOOTSTRAP_CPU);
 }
 
 void InitOtherCpu(void) {
@@ -55,6 +57,8 @@ void InitOtherCpu(void) {
         ++num_cpus_running;
         InitCpuTableEntry(num_cpus_running);
     }
+
+    MarkTfwStartPoint(TFW_SP_AFTER_ALL_CPU);
 }
 
 int GetCpuCount(void) {

@@ -40,6 +40,8 @@
 #define ETIMEDOUT       28          // Operation timed out
 #define ENOBUFS         29          // No buffer space
 #define EBUSY			30			// Busy
+#define ENOEXEC			31			// Not an executable file
+#define EUNRECOVERABLE	32			// Non returning operation has failed past point of no return
 
 #ifndef COMPILE_KERNEL
 

@@ -85,7 +85,6 @@ retry:
 	* this range. We can't handle any more than 4GB, so just make it a 4GB range.
 	*/
 	size_t type = memory_table->type;
-	LogWriteSerial("At 0x%X, we have type %d\n", memory_table->addr_low, type);
 	range.start = memory_table->addr_low;
 	range.length = memory_table->len_high ? 0xFFFFFFFFU : memory_table->len_low;
 	++memory_table;
@@ -133,6 +132,5 @@ retry:
 		goto retry;
 	}
 	
-	LogWriteSerial("Allowing range: 0x%X -> 0x%X to be used\n", range.start, range.start + range.length - 1);
 	return &range;
 }

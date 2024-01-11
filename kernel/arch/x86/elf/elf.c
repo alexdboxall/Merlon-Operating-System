@@ -29,7 +29,6 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
-    size_t base_point = 0xD0000000U;
     size_t total_size = 0;
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
@@ -41,8 +40,8 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data) {
 		size_t type = prog_header->p_type;
 
 		if (type == PHT_LOAD) {
-            if (address - base_point + size + num_zero_bytes >= total_size) {
-                total_size = address - base_point + size + num_zero_bytes;
+            if (address + size + num_zero_bytes >= total_size) {
+                total_size = address + size + num_zero_bytes;
             }
 		}
     }
@@ -53,8 +52,6 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data) {
 static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct open_file* file) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
-
-    size_t base_point = 0xD0000000U;
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
         struct Elf32_Phdr* prog_header = prog_headers + i;
@@ -67,7 +64,7 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct ope
 		size_t num_zero_bytes = prog_header->p_memsz - size;
 
 		if (type == PHT_LOAD) {
-			size_t addr = address + relocation_point - base_point;
+			size_t addr = address + relocation_point;
 			size_t remainder = size & (ARCH_PAGE_SIZE - 1);
 
 			int page_flags = 0;
@@ -95,7 +92,6 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct ope
 					return EINVAL;
 				}
 				if (pages > 0) {
-					LogWriteSerial("doing the little fiddly thing...\n");
 					UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
 					size_t v = MapVirt(relocation_point, addr, pages * ARCH_PAGE_SIZE, VM_RELOCATABLE | VM_FILE | page_flags, file, offset);
 					if (v != addr) {
@@ -132,7 +128,7 @@ static char* ElfLookupString(void* data, int offset) {
 	return string_table + offset;
 }
 
-static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error, size_t relocation_point, size_t base_address) {
+static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error, size_t relocation_point) {
     *error = false;
 
 	if (table == SHN_UNDEF || index == SHN_UNDEF) {
@@ -171,20 +167,19 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 		return symbol->st_value;
 
 	} else {
-		return symbol->st_value + (relocation_point - base_address);
+		return symbol->st_value + relocation_point;
 	}
 }
 
 static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, struct quick_relocation_table* table)
 {
-	size_t base_address = 0xD0000000U;
-	size_t addr = (size_t) relocation_point - base_address + relocation_table->r_offset;
+	size_t addr = (size_t) relocation_point + relocation_table->r_offset;
 	size_t* ref = (size_t*) addr;
 
 	int symbolValue = 0;
 	if (ELF32_R_SYM(relocation_table->r_info) != SHN_UNDEF) {
 		bool error = false;
-		symbolValue = ElfGetSymbolValue(data, section->sh_link, ELF32_R_SYM(relocation_table->r_info), &error, relocation_point, base_address);
+		symbolValue = ElfGetSymbolValue(data, section->sh_link, ELF32_R_SYM(relocation_table->r_info), &error, relocation_point);
 		if (error) {
 			return false;
 		}
@@ -211,7 +206,7 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 		val = DO_386_PC32(symbolValue, *ref, addr);
 
 	} else if (type == R_386_RELATIVE) {
-		val = DO_386_RELATIVE((relocation_point - base_address), *ref);
+		val = DO_386_RELATIVE(relocation_point, *ref);
 
 	} else {
 		LogWriteSerial("some whacko type...\n");
@@ -219,7 +214,6 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	}
 
 	*ref = val;
-	LogWriteSerial("relocating 0x%X -> 0x%X\n", addr, val);
 	AddToQuickRelocationTable(table, addr, val);
 	
 	if (needs_write_low) {
@@ -327,7 +321,7 @@ int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quic
 		if (!strcmp(sh_name, ".lockedtext") || !strcmp(sh_name, ".lockeddata")) {
 			// it's okay to lock extra memory - it wouldn't be ok if we did it the other way around though
 			// (assumed everything was locked, and only unlocked parts of it)
-			size_t start_addr = (sect_headers[i].sh_addr - 0xD0000000U + *relocation_point) & ~(ARCH_PAGE_SIZE - 1);
+			size_t start_addr = (sect_headers[i].sh_addr + *relocation_point) & ~(ARCH_PAGE_SIZE - 1);
 			size_t num_pages = (sect_headers[i].sh_size + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
 			while (num_pages--) {
 				LockVirt(start_addr);
@@ -406,4 +400,38 @@ void ArchLoadSymbols(struct open_file* file, size_t adjust) {
     }
 
 	UnmapVirt(mem, size);
+}
+
+int ArchLoadProgramLoader(void* data, size_t* entry_point) {
+    struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
+	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
+
+    for (int i = 0; i < elf_header->e_phnum; ++i) {
+        struct Elf32_Phdr* prog_header = prog_headers + i;
+
+        size_t address = prog_header->p_vaddr;
+		size_t offset = prog_header->p_offset;
+		size_t size = prog_header->p_filesz;
+		size_t type = prog_header->p_type;
+		uint32_t flags = prog_header->p_flags;
+		size_t num_zero_bytes = prog_header->p_memsz - size;
+
+		if (type == PHT_LOAD) {
+			int page_flags = VM_FIXED_VIRT | VM_LOCAL | VM_WRITE | VM_USER;
+			if (flags & PF_X) page_flags |= VM_EXEC;
+			if (flags & PF_R) page_flags |= VM_READ;
+
+			size_t addr = MapVirt(0, address, size + num_zero_bytes, page_flags, NULL, 0);
+			if (addr != address) {
+				return ENOMEM;
+			}
+			memcpy((void*) address, (const void*) AddVoidPtr(data, offset), size);
+			if ((flags & PF_W) == 0) {
+				SetVirtPermissions(address, 0, VM_WRITE);
+			}
+		}
+    }
+
+	*entry_point = elf_header->e_entry;
+	return 0;
 }

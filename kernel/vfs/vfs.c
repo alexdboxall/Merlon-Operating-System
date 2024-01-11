@@ -100,21 +100,6 @@ static int DoesMountPointExist(const char* name) {
 */
 static int GetPathComponent(const char* path, int* ptr, char* output_buffer, int max_output_length, char delimiter) {
 	int i = 0;
-	
-	assert(path != NULL);
-	assert(ptr != NULL);
-	assert(max_output_length >= 1);
-	assert(delimiter != 0);
-	assert(output_buffer != NULL);
-	assert(strlen(path) >= 1);
-	assert(*ptr >= 0 && *ptr < (int) strlen(path));
-
-	/*
-	* These were meant to be caught at a higher level, so we can apply the current
-	* working directory or the current drive.
-	*/
-	assert(path[0] != '/');
-	assert(path[0] != ':');
 
 	output_buffer[0] = 0;
 
@@ -123,9 +108,6 @@ static int GetPathComponent(const char* path, int* ptr, char* output_buffer, int
 			return ENAMETOOLONG;
 		}
 
-		/*
-		* Ensure we always have a null terminated string.
-		*/
 		output_buffer[i++] = path[*ptr];
 		output_buffer[i] = 0;
 		(*ptr)++;
@@ -133,8 +115,8 @@ static int GetPathComponent(const char* path, int* ptr, char* output_buffer, int
 
 	/*
 	* Skip past the delimiter (unless we are at the end of the string),
-	* as well as any trailing slashes (which could be after a slash delimiter, or
-	* after a colon). 
+	* as well as any trailing slashes (which could be after a slash delimiter, 
+	* or after a colon). 
 	*/
 	if (path[*ptr]) {
 		do {
@@ -183,8 +165,8 @@ static struct open_file* GetMountFromName(const char* name) {
     return mount->node;
 }
 
-int PAGEABLE_CODE_SECTION AddVfsMount(struct vnode* node, const char* name) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+int AddVfsMount(struct vnode* node, const char* name) {
+    EXACT_IRQL(IRQL_STANDARD);   
 
     if (name == NULL || node == NULL) {
 		return EINVAL;
@@ -218,7 +200,7 @@ int PAGEABLE_CODE_SECTION AddVfsMount(struct vnode* node, const char* name) {
     return 0;
 }
 
-int PAGEABLE_CODE_SECTION RemoveVfsMount(const char* name) {
+int RemoveVfsMount(const char* name) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
 
     if (name == NULL) {
@@ -261,10 +243,6 @@ int PAGEABLE_CODE_SECTION RemoveVfsMount(const char* name) {
 }
 
 static void CleanupVnodeStack(struct stack_adt* stack) {
-	/*
-	* We need to call dereference on each vnode in the stack before we
-	* can call StackAdtDestroy.
-	*/
 	while (StackAdtSize(stack) > 0) {
 		struct vnode* node = StackAdtPop(stack);
 		DereferenceVnode(node);
@@ -450,7 +428,7 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 	struct vnode* node;
 
     /*
-    * Lookup a (hopefully) existing file.
+    * Check if there is an existing file here.
     */
     status = GetVnodeFromPath(path, &node, false);
 

@@ -12,7 +12,7 @@
 int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t virtual_) {
 	size_t* userptr_virt = (size_t*) virtual_;
 
-	if (flags & ~(VM_READ | VM_WRITE | VM_EXEC | VM_FILE | VM_FIXED_VIRT)) {
+	if (flags & ~(VM_READ | VM_WRITE | VM_EXEC | VM_FILE | VM_FIXED_VIRT | VM_SHARED)) {
 		return EINVAL;
 	}
 
@@ -41,9 +41,11 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t virt
 		}
 	}
 
-	size_t output_virtual = MapVirt(0, target_virtual, bytes, flags | VM_USER | VM_LOCAL, file, offset);
+	int error;
+	size_t output_virtual = MapVirtEx(GetVas(), 0, target_virtual, BytesToPages(bytes), flags | VM_USER | VM_LOCAL, file, offset, &error);
+
 	if (output_virtual == 0) {
-		return EINVAL;
+		return error;
 	}
 
 	return WriteWordToUsermode(userptr_virt, output_virtual);

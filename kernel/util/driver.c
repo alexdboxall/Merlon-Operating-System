@@ -187,7 +187,7 @@ static int LoadDriver(const char* name) {
     assert(drv->quick_relocation_table != NULL);
 
     AvlTreeInsert(loaded_drivers, drv);
-    ArchLoadSymbols(file, drv->relocation_point - 0xD0000000); // TODO: @@@ GET RID OF ARCH SPECIFIC DETAILS (0xD0000000)
+    ArchLoadSymbols(file, drv->relocation_point); // TODO: @@@ GET RID OF ARCH SPECIFIC DETAILS (0xD0000000)
     return 0;
 }
 
@@ -255,7 +255,6 @@ static int BinarySearchComparator(const void* a_, const void* b_) {
 static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t virtual) {
     struct quick_relocation target;
     target.address = virtual;
-    LogWriteSerial("ApplyRelocationsToPage: looking for 0x%X\n", virtual);
 
     struct quick_relocation* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct quick_relocation), BinarySearchComparator);
     if (entry == NULL) {
@@ -337,12 +336,10 @@ static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t 
 }
 
 void PerformDriverRelocationOnPage(struct vas*, size_t relocation_base, size_t virt) {
-    LogWriteSerial("PerformDriverRelocationOnPage A\n");
     struct loaded_driver* drv = GetDriverFromAddress(relocation_base);
     if (drv == NULL) {
         PanicEx(PANIC_ASSERTION_FAILURE, "PerformDriverRelocationOnPage");
     }
-    LogWriteSerial("PerformDriverRelocationOnPage B. driver at 0x%X\n", drv);
 
     ApplyRelocationsToPage(drv->quick_relocation_table, virt);
 }

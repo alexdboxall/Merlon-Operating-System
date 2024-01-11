@@ -190,6 +190,7 @@ void InitTfw(void) {
     ReadAck();
     GetHostState();
     test_state.test_results[test_state.test_num] = RESULT_NOT_STARTED;
+    MarkTfwStartPoint(TFW_SP_INITIAL);
 }
 
 #endif

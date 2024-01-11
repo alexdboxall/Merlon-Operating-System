@@ -9,7 +9,7 @@ global x86AreCpusOn
 global ArchGetCurrentCpuIndex
 
 ArchGetCurrentCpuIndex:
-        ; Needs to be something that can't be modified by user code (e.g. a debug register).
+    ; Needs to be something that can't be modified by user code (e.g. a debug register).
 	mov eax, dr3
 	ret
 
