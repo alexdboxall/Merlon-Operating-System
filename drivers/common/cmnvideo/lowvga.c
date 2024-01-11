@@ -36,6 +36,18 @@ const uint32_t vga_palette_256[256] = {
     0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000
 };
 
+bool IsExactVgaMatch(uint32_t colour, bool palette256) {
+    /*
+     * Last 16 entries are all black, so can skip that and stop at 16.
+     */
+    for (int i = 0; i < (palette256 ? 248 : 16); ++i) {
+        if (colour == vga_palette_256[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static int CalculateClosestVga16Colour(uint32_t col) {
     int best_i = 0;
     int lowest_distance = -1;
@@ -53,7 +65,7 @@ static int CalculateClosestVga16Colour(uint32_t col) {
 static int CalculateClosestVga256Colour(uint32_t col) {
     int best_i = 0;
     int lowest_distance = -1;
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < 248; ++i) {
         int dist = GetApproxDistanceBetweenColours(col, vga_palette_256[i]);
         if (dist < lowest_distance || lowest_distance == -1) {
             best_i = i;
@@ -64,7 +76,7 @@ static int CalculateClosestVga256Colour(uint32_t col) {
     return best_i;
 }
 
-static uint8_t palette_256_lookup[512];
+static uint8_t palette_256_lookup[4096] __attribute__((aligned(4096)));
 static uint8_t palette_16_lookup[512];
 static bool built_palette_lookups = false;
 
@@ -74,19 +86,25 @@ static void BuildPaletteLookups(void) {
         int g = ((i >> 3) & 7) * 32 + 16;
         int b = ((i >> 0) & 7) * 32 + 16;
         uint32_t col = (r << 16) | (g << 8) | b;
-        palette_256_lookup[i] = CalculateClosestVga256Colour(col);
         palette_16_lookup[i] = CalculateClosestVga16Colour(col);
+    }
+    for (int i = 0; i < 4096; ++i) {
+        int r = ((i >> 8) & 15) * 0x11;
+        int g = ((i >> 4) & 15) * 0x11;
+        int b = ((i >> 0) & 15) * 0x11;
+        uint32_t col = (r << 16) | (g << 8) | b;
+        palette_256_lookup[i] = CalculateClosestVga256Colour(col);
     }
 
     built_palette_lookups = true;
 }
 
-int Convert9BitToVga256(int ninebit) {
+int Convert12BitToVga256(int twelvebit) {
     if (!built_palette_lookups) {
         BuildPaletteLookups();
     }
 
-    return palette_256_lookup[ninebit];
+    return palette_256_lookup[twelvebit];
 }
 
 int Convert9BitToVga16(int ninebit) {

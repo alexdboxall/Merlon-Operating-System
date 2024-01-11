@@ -34,7 +34,7 @@ _Noreturn void AssertionFail(const char* file, const char* line, const char* con
 #define ___tostr(x) #x
 #define __tostr(x) ___tostr(x)
 
-struct FILE;
+#include <stdio.h>
 extern FILE* stderr;
 
 extern int fprintf(FILE* restrict stream, const char* restrict format, ...);

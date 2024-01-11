@@ -144,9 +144,7 @@ x86_grub_table dd 0
 KernelEntryPoint:    
     ; GRUB puts the address of a table in EBX, which we must use to find the
 	; memory table. Note that we haven't trashed EBX up until this point.
-
-    ; TODO: kernel assumes the table is below 4MB, and that it is paged in
-    ; (which atm is only the case when it is below 1MB).
+	
 	mov [x86_grub_table], ebx
 
     ; Grab the video data the bootloader put into memory.

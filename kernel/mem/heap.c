@@ -139,18 +139,7 @@ static void AddBlockToBackupHeap(size_t size) {
     emergency_blocks[index_of_smallest_block].address = address;
 }
 
-static void RestoreEmergencyPages(void* context) {
-    (void) context;
-
-    EXACT_IRQL(IRQL_STANDARD);
-
-    /*
-     * TODO: mabye make this greedier (i.e. grab larger blocks), but also have a way for the PMM to ask for larger
-     * blocks back if needed. would still need to retain enough stashed away for PMM/VMM to use the heap, and would
-     * need to unlock the pages, and ensure that allocations from emergency blocks are done via smallest-fit (so large
-     * blocks aren't wasted).
-     */
-
+static void RestoreEmergencyPages(void*) {
     size_t total_size = 0;
     size_t largest_block = 0;
     

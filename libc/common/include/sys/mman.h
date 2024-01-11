@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sys/stat.h>
+
 #define MAP_FAILED          ((void*) -1)
 
 /*

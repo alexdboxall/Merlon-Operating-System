@@ -17,7 +17,7 @@
 #include <fcntl.h>
 #include <irql.h>
 
-#define BGCOL 0x00AAAA  //0x0bb9db
+#define BGCOL 0x00BBCC //0x00AAAA
 
 /*
 * VESA Terminal and Video Driver for x86 Systems
@@ -359,8 +359,6 @@ void InitVesa(void) {
         panic_font[i + 16 * 11] = code_page_437[((int) 'A') * 16 + i];
     }
 
-    //auto HsvToRgb = (uint32_t (*)(int, int, int)) GetSymbolAddress("HsvToRgb");
-
     extern uint32_t vesa_framebuffer;
     extern uint16_t vesa_pitch;
     extern uint16_t vesa_height;
@@ -398,6 +396,7 @@ void InitVesa(void) {
     CreateThread(ShowRAMUsage, NULL, GetVas(), "ram usage");
 
     /*int LINES_PER_SECTION = 50;
+    auto HsvToRgb = (uint32_t (*)(int, int, int)) GetSymbolAddress("HsvToRgb");
 
     for (int y = 0; y < vesa_height; ++y) {
         for (int x = 0; x < vesa_width; ++x) {

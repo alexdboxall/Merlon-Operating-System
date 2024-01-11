@@ -48,10 +48,6 @@ struct vnode;
 #define VNODE_WAIT_WRITE            (1 << 1)
 #define VNODE_WAIT_ERROR            (1 << 2)
 
-// TODO: the 'stat' data should live within the vnode... and then the stat
-// call just returns it... file operations can then just adjust the stat struct
-// as needed (e.g. when changing a file size in write).
-
 struct vnode_operations {
     int (*check_open)(struct vnode* node, const char* name, int flags);
     int (*read)(struct vnode* node, struct transfer* io);

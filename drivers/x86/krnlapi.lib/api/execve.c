@@ -102,7 +102,7 @@ static int load_program_headers(void* data, int fd) {
 }
 
 static void loltest(void) {
-    dbgprintf("<UNKNOWN SYMBOL>.\n");
+    dbgprintf("<UNKNOWN KRNLAPI.LIB SYMBOL>.\n");
     while (true) {
         ;
     }
@@ -127,6 +127,7 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "write")) return (size_t) write;
     if (!xstrcmp(name, "unlink")) return (size_t) unlink;
     if (!xstrcmp(name, "rmdir")) return (size_t) rmdir;
+    if (!xstrcmp(name, "isatty")) return (size_t) isatty;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
     return (size_t) loltest;
 }

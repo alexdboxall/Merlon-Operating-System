@@ -67,13 +67,23 @@ void GenericVideoPutrect(uint8_t* virtual_framebuffer, int pitch, int depth, int
     } else {
         uint8_t* start_pos = position + x;
 
-        for (int j = 0; j < h; ++j) {
-            position = start_pos;
-            start_pos += pitch;
-            for (int i = 0; i < w; ++i) {
-                uint32_t bayer = GetBayerAdjustedColour8(x + i, y + j, colour);
-                uint32_t mod_colour = ConvertToColourDepth(bayer, depth);
-                *position++ = mod_colour & 0xFF;
+        bool exact_match = IsExactVgaMatch(colour, depth == 8);
+
+        if (!exact_match) {
+            for (int j = 0; j < h; ++j) {
+                position = start_pos;
+                start_pos += pitch;
+                for (int i = 0; i < w; ++i) {
+                    uint32_t bayer = GetBayerAdjustedColour8(x + i, y + j, colour);
+                    uint32_t mod_colour = ConvertToColourDepth(bayer, depth);
+                    *position++ = mod_colour & 0xFF;
+                }
+            }
+        } else {
+            uint8_t mod_colour = ConvertToColourDepth(colour, depth);
+            for (int j = 0; j < h; ++j) {
+                memset(start_pos, mod_colour, w);
+                start_pos += pitch;
             }
         }
     }
@@ -100,9 +110,17 @@ void GenericVideoPutpixel(uint8_t* virtual_framebuffer, int pitch, int depth, in
         *position++ = (mod_colour >> 8) & 0xFF;
 
     } else {
+        bool exact_match = IsExactVgaMatch(colour, depth == 8);
         position += x;
-        uint32_t bayer_colour = GetBayerAdjustedColour8(x, y, colour);
-        uint32_t mod_colour = ConvertToColourDepth(bayer_colour, depth);
+
+        uint32_t mod_colour;
+        if (!exact_match) {
+            uint32_t bayer_colour = GetBayerAdjustedColour8(x, y, colour);
+            mod_colour = ConvertToColourDepth(bayer_colour, depth);
+
+        } else {
+            mod_colour = ConvertToColourDepth(colour, depth);
+        }
         *position++ = mod_colour & 0xFF;
     }
 }

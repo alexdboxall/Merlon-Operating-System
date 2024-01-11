@@ -188,7 +188,7 @@ static int LoadDriver(const char* name) {
     assert(drv->quick_relocation_table != NULL);
 
     AvlTreeInsert(loaded_drivers, drv);
-    ArchLoadSymbols(file, drv->relocation_point); // TODO: @@@ GET RID OF ARCH SPECIFIC DETAILS (0xD0000000)
+    ArchLoadSymbols(file, drv->relocation_point);
     return 0;
 }
 

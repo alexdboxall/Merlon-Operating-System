@@ -19,8 +19,8 @@
 
 #define MB_CUR_MAX ((size_t) 1)
 
-EXPORT_ int rand(void);
-EXPORT_ void srand(unsigned int seed);
+int rand(void);
+void srand(unsigned int seed);
 
 #ifdef COMPILE_KERNEL
 void qsort_pageable(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
@@ -52,9 +52,11 @@ long long int llabs(long long int j);
 div_t div(int numer, int denom);
 ldiv_t ldiv(long int numer, long int denom);
 lldiv_t lldiv(long long int numer, long long int denom);
-void* malloc(size_t size);
-void free(void* ptr);
 
 void _exit(int status);
+
+void* malloc(size_t size);
+void free(void* ptr);
+void* calloc(size_t num, size_t size);
 
 #endif

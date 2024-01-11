@@ -1316,10 +1316,6 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags) {
     bool needs_tlb_flush = false;
 
     for (size_t i = 0; i < pages; ++i) {
-        // TODO: there's surely better ways of doing this... e.g. iterating through the AVL tree,
-	    // deleting only the ones that are there
-        // probably could have an AvlGetSucc() function, so we can get the next one
-
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
         if (entry == NULL) {
             if (flags & VMUN_ALLOW_NON_EXIST) {

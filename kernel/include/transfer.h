@@ -15,8 +15,6 @@ enum transfer_direction {
 /*
 * A data structure for performing file read and write operations, potentially
 * between the kernel and the user.
-*
-* TODO: userspace handling
 */
 struct transfer {
     void* address;

@@ -43,6 +43,7 @@ static void start_envp(void) {
 void loader_main(void*) {
     char* filename = "sys:/demo.exe";
 
+    found_argvenvp(filename);
     // find all argvs, call found_argvenvp(...) on each
     start_envp();
     // find all envps, call found_argvenvp(...) on each

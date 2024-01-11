@@ -73,14 +73,18 @@ uint32_t ConvertToColourDepth(uint32_t colour, int bits) {
         return (nr << 10) | (ng << 5) | nb;
 
     } else {
-        uint32_t nr = r >> 5;
-        uint32_t ng = g >> 5;
-        uint32_t nb = b >> 5;
-
-        uint32_t ninebit = (nr << 6) | (ng << 3) | nb;
         if (bits == 8) {
-            return Convert9BitToVga256(ninebit);
+            uint32_t nr = r >> 4;
+            uint32_t ng = g >> 4;
+            uint32_t nb = b >> 4;
+            uint32_t twelvebit = (nr << 8) | (ng << 4) | nb;
+            return Convert12BitToVga256(twelvebit);
+
         } else if (bits == 4) {
+            uint32_t nr = r >> 5;
+            uint32_t ng = g >> 5;
+            uint32_t nb = b >> 5;
+            uint32_t ninebit = (nr << 6) | (ng << 3) | nb;
             return Convert9BitToVga16(ninebit);
         }
 
