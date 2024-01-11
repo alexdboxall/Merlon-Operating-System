@@ -63,6 +63,8 @@ struct thread {
 
     struct process* process;
 
+    bool signal_intr;
+
     /*
      * The system time at which this task's time has expired. If this is 0, then the task will not have a set time limit.
      * This value is set to GetSystemTimer() + TIMESLICE_LENGTH_MS when the task is scheduled in, and doesn't change until
@@ -72,6 +74,8 @@ struct thread {
 
     uint64_t sleep_expiry;
 };
+
+bool HasBeenSignalled();
 
 void Schedule(void);
 void LockSchedulerX(void);

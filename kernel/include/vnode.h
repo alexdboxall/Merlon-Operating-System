@@ -47,8 +47,6 @@ struct vnode;
 #define VNODE_WAIT_READ             (1 << 0)
 #define VNODE_WAIT_WRITE            (1 << 1)
 #define VNODE_WAIT_ERROR            (1 << 2)
-#define VNODE_WAIT_HAVE_TIMEOUT     (1 << 3)
-#define VNODE_WAIT_NON_BLOCK        (1 << 4)
 
 // TODO: the 'stat' data should live within the vnode... and then the stat
 // call just returns it... file operations can then just adjust the stat struct

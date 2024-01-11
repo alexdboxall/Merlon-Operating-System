@@ -42,6 +42,7 @@
 #define EBUSY			30			// Busy
 #define ENOEXEC			31			// Not an executable file
 #define EUNRECOVERABLE	32			// Non returning operation has failed past point of no return
+#define EINTR			33			// Interrupted by signal
 
 #ifndef COMPILE_KERNEL
 

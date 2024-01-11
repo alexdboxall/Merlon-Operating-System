@@ -3,7 +3,7 @@ OUTPUT_FORMAT("elf32-i386")
 
 SECTIONS
 {
-	. = 0x10000000;	
+	. = 0x10800000;	
 	
 	.text ALIGN(4096) : AT (ADDR (.text))
 	{

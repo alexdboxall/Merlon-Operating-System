@@ -514,7 +514,7 @@ static int FileAccess(struct open_file* file, struct transfer* io, bool write) {
     }
 	
 	if (file->flags & O_NONBLOCK) {
-		int block_status = VnodeOpWait(file->node, (write ? VNODE_WAIT_WRITE : VNODE_WAIT_READ) | VNODE_WAIT_NON_BLOCK, 0);
+		int block_status = VnodeOpWait(file->node, (write ? VNODE_WAIT_WRITE : VNODE_WAIT_READ), 0);
 		if (block_status != 0) {
 			return block_status;
 		}

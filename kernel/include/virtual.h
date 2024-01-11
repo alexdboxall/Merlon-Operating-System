@@ -78,7 +78,10 @@ size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct 
 size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos, int* error);
 int UnmapVirt(size_t virtual, size_t bytes);
 int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags);
+int WipeUsermodePages(void);
+
 size_t GetPhysFromVirt(size_t virtual);
+
 
 struct vas* GetKernelVas(void);     // a kernel vas
 struct vas* GetVas(void);           // current vas

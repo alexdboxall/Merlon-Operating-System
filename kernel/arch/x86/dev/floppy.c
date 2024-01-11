@@ -16,6 +16,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <irql.h>
+#include <thread.h>
+#include <errno.h>
 #include <diskutil.h>
 
 #define CYLINDER_SIZE (512 * 18 * 2)
@@ -96,12 +98,15 @@ static void FloppyMotor(struct floppy_data* flp, bool state) {
 
 static volatile bool floppy_got_irq = false;
 
-static int FloppyIrqWait(void) {
+static int FloppyIrqWait(bool allow_intr) {
     int timeout = 0;
     while (!floppy_got_irq) {
         SleepMilli(10);
         if (++timeout > 200) {
             return ETIMEDOUT;
+        }
+        if (allow_intr && HasBeenSignalled()) {
+            return EINTR;
         }
     }
 
@@ -145,7 +150,7 @@ static int FloppyCalibrate(struct floppy_data* flp) {
         FloppyWriteCommand(flp, CMD_RECALIBRATE);
         FloppyWriteCommand(flp, 0);
 
-        FloppyIrqWait();
+        FloppyIrqWait(false);
         FloppyCheckInterrupt(flp, &st0, &cyl);
 
         if (st0 & 0xC0) {
@@ -174,7 +179,7 @@ static int FloppyReset(struct floppy_data* flp) {
     outb(base + FLOPPY_DOR, 0x00);
     outb(base + FLOPPY_DOR, 0x0C);
 
-    FloppyIrqWait();
+    FloppyIrqWait(false);
 
     for (int i = 0; i < 4; ++i) {
         int st0, cyl;
@@ -206,7 +211,7 @@ static int FloppySeek(struct floppy_data* flp, int cylinder, int head) {
         FloppyWriteCommand(flp, head << 2);
         FloppyWriteCommand(flp, cylinder);
 
-        FloppyIrqWait();
+        FloppyIrqWait(false);
         FloppyCheckInterrupt(flp, &st0, &cyl);
 
         if (st0 & 0xC0) {
@@ -294,7 +299,7 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
         FloppyWriteCommand(flp, 0x1B);
         FloppyWriteCommand(flp, 0xFF);
 
-        FloppyIrqWait();
+        FloppyIrqWait(false);
 
         /*
         * Read back some status information, some of which is very mysterious.

@@ -10,7 +10,7 @@ void* mmap(void* addr, size_t length, int prot, int flags, int fd, off_t offset)
     if (prot & PROT_EXEC) os_flags |= VM_EXEC;
     if (prot & PROT_READ) os_flags |= VM_READ;
     if (prot & PROT_WRITE) os_flags |= VM_WRITE;    
-    if ((flags & MAP_ANONYMOUS) != 0) flags |= VM_FILE;
+    if ((flags & MAP_ANONYMOUS) == 0) os_flags |= VM_FILE;
     if (flags & MAP_SHARED) os_flags |= VM_SHARED;
 
     /*

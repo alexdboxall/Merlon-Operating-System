@@ -42,5 +42,8 @@ int HandleSystemCall(int call, size_t a, size_t b, size_t c, size_t d, size_t e)
 		return ENOSYS;
 	}
 
-	return system_call_table[call](a, b, c, d, e);
+	LogWriteSerial("System call: %s\n", syscall_names[call]);
+	int res = system_call_table[call](a, b, c, d, e);
+	LogWriteSerial(" ->>> %d\n", res);
+	return res;
 }

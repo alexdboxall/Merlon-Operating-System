@@ -6,30 +6,33 @@
 #include <process.h>
 #include <filedes.h>
 #include <virtual.h>
+#include <log.h>
 #include <_stdckdint.h>
 #include <sys/mman.h>
 
-int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t virtual_) {
-	size_t* userptr_virt = (size_t*) virtual_;
-
+int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t userptr_virt) {
 	if (flags & ~(VM_READ | VM_WRITE | VM_EXEC | VM_FILE | VM_FIXED_VIRT | VM_SHARED)) {
 		return EINVAL;
 	}
 
 	size_t target_virtual;
-	int res = ReadWordFromUsermode(userptr_virt, &target_virtual);
+	int res = ReadWordFromUsermode((size_t*) userptr_virt, &target_virtual);
 	if (res != 0) {
 		return res;
 	}
 
-	if (target_virtual < ARCH_USER_AREA_BASE) {
+	LogWriteSerial("SysMapVirt: f=0x%X, b=0x%X, fd=%d, off=0x%X, v=0x%X\n", flags, bytes, fd, offset, target_virtual);
+
+	if (target_virtual != 0 && target_virtual < ARCH_USER_AREA_BASE) {
+		LogWriteSerial("INVAL (3)\n");
 		return EINVAL;
 	}
 
 	size_t end_of_virtual;
 	bool overflow = ckd_add(&end_of_virtual, target_virtual, bytes);
 
-	if (overflow || (end_of_virtual >= ARCH_USER_AREA_LIMIT)) {
+	if (target_virtual != 0 && (overflow || (end_of_virtual >= ARCH_USER_AREA_LIMIT))) {
+		LogWriteSerial("INVAL (4)\n");
 		return EINVAL;
 	}
 
@@ -37,16 +40,19 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t virt
 	if (flags & VM_FILE) {
 		res = GetFileFromDescriptor(GetFileDescriptorTable(GetProcess()), fd, &file);
 		if (file == NULL || res != 0) {
+			LogWriteSerial("INVAL (5)\n");
 			return res;
 		}
 	}
 
+	LogWriteSerial("MapVirtEx ==> flags = %d, file = 0x%X\n", flags, file);
 	int error;
 	size_t output_virtual = MapVirtEx(GetVas(), 0, target_virtual, BytesToPages(bytes), flags | VM_USER | VM_LOCAL, file, offset, &error);
 
 	if (output_virtual == 0) {
+		LogWriteSerial("INVAL (6)\n");
 		return error;
 	}
 
-	return WriteWordToUsermode(userptr_virt, output_virtual);
+	return WriteWordToUsermode((size_t*) userptr_virt, output_virtual);
 }

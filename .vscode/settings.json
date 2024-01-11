@@ -139,7 +139,10 @@
         "config.h": "c",
         "debug.h": "c",
         "krnlapi.h": "c",
-        "_syscallnum.h": "c"
+        "_syscallnum.h": "c",
+        "diskutil.h": "c",
+        "_stdckdint.h": "c",
+        "stdarg.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

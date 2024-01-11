@@ -5,17 +5,16 @@
 #include <process.h>
 #include <virtual.h>
 #include <filedes.h>
+#include <log.h>
 
 int SysPrepExec(size_t, size_t, size_t, size_t, size_t) {
-	int res = HandleFileDescriptorsOnExec(GetFileDescriptorTable(GetProcess()));
-	if (res != 0) {
+	if (HandleFileDescriptorsOnExec(GetFileDescriptorTable(GetProcess()))) {
 		return EINVAL;
 	}
-
-	res = UnmapVirtEx(GetVas(), ARCH_USER_AREA_BASE, ARCH_USER_AREA_LIMIT - ARCH_USER_AREA_BASE, VMUN_ALLOW_NON_EXIST);
-	if (res != 0) {
+	if (WipeUsermodePages()) {
 		return EUNRECOVERABLE;
 	}
-
+	// TODO: we need to reset the allocator that gives us AllocVirtRange
+	// (we can just completely nuke it and make it seem like it was a clean boot).
 	return 0;
 }

@@ -34,25 +34,20 @@ int data_ptr = 0;
     data_ptr += xstrlen(data) + 1;
 }
 
-/*static*/ void start_envp(void) {
+static void start_envp(void) {
     argvenvp_arrays[array_ptr++] = 0;
     argvenvp_arrays[array_ptr] = 0;
     envp_start = argvenvp_arrays + array_ptr;
 }
 
 void loader_main(void*) {
-    char* str = "Hello world from KRNLAPI.LIB!\n";
-    int fd = open("con:", O_WRONLY, 0);
-    write(fd, str, xstrlen(str));
-    close(fd);
-
-    //char* filename = "sys:/demo.exe";
+    char* filename = "sys:/demo.exe";
 
     // find all argvs, call found_argvenvp(...) on each
-    //start_envp();
+    start_envp();
     // find all envps, call found_argvenvp(...) on each
 
-    //execve(filename, argvenvp_arrays, envp_start);
+    execve(filename, argvenvp_arrays, envp_start);
 
     while (true) {
         sched_yield();

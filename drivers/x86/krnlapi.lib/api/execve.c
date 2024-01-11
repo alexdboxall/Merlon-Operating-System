@@ -10,10 +10,20 @@
 #include <fcntl.h>
 #include <string.h>
 #include <voidptr.h>
+#include <sched.h>
 #include <virtual.h>
 #include <machine/elf.h>
 #include <machine/config.h>
 #include <sys/mman.h>
+
+struct dyn_data {
+    struct Elf32_Ehdr* elf_header;
+    struct Elf32_Shdr* reldyn;
+    struct Elf32_Shdr* reladyn;
+    struct Elf32_Shdr* dynsym;
+    struct Elf32_Shdr* dynstr;
+    size_t* got;
+};
 
 static bool is_elf_valid(struct Elf32_Ehdr* header) {
     if (header->e_ident[EI_MAG0] != ELFMAG0) return false;
@@ -21,6 +31,23 @@ static bool is_elf_valid(struct Elf32_Ehdr* header) {
     if (header->e_ident[EI_MAG2] != ELFMAG2) return false;
     if (header->e_ident[EI_MAG3] != ELFMAG3) return false;
     return true;
+}
+
+static char* elf_lookup_string(void* data, int offset) {
+    struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
+
+	if (elf_header->e_shstrndx == SHN_UNDEF) {
+		return NULL;
+	}
+
+	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr(data, elf_header->e_shoff);
+
+	char* string_table = (char*) AddVoidPtr(data, sect_headers[elf_header->e_shstrndx].sh_offset);
+	if (string_table == NULL) {
+		return NULL;
+	}
+
+	return string_table + offset;
 }
 
 static int load_program_headers(void* data, int fd) {
@@ -73,17 +100,70 @@ static int load_program_headers(void* data, int fd) {
 	return 0;
 }
 
-void debug_out(char* str) {
-    int fd = open("con:", O_WRONLY, 0);
-    write(fd, str, xstrlen(str));
-    close(fd);
+static void loltest(void) {
+    dbgprintf("<UNKNOWN SYMBOL>.\n");
+    while (true) {
+        ;
+    }
 }
 
-static int dyn_fixups(void* data) {
+extern void dyn_fixup_asm(void);
+
+size_t resolve_address(char* name) {
+    if (!xstrcmp(name, "open")) return (size_t) open;
+    if (!xstrcmp(name, "write")) return (size_t) write;
+    if (!xstrcmp(name, "close")) return (size_t) close;
+    if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
+
+    return (size_t) loltest;
+}
+
+size_t dyn_fixup(struct dyn_data* link_info, size_t index) {
+    struct Elf32_Rel* relocation_table = (struct Elf32_Rel*) link_info->reldyn->sh_addr;
+    struct Elf32_Rel relocation_entry = relocation_table[index / sizeof(struct Elf32_Rel)];
+    struct Elf32_Sym* symbol_table = (struct Elf32_Sym*) link_info->dynsym->sh_addr;
+    struct Elf32_Sym symbol = symbol_table[relocation_entry.r_info >> 8];
+    char* string_table = (char*) link_info->dynstr->sh_addr;
+    char* name = string_table + symbol.st_name;
+
+    size_t resolved_address = resolve_address(name);
+    // TODO: need to find the right address to write this back to...
+    //link_info->got[index / sizeof(size_t) + 2] = resolved_address;
+    return resolved_address;
+}
+
+// TODO: once we get multiple libraries, this will need to be adjusted
+struct dyn_data link_info = {0};
+
+static int link_executable_to_krnlapi(void* data) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr((void*) elf_header, elf_header->e_shoff);
 
-    (void) sect_headers;
+    link_info.elf_header = elf_header;
+
+    for (int i = 0; i < elf_header->e_shnum; ++i) {
+        struct Elf32_Shdr* sect_header = sect_headers + i;
+        char* name = elf_lookup_string(data, sect_header->sh_name);
+
+        if (!xstrcmp(name, ".rel.dyn")) {
+            link_info.reldyn = sect_header;
+        }
+        if (!xstrcmp(name, ".rela.dyn")) {
+            link_info.reladyn = sect_header;
+        }
+        if (!xstrcmp(name, ".got.plt")) {
+            size_t* got = (size_t*) sect_header->sh_addr;
+            link_info.got = got;
+            got[1] = (size_t) &link_info;
+            got[2] = (size_t) dyn_fixup_asm;
+        }
+        if (!xstrcmp(name, ".dynstr")) {
+            link_info.dynstr = sect_header;
+        }
+        if (!xstrcmp(name, ".dynsym")) {
+            link_info.dynsym = sect_header;
+        }
+    }
 
     return 0;
 }
@@ -100,7 +180,7 @@ int load_elf(void* data, int fd, size_t* entry_point) {
         return -1;
     }
 
-    return dyn_fixups(elf_header);
+    return link_executable_to_krnlapi(elf_header);
 }
 
 void execve_core(size_t entry, size_t argc, char* const argv[], char* const envp[], size_t stack);
@@ -114,17 +194,6 @@ int execve(const char* pathname, char* const argv[], char* const envp[]) {
     off_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
-    struct Elf32_Ehdr* elf_header = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
-    if (elf_header == MAP_FAILED) {
-        errno = ENOMEM;
-        return -1;
-    }
-
-    if (!is_elf_valid(elf_header)) {
-        errno = ENOEXEC;
-        return -1;
-    }
-
     size_t entry_point;
     int res = _system_call(SYSCALL_PREPEXEC, 0, 0, 0, 0, 0);
     if (res == EUNRECOVERABLE) {
@@ -133,7 +202,17 @@ int execve(const char* pathname, char* const argv[], char* const envp[]) {
         errno = res;
         return -1;
     }
-    
+
+    struct Elf32_Ehdr* elf_header = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    if (elf_header == MAP_FAILED) {
+        errno = ENOMEM;
+        return -1;
+    }
+
+    if (!is_elf_valid(elf_header)) {
+        goto unrecoverable_fail;
+    }
+
     res = load_elf(elf_header, fd, &entry_point);
     if (res != 0) {
         goto unrecoverable_fail;
@@ -151,7 +230,7 @@ unrecoverable_fail:
      * The program image is corrupt if we get to this state. We obviously can't
      * allow execve() to return in this state, so we'll just kill the process.
      */
-    _system_call(SYSCALL_EXIT, -1, 0, 0, 0, 0);
+     _system_call(SYSCALL_EXIT, -1, 0, 0, 0, 0);
     while (true) {
         ;
     }

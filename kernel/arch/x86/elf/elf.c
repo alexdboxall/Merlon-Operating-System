@@ -49,7 +49,7 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data) {
     return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
-static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct open_file* file) {
+static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct open_file* file, bool driver) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -73,17 +73,28 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct ope
 			if (flags & PF_R) page_flags |= VM_READ;
 
 			/*
-			 * We don't actually want to write to the executable file, so we must just copy to the page as normal
-			 * instead of using a file-backed page.
+			 * We don't actually want to write to the executable file, so we 
+			 * must just copy to the page as normal instead of using a 
+			 * file-backed page. We also can't have the program loader loaded
+			 * with VM_RELOCATABLE, as we don't store a relocation table in
+			 * kernel mode that we could use to redo the relocations.
 			 */
-			if (flags & PF_W) {
+			if ((flags & PF_W) || !driver) {
 				size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
 
 				for (size_t i = 0; i < pages; ++i) {
-					SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags, (VM_READ | VM_WRITE | VM_EXEC) & ~page_flags);
+					SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags | (driver ? 0 : VM_WRITE), VM_READ | VM_WRITE | VM_EXEC);
 				}
 
+				LogWriteSerial("about to write data to 0x%X (size 0x%X)\n", addr, size);
 				memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
+				LogWriteSerial("wrote the data...\n");
+
+				if (!driver && (flags & PF_W) == 0) {
+					for (size_t i = 0; i < pages; ++i) {
+						SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, 0, VM_WRITE);
+					}
+				}
 
 			} else {
 				size_t pages = (size - remainder) / ARCH_PAGE_SIZE;
@@ -100,7 +111,7 @@ static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct ope
 				}
 
 				if (remainder > 0) {
-					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, (VM_READ | VM_EXEC) & ~page_flags);
+					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, VM_READ | VM_EXEC);
 					memcpy((void*) AddVoidPtr(addr, pages * ARCH_PAGE_SIZE), (const void*) AddVoidPtr(data, offset + pages * ARCH_PAGE_SIZE), remainder);
 					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, 0, VM_WRITE);
 				}
@@ -214,7 +225,9 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	}
 
 	*ref = val;
-	AddToQuickRelocationTable(table, addr, val);
+	if (table != NULL) {
+		AddToQuickRelocationTable(table, addr, val);
+	}
 	
 	if (needs_write_low) {
 		SetVirtPermissions(addr, 0, VM_WRITE);
@@ -233,6 +246,8 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct qu
 		struct Elf32_Shdr* section = sect_headers + i;
 
 		if (section->sh_type == SHT_REL) {
+			LogWriteSerial("Found a relocation table!\n");
+
 			struct Elf32_Rel* relocation_tables = (struct Elf32_Rel*) AddVoidPtr(data, section->sh_offset);
 			int count = section->sh_size / section->sh_entsize;
 
@@ -240,18 +255,26 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct qu
 				continue;
 			}
 
-			*table = CreateQuickRelocationTable(count);
+
+			if (table != NULL) {
+				*table = CreateQuickRelocationTable(count);
+			}
 			
 			for (int index = 0; index < count; ++index) {
-				bool success = ElfPerformRelocation(data, relocation_point, section, relocation_tables + index, *table);
+				LogWriteSerial("relocation... (%d)\n", index);
+
+				bool success = ElfPerformRelocation(data, relocation_point, section, relocation_tables + index, table == NULL ? NULL : *table);
 				if (!success) {
 					LogWriteSerial("failed to do a relocation!! (%d)\n", index);
 					return false;
 				}
 			}
 
-			SortQuickRelocationTable(*table);
+			LogWriteSerial("Finished with this relocation table...\n");
 
+			if (table != NULL) {
+				SortQuickRelocationTable(*table);
+			}
 
 		} else if (section->sh_type == SHT_RELA) {
 			LogDeveloperWarning("[ElfPerformRelocations]: unsupported section type: SHT_RELA\n");
@@ -262,8 +285,11 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct qu
 	return true;
 }
 
-static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table) {
+static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table, bool driver) {
     MAX_IRQL(IRQL_PAGE_FAULT);
+
+	size_t load_point = *relocation_point;
+	LogWriteSerial("Loading a relocatable ELF, at address 0x%X (0 means to allocate somewhere in krnl) - and it is: %s\n", load_point, !driver ? "USER" : "KRNL");
 
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 
@@ -274,9 +300,10 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
     /*
     * To load a driver, we need the section headers.
     */
-    if (elf_header->e_shnum == 0) {
+    if (elf_header->e_shnum == 0 && driver) {
         return EINVAL;
     }
+	LogWriteSerial("ElfLoad C\n");
 
     /*
     * We always need the program headers.
@@ -284,15 +311,15 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
     if (elf_header->e_phnum == 0) {
         return EINVAL;
     }
+	LogWriteSerial("ElfLoad D\n");
 
     /*
     * Load into memory.
     */
     size_t size = ElfGetSizeOfImageIncludingBss(data);
-
-	*relocation_point = MapVirt(0, 0, size, VM_READ, NULL, 0);
-	LogWriteSerial("RELOCATION POINT AT 0x%X\n", *relocation_point);
-	ElfLoadProgramHeaders(data, *relocation_point, file);
+	LogWriteSerial("the size is 0x%X\n", size);
+	*relocation_point = MapVirt(0, load_point, size, VM_READ | (!driver ? VM_LOCAL | VM_USER | VM_FIXED_VIRT : 0), NULL, 0);
+	ElfLoadProgramHeaders(data, *relocation_point, file, driver);
 
 	bool success = ElfPerformRelocations(data, *relocation_point, table);
 	if (success) {
@@ -303,35 +330,43 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
 	}
 }
 
-int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table) {
+int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table, size_t* entry_point) {
     EXACT_IRQL(IRQL_STANDARD);
+
+	bool driver = entry_point == NULL;
 
     off_t file_size = file->node->stat.st_size;
     size_t file_rgn = MapVirt(0, 0, file_size, VM_READ | VM_FILE, file, 0);
-    int res = ElfLoad((void*) file_rgn, relocation_point, file, table);
+    struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) file_rgn;
+	if (!driver) {
+		*entry_point = elf_header->e_entry + *relocation_point;
+	}
+
+	int res = ElfLoad((void*) file_rgn, relocation_point, file, table, driver);
 	if (res != 0) {
 		return res;
 	}
 
-	struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) file_rgn;
-    struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) (file_rgn + elf_header->e_shoff);
+	if (driver) {
+    	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) (file_rgn + elf_header->e_shoff);
 
-	for (int i = 0; i < elf_header->e_shnum; ++i) {
-		const char* sh_name = ElfLookupString((void*) file_rgn, sect_headers[i].sh_name);
-		if (!strcmp(sh_name, ".lockedtext") || !strcmp(sh_name, ".lockeddata")) {
-			// it's okay to lock extra memory - it wouldn't be ok if we did it the other way around though
-			// (assumed everything was locked, and only unlocked parts of it)
-			size_t start_addr = (sect_headers[i].sh_addr + *relocation_point) & ~(ARCH_PAGE_SIZE - 1);
-			size_t num_pages = (sect_headers[i].sh_size + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
-			while (num_pages--) {
-				LockVirt(start_addr);
-				start_addr += ARCH_PAGE_SIZE;
+		for (int i = 0; i < elf_header->e_shnum; ++i) {
+			const char* sh_name = ElfLookupString((void*) file_rgn, sect_headers[i].sh_name);
+			if (!strcmp(sh_name, ".lockedtext") || !strcmp(sh_name, ".lockeddata")) {
+				// it's okay to lock extra memory - it wouldn't be ok if we did it the other way around though
+				// (assumed everything was locked, and only unlocked parts of it)
+				size_t start_addr = (sect_headers[i].sh_addr + *relocation_point) & ~(ARCH_PAGE_SIZE - 1);
+				size_t num_pages = (sect_headers[i].sh_size + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+				while (num_pages--) {
+					LockVirt(start_addr);
+					start_addr += ARCH_PAGE_SIZE;
+				}
 			}
 		}
 	}
 
-    UnmapVirt(file_rgn, file_size);
 
+    UnmapVirt(file_rgn, file_size);
     return res;
 }
 

@@ -42,5 +42,7 @@ int SysOpen(size_t filename, size_t flags, size_t mode, size_t fdout, size_t) {
 		return res;
 	} 
 
+	LogWriteSerial("read is giving fd %d => openfile 0x%X\n", fd, file);
+
 	return 0;
 }

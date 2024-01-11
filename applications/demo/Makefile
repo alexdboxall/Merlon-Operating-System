@@ -10,6 +10,7 @@ COBJECTS = $(patsubst %.c, %.o, $(wildcard *.c) $(wildcard */*.c) $(wildcard */*
 
 build: $(COBJECTS)
 	$(CC) -T ../../source/machine/application.ld -o $(APPLICATION_NAME) -L"../../output/drivers" -l:krnlapi.lib $^ $(LINK_FLAGS) $(LINKER_STRIP)
+	objdump -drwC -Mintel $(APPLICATION_NAME) >> disassembly.txt
 	cp $(APPLICATION_NAME) ../../output/applications
 	
 %.o: %.c

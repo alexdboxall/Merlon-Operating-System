@@ -837,6 +837,11 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
         return 0;
     }
 
+    if ((flags & VM_RELOCATABLE) && (flags & VM_USER)) {
+        *error = EINVAL;
+        return 0;
+    }
+
     if ((flags & VM_RELOCATABLE) && physical == 0) {
         *error = EINVAL;
         return 0;
@@ -1182,6 +1187,10 @@ void UnlockVirt(size_t virtual) {
     ReleaseSpinlockIrql(&vas->lock);
 }
 
+/*
+ * Setting a bit overrides clearing it (i.e. it acts as though it clears first, 
+ * and then sets).
+ */
 int SetVirtPermissions(size_t virtual, int set, int clear) {
     /*
      * Only allow these flags to be set / cleared.
@@ -1242,10 +1251,75 @@ int GetVirtPermissions(size_t virtual) {
     return permissions;
 }
 
+static bool DereferenceEntry(struct vas* vas, struct vas_entry* entry) {
+    assert(entry->ref_count > 0);
+    entry->ref_count--;
+    
+    size_t virtual = entry->virtual;
+    bool needs_tlb_flush = false;
+
+    if (entry->ref_count == 0) {
+        if (entry->file && entry->write && entry->in_ram) { 
+            DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
+            // TODO: after that DeferDiskWrite, we need to defer a DereferenceOpenFile(entry->file_node)
+        }
+        if (entry->in_ram) {
+            ArchUnmap(vas, entry);
+            needs_tlb_flush = true;
+        }
+        if (entry->swapfile) {
+            assert(!entry->allocated);
+            DeallocateSwapfileIndex(entry->physical / ARCH_PAGE_SIZE);
+        }
+        if (entry->allocated) {
+            assert(!entry->swapfile);   // can't be on swap, as putting on swap clears allocated bit
+            DeallocPhys(entry->physical);
+        }
+
+        DeleteFromAvl(vas, entry);
+        FreeHeap(entry);
+        FreeVirtRange(vas, virtual, entry->num_pages);
+    }
+
+    return needs_tlb_flush;
+}
+
+static void WipeUsermodePagesRecursive(struct avl_node* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    struct vas_entry* entry = AvlTreeGetData(node);
+    if (entry->virtual >= ARCH_USER_STACK_LIMIT && entry->virtual < ARCH_PROG_LOADER_BASE) {
+        LogWriteSerial("WIPING A USERMODE PAGE ON EXEC: 0x%X\n", entry->virtual);
+        DereferenceEntry(GetVas(), entry);
+    }
+
+    if (entry->virtual >= ARCH_USER_STACK_LIMIT) {
+        WipeUsermodePagesRecursive(AvlTreeGetLeft(node));
+    }
+    if (entry->virtual < ARCH_PROG_LOADER_BASE) {
+        WipeUsermodePagesRecursive(AvlTreeGetRight(node));
+    }
+}
+
+int WipeUsermodePages(void) {
+    struct vas* vas = GetVas();
+    AcquireSpinlockIrql(&vas->lock);
+    WipeUsermodePagesRecursive(AvlTreeGetRootNode(GetVas()->mappings));
+    ArchFlushTlb(vas);
+    ReleaseSpinlockIrql(&vas->lock); 
+    return 0;  
+}
+
 int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags) {
     bool needs_tlb_flush = false;
 
     for (size_t i = 0; i < pages; ++i) {
+        // TODO: there's surely better ways of doing this... e.g. iterating through the AVL tree,
+	    // deleting only the ones that are there
+        // probably could have an AvlGetSucc() function, so we can get the next one
+
         struct vas_entry* entry = GetVirtEntry(vas, virtual + i * ARCH_PAGE_SIZE);
         if (entry == NULL) {
             if (flags & VMUN_ALLOW_NON_EXIST) {
@@ -1254,34 +1328,9 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags) {
                 return EINVAL;
             }
         }
-        
+
         SplitLargePageEntryIntoMultiple(vas, virtual, entry, 1);        // TODO: multi-pages
-        
-        assert(entry->ref_count > 0);
-        entry->ref_count--;
-
-        if (entry->ref_count == 0) {
-            if (entry->file && entry->write && entry->in_ram) { 
-                DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
-                // TODO: after that DeferDiskWrite, we need to defer a DereferenceOpenFile(entry->file_node)
-            }
-            if (entry->in_ram) {
-                ArchUnmap(vas, entry);
-                needs_tlb_flush = true;
-            }
-            if (entry->swapfile) {
-                assert(!entry->allocated);
-                DeallocateSwapfileIndex(entry->physical / ARCH_PAGE_SIZE);
-            }
-            if (entry->allocated) {
-                assert(!entry->swapfile);   // can't be on swap, as putting on swap clears allocated bit
-                DeallocPhys(entry->physical);
-            }
-
-            DeleteFromAvl(vas, entry);
-            FreeHeap(entry);
-            FreeVirtRange(vas, virtual + i * ARCH_PAGE_SIZE, entry->num_pages);
-        }
+        needs_tlb_flush |= DereferenceEntry(vas, entry);
     }
 
     if (needs_tlb_flush) {

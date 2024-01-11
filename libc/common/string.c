@@ -278,6 +278,8 @@ char* strerror(int err)
 		return "Invalid executable file";
 	case EUNRECOVERABLE:
 		return "Non returning operation has failed past point of no return";
+	case EINTR:
+		return "Interrupted by signal";
 	default:
 		return "Unknown error";
 	}

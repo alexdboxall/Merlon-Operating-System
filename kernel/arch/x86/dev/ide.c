@@ -69,6 +69,9 @@ int IdePoll(struct ide_data* ide) {
     */
     int timeout = 0;
     while (inb(base + 0x7) & 0x80) {
+        if (HasBeenSignalled()) {
+            return EINTR;
+        }
         if (timeout > 975) {
             SleepMilli(10);
         }
@@ -124,6 +127,11 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
     AcquireSemaphore(ide_lock, -1);
 
     while (count > 0) {
+        if (HasBeenSignalled()) {
+            ReleaseSemaphore(ide_lock);
+            return EINTR;
+        }
+
         int sectors_in_this_transfer = count > max_sectors_at_once ? max_sectors_at_once : count;
 
         if (io->direction == TRANSFER_WRITE) {

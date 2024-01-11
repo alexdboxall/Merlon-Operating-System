@@ -60,7 +60,20 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     return 0;
 }
 
-static int MasterWait(struct vnode*, int, uint64_t) {
+/*
+
+#define VNODE_WAIT_READ             (1 << 0)
+#define VNODE_WAIT_WRITE            (1 << 1)
+#define VNODE_WAIT_ERROR            (1 << 2)
+    int (*wait)(struct vnode* node, int flags, uint64_t timeout_ms);
+
+*/
+
+static int MasterWait(struct vnode* node, int flags, uint64_t timeout) {
+    (void) node;
+    (void) flags;
+    (void) timeout;
+
     return ENOSYS;
 }
 
