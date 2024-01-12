@@ -26,8 +26,7 @@
 
 /*
  * Next steps:
- * - program loader / dynamic linker
- * - system call interface (KRNLAPI.LIB) 
+ * - dynamic libraries (e.g. c.lib)
  * - C standard library
  * - complete-enough CLI OS
  *          terminal that supports pipes, redirection and background processes
@@ -78,57 +77,18 @@
  * 
  *    OK - that's been implemented now... now to see if it works...
  * 
- * - MAP_FIXED, MAP_SHARED
+ * - MAP_FIXED
  * 
  */
-
- void DummyAppThread(void*) {
-	PutsConsole("drv0:/> ");
-
-    struct open_file* con;
-    OpenFile("con:", O_RDONLY, 0, &con);
-
-    while (true) {
-        char bf[302];
-		inline_memset(bf, 0, 302);
-        struct transfer tr = CreateKernelTransfer(bf, 301, 0, TRANSFER_READ);
-		ReadFile(con, &tr);
-		PutsConsole("Command not found: ");
-		PutsConsole(bf);
-        PutsConsole("\n");
-
-        if (bf[0] == 'u' || bf[0] == 'U') {
-            CreateUsermodeProcess(NULL, "sys:/init.exe");
-
-        } else if (bf[0] == 'p' || bf[0] == 'P') {
-            Panic(PANIC_MANUALLY_INITIATED);
-
-        } else if (bf[0] == 'e' || bf[0] == 'E') {
-            MapVirt(0, 0, 8 * 4096, VM_LOCK | VM_READ, NULL, 0);
-        }
-        
-		PutsConsole("drv0:/> ");
-    }
-}
 
 void InitUserspace(void) {
     size_t free = GetFreePhysKilobytes();
     size_t total = GetTotalPhysKilobytes();
     DbgScreenPrintf("NOS Kernel\nCopyright Alex Boxall 2022-2024\n\n%d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
-    CreateThread(DummyAppThread, NULL, GetVas(), "dummy app");
+    CreateUsermodeProcess(NULL, "sys:/init.exe");
 }
 
-void InitThread(void*) {
-    ReinitHeap();
-    InitRandomDevice();
-    InitNullDevice();
-    InitConsole();
-    InitProcess();
-    InitDiskCaches();
-    
-    InitFilesystemTable();
-    ArchInitDev(false);
-
+void InitSystemMounts(void) {
     struct open_file* sys_folder;
     int res = OpenFile("drv0:/System", O_RDONLY, 0, &sys_folder);
     if (res != 0) {
@@ -147,22 +107,6 @@ void InitThread(void*) {
     res = AddVfsMount(swapfile->node, "swap");
     if (res != 0) {
         PanicEx(PANIC_NO_FILESYSTEM, "swapfile B");
-    }
-
-    InitSwapfile();
-    InitSymbolTable();
-    ArchInitDev(true);
-    InitProgramLoader();
-    InitUserspace();
-
-    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
-
-    while (true) {
-        /*
-         * We crash in strange and rare conditions if this thread's stack gets removed, so we will
-         * ensure we don't terminate it.
-         */
-        SleepMilli(100000);
     }
 }
 
@@ -189,6 +133,32 @@ static void InitSerialDebugging(void) {
     outb(PORT + 4, 0x0F);
 }
 
+void InitThread(void*) {
+    ReinitHeap();
+    InitRandomDevice();
+    InitNullDevice();
+    InitConsole();
+    InitProcess();
+    InitDiskCaches();
+    InitFilesystemTable();
+    ArchInitDev(false);
+    InitSystemMounts();
+    InitSwapfile();
+    InitSymbolTable();
+    ArchInitDev(true);
+    InitProgramLoader();
+    InitUserspace();
+    MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
+
+    while (true) {
+        /*
+         * We crash in strange and rare conditions if this thread's stack gets removed, so we will
+         * ensure we don't terminate it.
+         */
+        SleepMilli(100000);
+    }
+}
+
 void KernelMain(void) {
     InitSerialDebugging();
     LogWriteSerial("KernelMain: kernel is initialising...\n");
@@ -209,3 +179,4 @@ void KernelMain(void) {
     CreateThreadEx(InitThread, NULL, GetVas(), "init", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0);
     StartMultitasking();
 }
+

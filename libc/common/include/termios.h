@@ -23,6 +23,6 @@ struct termios {
 #define TCSANOW 1
 
 #ifndef COMPILE_KERNEL
-int tcgetattr(int fd, struct termios *term);
-int tcsetattr(int fd, int optional_actions, const struct termios *term);
+int tcgetattr(int fd, struct termios* term);
+int tcsetattr(int fd, int optional_actions, const struct termios* term);
 #endif

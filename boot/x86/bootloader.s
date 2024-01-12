@@ -1,90 +1,4 @@
 
-; x86 Bootloader
-;
-; This is the bootloader for the kernel - the very first thing that is run after
-; the firmware finishes its initialization. The BIOS loads the first sector
-; (512 bytes) from the disk into memory at address 0x7C00, and jumps to it.
-;
-; That 512 byte program is responsible for booting the entire kernel. On normal systems,
-; it tends to load a second bootloader which can be of any size, which then loads the
-; kernel.
-;
-; However, as we are using DemoFS, it is very easy for us to load the kernel, as it
-; stores the size and sector number of the kernel, as well as reserving the first 8
-; sectors for additional bootloader code. Hence our bootloader can be 8 sectors (4KBs)
-; long (when assembled). However, as the BIOS only loads the first sector, that first
-; sector needs to load the next 7 into memory.
-;
-; Below is an explaination of some relevant concepts:
-;
-;					*************** THE BIOS ***************
-;
-; The BIOS (Basic Input/Output System) is the firmware stored in ROM, and is *really* the first
-; thing that runs. It is responsible for initializing the hardware (e.g. the memory controllers),
-; testing the CPU, setting up the absolute basics in terms of hardware (i.e. a terminal, keyboard,
-; and disk), and then jumping to the bootloader.
-;
-; The BIOS sets up interrupt handlers so the bootloader can also make use of the hardware drivers
-; the BIOS contains. For example, by calling INT 0x10, the BIOS will perform video functions, and
-; INT 0x13 will access the disk. The other registers contain arguments and return values. There is
-; no official standard for this, but certain interrupts are 'standard enough' for us to use.
-;
-; We must use the BIOS, as we don't have enough room in our bootloader to a disk driver, or a driver
-; for every known video card in existence. 
-;
-;
-; 					*************** REAL MODE ***************
-;
-; Note that when the computer starts, we are in real mode (16 bit mode). Hence we need
-; to deal with 16 bit segments (see below), and thus we can only have 20 bit memory addresses
-; (i.e. up to 1MB of memory). There is also a lot of stuff 'lurking' in this first megabyte
-; of memory, such as BIOS data, interrupt tables, etc. that we shouldn't touch.
-;
-; You'll notice that 32 bit registers are still accessible in 16 bit mode. This only works on 
-; processors that actually do have a 32 bit mode (i.e. an 80386 or above), but as our kernel
-; is for 32 bit processors, we can assume we have 32 bit mode.
-;
-; In 16 bit mode, memory accesses consist of two parts, a 16 bit offset (the address),
-; and a 16 bit segment. They are combined as follows:
-;
-;		absolute address = segment * 16 + offset
-;
-; Addresses are written like this:
-;		0x1234:0xABCD
-;		 ^ 		   ^
-;		segment    offset
-;
-; Note that there are many ways of representing the same absolute memory address. For example:
-;
-;		0x0123:0x0004, 0x0000:0x1234, and 0x0077:0x0AC4
-;
-; All represent the same absolute address of 0x01234.
-;
-; You normally only need to specify the offset when making memory accesses. Normal memory
-; reads and writes will use the segment stored in the DS register. Code access always uses
-; the CS register. The stack uses SS, and there are additional registers ES, FS and GS which
-; you can use if you need to specific an explicit segment.
-;
-; Note that there are some other 'gotchas' in 16 bit mode and with segments, such as:
-;		- certain instructions having default segment register overrides (e.g. movsb)
-;		- absolute addresses can sometimes go above 1MB(!) (e.g. 0xFFFF:0x0010 -> 0x100000)
-;		  (look up the A20 gate if you're interested in this)
-;
-;
-; 				*************** OVERALL BOOT PROCESS ***************
-;
-;		- BIOS loads the first sector of our bootloader to 0x7C00 and runs it
-;		- Our bootloader initialises segment registers, stack, flags, etc.
-;		- Our bootloader loads the remaining seven sectors of our bootloader into memory
-;		- Our bootloader loads the kernel file to address 0x10000 (64KB)
-;		- Our bootloader enables the A20 gate
-;		- Our bootloader gets a memory map from the BIOS, which will later be passed to the kernel
-;		- Our bootloader sets up a GDT, enables and then switches to protected mode (32 bit mode)
-;		- Our bootloader parses the kernel file, and loads the required sections into memory at 0x100000 (1MB)
-;		- Our bootloader jumps to the kernel, passing it the memory map
-;		- The ATOS kernel runs!		
-;
-
 org 0x7C00
 bits 16
 
@@ -142,11 +56,11 @@ set_cs:
 	shr ecx, 24
 	shl ecx, 1
 	mov [kernel_kilobytes], cx
-	
+
 	; Load a sector at at time to 0x1000:0x0000
 	; ie. 0x10000. This allows sizes of approx. 448KB (our filesystem
 	; only supports a kernel size of 255KB anyway).
-	mov bx, 0x1000
+	mov bx, 0xC00
 	mov gs, bx
 	xor di, di	
 
@@ -164,6 +78,9 @@ next_sector:
 	add bx, 0x20
 	mov gs, bx
 	loop next_sector
+
+	mov [boot_drive_number], dl
+	jmp 0xC000
 
 	call generate_memory_map
 
@@ -195,7 +112,7 @@ next_sector:
     ; Set video mode
     mov bx, cx; 0x4105 ;0x4105 ;cx
     mov ax, 0x4F02
-    int 0x10
+    ;int 0x10
 
 .no_vesa:
 	lgdt [gdtr]

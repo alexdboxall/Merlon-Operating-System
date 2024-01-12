@@ -41,7 +41,8 @@ static void start_envp(void) {
 }
 
 void loader_main(void*) {
-    char* filename = "sys:/demo.exe";
+    // TODO: @@@ get the proper filename off the kernel
+    char* filename = "sys:/init.exe";
 
     found_argvenvp(filename);
     // find all argvs, call found_argvenvp(...) on each

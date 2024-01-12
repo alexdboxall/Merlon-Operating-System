@@ -137,6 +137,7 @@ void AddSymbol(const char* symbol, size_t address) {
          */
         FreeHeap(entry);
     } else {
+        LogWriteSerial("adding symbol %s -> 0x%X\n", symbol, address);
         AvlTreeInsert(symbol_table, entry);
     }
     ReleaseMutex(symbol_table_lock);

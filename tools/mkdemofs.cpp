@@ -282,9 +282,10 @@ void listdir(struct demofs_data* fs, const char* name, const char* shortname, in
             fclose(f);
 
             inode_t i = demofs_write(inode, entry->d_name, buff, pos);
-
-            if (!strcmp(entry->d_name, "KERNEL.EXE") || !strcmp(entry->d_name, "kernel.exe")) {
+            printf("ENTRY: %s\n", entry->d_name);
+            if (!strcmp(entry->d_name, "BIOS.SYS") || !strcmp(entry->d_name, "bios.sys")) {
                 kernel_inode = i;
+                printf("KERNEL INODE IS AT %d\n", i);
             }
 
             free(buff);
@@ -309,6 +310,7 @@ void demofs_add_kernel(struct demofs_data* fs, const char* path)
     }
 	
     fs->kernel_image_inode = kernel_inode; //demofs_write(fs->root_directory_inode, name, buff, pos);
+    printf("adding a %d KB kernel...\n", (pos + 1023) / 1024);
     fs->kernel_num_kilobytes = (pos + 1023) / 1024;
 
     uint8_t buffer[SECTOR_SIZE];

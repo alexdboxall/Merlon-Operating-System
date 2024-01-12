@@ -1,5 +1,5 @@
 
-APPLICATION_NAME = demo.exe
+APPLICATION_NAME = init.exe
 
 CC = /Users/alex/Desktop/NOS/toolchain/output/bin/i386-elf-gcc
 FAKE_CROSS_COMPILER = -m32 -I"." -I"../../source/include" -I"../../source"

@@ -143,7 +143,9 @@
         "diskutil.h": "c",
         "_stdckdint.h": "c",
         "stdarg.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "bootloader.h": "c",
+        "alloc.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

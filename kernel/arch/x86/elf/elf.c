@@ -11,7 +11,7 @@
 #include <heap.h>
 #include <irql.h>
 #include <stdlib.h>		
-#include <machine/elf.h>
+#include <elf.h>
 #include <panic.h>
 
 static bool IsElfValid(struct Elf32_Ehdr* header) {

@@ -13,7 +13,7 @@
 #include <voidptr.h>
 #include <sched.h>
 #include <virtual.h>
-#include <machine/elf.h>
+#include <elf.h>
 #include <machine/config.h>
 #include <sys/mman.h>
 

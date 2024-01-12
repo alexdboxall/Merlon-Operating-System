@@ -58,7 +58,7 @@ common_footer:
 	cp $(BUILD_OUTPUT_DIR)/kernel.exe $(SYSROOT)/System
 	gcc ./tools/mkdemofs.cpp -o ./tools/mkdemofs
 	chmod 777 ./tools/mkdemofs
-	./tools/mkdemofs 64 $(BUILD_OUTPUT_DIR)/kernel.exe $(SYSROOT) $(BUILD_OUTPUT_DIR)/disk.bin bootloader.bin
+	./tools/mkdemofs 64 $(SYSROOT)/System/bios.sys $(SYSROOT) $(BUILD_OUTPUT_DIR)/disk.bin bootloader.bin
 	head -c 1474560 $(BUILD_OUTPUT_DIR)/disk.bin >> $(BUILD_OUTPUT_DIR)/floppy.img
 
 
@@ -83,14 +83,17 @@ driver_all:
 	for dir in $(wildcard ./$(BUILD_DRIVER_SOURCE_DIR)/drivers/*/.); do \
         $(MAKE) -C $$dir build; \
     done
+
+bootloader:
+	./boot/build.sh
 	
 cstdlib:
 	$(MAKE) -C $(LIBC_MAKEFILE_DIR)
 
 applications: app_header app_all
 drivers: driver_header driver_all
-osrelease: common_header release_compile cstdlib drivers applications common_footer
-osdebug: common_header debug_compile cstdlib drivers applications common_footer
+osrelease: common_header release_compile bootloader cstdlib drivers applications common_footer
+osdebug: common_header debug_compile bootloader cstdlib drivers applications common_footer
 
 #osrelease: common_header release_compile cstdlib drivers applications common_footer
 #osdebug: common_header debug_compile cstdlib drivers applications common_footer

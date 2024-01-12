@@ -12,7 +12,8 @@ static size_t Loadx86Driver(const char* filename, const char* init) {
     }
     size_t addr = GetSymbolAddress(init);
     if (addr == 0) {
-        PanicEx(PANIC_REQUIRED_DRIVER_MISSING_SYMBOL, filename);
+        return GetDriverAddress(filename);
+        //PanicEx(PANIC_REQUIRED_DRIVER_MISSING_SYMBOL, filename);
     }
     return addr;
 }
@@ -27,7 +28,7 @@ void ArchInitDev(bool fs) {
         //InitFloppy();
         
     } else {
-        ((void(*)()) (Loadx86Driver("sys:/vesa.sys", "InitVesa")))();
+        ((void(*)()) (Loadx86Driver("sys:/vga.sys", "InitVga")))();
         ((void(*)()) (Loadx86Driver("sys:/ps2.sys", "InitPs2")))();
         CreateThread(LoadSlowDriversInBackground, NULL, GetVas(), "drvloader");
     }

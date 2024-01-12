@@ -1,0 +1,1 @@
+nasm bios.s -o ../output/bios.sys
