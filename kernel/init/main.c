@@ -8,6 +8,7 @@
 #include <timer.h>
 #include <irql.h>
 #include <thread.h>
+#include <bootloader.h>
 #include <panic.h>
 #include <stdlib.h>
 #include <process.h>
@@ -159,13 +160,16 @@ void InitThread(void*) {
     }
 }
 
-void KernelMain(void) {
+void KernelMain(struct kernel_boot_info* boot_info) {
     InitSerialDebugging();
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
+    LogWriteSerial("Boot info table is at 0x%X\n", boot_info);
+    LogWriteSerial("RAM table is at 0x%X\n", boot_info->ram_table);
+
     InitCpuTable();
     InitTfw();
-    InitPhys();
+    InitPhys(boot_info);
     InitIrql();
     InitVfs();
     InitTimer();

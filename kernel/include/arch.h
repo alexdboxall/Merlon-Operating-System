@@ -37,12 +37,7 @@
 #endif
 
 #include <common.h>
-
-struct arch_memory_range
-{
-	size_t start;
-	size_t length;
-};
+#include <bootloader.h>
 
 struct vas;
 struct vas_entry;
@@ -81,7 +76,7 @@ void ArchSpinlockRelease(volatile size_t* lock);
 * NULL is returned if there is no more memory. No more calls to this function
 * will be made after a NULL is returned.
 */
-struct arch_memory_range* ArchGetMemory() warn_unused;
+struct boot_memory_entry* ArchGetMemory(struct kernel_boot_info* boot_info) warn_unused;
 
 uint64_t ArchReadTimestamp(void);
 

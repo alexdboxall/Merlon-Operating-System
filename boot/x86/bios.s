@@ -1,4 +1,12 @@
 
+;
+; This file is quite the circus. But that's alright (for now at least) - the
+; whole point of splitting up the bootloader into a generic C part and a
+; platform specific helper file is to ensure that all the 'clowning around' only
+; needs to be done one per platform, and then it can just be hidden away behind
+; the curtain.
+;
+
 ; 0x500  - 0x5FF		INITIAL RAM MAP (BIOS FORMAT)
 ; 0x900  - 0x93F		BOOTSTRAP GDT
 ; 0x6F?? - 0x7000		REAL MODE (FIRMWARE.LIB STACK)
@@ -170,8 +178,6 @@ wait_output:
     jz      wait_output
     ret
 
-times 512 - ($-$$) db 0
-
 bits 32
 
 protected_mode_main:
@@ -182,11 +188,52 @@ protected_mode_main:
 	mov	es, ax
 	mov esp, 0x10000
 	
-	mov ax, [0x500]
-	mov [num_ram_entries], ax
+	mov cx, [0x500]
+	mov [num_ram_entries], cx
 
-	; TODO: copy the RAM table from 0x504 to proper_ram_table, fixing up the format
-	; as we go
+	
+	mov edi, proper_ram_table
+	mov esi, 0x504
+.ram_table_loop:
+	; base address
+	mov eax, [esi]
+	mov [edi], eax
+	mov eax, [esi + 4]
+	mov [edi + 4], eax
+	add edi, 8
+	add esi, 8
+
+	; length
+	mov eax, [esi]
+	mov [edi], eax
+	mov eax, [esi + 4]
+	mov [edi + 4], eax
+	add edi, 8
+	add esi, 8
+
+	mov eax, [esi]
+	cmp eax, 1
+	je .goodram
+	cmp eax, 2
+	je .acpi
+
+	mov eax, 2
+	jmp .x
+
+.goodram:
+	mov eax, 0
+	jmp .x
+
+.acpi:
+	mov eax, 1
+
+.x:
+	mov [edi], eax
+	add edi, 8
+	add esi, 8
+
+	dec cx
+	jnz .ram_table_loop
 
 	push dword 0x8000
 	push bootload_path
@@ -427,9 +474,6 @@ real_read_sector:
 	call SWITCH_TO_REAL
 	ret
 
-proper_ram_table:
-	times 2048 db 0
-
 rmSwitchyStack dd 0
 
 ; 0 = read key
@@ -439,12 +483,8 @@ realModeCommand db 0
 
 realModeData1 dd 0
 realModeData2 dd 0
-realModeData3 dd 0
-realModeData4 dd 0
 realModeRet1 dd 0
 realModeRet2 dd 0
-realModeRet3 dd 0
-realModeRet4 dd 0
 
 SWITCH_TO_REAL:
 	push edi
@@ -452,8 +492,6 @@ SWITCH_TO_REAL:
 	push ebp
 	mov [realModeData1], eax
 	mov [realModeData2], ebx
-	mov [realModeData3], ecx
-	mov [realModeData4], edx
 
 	cli ; 8.9.2. Step 1.
 
@@ -592,8 +630,6 @@ goBackHome:
 
 	mov [realModeRet1], eax
 	mov [realModeRet2], ebx
-	mov [realModeRet3], ecx
-	mov [realModeRet4], edx
 
 	xor ax, ax 
 	mov ds, ax
@@ -663,10 +699,10 @@ protected_mode_return:
 	mov esp, [rmSwitchyStack]
 	mov eax, [realModeRet1]
 	mov ebx, [realModeRet2]
-	mov ecx, [realModeRet3]
-	mov edx, [realModeRet4]
 
 	pop ebp
 	pop esi
 	pop edi
 	ret
+
+proper_ram_table:

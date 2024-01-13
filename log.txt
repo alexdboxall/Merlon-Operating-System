@@ -1,7 +1,0 @@
-KernelMain: kernel is initialising...
-PANIC 10 no memory map
-
-
- *** KERNEL PANIC ***
-
-0xA - no memory map

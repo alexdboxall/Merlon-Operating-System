@@ -275,14 +275,16 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
  * memory is available on the system  and prepares the O(n) bitmap allocator. 
  * This will be slow, but is only needed until ReinitHeap() gets called.
  */
-void InitPhys(void) {
+void InitPhys(struct kernel_boot_info* boot_info) {
+    LogWriteSerial("InitPhys...\n");
+    
     InitSpinlock(&phys_lock, "phys", IRQL_SCHEDULER);
 
 	/*
 	* Scan the memory tables and fill in the memory that is there.
 	*/
 	while (true) {
-		struct arch_memory_range* range = ArchGetMemory();
+		struct boot_memory_entry* range = ArchGetMemory(boot_info);
 
 		if (range == NULL) {
 			/* No more memory exists */
@@ -293,8 +295,8 @@ void InitPhys(void) {
 			* Must round the start address up so we don't include memory outside
             * the region.
             */
-			size_t first_page = (range->start + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
-			size_t last_page = (range->start + range->length) / ARCH_PAGE_SIZE;
+			size_t first_page = (range->address + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
+			size_t last_page = (range->address + range->length) / ARCH_PAGE_SIZE;
 
 			while (first_page < last_page && first_page < MAX_MEMORY_PAGES) {
                 DeallocateBitmapEntry(first_page);

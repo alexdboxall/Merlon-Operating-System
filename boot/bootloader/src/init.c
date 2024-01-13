@@ -76,6 +76,24 @@ static size_t LoadProgramHeaders(size_t base) {
     return elf->e_entry;
 }
 
+static void ShowRamTable(void) {
+    Printf("The RAM table has %d entries:\n  ", GetFw()->num_ram_table_entries);
+    for (size_t i = 0; i < GetFw()->num_ram_table_entries; ++i) {
+        struct boot_memory_entry ram = GetFw()->ram_table[i];
+        int type = BOOTRAM_GET_TYPE(ram.info);
+
+        Printf("    [%s]: 0x%X -> 0x%X (len: 0x%X)\n  ", 
+            type == BOOTRAM_TYPE_AVAILABLE ? "AVAIL" :
+            (type == BOOTRAM_TYPE_RECLAIMABLE ? "ACPI " : "RESV "),
+            (size_t) ram.address,
+            (size_t) (ram.address + ram.length - 1),
+            (size_t) ram.length
+        ); 
+    }
+}
+
+struct kernel_boot_info kboot_info;
+
 void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
     firmware = fw;
 
@@ -98,9 +116,15 @@ void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
     size_t entry_point = LoadProgramHeaders(0x10000);
     Printf("The kernel's executable has been fully loaded to address 0x%X.\n  ", fw->kernel_load_point);
 
+    ShowRamTable();
+
     (void) show_boot_options;
 
     ExitBootServices();
 
-    ((void(*)()) entry_point)();
+    kboot_info.num_loaded_modules = 0;
+    kboot_info.num_ram_table_entries = fw->num_ram_table_entries;
+    kboot_info.ram_table = fw->ram_table;
+
+    ((void(*)(struct kernel_boot_info*)) entry_point)(&kboot_info);
 }

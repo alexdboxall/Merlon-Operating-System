@@ -63,8 +63,10 @@ _start:
 	cli
 	cld	
 
-    ; GRUB puts pointer in ebx, so we need to save it
-
+	; Bootloader info table
+	mov ebx, [esp + 4]
+	add ebx, 0xC0000000
+	
     ; Work out how many pages in the first 4MB need to be mapped
     ; (we map the low 1MB, and then the kernel)
     mov ecx, _kernel_end
@@ -144,24 +146,6 @@ x86_grub_table dd 0
 KernelEntryPoint:    
     ; GRUB puts the address of a table in EBX, which we must use to find the
 	; memory table. Note that we haven't trashed EBX up until this point.
-	
-	mov [x86_grub_table], ebx
-
-    ; Grab the video data the bootloader put into memory.
-    mov ax, [0x1000 + 16]
-    mov [vesa_pitch], ax
-
-    mov ax, [0x1000 + 18]
-    mov [vesa_width], ax
-
-    mov ax, [0x1000 + 20]
-    mov [vesa_height], ax
-
-    mov al, [0x1000 + 25]
-    mov [vesa_depth], al
-
-    mov eax, [0x1000 + 40]
-    mov [vesa_framebuffer], eax
 
 	; Remove the identity paging and flush the TLB so the changes take effect
 	mov [boot_page_directory], dword 0
@@ -177,6 +161,7 @@ KernelEntryPoint:
 	mov esp, stack_top
 
 	; Jump to the kernel main function
+	push ebx			; bootloader info
 	call KernelMain
 
 	; We should never get here, but halt just in case
