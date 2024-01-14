@@ -51,14 +51,14 @@ bool IsSpinlockHeld(struct spinlock* lock) {
 
 int AcquireSpinlockIrql(struct spinlock* lock) {
     assert(lock->lock == 0);
-
     int prior_irql = GetIrql();
-    RaiseIrql(lock->irql);
 
-    if (lock->irql != GetIrql()) {
-        Panic(PANIC_SPINLOCK_WRONG_IRQL);
+    // it's okay to take a lower level lock at a higher level!
+    // this allows e.g. for timer handlers to call UnlockSemaphore, which in turn locks the scheduler, which
+    // is IRQL_SCHEDULER - but it should obviously be okay to take it at IRQL_HIGH, as it is even higher.
+    if (prior_irql < lock->irql) {
+        RaiseIrql(lock->irql);
     }
-
     AcquireSpinlockDirect(lock);
     lock->prev_irql = prior_irql;
     return prior_irql;
