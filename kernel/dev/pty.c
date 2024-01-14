@@ -13,7 +13,7 @@
 #include <panic.h>
 #include <thread.h>
 #include <termios.h>
-#include <blockingbuffer.h>
+#include <mailbox.h>
 #include <virtual.h>
 
 #define INTERNAL_BUFFER_SIZE 256        // used to communicate with master and sub. can have any length - but lower means both input AND **PRINTING** will incur more semaphore trashing
@@ -22,9 +22,9 @@
 
 struct master_data {
     struct vnode* subordinate;
-    struct blocking_buffer* display_buffer;
-    struct blocking_buffer* keybrd_buffer;
-    struct blocking_buffer* flushed_buffer;
+    struct mailbox* display_buffer;
+    struct mailbox* keybrd_buffer;
+    struct mailbox* flushed_buffer;
     struct thread* line_processing_thread;
 };
 
@@ -40,7 +40,8 @@ struct sub_data {
 static int MasterRead(struct vnode* node, struct transfer* tr) {  
     struct master_data* internal = node->data;
     while (tr->length_remaining > 0) {
-        char c = BlockingBufferGet(internal->display_buffer);
+        uint8_t c;
+        MailboxGet(internal->display_buffer, -1, &c);
         PerformTransfer(&c, tr, 1);
     }
 
@@ -54,7 +55,7 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     while (tr->length_remaining > 0) {
         char c;
         PerformTransfer(&c, tr, 1);
-        BlockingBufferAdd(internal->keybrd_buffer, c, true);
+        MailboxAdd(internal->keybrd_buffer, -1, c);
     }
 
     return 0;
@@ -64,9 +65,8 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct sub_data* internal = node->data;
     struct master_data* master_internal = internal->master->data;
 
-    // could add a 'BlockingBufferAddMany' call?
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
-        BlockingBufferAdd(master_internal->flushed_buffer, internal->line_buffer[i], true);
+        MailboxAdd(master_internal->flushed_buffer, -1, internal->line_buffer[i]);
     }
 
     internal->line_buffer_pos = 0;
@@ -105,7 +105,8 @@ static void LineProcessor(void* sub_) {
         bool echo = internal->termios.c_lflag & ECHO;
         bool canon = internal->termios.c_lflag & ICANON;
 
-        char c = BlockingBufferGet(master_internal->keybrd_buffer);
+        uint8_t c;
+        MailboxGet(master_internal->keybrd_buffer, -1, &c);
 
         /*
          * Must happen before we modify the line buffer (i.e. to add / backspace 
@@ -115,12 +116,12 @@ static void LineProcessor(void* sub_) {
         if (echo) {
             if (c == '\b' && canon) {
                 if (internal->line_buffer_pos > 0) {
-                    BlockingBufferAdd(master_internal->display_buffer, '\b', true);
-                    BlockingBufferAdd(master_internal->display_buffer, ' ', true);
-                    BlockingBufferAdd(master_internal->display_buffer, '\b', true);
+                    MailboxAdd(master_internal->display_buffer, -1, '\b');
+                    MailboxAdd(master_internal->display_buffer, -1, ' ');
+                    MailboxAdd(master_internal->display_buffer, -1, '\b');
                 }
             } else {
-                BlockingBufferAdd(master_internal->display_buffer, c, true);
+                MailboxAdd(master_internal->display_buffer, -1, c);
             }
         }
 
@@ -146,11 +147,11 @@ static int SubordinateRead(struct vnode* node, struct transfer* tr) {
         return 0;
     }
 
-    char c = BlockingBufferGet(master_internal->flushed_buffer);
+    uint8_t c;
+    MailboxGet(master_internal->flushed_buffer, -1, &c);
     PerformTransfer(&c, tr, 1);
 
-    int res = 0;
-    while (tr->length_remaining > 0 && !(res = BlockingBufferTryGet(master_internal->flushed_buffer, (uint8_t*) &c))) {
+    while (tr->length_remaining > 0 && MailboxGet(master_internal->flushed_buffer, 0, (uint8_t*) &c) == 0) {
         PerformTransfer(&c, tr, 1);
     }
 
@@ -169,7 +170,7 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
             return err;
         }
 
-        BlockingBufferAdd(master_internal->display_buffer, c, true);
+        MailboxAdd(master_internal->display_buffer, -1, c);
     }
     
     return 0;
@@ -197,9 +198,9 @@ void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
     struct sub_data* s_data = AllocHeap(sizeof(struct sub_data));
 
     m_data->subordinate = s;
-    m_data->display_buffer = BlockingBufferCreate(INTERNAL_BUFFER_SIZE);
-    m_data->keybrd_buffer = BlockingBufferCreate(INTERNAL_BUFFER_SIZE);
-    m_data->flushed_buffer = BlockingBufferCreate(FLUSHED_BUFFER_SIZE);
+    m_data->display_buffer = MailboxCreate(INTERNAL_BUFFER_SIZE);
+    m_data->keybrd_buffer = MailboxCreate(INTERNAL_BUFFER_SIZE);
+    m_data->flushed_buffer = MailboxCreate(FLUSHED_BUFFER_SIZE);
     m_data->line_processing_thread = CreateThread(LineProcessor, (void*) s, GetVas(), "line processor");
 
     s_data->master = m;

@@ -20,7 +20,7 @@ struct mailbox {
     struct semaphore* empty_sem;
     struct semaphore* add_mtx;
     struct semaphore* get_mtx;
-    struct spinlock inner_mtx;
+    struct semaphore* inner_mtx;
 };
 
 struct mailbox* MailboxCreate(int size) {
@@ -31,8 +31,8 @@ struct mailbox* MailboxCreate(int size) {
         .used_size = 0,
         .start_pos = 0,
         .end_pos = 0,
-        .full_sem = CreateSemaphore("mbfull", size, 0),
-        .empty_sem = CreateSemephore("mbempty", size, size),
+        .full_sem = CreateSemaphore("mbfull", size, size),
+        .empty_sem = CreateSemaphore("mbempty", size, 0),
         .add_mtx = CreateMutex("mbadd"),
         .get_mtx = CreateMutex("mbget"),
         .inner_mtx = CreateMutex("mbinner")
@@ -40,8 +40,14 @@ struct mailbox* MailboxCreate(int size) {
     return mbox;
 }
 
-// Add()            -> with timeout = 0, it acts like TryAdd()
-// WaitAddable()    -> with timeout = 0, it acts like IsAddable()
+void MailboxDestroy(struct mailbox* mbox) {
+    DestroySemaphore(mbox->full_sem, SEM_DONT_CARE);
+    DestroySemaphore(mbox->empty_sem, SEM_DONT_CARE);
+    DestroyMutex(mbox->add_mtx);
+    DestroyMutex(mbox->get_mtx);
+    DestroyMutex(mbox->inner_mtx);
+    FreeHeap(mbox);
+}
 
 static int MailboxWaitAddableInternal(struct mailbox* mbox, int timeout) {
     int res = AcquireMutex(mbox->add_mtx, timeout);
@@ -57,7 +63,7 @@ static int MailboxWaitAddableInternal(struct mailbox* mbox, int timeout) {
 }
 
 int MailboxWaitAddable(struct mailbox* mbox, int timeout) {
-    int res = MailboxWaitAddableInternal(mbox);
+    int res = MailboxWaitAddableInternal(mbox, timeout);
     if (res != 0) {
         return res;
     }
@@ -66,14 +72,14 @@ int MailboxWaitAddable(struct mailbox* mbox, int timeout) {
     return 0;
 }
 
-int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t data) {
-    int res = MailboxWaitAddable(mbox);
+int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c) {
+    int res = MailboxWaitAddableInternal(mbox, timeout);
     if (res != 0) {
         return res;
     }
 
     AcquireMutex(mbox->inner_mtx, -1);
-    mbox->buffer[mbox->end_pos] = c;
+    mbox->data[mbox->end_pos] = c;
     mbox->end_pos = (mbox->end_pos + 1) % mbox->total_size;
     mbox->used_size++;
     ReleaseMutex(mbox->inner_mtx);
@@ -82,4 +88,46 @@ int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t data) {
     return 0;
 }
 
-// the "GET" versions are the same except you swap empty_sem <---> full_sem, and use get_sem instead of add_sem
+
+
+
+static int MailboxWaitGettableInternal(struct mailbox* mbox, int timeout) {
+    int res = AcquireMutex(mbox->get_mtx, timeout);
+    if (res != 0) {
+        return res;
+    }
+    res = AcquireSemaphore(mbox->full_sem, timeout);
+    if (res != 0) {
+        ReleaseMutex(mbox->get_mtx);
+        return res;
+    }
+    return 0;
+}
+
+int MailboxWaitGettable(struct mailbox* mbox, int timeout) {
+    int res = MailboxWaitGettableInternal(mbox, timeout);
+    if (res != 0) {
+        return res;
+    }
+    ReleaseSemaphore(mbox->full_sem);    // undo what MailboxWaitGettableInternal did
+    ReleaseMutex(mbox->get_mtx);
+    return 0;
+}
+
+int MailboxGet(struct mailbox* mbox, int timeout, uint8_t* c) {
+    int res = MailboxWaitGettableInternal(mbox, timeout);
+    if (res != 0) {
+        return res;
+    }
+
+    AcquireMutex(mbox->inner_mtx, -1);
+    
+    *c = mbox->data[mbox->start_pos];
+    mbox->start_pos = (mbox->start_pos + 1) % mbox->total_size;
+    mbox->used_size--;
+
+    ReleaseMutex(mbox->inner_mtx);
+    ReleaseMutex(mbox->get_mtx);
+    ReleaseSemaphore(mbox->empty_sem);
+    return 0;
+}

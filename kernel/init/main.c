@@ -67,7 +67,7 @@ void InitUserspace(void) {
     size_t free = GetFreePhysKilobytes();
     size_t total = GetTotalPhysKilobytes();
     DbgScreenPrintf(
-        "NOS Kernel\n"
+        "\n\nNOS Kernel\n"
         "Copyright Alex Boxall 2022-2024\n\n"
         "%d / %d KB used (%d%% free)\n\n", 
         total - free, total, 100 * (free) / total
