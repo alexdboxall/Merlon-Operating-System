@@ -60,27 +60,6 @@ static int MasterWrite(struct vnode* node, struct transfer* tr) {
     return 0;
 }
 
-/*
-
-#define VNODE_WAIT_READ             (1 << 0)
-#define VNODE_WAIT_WRITE            (1 << 1)
-#define VNODE_WAIT_ERROR            (1 << 2)
-    int (*wait)(struct vnode* node, int flags, uint64_t timeout_ms);
-
-*/
-
-static int MasterWait(struct vnode* node, int flags, uint64_t timeout) {
-    (void) node;
-    (void) flags;
-    (void) timeout;
-
-    return ENOSYS;
-}
-
-static int SubordinateWait(struct vnode*, int, uint64_t) {
-    return ENOSYS;
-}
-
 static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct sub_data* internal = node->data;
     struct master_data* master_internal = internal->master->data;
@@ -199,13 +178,11 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
 static const struct vnode_operations master_operations = {
     .read           = MasterRead,
     .write          = MasterWrite,
-    .wait           = MasterWait,
 };
 
 static const struct vnode_operations subordinate_operations = {
     .read           = SubordinateRead,
     .write          = SubordinateWrite,
-    .wait           = SubordinateWait,
 };
 
 void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {

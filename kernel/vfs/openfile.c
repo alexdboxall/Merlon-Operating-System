@@ -54,9 +54,9 @@ void ReferenceOpenFile(struct open_file* file) {
     MAX_IRQL(IRQL_SCHEDULER);
 	assert(file != NULL);
 
-    AcquireSpinlockIrql(&file->reference_count_lock);
+    AcquireSpinlock(&file->reference_count_lock);
     file->reference_count++;
-    ReleaseSpinlockIrql(&file->reference_count_lock);
+    ReleaseSpinlock(&file->reference_count_lock);
 }
 
 /**
@@ -71,7 +71,7 @@ void DereferenceOpenFile(struct open_file* file) {
     MAX_IRQL(IRQL_SCHEDULER);
     assert(file != NULL);
 
-	AcquireSpinlockIrql(&file->reference_count_lock);
+	AcquireSpinlock(&file->reference_count_lock);
 
     assert(file->reference_count > 0);
     file->reference_count--;
@@ -80,11 +80,11 @@ void DereferenceOpenFile(struct open_file* file) {
         /*
         * Must release the lock before we delete it so we can put interrupts back on
         */
-        ReleaseSpinlockIrql(&file->reference_count_lock);
+        ReleaseSpinlock(&file->reference_count_lock);
         DereferenceVnode(file->node);
         FreeHeap(file);
         return;
     }
 
-    ReleaseSpinlockIrql(&file->reference_count_lock);
+    ReleaseSpinlock(&file->reference_count_lock);
 }

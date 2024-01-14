@@ -19,32 +19,32 @@ int RegisterIrqHandler(int irq_num, irq_handler_t handler) {
     }
 
     if (irq_table[irq_num] == NULL) {
-        irq_table[irq_num] = LinkedListCreate();
+        irq_table[irq_num] = ListCreate();
     }
 
-    LinkedListInsertEnd(irq_table[irq_num], (void*)(size_t) handler);
+    ListInsertEnd(irq_table[irq_num], (void*)(size_t) handler);
     return 0; 
 }
 
-void RespondToIrq(int irq_num, int required_irql, platform_irq_context_t* context) {
-    int irql = RaiseIrql(required_irql);
-    ArchSendEoi(irq_num);   /* this must be done after raising the IRQL */
+void RespondToIrq(int irq, int req_irl, platform_irq_context_t* context) {
+    int irql = RaiseIrql(req_irl);
+    ArchSendEoi(irq);
     
-    if (irq_table[irq_num] != NULL) {
-        struct linked_list_node* iter = LinkedListGetFirstNode(irq_table[irq_num]);
+    if (irq_table[irq] != NULL) {
+        struct linked_list_node* iter = ListGetFirstNode(irq_table[irq]);
         while (iter != NULL) {
-            irq_handler_t handler = (irq_handler_t)(size_t) LinkedListGetDataFromNode(iter);
+            irq_handler_t handler = (irq_handler_t) (size_t) ListGetDataFromNode(iter);
             assert(handler != NULL);
 
             /*
-            * Interrupt handlers return 0 if they could handle the IRQ (i.e. stop trying to handle it).
-            * Non-zero means 'leave this one for someone else'.
-            */
+             * Interrupt handlers return 0 if they handled the IRQ. Non-zero 
+             * means 'leave this one for someone else'.
+             */
             if (handler(context) == 0) {
                 break;
             }
 
-            iter = LinkedListGetNextNode(iter);
+            iter = ListGetNextNode(iter);
         }
     }
     

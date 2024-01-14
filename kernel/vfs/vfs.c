@@ -181,10 +181,10 @@ int AddVfsMount(struct vnode* node, const char* name) {
 		return status;
 	}
 
-    AcquireSpinlockIrql(&vfs_lock);
+    AcquireSpinlock(&vfs_lock);
 
     if (DoesMountPointExist(name) == EEXIST) {
-        ReleaseSpinlockIrql(&vfs_lock);
+        ReleaseSpinlock(&vfs_lock);
         return EEXIST;
     }
 
@@ -196,7 +196,7 @@ int AddVfsMount(struct vnode* node, const char* name) {
 
 	LogWriteSerial("MOUNTED TO THE VFS: %s\n", name);
 
-    ReleaseSpinlockIrql(&vfs_lock);
+    ReleaseSpinlock(&vfs_lock);
     return 0;
 }
 
@@ -211,7 +211,7 @@ int RemoveVfsMount(const char* name) {
 		return EINVAL;
 	}
 
-	AcquireSpinlockIrql(&vfs_lock);
+	AcquireSpinlock(&vfs_lock);
 
 	/*
 	* Scan through the mount table for the device
@@ -221,7 +221,7 @@ int RemoveVfsMount(const char* name) {
 
     struct mounted_file* actual = AvlTreeGet(mount_points, &target);
     if (actual == NULL) {
-        ReleaseSpinlockIrql(&vfs_lock);
+        ReleaseSpinlock(&vfs_lock);
         return ENODEV;
     }
 
@@ -238,7 +238,7 @@ int RemoveVfsMount(const char* name) {
     AvlTreeDelete(mount_points, actual);
     FreeHeap(actual->name);
 
-    ReleaseSpinlockIrql(&vfs_lock);
+    ReleaseSpinlock(&vfs_lock);
     return 0;
 }
 
@@ -514,10 +514,8 @@ static int FileAccess(struct open_file* file, struct transfer* io, bool write) {
     }
 	
 	if (file->flags & O_NONBLOCK) {
-		int block_status = VnodeOpWait(file->node, (write ? VNODE_WAIT_WRITE : VNODE_WAIT_READ), 0);
-		if (block_status != 0) {
-			return block_status;
-		}
+		// TODO: probably need to pass flag to VnodeOpRead/VnodeOpWrite about
+		// the blockability of the call
 	}
 
 	if (write) {

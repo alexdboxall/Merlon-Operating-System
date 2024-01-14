@@ -2,24 +2,6 @@
 
 #include <assert.h>
 
-struct irql_deferment {
-    void (*handler)(void*);
-    void* context;
-};
-
-/**
- * SIMPLE TABLE
- *
- *                  Can page fault?     Can task switch?    Can use drivers?    Can have IRQs?
- * IRQL_STANDARD    YES                 YES                 YES                 YES
- * IRQL_PAGE_FAULT  SORT OF             YES                 YES                 YES                     (only the page fault handler can generate a nested page fault, e.g. handling some COW stuff)
- * IRQL_SCHEDULER   NO                  SORT OF             YES                 YES                     (only the scheduler can make a task switch occur, others get postponed)
- * IRQL_DRIVER      NO                  NO                  SORT OF             YES                     (only higher priority drivers can be used)
- * IRQL_TIMER       NO                  NO                  NO                  NO                      (but the timer handler jumps up to this level)                  
- * IRQL_HIGH        NO                  NO                  NO                  NO
- *
- */
-
 /*
  * Scheduler works. Page faults are allowed.
  */

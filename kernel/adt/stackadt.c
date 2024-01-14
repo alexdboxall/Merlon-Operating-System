@@ -11,29 +11,29 @@ struct stack_adt {
 
 struct stack_adt* StackAdtCreate(void) {
     struct stack_adt* stack = AllocHeap(sizeof(struct stack_adt));
-    stack->list = LinkedListCreate();
+    stack->list = ListCreate();
     return stack;
 }
 
 void StackAdtDestroy(struct stack_adt* stack) {
-    LinkedListDestroy(stack->list);
+    ListDestroy(stack->list);
     FreeHeap(stack);
 }
 
 void StackAdtPush(struct stack_adt* stack, void* data) {
-    LinkedListInsertStart(stack->list, data);
+    ListInsertStart(stack->list, data);
 }
 
 void* StackAdtPeek(struct stack_adt* stack) {
-    return LinkedListGetDataFromNode(LinkedListGetFirstNode(stack->list));
+    return ListGetDataFromNode(ListGetFirstNode(stack->list));
 }
 
 void* StackAdtPop(struct stack_adt* stack) {
     void* data = StackAdtPeek(stack);
-    LinkedListDeleteIndex(stack->list, 0);
+    ListDeleteIndex(stack->list, 0);
     return data;
 }
 
 int StackAdtSize(struct stack_adt* stack) {
-    return LinkedListSize(stack->list);
+    return ListSize(stack->list);
 }

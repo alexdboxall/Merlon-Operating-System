@@ -10,7 +10,8 @@
 #include <vfs.h>
 #include <filedes.h>
 
-#define ALLOWABLE_FLAGS (O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC | O_APPEND | O_NONBLOCK | O_CLOEXEC | O_DIRECT | O_ACCMODE)
+#define ALLOWABLE_FLAGS (O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC | O_APPEND \
+						| O_NONBLOCK | O_CLOEXEC | O_DIRECT | O_ACCMODE)
 
 int SysOpen(size_t filename, size_t flags, size_t mode, size_t fdout, size_t) {
 	char path[400];
@@ -41,8 +42,6 @@ int SysOpen(size_t filename, size_t flags, size_t mode, size_t fdout, size_t) {
 		RemoveFileDescriptor(table, file);
 		return res;
 	} 
-
-	LogWriteSerial("read is giving fd %d => openfile 0x%X\n", fd, file);
 
 	return 0;
 }

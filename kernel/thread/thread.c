@@ -25,40 +25,33 @@ static struct spinlock innermost_lock;
 
 /*
 * Local fixed sized arrays and variables need to fit on the kernel stack.
-* Allocate at least 8KB (depending on the system page size).
-*
-* Please note that overflowing the kernel stack into non-paged memory will lead to
-* an immediate and unrecoverable crash on most systems.
 */
-#define DEFAULT_KERNEL_STACK_KB   BytesToPages(1024 * 16) * ARCH_PAGE_SIZE / 1024
+#define DEFAULT_KERNEL_STACK_KB  BytesToPages(1024 * 16) * ARCH_PAGE_SIZE / 1024
 
 /*
-* The user stack is allocated as needed - this is the maximum size of the stack in
-* user virtual memory. (However, a larger max stack means more page tables need to be
-* allocated to store it - even if there are no actual stack pages in yet).
-*
-* On x86, allocating a 4MB region only requires one page table, hence we'll use that.
-*/
+ * The user stack is allocated as needed - this is the maximum size of the stack 
+ * in user virtual memory.
+ */
 #define USER_STACK_MAX_SIZE BytesToPages(1024 * 1024 * 4) * ARCH_PAGE_SIZE
 
 
 #define TIMESLICE_LENGTH_MS 50
 
 /*
-* Kernel stack overflow normally results in a total system crash/reboot because 
-* fault handlers will not work (they push data to a non-existent stack!).
-*
-* We will fill pages at the end of the stack with a certain value (CANARY_VALUE),
-* and then we can check if they have been modified. If they are, we will throw a 
-* somewhat nicer error than a system reboot.
-*
-* Note that we can still overflow 'badly' if someone makes an allocation on the
-* stack lwhich is larger than the remaining space on the stack and the canary size
-* combined.
-*
-* If the canary page is only partially used for the canary, the remainder of the
-* page is able to be used normally.
-*/
+ * Kernel stack overflow normally results in a total system crash/reboot because 
+ * fault handlers will not work (they push data to a non-existent stack!).
+ *
+ * We will fill pages at the end of the stack with a certain value (CANARY_VALUE),
+ * and then we can check if they have been modified. If they are, we will throw a 
+ * somewhat nicer error than a system reboot.
+ *
+ * Note that we can still overflow 'badly' if someone makes an allocation on the
+ * stack lwhich is larger than the remaining space on the stack and the canary size
+ * combined.
+ *
+ * If the canary page is only partially used for the canary, the remainder of the
+ * page is able to be used normally.
+ */
 #ifdef NDEBUG
 #define NUM_CANARY_PAGES 0
 #else
@@ -113,7 +106,6 @@ static size_t CreateUserStack(int size) {
     * All user stacks share the same area of virtual memory, but have different
     * mappings to physical memory.
     */
-
     int total_bytes = BytesToPages(size) * ARCH_PAGE_SIZE;
     size_t stack_base = ARCH_USER_STACK_LIMIT - total_bytes;
     size_t actual_base = MapVirt(0, stack_base, total_bytes, VM_READ | VM_WRITE | VM_USER | VM_LOCAL, NULL, 0);
@@ -169,9 +161,9 @@ static int GetNextThreadId(void) {
         InitSpinlock(&thread_id_lock, "thread id", IRQL_SCHEDULER);
     }
 
-    AcquireSpinlockIrql(&thread_id_lock);
+    AcquireSpinlock(&thread_id_lock);
     int result = next_thread_id++;
-    ReleaseSpinlockIrql(&thread_id_lock);
+    ReleaseSpinlock(&thread_id_lock);
     return result;
 }
 
@@ -254,7 +246,7 @@ void ThreadInitialisationHandler(void) {
      * This normally happends in the schedule code, just after the call to ArchSwitchThread,
      * but we forced ourselves to jump here instead, so we'd better do it now.
      */
-    ReleaseSpinlockIrql(&innermost_lock);
+    ReleaseSpinlock(&innermost_lock);
 
     UpdateTimesliceExpiry();
 
@@ -301,11 +293,11 @@ static void UpdatePriority(bool yielded) {
 }
 
 void LockSchedulerX(void) {
-    AcquireSpinlockIrql(&scheduler_lock);
+    AcquireSpinlock(&scheduler_lock);
 }
 
 void UnlockSchedulerX(void) {
-    ReleaseSpinlockIrql(&scheduler_lock);
+    ReleaseSpinlock(&scheduler_lock);
 }
 
 void AssertSchedulerLockHeld(void) {
@@ -322,7 +314,7 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
      * calls GetCpu(), we'll be in a bit of strife.
      */
     struct cpu* cpu = GetCpu();
-    AcquireSpinlockIrql(&innermost_lock);
+    AcquireSpinlock(&innermost_lock);
 
     if (new_thread->vas != old_thread->vas) {
         SetVas(new_thread->vas);
@@ -336,7 +328,7 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
      * This code doesn't get called on the first time a thread gets run!! It jumps straight from
      * ArchSwitchThread to ThreadInitialisationHandler!
      */
-    ReleaseSpinlockIrql(&innermost_lock);
+    ReleaseSpinlock(&innermost_lock);
 
     UpdateTimesliceExpiry();
 }

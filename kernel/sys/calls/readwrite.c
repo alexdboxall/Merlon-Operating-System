@@ -10,13 +10,9 @@
 #include <filedes.h>
 
 int SysReadWrite(size_t fd, size_t size, size_t buffer, size_t br_out, size_t write) {
-	LogWriteSerial("read/write is giving fd %d\n", fd);
-
 	struct filedes_table* table = GetFileDescriptorTable(GetProcess());
 	struct open_file* file;
 	int res = GetFileFromDescriptor(table, fd, &file);
-
-	LogWriteSerial(" ==> openfile = 0x%X\n", file);
 
 	if (file == NULL || res != 0) {
 		return res;
@@ -26,7 +22,9 @@ int SysReadWrite(size_t fd, size_t size, size_t buffer, size_t br_out, size_t wr
         file->seek_position = file->node->stat.st_size;
 	}
 
-	struct transfer io = CreateTransferWritingToUser((uint8_t*) buffer, size, file->seek_position);
+	struct transfer io = CreateTransferWritingToUser(
+		(uint8_t*) buffer, size, file->seek_position
+	);
 	io.direction = write ? TRANSFER_WRITE : TRANSFER_READ;
 	
 	if ((res = (write ? WriteFile : ReadFile)(file, &io))) {

@@ -27,65 +27,51 @@
 
 /*
  * Next steps:
+ * - syscall for waitpid
+ * - fork
  * - dynamic libraries (e.g. c.lib)
  * - C standard library
+ * - getcwd / chdir
  * - complete-enough CLI OS
  *          terminal that supports pipes, redirection and background processes
- *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, pause, rmtree, rmdir, cls, copytree, link, 
- *                  ...ttyname, sleep, exit
+ *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, 
+ *             pause, rmtree, rmdir, cls, copytree, link, ttyname, sleep, exit
  *          port zlib, nasm
- * 
- * 
  * 
  * - floppy driver
  * - FAT32 driver
  * - floating point support (init and task switching)
  * - disk caching
- * - shutdown needs to close the entire VFS tree (e.g. so buffers can be flushed, etc).
+ * - shutdown needs to close the entire VFS tree (e.g. so buffers can be 
+ *              flushed, etc).
  * - recycling vnodes if opening same file more than once (required by st_nlink)
- *      -> probably a VFS-wide solution that uses AVL trees to cache the results of follow?
- *      -> obviously need a way for FS drivers to keep it in sync, e.g. on deletion, ioctl, etc.
+ *      -> probably a VFS-wide solution that uses AVL trees to cache the results 
+ *         of follow?
+ *      -> obviously need a way for FS drivers to keep it in sync, e.g. on 
+ *         deletion, ioctl, etc.
  * - initrd and boot system
  * - more syscalls
- * - document exactly what conditions need to be checked in the vnode_ops layer, and which ones are taken care of by
- *      the VFS layer, so we don't get people checking the same thing twice
+ * - signals
+ * - document exactly what conditions need to be checked in the vnode_ops layer,
+ *      and which ones are taken care of by the VFS layer, so we don't get 
+ *      people checking the same thing twice
  * - check all E... return codes... 
  * - VnodeOpWait, select/poll syscalls
- * - everyone create vnodes and open files willy-nilly - check the reference counting, especially on closing is 
- *      all correct (especially around the virtual memory manager...). does CloseFile do what you expect??
- *      I THINK OPEN FILES SHOULD HOLD INCREMENT THE VNODE REFERENCE ON CREATION, AND DECREMENT WHEN THE OPEN FILE
- *      GOES TO ZERO.
- * 
- *      that way it will go a bit like this:
- *      
- *          after call to:      vnode refs      openfile refs
- *          Create vnode        1               0
- *          Create openfile     2               1
- *          CloseFile()         1               0 -> gets destroyed
- *               ->             0 
- * 
- *          CloseFile() closes both the openfile and the vnode.
- * 
- *     And then if the VMM gets involved...
- * 
- *          after call to:      vnode refs      openfile refs
- *          Create vnode        1               0
- *          Create openfile     2               1
- *          MapVirt(10 pgs)     2               11
- *          CloseFile()         1               10
- *          UnmapVirt(10 pgs)   1               0 -> gets destroyed, and in doing so,
- *            ...               -> 0 gets destroyed
- * 
- *    OK - that's been implemented now... now to see if it works...
- * 
+ * - everyone create vnodes and open files willy-nilly - check the reference 
+ *      counting, especially on closing is all correct (especially around the 
+ *      virtual memory manager...). does CloseFile do what you expect??
  * - MAP_FIXED
- * 
  */
 
 void InitUserspace(void) {
     size_t free = GetFreePhysKilobytes();
     size_t total = GetTotalPhysKilobytes();
-    DbgScreenPrintf("NOS Kernel\nCopyright Alex Boxall 2022-2024\n\n%d / %d KB used (%d%% free)\n\n", total - free, total, 100 * (free) / total);
+    DbgScreenPrintf(
+        "NOS Kernel\n"
+        "Copyright Alex Boxall 2022-2024\n\n"
+        "%d / %d KB used (%d%% free)\n\n", 
+        total - free, total, 100 * (free) / total
+    );
     CreateUsermodeProcess(NULL, "sys:/init.exe");
 }
 
@@ -114,23 +100,20 @@ void InitSystemMounts(void) {
 #include <machine/portio.h>
 static void InitSerialDebugging(void) {
     const int PORT = 0x3F8;
-    outb(PORT + 1, 0x00);    // Disable all interrupts
-    outb(PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-    outb(PORT + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
-    outb(PORT + 1, 0x00);    //                  (hi byte)
-    outb(PORT + 3, 0x03);    // 8 bits, no parity, one stop bit
-    outb(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
-    outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
-    outb(PORT + 4, 0x1E);    // Set in loopback mode, test the serial chip
-    outb(PORT + 0, 0xAE);    // Test serial chip (send byte 0xAE and check if serial returns same byte)
+    outb(PORT + 1, 0x00);
+    outb(PORT + 3, 0x80);
+    outb(PORT + 0, 0x03);
+    outb(PORT + 1, 0x00);
+    outb(PORT + 3, 0x03);
+    outb(PORT + 2, 0xC7);
+    outb(PORT + 4, 0x0B);
+    outb(PORT + 4, 0x1E);
+    outb(PORT + 0, 0xAE);
 
-    // Check if serial is faulty (i.e: not same byte as sent)
     if(inb(PORT + 0) != 0xAE) {
         return;
     }
 
-    // If serial is not faulty set it in normal operation mode
-    // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
     outb(PORT + 4, 0x0F);
 }
 
@@ -153,8 +136,8 @@ void InitThread(void*) {
 
     while (true) {
         /*
-         * We crash in strange and rare conditions if this thread's stack gets removed, so we will
-         * ensure we don't terminate it.
+         * We crash in strange and rare conditions if this thread's stack gets 
+         * removed, so we will ensure we don't terminate it.
          */
         SleepMilli(100000);
     }
@@ -164,23 +147,22 @@ void KernelMain(struct kernel_boot_info* boot_info) {
     InitSerialDebugging();
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
-    LogWriteSerial("Boot info table is at 0x%X\n", boot_info);
-    LogWriteSerial("RAM table is at 0x%X\n", boot_info->ram_table);
-
-    InitCpuTable();
-    InitTfw();
-    InitPhys(boot_info);
-    InitIrql();
-    InitVfs();
-    InitTimer();
-    InitScheduler();
+    InitCpuTable(); LogWriteSerial("A\n");
+    InitTfw(); LogWriteSerial("B\n");
+    InitPhys(boot_info); LogWriteSerial("C\n");
+    InitIrql(); LogWriteSerial("D\n");
+    InitVfs(); LogWriteSerial("E\n");
+    InitTimer(); LogWriteSerial("F\n");
+    InitScheduler(); LogWriteSerial("G\n");
     InitDiskUtil();
     InitHeap();
     InitBootstrapCpu();
     InitVirt();
     ReinitPhys();
     InitOtherCpu();
-    CreateThreadEx(InitThread, NULL, GetVas(), "init", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0);
+    CreateThreadEx(
+        InitThread, NULL, GetVas(), "init", NULL, 
+        SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0
+    );
     StartMultitasking();
 }
-

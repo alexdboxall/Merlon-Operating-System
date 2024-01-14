@@ -57,7 +57,6 @@ struct vnode_operations {
     int (*truncate)(struct vnode* node, off_t offset);
     int (*create)(struct vnode* node, struct vnode** out, const char* name, int flags, mode_t mode);
     int (*follow)(struct vnode* node, struct vnode** out, const char* name);
-    int (*wait)(struct vnode* node, int flags, uint64_t timeout_ms);
 
     /*
      * Must fail with EISDIR on directories. Should only decrement st.st_nlink, 
@@ -107,6 +106,5 @@ int VnodeOpTruncate(struct vnode* node, off_t offset);
 uint8_t VnodeOpDirentType(struct vnode* node);
 int VnodeOpCreate(struct vnode* node, struct vnode** out, const char* name, int flags, mode_t mode);
 int VnodeOpFollow(struct vnode* node, struct vnode** out, const char* name);
-int VnodeOpWait(struct vnode* node, int flags, uint64_t timeout_ms);
 int VnodeOpUnlink(struct vnode* node);
 int VnodeOpDelete(struct vnode* node);

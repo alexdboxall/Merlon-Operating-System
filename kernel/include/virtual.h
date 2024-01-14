@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <common.h>
+#include <arch.h>
 
 #define VM_READ         1
 #define VM_WRITE        2
@@ -81,7 +82,6 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags);
 int WipeUsermodePages(void);
 
 size_t GetPhysFromVirt(size_t virtual);
-
 
 struct vas* GetKernelVas(void);     // a kernel vas
 struct vas* GetVas(void);           // current vas

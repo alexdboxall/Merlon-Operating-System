@@ -49,7 +49,7 @@ static size_t total_pages = 0;
  * The highest physical page number that exists on this system. Gets set during 
  * InitPhys() when scanning the system's memory map.
  */
-static size_t highest_valid_page_index = 0;
+static size_t highest_page_index = 0;
 
 static inline bool IsBitmapEntryFree(size_t index) {
     size_t base = index / BITS_PER_ENTRY;
@@ -74,7 +74,7 @@ static inline void DeallocateBitmapEntry(size_t index) {
 }
 
 static inline void PushIndex(size_t index) {
-    assert(index <= highest_valid_page_index);
+    assert(index <= highest_page_index);
     allocation_stack[allocation_stack_pointer++] = index;
 }
 
@@ -90,7 +90,11 @@ static inline size_t PopIndex(void) {
 static void RemoveStackEntry(size_t index) {
     for (size_t i = 0; i < allocation_stack_pointer; ++i) {
         if (allocation_stack[i] == index) {
-            memmove(allocation_stack + i, allocation_stack + i + 1, (--allocation_stack_pointer - i) * sizeof(size_t));
+            memmove(
+                allocation_stack + i, 
+                allocation_stack + i + 1, 
+                (--allocation_stack_pointer - i) * sizeof(size_t)
+            );
             return;
         }
     }
@@ -107,14 +111,14 @@ void DeallocPhys(size_t addr) {
 
     size_t page = addr / ARCH_PAGE_SIZE;
 
-    AcquireSpinlockIrql(&phys_lock);
+    AcquireSpinlock(&phys_lock);
 
     ++pages_left;
     DeallocateBitmapEntry(page);
     if (allocation_stack != NULL) {
         PushIndex(page);
     }
-    ReleaseSpinlockIrql(&phys_lock);
+    ReleaseSpinlock(&phys_lock);
 
     if (pages_left > NUM_EMERGENCY_PAGES * 2) {
         SetDiskCaches(DISKCACHE_NORMAL);
@@ -122,12 +126,15 @@ void DeallocPhys(size_t addr) {
 }
 
 /**
- * Deallocates a section of physical memory that was allocated with AllocPhysContinuous(). The entire block
- * of memory must be deallocated at once, i.e. the start address of the memory should be passed in. Does not
+ * Deallocates a section of physical memory that was allocated with 
+ * AllocPhysContinuous(). The entire block of memory must be deallocated at 
+ * once, i.e. the start address of the memory should be passed in. Does not
  * affect virtual mappings - that should be taken care of before deallocating.
  * 
- * @param addr The address of the section of memory to deallocate. Must be page-aligned.
- * @param size The size of the allocation. This should be the same value that was passed into AllocPhysContinuous().
+ * @param addr The address of the section of memory to deallocate. Must be
+ *             page-aligned.
+ * @param size The size of the allocation. This should be the same value that 
+ *             was passed into AllocPhysContinuous().
  */
 void DeallocPhysContiguous(size_t addr, size_t bytes) {
     for (size_t i = 0; i < BytesToPages(bytes); ++i) {
@@ -163,7 +170,7 @@ static void EvictPagesIfNeeded(void*) {
 size_t AllocPhys(void) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    AcquireSpinlockIrql(&phys_lock);
+    AcquireSpinlock(&phys_lock);
 
     if (pages_left == 0) {
         Panic(PANIC_OUT_OF_PHYS);
@@ -187,7 +194,7 @@ size_t AllocPhys(void) {
 
     AllocateBitmapEntry(index);
     --pages_left;
-    ReleaseSpinlockIrql(&phys_lock);
+    ReleaseSpinlock(&phys_lock);
 
     return index * ARCH_PAGE_SIZE;
 }
@@ -212,7 +219,9 @@ size_t AllocPhys(void) {
  * @return The start address of the returned physical memory area. If the 
  *         request could not be satisfied, 0 is returned.
  */
-size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_t boundary) {
+size_t AllocPhysContiguous(
+    size_t bytes, size_t min_addr, size_t max_addr, size_t boundary
+) {
     /*
      * This function should not be called before the stack allocator is setup.
      * (There is no need for InitVirt() to use this function, and so checking 
@@ -224,17 +233,17 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
 
     size_t pages = BytesToPages(bytes);
     size_t min_index = (min_addr + ARCH_PAGE_SIZE - 1) / ARCH_PAGE_SIZE;
-    size_t max_index = max_addr == 0 ? highest_valid_page_index + 1 : max_addr / ARCH_PAGE_SIZE;
+    size_t max_index = max_addr == 0 ? highest_page_index + 1 : max_addr / ARCH_PAGE_SIZE;
     size_t count = 0;
 
-    AcquireSpinlockIrql(&phys_lock);
+    AcquireSpinlock(&phys_lock);
 
     /*
      * We need to check we won't try to over-allocate memory, or allocate so
      * much memory that it puts us in a critical position.
      */
     if (pages + NUM_EMERGENCY_PAGES >= pages_left) {
-        ReleaseSpinlockIrql(&phys_lock);
+        ReleaseSpinlock(&phys_lock);
         return 0;
     }
 
@@ -243,7 +252,8 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
          * Reset the counter if we are no longer contiguous, or if we have cross
          * a boundary that we can't cross.
          */
-        if (!IsBitmapEntryFree(index) || (boundary != 0 && (index % (boundary / ARCH_PAGE_SIZE) == 0))) {
+        bool cross_boundary = (boundary != 0 && (index % (boundary / ARCH_PAGE_SIZE) == 0));
+        if (!IsBitmapEntryFree(index) || cross_boundary) {
             count = 0;
             continue;
         }
@@ -260,12 +270,12 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
                 ++start_index;
             }
 
-            ReleaseSpinlockIrql(&phys_lock);
+            ReleaseSpinlock(&phys_lock);
             return start_index * ARCH_PAGE_SIZE;
         }
     }
 
-    ReleaseSpinlockIrql(&phys_lock);
+    ReleaseSpinlock(&phys_lock);
     return 0;
 }
 
@@ -276,8 +286,6 @@ size_t AllocPhysContiguous(size_t bytes, size_t min_addr, size_t max_addr, size_
  * This will be slow, but is only needed until ReinitHeap() gets called.
  */
 void InitPhys(struct kernel_boot_info* boot_info) {
-    LogWriteSerial("InitPhys...\n");
-    
     InitSpinlock(&phys_lock, "phys", IRQL_SCHEDULER);
 
 	/*
@@ -303,8 +311,8 @@ void InitPhys(struct kernel_boot_info* boot_info) {
                 ++pages_left;
                 ++total_pages;
 
-                if (first_page > highest_valid_page_index) {
-                    highest_valid_page_index = first_page;
+                if (first_page > highest_page_index) {
+                    highest_page_index = first_page;
                 }
 
                 ++first_page;
@@ -315,23 +323,21 @@ void InitPhys(struct kernel_boot_info* boot_info) {
     MarkTfwStartPoint(TFW_SP_AFTER_PHYS);
 }
 
+/*
+ * Save extra physical memory on by deallocating the memory in the bitmap that 
+ * can't be reached (due to the system not having that much memory).
+ */
 static void ReclaimBitmapSpace(void) {
-    /*
-     * Save extra physical memory on by deallocating the memory in the bitmap 
-     * that can't be reached (due to the system not having memory that goes up 
-     * that high).
-     */
-    size_t unreachable_pages = MAX_MEMORY_PAGES - (highest_valid_page_index + 1);
-    size_t unreachable_entries = unreachable_pages / BITS_PER_ENTRY;
-    size_t unreachable_bitmap_pages = unreachable_entries / ARCH_PAGE_SIZE;
-
+    size_t unreachable_pages = MAX_MEMORY_PAGES - (highest_page_index + 1);
+    size_t unreachable_bitmap_pages = (unreachable_pages / BITS_PER_ENTRY) / ARCH_PAGE_SIZE;
     size_t end_bitmap = ((size_t) allocation_bitmap) + sizeof(allocation_bitmap);
     
     /*
      * Round down, otherwise other kernel data in the same page as the end of 
      * the bitmap  will also be counted as 'free', causing memory corruption.
      */
-    size_t unreachable_region = ((end_bitmap - ARCH_PAGE_SIZE * unreachable_bitmap_pages)) & ~(ARCH_PAGE_SIZE - 1);
+    size_t unreachable_region = ((end_bitmap - ARCH_PAGE_SIZE * unreachable_bitmap_pages));
+    unreachable_region &= ~(ARCH_PAGE_SIZE - 1);
 
     while (unreachable_bitmap_pages--) {
         DeallocPhys(ArchVirtualToPhysical(unreachable_region));
@@ -341,15 +347,16 @@ static void ReclaimBitmapSpace(void) {
 }
 
 /**
- * Reinitialises the physical memory manager with a constant-time page allocation system.
- * Must be called after virtual memory has been initialised. Must only be called once. Must
- * be called before calling AllocPageContigous() is called. Should be called as soon as
- * possible after virtual memory is available.
+ * Reinitialises the physical memory manager with a constant-time page 
+ * allocation system. Must be called after virtual memory has been initialised. 
  */
 void ReinitPhys(void) {
     assert(allocation_stack == NULL);
 
-    allocation_stack = (size_t*) MapVirt(0, 0, (highest_valid_page_index + 1) * sizeof(size_t), VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+    allocation_stack = (size_t*) MapVirt(
+        0, 0, (highest_page_index + 1) * sizeof(size_t), 
+        VM_READ | VM_WRITE | VM_LOCK, NULL, 0
+    );
     
     for (size_t i = 0; i < MAX_MEMORY_PAGES; ++i) {
         if (IsBitmapEntryFree(i)) {

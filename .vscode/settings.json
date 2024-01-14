@@ -145,7 +145,8 @@
         "stdarg.h": "c",
         "stdio.h": "c",
         "bootloader.h": "c",
-        "alloc.h": "c"
+        "alloc.h": "c",
+        "wait.h": "c"
     },
     "files.exclude": {
         "**/.git": true,
@@ -154,5 +155,7 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true
-    }
+    },
+    "editor.fontLigatures": false,
+    "editor.fontWeight": "normal"
 }

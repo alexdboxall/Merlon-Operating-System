@@ -2,17 +2,17 @@
 
 #include <stdbool.h>
 
-struct priority_queue;
+struct heap_adt;
 
-struct priority_queue_result {
+struct heap_adt_result {
     uint64_t priority;
     void* data;
 };
 
-struct priority_queue* PriorityQueueCreate(int capacity, bool max, int element_width);
-void PriorityQueueInsert(struct priority_queue* queue, void* elem, uint64_t priority);
-struct priority_queue_result PriorityQueuePeek(struct priority_queue* queue);
-void PriorityQueuePop(struct priority_queue* queue);
-int PriorityQueueGetCapacity(struct priority_queue* queue);
-int PriorityQueueGetUsedSize(struct priority_queue* queue);
-void PriorityQueueDestroy(struct priority_queue* queue);
+struct heap_adt* HeapAdtCreate(int capacity, bool max, int element_width);
+void HeapAdtInsert(struct heap_adt* queue, void* elem, uint64_t priority);
+struct heap_adt_result HeapAdtPeek(struct heap_adt* queue);
+void HeapAdtPop(struct heap_adt* queue);
+int HeapAdtGetCapacity(struct heap_adt* queue);
+int HeapAdtGetUsedSize(struct heap_adt* queue);
+void HeapAdtDestroy(struct heap_adt* queue);

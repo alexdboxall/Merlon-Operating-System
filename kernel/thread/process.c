@@ -51,9 +51,9 @@ static int ProcessTableComparator(void* a_, void* b_) {
 static pid_t AllocateNextPid(void) {
     static pid_t next_pid = 1;
 
-    AcquireSpinlockIrql(&pid_lock);
+    AcquireSpinlock(&pid_lock);
     pid_t pid = next_pid++;
-    ReleaseSpinlockIrql(&pid_lock);
+    ReleaseSpinlock(&pid_lock);
 
     return pid;
 }
@@ -144,7 +144,7 @@ struct process* ForkProcess(void) {
     //       the open files, etc.
 
 
-    // TODO: copy file descriptor table
+    // TODO: file descriptor table...
 
     new_process->vas = CopyVas();
     //TODO: need to grab the first thread (I don't think we've ordered threads by thread id yet in the AVL)

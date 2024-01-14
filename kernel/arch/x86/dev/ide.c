@@ -17,6 +17,7 @@
 #include <diskutil.h>
 
 #define MAX_TRANSFER_SIZE (1024 * 16)
+#define GET_BASE(ide) (ide->disk_num >= 2 ? ide->secondary_base : ide->primary_base)
 
 struct semaphore* ide_lock = NULL;
 
@@ -35,24 +36,15 @@ struct ide_data {
 };
 
 int IdeCheckError(struct ide_data* ide) {
-    uint16_t base = ide->disk_num >= 2 ? ide->secondary_base : ide->primary_base;
-
-    uint8_t status = inb(base + 0x7);
-    if (status & 0x01) {
-        return EIO;
-
-    } else if (status & 0x20) {
-        return EIO;
-
-    } else if (!(status & 0x08)) {
+    uint8_t status = inb(GET_BASE(ide) + 0x7);
+    if ((status & 0x01) || (status & 0x20) || !(status & 0x08)) {
         return EIO;
     }
-
     return 0;
 }
 
 int IdePoll(struct ide_data* ide) {
-    uint16_t base = ide->disk_num >= 2 ? ide->secondary_base : ide->primary_base;
+    uint16_t base = GET_BASE(ide);
     uint16_t alt_status_reg = ide->disk_num >= 2 ? ide->secondary_alternative : ide->primary_alternative;
 
     /*
@@ -62,11 +54,6 @@ int IdePoll(struct ide_data* ide) {
         inb(alt_status_reg);
     }
 
-    /*
-    * Wait for the device to not be busy. We have a timeout in case the
-    * device is faulty, we don't want to be in an endless loop and freeze
-    * the kernel.
-    */
     int timeout = 0;
     while (inb(base + 0x7) & 0x80) {
         if (HasBeenSignalled()) {
@@ -83,23 +70,27 @@ int IdePoll(struct ide_data* ide) {
     return 0;
 }
 
+static void FlushOnDiskBuffer(struct ide_data* ide) {
+    outb(GET_BASE(ide) + 0x7, 0xE7);
+    IdePoll(ide);
+}
+
 /*
 * Read or write the primary ATA drive on the first controller. We use LBA28, 
 * so we are limited to a 28 bit sector number (i.e. disks up to 128GB in size)
+* 
+* TODO: we should ensure all disks go through the diskbuffer system (even if
+* the buffer gets freed after transferring back to the calling struct transfer)
+* so that we can just use that buffer as a safe (VM_LOCKED) buffer - avoiding 
+* the need for a secondary transfer buffer here.
+*
+* TODO: should use IRQs (see xv6)
+* TODO: should have a i/o queue (see xv6)
 */
 static int IdeIo(struct ide_data* ide, struct transfer* io) {
     EXACT_IRQL(IRQL_STANDARD);
     int disk_num = ide->disk_num;
     
-    /*
-    * IDE devices do not contain an (accessible) disk buffer in PIO mode, as
-    * they transfer data through the IO ports. Hence we must read/write into
-    * this buffer first, and then move it safely to the destination. 
-    * (we could use DMA instead, but PIO is simpler)
-    * 
-    * Allow up to 4KB sector sizes. Make sure there is enough room on the
-    * stack to handle this.
-    */
     uint16_t* buffer = ide->transfer_buffer;
 
     int sector = io->offset / ide->sector_size;
@@ -115,14 +106,10 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
         return EINVAL;
     }
 
-    uint16_t base = disk_num >= 2 ? ide->secondary_base : ide->primary_base;
+    uint16_t base = GET_BASE(ide);
     uint16_t dev_ctrl_reg = disk_num >= 2 ? ide->secondary_alternative : ide->primary_alternative;
 
-    int max_sectors_at_once = MAX_TRANSFER_SIZE / ide->sector_size;
-    if (max_sectors_at_once > 255) {
-        // hardware limitation
-        max_sectors_at_once = 255;
-    }
+    int max_sectors_at_once = MIN(255, MAX_TRANSFER_SIZE / ide->sector_size);
 
     AcquireSemaphore(ide_lock, -1);
 
@@ -138,42 +125,17 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
             PerformTransfer(buffer, io, ide->sector_size);
         }
 
-        /*
-        * Send a whole heap of flags and the high 4 bits of the LBA to the controller.
-        */
         outb(base + 0x6, 0xE0 | ((disk_num & 1) << 4) | ((sector >> 24) & 0xF));
-
-        /*
-        * Disable interrupts, we are going to use polling.
-        */
         outb(dev_ctrl_reg, 2);
-
-        /*
-        * May not be needed, but it doesn't hurt to do it.
-        */
         outb(base + 0x1, 0x00);
-
-        /*
-        * Send the number of sectors, and the sector's LBA.
-        */
         outb(base + 0x2, sectors_in_this_transfer);
         outb(base + 0x3, (sector >> 0) & 0xFF);
         outb(base + 0x4, (sector >> 8) & 0xFF);
         outb(base + 0x5, (sector >> 16) & 0xFF);
-
-        /*
-        * Send either the read or write command.
-        */
         outb(base + 0x7, io->direction == TRANSFER_WRITE ? 0x30 : 0x20);
 
-        /*
-        * Wait for the data to be ready.
-        */
         IdePoll(ide);
 
-        /*
-        * Read/write the data from/to the disk using ports.
-        */
         if (io->direction == TRANSFER_WRITE) {
             for (int c = 0; c < sectors_in_this_transfer; ++c) {
                 if (c != 0) {
@@ -186,12 +148,7 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
                 }
             }
             IdePoll(ide);
-
-            /*
-            * We need to flush the (hardware) disk cache if we are writing.
-            */
-            outb(base + 0x7, 0xE7);
-            IdePoll(ide);
+            FlushOnDiskBuffer(ide);
 
         } else {
             int err = IdeCheckError(ide);
@@ -212,9 +169,6 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
             }
         }
 
-        /*
-        * Get ready for the next part of the transfer.
-        */
         count -= sectors_in_this_transfer;
         sector += sectors_in_this_transfer;
     }
@@ -224,29 +178,15 @@ static int IdeIo(struct ide_data* ide, struct transfer* io) {
 }
 
 static int IdeGetNumSectors(struct ide_data* ide) {
+    uint16_t base = GET_BASE(ide);
+
     AcquireSemaphore(ide_lock, -1);
 
-    uint16_t base = ide->disk_num >= 2 ? ide->secondary_base : ide->primary_base;
-
-    /*
-    * Select the correct drive.
-    */
     outb(base + 0x6, 0xE0 | ((ide->disk_num & 1) << 4));
-
-    /*
-    * Send the READ NATIVE MAX ADDRESS command, which will return the size
-    * of disk in sectors.
-    */
     outb(base + 0x7, 0xF8);
-
     IdePoll(ide);
 
-    /*
-    * The outputs are in the same registers we use to put the LBA
-    * when we read/write from the disk.
-    */
-    int sectors = 0;
-    sectors |= (int) inb(base + 0x3);
+    int sectors = (int) inb(base + 0x3);
     sectors |= ((int) inb(base + 0x4)) << 8;
     sectors |= ((int) inb(base + 0x5)) << 16;
     sectors |= ((int) inb(base + 0x6) & 0xF) << 24;

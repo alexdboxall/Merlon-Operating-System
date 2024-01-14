@@ -48,9 +48,9 @@ static void CheckVnode(struct vnode* node) {
     if (IsSpinlockHeld(&node->reference_count_lock)) {
         assert(node->reference_count > 0);
     } else {
-        AcquireSpinlockIrql(&node->reference_count_lock);
+        AcquireSpinlock(&node->reference_count_lock);
         assert(node->reference_count > 0);
-        ReleaseSpinlockIrql(&node->reference_count_lock);
+        ReleaseSpinlock(&node->reference_count_lock);
     }
 }
 
@@ -60,9 +60,9 @@ static void CheckVnode(struct vnode* node) {
 void ReferenceVnode(struct vnode* node) {
     assert(node != NULL);
 
-    AcquireSpinlockIrql(&node->reference_count_lock);
+    AcquireSpinlock(&node->reference_count_lock);
     node->reference_count++;
-    ReleaseSpinlockIrql(&node->reference_count_lock);
+    ReleaseSpinlock(&node->reference_count_lock);
 }
 
 /*
@@ -71,7 +71,7 @@ void ReferenceVnode(struct vnode* node) {
 */
 void DereferenceVnode(struct vnode* node) {
     CheckVnode(node);
-    AcquireSpinlockIrql(&node->reference_count_lock);
+    AcquireSpinlock(&node->reference_count_lock);
 
     assert(node->reference_count > 0);
     node->reference_count--;
@@ -82,13 +82,13 @@ void DereferenceVnode(struct vnode* node) {
         /*
         * Must release the lock before we delete it so we can put interrupts back on
         */
-        ReleaseSpinlockIrql(&node->reference_count_lock);
+        ReleaseSpinlock(&node->reference_count_lock);
 
         DestroyVnode(node);
         return;
     }
 
-    ReleaseSpinlockIrql(&node->reference_count_lock);
+    ReleaseSpinlock(&node->reference_count_lock);
 }
 
 
@@ -164,14 +164,6 @@ int VnodeOpFollow(struct vnode* node, struct vnode** new_node, const char* name)
 
 uint8_t VnodeOpDirentType(struct vnode* node) {
     return IFTODT(node->stat.st_mode);
-}
-
-int VnodeOpWait(struct vnode* node, int flags, uint64_t timeout_ms) {
-    CheckVnode(node);
-    if (node->ops.wait == NULL) {
-        return 0;
-    }
-    return node->ops.wait(node, flags, timeout_ms);
 }
 
 int VnodeOpUnlink(struct vnode* node) {

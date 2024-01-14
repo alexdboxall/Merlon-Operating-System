@@ -15,15 +15,11 @@ struct linked_list {
     struct linked_list_node* tail;
 };
 
-struct linked_list* LinkedListCreate(void) {
-    struct linked_list* list = AllocHeap(sizeof(struct linked_list));
-    list->size = 0;
-    list->head = NULL;
-    list->tail = NULL;
-    return list;
+struct linked_list* ListCreate(void) {
+    return AllocHeapZero(sizeof(struct linked_list));
 }
 
-void LinkedListInsertStart(struct linked_list* list, void* data) {
+void ListInsertStart(struct linked_list* list, void* data) {
     struct linked_list_node* node = AllocHeap(sizeof(struct linked_list_node));
     node->data = data;
     node->next = list->tail;
@@ -37,7 +33,7 @@ void LinkedListInsertStart(struct linked_list* list, void* data) {
     list->size++;
 }
 
-void LinkedListInsertEnd(struct linked_list* list, void* data) {
+void ListInsertEnd(struct linked_list* list, void* data) {
     if (list->tail == NULL) {
         assert(list->head == NULL);
         list->tail = AllocHeap(sizeof(struct linked_list_node));
@@ -53,11 +49,11 @@ void LinkedListInsertEnd(struct linked_list* list, void* data) {
     list->size++;
 }
 
-bool LinkedListContains(struct linked_list* list, void* data) {
-    return LinkedListGetIndex(list, data) != -1;
+bool ListContains(struct linked_list* list, void* data) {
+    return ListGetIndex(list, data) != -1;
 }
 
-int LinkedListGetIndex(struct linked_list* list, void* data) {
+int ListGetIndex(struct linked_list* list, void* data) {
     struct linked_list_node* iter = list->head;
     int i = 0;
     while (iter != NULL) {
@@ -70,7 +66,7 @@ int LinkedListGetIndex(struct linked_list* list, void* data) {
     return -1;
 }
  
-void* LinkedListGetData(struct linked_list* list, int index) {
+void* ListGetData(struct linked_list* list, int index) {
     struct linked_list_node* iter = list->head;
     int i = 0;
     while (iter != NULL) {
@@ -98,7 +94,7 @@ static void ProperDelete(struct linked_list* list, struct linked_list_node* iter
     list->size--;
 }
 
-bool LinkedListDeleteIndex(struct linked_list* list, int index) {
+bool ListDeleteIndex(struct linked_list* list, int index) {
     if (index >= list->size || index < 0) {
         return false;
     }
@@ -120,36 +116,36 @@ bool LinkedListDeleteIndex(struct linked_list* list, int index) {
     return false;
 }
 
-bool LinkedListDeleteData(struct linked_list* list, void* data) {
-    return LinkedListDeleteIndex(list, LinkedListGetIndex(list, data));
+bool ListDeleteData(struct linked_list* list, void* data) {
+    return ListDeleteIndex(list, ListGetIndex(list, data));
 }
 
-int LinkedListSize(struct linked_list* list) {
+int ListSize(struct linked_list* list) {
     return list->size;
 }
 
-void LinkedListDestroy(struct linked_list* list) {
+void ListDestroy(struct linked_list* list) {
     while (list->size > 0) {
-        LinkedListDeleteIndex(list, 0);
+        ListDeleteIndex(list, 0);
     }
     FreeHeap(list);
 }
 
-struct linked_list_node* LinkedListGetFirstNode(struct linked_list* list) {
+struct linked_list_node* ListGetFirstNode(struct linked_list* list) {
     if (list == NULL) {
         Panic(PANIC_LINKED_LIST);
     }
     return list->head;
 }
 
-struct linked_list_node* LinkedListGetNextNode(struct linked_list_node* prev_node) {
+struct linked_list_node* ListGetNextNode(struct linked_list_node* prev_node) {
     if (prev_node == NULL) {
         Panic(PANIC_LINKED_LIST);
     }
     return prev_node->next;
 }
 
-void* LinkedListGetDataFromNode(struct linked_list_node* node) {
+void* ListGetDataFromNode(struct linked_list_node* node) {
     if (node == NULL) {
         Panic(PANIC_LINKED_LIST);
     }

@@ -96,9 +96,9 @@ char* GenerateNewMountedDiskName() {
     char name[16];
     strcpy(name, "drv");
 
-    AcquireSpinlockIrql(&type_table_lock);
+    AcquireSpinlock(&type_table_lock);
     int disk_num = next_mounted_disk_num++;
-    ReleaseSpinlockIrql(&type_table_lock);
+    ReleaseSpinlock(&type_table_lock);
 
     AppendNumberToString(name, disk_num);
     return strdup(name);
@@ -126,9 +126,9 @@ char* GenerateNewRawDiskName(int type) {
 
     strcat(name, type_strings[type]);
 
-    AcquireSpinlockIrql(&type_table_lock);
+    AcquireSpinlock(&type_table_lock);
     int disk_num = type_table[type]++;
-    ReleaseSpinlockIrql(&type_table_lock);
+    ReleaseSpinlock(&type_table_lock);
 
     AppendNumberToString(name, disk_num);
     return strdup(name);

@@ -24,4 +24,4 @@ void AddSymbol(const char* symbol, size_t address);
 void SortQuickRelocationTable(struct quick_relocation_table* table);
 void AddToQuickRelocationTable(struct quick_relocation_table* table, size_t addr, size_t val);
 struct quick_relocation_table* CreateQuickRelocationTable(int count);
-void PerformDriverRelocationOnPage(struct vas*, size_t relocation_base, size_t virt);
+void PerformRelocationsOnPage(struct vas*, size_t relocation_base, size_t virt);

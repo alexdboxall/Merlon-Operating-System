@@ -38,6 +38,7 @@ struct blocking_buffer* BlockingBufferCreate(int size) {
 
 void BlockingBufferDestroy(struct blocking_buffer* buffer) {
     FreeHeap(buffer->sem);
+    FreeHeap(buffer->reverse_sem);
     FreeHeap(buffer->buffer);
     FreeHeap(buffer);
 }
@@ -49,7 +50,7 @@ int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c, bool block) {
         return ENOBUFS;
     }
 
-    AcquireSpinlockIrql(&buffer->lock);
+    AcquireSpinlock(&buffer->lock);
 
     assert(buffer->used_size != buffer->total_size);
 
@@ -57,23 +58,19 @@ int BlockingBufferAdd(struct blocking_buffer* buffer, uint8_t c, bool block) {
     buffer->end_pos = (buffer->end_pos + 1) % buffer->total_size;
     buffer->used_size++;
 
-    /*
-     * Wake up someone waiting for a character to enter the buffer - or make it so 
-     * next time someone wants a character they can grab it straight away.
-     */
-    ReleaseSpinlockIrql(&buffer->lock);
+    ReleaseSpinlock(&buffer->lock);
     ReleaseSemaphore(buffer->sem);
     return 0;
 }
 
 static uint8_t BlockingBufferGetAfterAcquisition(struct blocking_buffer* buffer) {
-    AcquireSpinlockIrql(&buffer->lock);
+    AcquireSpinlock(&buffer->lock);
 
     uint8_t c = buffer->buffer[buffer->start_pos];
     buffer->start_pos = (buffer->start_pos + 1) % buffer->total_size;
     buffer->used_size--;
 
-    ReleaseSpinlockIrql(&buffer->lock);
+    ReleaseSpinlock(&buffer->lock);
     ReleaseSemaphore(buffer->reverse_sem);
 
     return c;

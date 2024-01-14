@@ -34,11 +34,15 @@ static void InitialProcessThread1(void*) {
     SleepMilli(300);
     struct process* child3 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333);
     int retv;
+    LogWriteSerial("ABC1\n");
     WaitProcess(GetPid(child3), &retv, 0);
+    LogWriteSerial("ABC2\n");
     assert(retv == 333);
     WaitProcess(GetPid(child2), &retv, 0);
+    LogWriteSerial("ABC3\n");
     assert(retv == 222);
     WaitProcess(GetPid(child1), &retv, 0);
+    LogWriteSerial("ABC4\n");
     assert(retv == 111);
     ok = true;
 }
@@ -122,28 +126,28 @@ static void InitialProcessThread5(void* mode_) {
 TFW_CREATE_TEST(BasicWaitTest) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread1, NULL);
-    SleepMilli(2000);
+    SleepMilli(7000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitTestWithNeg1) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread2, NULL);
-    SleepMilli(3000);
+    SleepMilli(4000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitOnZombieTest1) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread3, NULL);
-    SleepMilli(1000);
+    SleepMilli(2000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitOnZombieTest2) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread4, NULL);
-    SleepMilli(1000);
+    SleepMilli(2000);
     assert(ok);
 }
 

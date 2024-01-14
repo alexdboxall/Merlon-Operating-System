@@ -1,138 +1,132 @@
 
-
 #include <heap.h>
 #include <string.h>
 #include <log.h>
 #include <panic.h>
 #include <assert.h>
+#include <common.h>
 #include <priorityqueue.h>
 
 /*
- * Implements the max-heap and min-heap data structures. To avoid confusion with the
- * heap memory manager, it is referred to as a priority queue.
+ * Implements the max-heap and min-heap data structures.
  */
 
-struct priority_queue {
+struct heap_adt {
     int capacity;
     int size;
     int element_width;
-    int qwords_per_element;       // includes the + 1 for the priority
+    int qwords_per_elem;       // includes the + 1 for the priority
     bool max;
-    uint64_t* array;              // length is: capacity * qwords_per_element
+    uint64_t* array;           // length is: capacity * qwords_per_elem
 };
 
-struct priority_queue* PriorityQueueCreate(int capacity, bool max, int element_width) {
+struct heap_adt* HeapAdtCreate(int capacity, bool max, int element_width) {
     assert(capacity > 0);
     assert(element_width > 0);
 
-    struct priority_queue* queue = AllocHeap(sizeof(struct priority_queue));
-    queue->capacity = capacity;
-    queue->size = 0;
-    queue->element_width = element_width;
-    queue->qwords_per_element = 1 + (element_width + sizeof(uint64_t) - 1) / sizeof(uint64_t);
-    queue->max = max;
-    queue->array = AllocHeap(sizeof(uint64_t) * queue->qwords_per_element * capacity);
-    return queue;
+    struct heap_adt* heap = AllocHeap(sizeof(struct heap_adt));
+    heap->capacity = capacity;
+    heap->size = 0;
+    heap->element_width = element_width;
+    heap->qwords_per_elem = 1 + (element_width + sizeof(uint64_t) - 1) / sizeof(uint64_t);
+    heap->max = max;
+    heap->array = AllocHeap(sizeof(uint64_t) * heap->qwords_per_elem * capacity);
+    return heap;
 }
 
-void PriorityQueueDestroy(struct priority_queue* queue) {
-    FreeHeap(queue->array);
-    FreeHeap(queue);
+void HeapAdtDestroy(struct heap_adt* heap) {
+    FreeHeap(heap->array);
+    FreeHeap(heap);
 }
 
-static void SwapElements(struct priority_queue* queue, int a, int b) {
-    a *= queue->qwords_per_element;
-    b *= queue->qwords_per_element;
+static void SwapElements(struct heap_adt* heap, int a, int b) {
+    a *= heap->qwords_per_elem;
+    b *= heap->qwords_per_elem;
 
-    for (int i = 0; i < queue->qwords_per_element; ++i) {
-        uint64_t tmp = queue->array[a];
-        queue->array[a] = queue->array[b];
-        queue->array[b] = tmp;
+    for (int i = 0; i < heap->qwords_per_elem; ++i) {
+        uint64_t tmp = heap->array[a];
+        heap->array[a] = heap->array[b];
+        heap->array[b] = tmp;
         ++a; ++b;
     }
 }
 
-static void Heapify(struct priority_queue* queue, int i) {
-    int extreme = i;
+static int GetMinOrMaxIndex(struct heap_adt* heap, int a, int b) {
+    if (a >= heap->size || b >= heap->size) {
+        /* 
+         * The smaller index will always be in bounds, as we always call this 
+         * with at least one good index (either `i` or a previous return value).
+         */
+        return MIN(a, b);
+    }
+    size_t qwords = heap->qwords_per_elem;
+    bool is_a_small = heap->array[a * qwords] < heap->array[b * qwords];
+    return (heap->max ^ is_a_small) ? a : b;
+}
+
+static void Heapify(struct heap_adt* heap, int i) {
     int left = i * 2 + 1;
     int right = left + 1;
-
-    if (left < queue->size) {
-        if ((queue->max && queue->array[left * queue->qwords_per_element] > queue->array[extreme * queue->qwords_per_element]) || (!queue->max && queue->array[left * queue->qwords_per_element] < queue->array[extreme * queue->qwords_per_element])) {
-            extreme = left;
-        }
-    }
-    if (right < queue->size) {
-        if ((queue->max && queue->array[right * queue->qwords_per_element] > queue->array[extreme * queue->qwords_per_element]) || (!queue->max && queue->array[right * queue->qwords_per_element] < queue->array[extreme * queue->qwords_per_element])) {
-            extreme = right;
-        }
-    }
-    if (i != extreme) {
-        SwapElements(queue, i, extreme);
-        Heapify(queue, extreme);
+    int best = GetMinOrMaxIndex(heap, right, GetMinOrMaxIndex(heap, i, left));
+    if (i != best) {
+        SwapElements(heap, i, best);
+        Heapify(heap, best);
     }
 }
 
-void PriorityQueueInsert(struct priority_queue* queue, void* elem, uint64_t priority) {
-    if (queue->size == queue->capacity) {
-        // I think this can happen when the OS is running too slowly! (the deferred function buffer actually fills up
-        // and overflows). Testing on real H/W from 1996, debug serial port accesses took about a second per character!!
+void HeapAdtInsert(struct heap_adt* heap, void* elem, uint64_t priority) {
+    if (heap->size == heap->capacity) {
         PanicEx(PANIC_PRIORITY_QUEUE, "insert called when full");
     }
 
-    int i = queue->size++;
-    queue->array[i * queue->qwords_per_element] = priority;
-    inline_memcpy(queue->array + i * queue->qwords_per_element + 1, elem, queue->element_width);
+    size_t qwords = heap->qwords_per_elem;
+    uint64_t* arr = heap->array;
 
-    if (queue->max) {
-        while (i != 0 && queue->array[((i - 1) / 2) * queue->qwords_per_element] < queue->array[i * queue->qwords_per_element]) {
-            SwapElements(queue, (i - 1) / 2, i);
-            i = (i - 1) / 2;
-        }
-    } else {
-        while (i != 0 && queue->array[((i - 1) / 2) * queue->qwords_per_element] > queue->array[i * queue->qwords_per_element]) {
-            SwapElements(queue, (i - 1) / 2, i);
-            i = (i - 1) / 2;
-        }
+    int i = heap->size++;
+    arr[i * qwords] = priority;
+    inline_memcpy(arr + i * qwords + 1, elem, heap->element_width);
+
+    while (i && (heap->max ^ (arr[((i - 1) / 2) * qwords] > arr[i * qwords]))) {
+        SwapElements(heap, (i - 1) / 2, i);
+        i = (i - 1) / 2;
     }
 }
 
 /*
- * returns the priority, and a REFERENCE to the data IN THE PRIORITY QUEUE. It is NOT a copy!
- * This is why Pop() can't return it, because popping it overwrites the data!
+ * Returns the priority, and a *reference* to the data in the priority queue.
+ * It is not a copy!!
  */
-struct priority_queue_result PriorityQueuePeek(struct priority_queue* queue) {
-    if (queue->size == 0) {
+struct heap_adt_result HeapAdtPeek(struct heap_adt* heap) {
+    if (heap->size == 0) {
         PanicEx(PANIC_PRIORITY_QUEUE, "peek called on empty");
     }
 
-    struct priority_queue_result retv;
-    retv.priority = queue->array[0];
-    retv.data = (void*) (queue->array + 1);
-    return retv;
+    return (struct heap_adt_result) {
+        .data = (void*) (heap->array + 1), .priority = heap->array[0]
+    };
 }
 
 /*
- * doesn't return the value, as the value would have been erased in the pop (PriorityQueue doesn't
- * allocate memory, as it needs to be used in high IRQL situations).
+ * Doesn't return the value, as the value would have been erased in the pop 
+ * (HeapAdt doesn't allocate memory due to its need for use in high IRQLs).
  */
-void PriorityQueuePop(struct priority_queue* queue) {
-    if (queue->size == 0) {
+void HeapAdtPop(struct heap_adt* heap) {
+    if (heap->size == 0) {
         PanicEx(PANIC_PRIORITY_QUEUE, "pop called on empty");
     }
 
-    --queue->size;
-    for (int i = 0; i < queue->qwords_per_element; ++i) {
-        queue->array[i] = queue->array[queue->size * queue->qwords_per_element + i];
+    --heap->size;
+    for (int i = 0; i < heap->qwords_per_elem; ++i) {
+        heap->array[i] = heap->array[heap->size * heap->qwords_per_elem + i];
     }
 
-    Heapify(queue, 0);
+    Heapify(heap, 0);
 }
 
-int PriorityQueueGetCapacity(struct priority_queue* queue) {
-    return queue->capacity;
+int HeapAdtGetCapacity(struct heap_adt* heap) {
+    return heap->capacity;
 }
 
-int PriorityQueueGetUsedSize(struct priority_queue* queue) {
-    return queue->size;
+int HeapAdtGetUsedSize(struct heap_adt* heap) {
+    return heap->size;
 }

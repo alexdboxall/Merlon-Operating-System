@@ -14,18 +14,10 @@
 #define ICW1_INIT       0x10
 #define ICW4_8086       0x01
 
-/*
-* Delay for a short period of time, for use in betwwen IO calls to the PIC.
-* This is required as some PICs have a hard time keeping up with the speed 
-* of modern CPUs (the original PIC was introduced in 1976!).
-*/
 static void IoWait(void) {
     asm volatile ("nop");
 }
 
-/*
-* Read an internal PIC register.
-*/
 static uint16_t ReadPicReg(int ocw3) {
     outb(PIC1_COMMAND, ocw3);
     outb(PIC2_COMMAND, ocw3);
@@ -57,10 +49,6 @@ bool IsPicIrqSpurious(int irq_num) {
     return false;
 }
 
-/*
-* Acknowledge the previous interrupt. We will not receive any interrupts of
-* the same type until we have acknowledged it.
-*/
 void SendPicEoi(int irq_num) {
     if (irq_num >= PIC_IRQ_BASE + 8) {
         outb(PIC2_COMMAND, PIC_EOI);
@@ -100,17 +88,15 @@ static void RemapPic(int offset) {
 }
 
 /**
- * Set which IRQ numbers are disabled. Overwrites the previous call to this
- * function completely (i.e. this is 'equals', not an 'and' or 'or'.) To disable
- * all lines, specify 0xFFFF. To enable all lines, specify 0x0000.
+ * Set which IRQ numbers are disabled. `disabled_irqs` is a bitfield, with a set
+ * bit indicating a disabled IRQ line. 0x0000 enables all, 0xFFFF disables all.
  */
-void DisablePicLines(uint16_t irq_bitfield) {
+void DisablePicLines(uint16_t disabled_irqs) {
     static uint16_t prev = 0xFFFF;
-
-    if (prev != irq_bitfield) {
-        outb(PIC1_DATA, irq_bitfield & 0xFF);
-        outb(PIC2_DATA, irq_bitfield >> 8);
-        prev = irq_bitfield;
+    if (prev != disabled_irqs) {
+        outb(PIC1_DATA, disabled_irqs & 0xFF);
+        outb(PIC2_DATA, disabled_irqs >> 8);
+        prev = disabled_irqs;
     }
 }
 

@@ -21,10 +21,7 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t user
 		return res;
 	}
 
-	LogWriteSerial("SysMapVirt: f=0x%X, b=0x%X, fd=%d, off=0x%X, v=0x%X\n", flags, bytes, fd, offset, target_virtual);
-
 	if (target_virtual != 0 && target_virtual < ARCH_USER_AREA_BASE) {
-		LogWriteSerial("INVAL (3)\n");
 		return EINVAL;
 	}
 
@@ -32,7 +29,6 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t user
 	bool overflow = ckd_add(&end_of_virtual, target_virtual, bytes);
 
 	if (target_virtual != 0 && (overflow || (end_of_virtual >= ARCH_USER_AREA_LIMIT))) {
-		LogWriteSerial("INVAL (4)\n");
 		return EINVAL;
 	}
 
@@ -40,17 +36,17 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t user
 	if (flags & VM_FILE) {
 		res = GetFileFromDescriptor(GetFileDescriptorTable(GetProcess()), fd, &file);
 		if (file == NULL || res != 0) {
-			LogWriteSerial("INVAL (5)\n");
 			return res;
 		}
 	}
 
-	LogWriteSerial("MapVirtEx ==> flags = %d, file = 0x%X\n", flags, file);
 	int error;
-	size_t output_virtual = MapVirtEx(GetVas(), 0, target_virtual, BytesToPages(bytes), flags | VM_USER | VM_LOCAL, file, offset, &error);
-
+	size_t output_virtual = MapVirtEx(
+		GetVas(), 0, target_virtual, BytesToPages(bytes), 
+		flags | VM_USER | VM_LOCAL, file, offset, &error
+	);
+	
 	if (output_virtual == 0) {
-		LogWriteSerial("INVAL (6)\n");
 		return error;
 	}
 

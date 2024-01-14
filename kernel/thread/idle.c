@@ -2,8 +2,8 @@
 /***
  * thread/idle.c - System Idle Task
  * 
- * A thread that is run if not other thread is available to run. The idle thread must therefore
- * never block.
+ * A thread that is run if not other thread is available to run. The idle thread
+ * must therefore never block.
  */
 
 #include <arch.h>
@@ -18,5 +18,8 @@ static void IdleThread(void*) {
 }
 
 void InitIdle(void) {
-    CreateThreadEx(IdleThread, NULL, GetVas(), "idle thread", NULL, SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_IDLE, 0);
+    CreateThreadEx(
+        IdleThread, NULL, GetVas(), "idle thread", NULL, 
+        SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_IDLE, 0
+    );
 }

@@ -12,24 +12,31 @@ static int num_cpus_running = 1;
 
 static void InitCpuTableEntry(int index) {
     /*
-     * The boot CPU can't use dynamic memory, as this happens before we have a heap.
+     * The boot CPU can't use the heap, as this happens before InitHeap().
      */
     static platform_cpu_data_t boot_cpu_data;
 
-    cpu_table[index].cpu_number = index;
-    cpu_table[index].platform_specific = index != 0 ? AllocHeapZero(sizeof(platform_cpu_data_t)) : &boot_cpu_data;
-    cpu_table[index].irql = IRQL_STANDARD;
-    cpu_table[index].global_vas_mappings = NULL;
-    cpu_table[index].current_vas = NULL;
-    cpu_table[index].current_thread = NULL;
-    cpu_table[index].init_irql_done = false;
-    cpu_table[index].postponed_task_switch = false;
-    InitSpinlock(&cpu_table[index].global_mappings_lock, "glbl vas map", IRQL_SCHEDULER);
+    struct cpu* cpu = cpu_table + index;
+    cpu->cpu_number = index;
+    cpu->irql = IRQL_STANDARD;
+    cpu->global_vas_mappings = NULL;
+    cpu->current_vas = NULL;
+    cpu->current_thread = NULL;
+    cpu->init_irql_done = false;
+    cpu->postponed_task_switch = false;
+    if (index == 0) {
+        cpu->platform_specific = &boot_cpu_data;
+    } else {
+        cpu->platform_specific = AllocHeapZero(sizeof(platform_cpu_data_t));
+    }
+
+    InitSpinlock(&cpu_table[index].global_mappings_lock, "gml", IRQL_SCHEDULER);
 }
 
 /*
- * Initialises the CPU table (`cpu_table`) for the bootstrap processor. This does *not* do any
- * platform-specific initialisation, as that requires other features to be set up first.
+ * Initialises the CPU table (`cpu_table`) for the bootstrap processor. This 
+ * does *not* do any platform-specific initialisation, as that requires other 
+ * features to be set up first.
  */
 void InitCpuTable(void) {
     assert(num_cpus_running == 1);
@@ -37,8 +44,8 @@ void InitCpuTable(void) {
 }
 
 /*
- * Performs platform-specific initialisation of the bootstrap CPU (e.g. initialising interrupts,
- * system timers, segments, etc.).
+ * Performs platform-specific initialisation of the bootstrap CPU (e.g. 
+ * initialising interrupts, system timers, segments, etc.).
  */
 void InitBootstrapCpu(void) {
     EXACT_IRQL(IRQL_STANDARD);
@@ -48,8 +55,9 @@ void InitBootstrapCpu(void) {
 
 void InitOtherCpu(void) {
     /*
-     * We initialise the next entry, even before we know there's a CPU there. If there isn't a 
-     * CPU there, we don't increment `num_cpus_running` so the entry won't get used.
+     * We initialise the next entry, even before we know there's a CPU there. If
+     * there isn't a CPU there, we don't increment `num_cpus_running` so the 
+     * entry won't get used.
      */
     InitCpuTableEntry(1);
 

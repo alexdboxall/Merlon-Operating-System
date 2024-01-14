@@ -249,8 +249,6 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct qu
 		struct Elf32_Shdr* section = sect_headers + i;
 
 		if (section->sh_type == SHT_REL) {
-			LogWriteSerial("Found a relocation table!\n");
-
 			struct Elf32_Rel* relocation_tables = (struct Elf32_Rel*) AddVoidPtr(data, section->sh_offset);
 			int count = section->sh_size / section->sh_entsize;
 
@@ -264,16 +262,12 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct qu
 			}
 			
 			for (int index = 0; index < count; ++index) {
-				LogWriteSerial("relocation... (%d)\n", index);
-
 				bool success = ElfPerformRelocation(data, relocation_point, section, relocation_tables + index, table == NULL ? NULL : *table);
 				if (!success) {
 					LogWriteSerial("failed to do a relocation!! (%d)\n", index);
 					return false;
 				}
 			}
-
-			LogWriteSerial("Finished with this relocation table...\n");
 
 			if (table != NULL) {
 				SortQuickRelocationTable(*table);
@@ -292,35 +286,17 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
     MAX_IRQL(IRQL_PAGE_FAULT);
 
 	size_t load_point = *relocation_point;
-	LogWriteSerial("Loading a relocatable ELF, at address 0x%X (0 means to allocate somewhere in krnl) - and it is: %s\n", load_point, !driver ? "USER" : "KRNL");
-
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 
     if (!IsElfValid(elf_header)) {
         return EINVAL;
     }
 
-    /*
-    * To load a driver, we need the section headers.
-    */
-    if (elf_header->e_shnum == 0 && driver) {
+    if (elf_header->e_shnum == 0 || elf_header->e_phnum == 0) {
         return EINVAL;
     }
-	LogWriteSerial("ElfLoad C\n");
 
-    /*
-    * We always need the program headers.
-    */
-    if (elf_header->e_phnum == 0) {
-        return EINVAL;
-    }
-	LogWriteSerial("ElfLoad D\n");
-
-    /*
-    * Load into memory.
-    */
     size_t size = ElfGetSizeOfImageIncludingBss(data);
-	LogWriteSerial("the size is 0x%X\n", size);
 	*relocation_point = MapVirt(0, load_point, size, VM_READ | (!driver ? VM_LOCAL | VM_USER | VM_FIXED_VIRT : 0), NULL, 0);
 	ElfLoadProgramHeaders(data, *relocation_point, file, driver);
 

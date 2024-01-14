@@ -18,17 +18,6 @@ struct semaphore {
     struct thread_list waiting_list;
 };
 
-/**
- * Creates a semaphore object with a specified limit on the number of concurrent holders.
- * 
- * @param max_count         The maximum number of concurrent holders of the semaphore
- * @param initial_count     The initial number of holders of the semaphore. Should usually either be 0,
- *                              which is a 'acquire until full' state, or equal to `max_count`, which is
- *                              a `it's full until released` state.
- * @returns The initialised semaphore. 
- * 
- * @maxirql IRQL_SCHEDULER
- */
 struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_count) {
     MAX_IRQL(IRQL_SCHEDULER);
 
@@ -41,20 +30,13 @@ struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_c
 }
 
 /**
- * Acquires (i.e. does the waits or P operation on) a semaphore. This operation my block depending on the timeout value.
+ * Acquires (i.e. does the waits or P operation on) a semaphore. The timeout is
+ * given in milliseconds. If 0, we return without blocking - if the lock can't
+ * be acquired, then EGAIN is returned. If -1, there is no timeout (may block 
+ * indefinitely).
  * 
- * @param sem           The semaphore to acquire.
- * @param timeout_ms    One of either:
- *                           0: Attempt to acquire the semaphore, but will not block if it cannot be acquired.
- *                          -1: Will acquire semaphore, even if it needs to block to do so. Will not timeout.
- *                          +N: Same as -1, except that the operation will timeout after the specified number of
- *                              milliseconds.
- * 
- * @return 0 if the semaphore was acquired
- *         ETIMEDOUT if the semaphore was not acquired, and the operation timed out
- *         EAGAIN if the semaphore was not acquired, and the timeout_ms value was 0
- * 
- * @maxirql IRQL_PAGE_FAULT
+ * @return 0 if the lock if acquired. EAGAIN if timeout_ms is 0 and the lock
+ *         can't be acquired. ETIMEDOUT if timeout_ms isn't 0, and we timed-out.
  */
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     MAX_IRQL(IRQL_PAGE_FAULT);
@@ -73,20 +55,11 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
         return 0;
     }
 
-    /*
-     * This gets set to true by the sleep wakeup routine if we get timed-out.
-     */
     thr->timed_out = false;
 
     if (sem->current_count < sem->max_count) {
-        /*
-         * Uncontested, so acquire straight away.
-         */
         sem->current_count++;
     } else {
-        /*
-         * Need to block for the semaphore (or return if the timeout is zero).
-         */
         thr->waiting_on_semaphore = sem;
 
         if (timeout_ms == 0) {
@@ -105,15 +78,11 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     } 
 
     UnlockScheduler();
-
     return thr->timed_out ? (timeout_ms == 0 ? EAGAIN : ETIMEDOUT) : 0;
 }
 
 /**
- * Releases (i.e., does the signal, or V operation on) a semaphore. If there are threads waiting on this semaphore,
- * it will cause the first one to wake up. 
- * 
- * @param sem The semaphore to release/signal 
+ * Releases (i.e., does the signal, or V operation on) a semaphore.
  */
 void ReleaseSemaphore(struct semaphore* sem) {
     MAX_IRQL(IRQL_PAGE_FAULT);
@@ -130,28 +99,23 @@ void ReleaseSemaphore(struct semaphore* sem) {
     } else {
         struct thread* top = ThreadListDeleteTop(&sem->waiting_list);
 
-        /*
-         * If it's in the THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT state, it could mean one of two things:
-         *      - it's still on the sleep queue, in which case we need to get it off that queue, and put it on the ready queue
-         *      - it's been taken off the sleep queue and onto the ready already, but it hasn't yet been run yet (and is therefore
-         *        still in this state)
-         */
         if (top->state == THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT) {
+            /*
+             * If it's in this state, it means it's either on the ready queue, 
+             * after just having finisherd a sleep, OR it's on the sleep queue.
+             * 
+             * If it's on the sleep queue, we need to remove it from there.
+             * Otherwise, we do nothing, as it's already on the ready queue.
+             */
             bool on_sleep_queue = TryDequeueForSleep(top);
-
             if (on_sleep_queue) {
                 /*
-                 * Change the state to prevent UnblockThread from seeing it's in the timeout state and calling CancelSemaphoreOfThread.
-                 * If CancelSemaphoreOfThread were called, then it would attempt to delete it from the queue - but it's already been
-                 * deleted by this point and so would crash.
+                 * Change the state to prevent UnblockThread from seeing it's in
+                 * the timeout state and calling CancelSemaphoreOfThread.
                  */
                 top->state = THREAD_STATE_READY;
                 UnblockThread(top);
             }
-            /*
-             * Do not unblock the thread if it's not on the sleep queue, as not being on the sleep queue means it's
-             * already on the ready queue.
-             */
 
         } else {
             UnblockThread(top);
@@ -161,45 +125,33 @@ void ReleaseSemaphore(struct semaphore* sem) {
 }
 
 /**
- * Deallocates a semaphore. Loses its shit if someone is still holding onto it, as it is probably a bug if you're trying
- * to destroy a semaphore when there's a possiblity that someone might even be thinking about trying to acquire it (which
- * would then try to acquire a deleted memory region, which is very bad).
- * 
- * @param sem The semaphore to destroy.
- * @param flags One of SEM_DONT_CARE, SEM_REQUIRE_ZERO or SEM_REQUIRE_FULL. 
- * 
- * @maxirql IRQL_SCHEDULER
+ * Deallocates a semaphore. Flags are one of SEM_DONT_CARE, SEM_REQUIRE_ZERO or 
+ * SEM_REQUIRE_FULL, and EBUSY will be returned (instead of 0) if the semaphore 
+ * is not in this state.
  */
 int DestroySemaphore(struct semaphore* sem, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
 
+    int ret = 0;
     LockScheduler();
-    if (flags == SEM_REQUIRE_ZERO && sem->current_count != 0) {
-        UnlockScheduler();
-        return EBUSY;
+    if ((flags == SEM_REQUIRE_ZERO && sem->current_count != 0) ||
+        (flags == SEM_REQUIRE_FULL && sem->current_count != sem->max_count)) {
+        ret = EBUSY;
+    } else {
+        FreeHeap(sem);
     }
-    if (flags == SEM_REQUIRE_FULL && sem->current_count != sem->max_count) {
-        UnlockScheduler();
-        return EBUSY;
-    }
-    
-    FreeHeap(sem);
     UnlockScheduler();
-    return 0;
+    return ret;
 }
 
 /**
- * Internal function. Used by the sleep wakeup routine to cancel a semaphore that has been timed-out. 
- * Removes the thread from the semaphore wait list. If this does not occur, then the sleep wakeup routine will allow
- * the thread to continue running, which will lead to a crash if that thread then attempts to acquire the same semaphore.
- * Without this, stress tests will crash.
+ * Used to cancel a semaphore that has been timed out, by removing the thread 
+ * from the semaphore wait list. If this doesn't occur, the sleep wakeup routine
+ * will allow the thread to continue running, which will lead to a crash if that
+ * thread then attempts to acquire the same semaphore.
  */
 void CancelSemaphoreOfThread(struct thread* thr) {
     AssertSchedulerLockHeld();
     assert(ThreadListContains(&thr->waiting_on_semaphore->waiting_list, thr));
     ThreadListDelete(&thr->waiting_on_semaphore->waiting_list, thr);
-}
-
-int GetSemaphoreCount(struct semaphore* sem) {
-    return sem->current_count;
 }

@@ -11,16 +11,14 @@
 #include <filedes.h>
 
 int SysRemove(size_t filename, size_t rmdir, size_t, size_t, size_t) {
-	char path[400];
-
 	if (rmdir > 1) {
 		return EINVAL;
 	}
 
+	char path[400];
 	int res = ReadStringFromUsermode(path, (const char*) filename, 399);
 	if (res != 0) {
 		return res;
 	}
-
 	return RemoveFileOrDirectory(path, rmdir);
 }

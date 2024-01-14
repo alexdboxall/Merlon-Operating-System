@@ -15,8 +15,8 @@ struct cpu {
     size_t cpu_number;
     int irql;
 
-    struct priority_queue* deferred_functions;
-    struct priority_queue* irq_deferred_functions;
+    struct heap_adt* deferred_functions;
+    struct heap_adt* irq_deferred_functions;
     bool init_irql_done;
     bool postponed_task_switch;
 

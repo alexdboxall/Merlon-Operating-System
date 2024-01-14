@@ -121,18 +121,18 @@ struct open_file* CreateDiskCache(struct open_file* underlying_disk)
     struct open_file* cache = CreateOpenFile(node, underlying_disk->initial_mode, underlying_disk->flags, underlying_disk->can_read, underlying_disk->can_write);
 
     AcquireMutex(cache_list_lock, -1);
-    LinkedListInsertEnd(cache_list, cache);
+    ListInsertEnd(cache_list, cache);
     ReleaseMutex(cache_list_lock);
 
     return cache;
 }
 
 static void ReduceCacheAmounts(bool toss) {
-    struct linked_list_node* node = LinkedListGetFirstNode(cache_list);
+    struct linked_list_node* node = ListGetFirstNode(cache_list);
     while (node != NULL) {
-        struct cache_data* data = ((struct open_file*) LinkedListGetDataFromNode(node))->node->data;
+        struct cache_data* data = ((struct open_file*) ListGetDataFromNode(node))->node->data;
         (toss ? TossCache : ReduceCache)(data);
-        node = LinkedListGetNextNode(node);
+        node = ListGetNextNode(node);
     }
 }
 
@@ -173,6 +173,6 @@ void SetDiskCaches(int mode) {
 }
 
 void InitDiskCaches(void) {
-    cache_list = LinkedListCreate();
+    cache_list = ListCreate();
     cache_list_lock = CreateMutex("vclist");
 }

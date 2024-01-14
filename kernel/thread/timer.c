@@ -12,7 +12,7 @@
 #include <threadlist.h>
 
 static struct spinlock timer_lock;
-static struct priority_queue* sleep_queue;
+static struct heap_adt* sleep_queue;
 static struct thread_list sleep_overflow_list;
 
 #define SLEEP_QUEUE_LENGTH 32
@@ -25,12 +25,12 @@ void ReceivedTimer(uint64_t nanos) {
 
     if (ArchGetCurrentCpuIndex() == 0) {
         /*
-         * As we're in the timer handler, we know we already have IRQL_TIMER, and so we don't
-         * need to incur the additional overhead of raising and lowering.
+         * Although we are in IRQL_TIMER, we must still lock to prevent other 
+         * CPUs from reading at a bad time. 
          */
-        AcquireSpinlockDirect(&timer_lock);
+        AcquireSpinlock(&timer_lock);
         system_time += nanos;
-        ReleaseSpinlockDirect(&timer_lock);
+        ReleaseSpinlock(&timer_lock);
     }
 
     /*
@@ -46,20 +46,17 @@ void ReceivedTimer(uint64_t nanos) {
     }
 }
 
-uint64_t GetSystemTimer(void) {
-    MAX_IRQL(IRQL_TIMER);
-    
-    AcquireSpinlockIrql(&timer_lock);
+uint64_t GetSystemTimer(void) {    
+    AcquireSpinlock(&timer_lock);
     uint64_t value = system_time;
-    ReleaseSpinlockIrql(&timer_lock);
-
+    ReleaseSpinlock(&timer_lock);
     return value;
 }
 
 void InitTimer(void) {
     InitSpinlock(&timer_lock, "timer", IRQL_TIMER);
     ThreadListInit(&sleep_overflow_list, NEXT_INDEX_SLEEP);
-    sleep_queue = PriorityQueueCreate(SLEEP_QUEUE_LENGTH, false, sizeof(struct thread*));
+    sleep_queue = HeapAdtCreate(SLEEP_QUEUE_LENGTH, false, sizeof(struct thread*));
 }
 
 void QueueForSleep(struct thread* thr) {
@@ -67,20 +64,20 @@ void QueueForSleep(struct thread* thr) {
 
     thr->timed_out = false;
 
-    if (PriorityQueueGetUsedSize(sleep_queue) == SLEEP_QUEUE_LENGTH) {
+    if (HeapAdtGetUsedSize(sleep_queue) == SLEEP_QUEUE_LENGTH) {
         ThreadListInsert(&sleep_overflow_list, thr);
     } else {
-        PriorityQueueInsert(sleep_queue, (void*) &thr, thr->sleep_expiry);
+        HeapAdtInsert(sleep_queue, (void*) &thr, thr->sleep_expiry);
     }
 }
 
 bool TryDequeueForSleep(struct thread* thr) {
     AssertSchedulerLockHeld();
     
-    while (PriorityQueueGetUsedSize(sleep_queue) > 0) {
-        struct priority_queue_result res = PriorityQueuePeek(sleep_queue);
+    while (HeapAdtGetUsedSize(sleep_queue) > 0) {
+        struct heap_adt_result res = HeapAdtPeek(sleep_queue);
         struct thread* top_thread = *((struct thread**) res.data);
-        PriorityQueuePop(sleep_queue);
+        HeapAdtPop(sleep_queue);
         if (top_thread == thr) {
             return true;
         }
@@ -102,7 +99,7 @@ bool TryDequeueForSleep(struct thread* thr) {
 }
 
 void HandleSleepWakeups(void* sys_time_ptr) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
 
     if (GetThread() == NULL) {
         return;
@@ -118,8 +115,8 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     /*
     * Wake up any sleeping tasks that need it.
     */
-    while (PriorityQueueGetUsedSize(sleep_queue) > 0) {
-        struct priority_queue_result res = PriorityQueuePeek(sleep_queue);
+    while (HeapAdtGetUsedSize(sleep_queue) > 0) {
+        struct heap_adt_result res = HeapAdtPeek(sleep_queue);
         
         /*
         * Check if it needs waking.
@@ -127,7 +124,7 @@ void HandleSleepWakeups(void* sys_time_ptr) {
         if (res.priority <= system_time) {
             struct thread* thr = *((struct thread**) res.data);
             thr->timed_out = true;
-            PriorityQueuePop(sleep_queue);
+            HeapAdtPop(sleep_queue);
             UnblockThread(thr);
 
         } else {
@@ -139,8 +136,9 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     }
 
     /*
-    * Check for any tasks that are asleep but on the overflow list. This is slow, but will
-    * only happen if we have more than 32 sleeping tasks, so it should normally not take any time.
+    * Check for any tasks that are asleep but on the overflow list. This is 
+    * slow, but will only happen if we have more than 32 sleeping tasks, so it 
+    * should normally not take any time.
     */
     struct thread* iter = sleep_overflow_list.head;
     while (iter) {
@@ -148,7 +146,7 @@ void HandleSleepWakeups(void* sys_time_ptr) {
             ThreadListDelete(&sleep_overflow_list, iter);
             iter->timed_out = true;
             UnblockThread(iter);
-            iter = sleep_overflow_list.head;            // restart, as list changed
+            iter = sleep_overflow_list.head;     // restart, as list changed
 
         } else {
             iter = iter->next[NEXT_INDEX_SLEEP];
@@ -158,13 +156,8 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     UnlockScheduler();
 }
 
-/*
- * Needs to be allowed at IRQL_PAGE_FAULT so the IDE driver can use it. Cannot be any higher, as otherwise
- * the thread might not actually sleep (if IRQL_SCHEDULER or above, we won't actually do the 'blocked task switch'
- * until it is released).
- */
 void SleepUntil(uint64_t system_time_ns) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
 
     if (system_time_ns < GetSystemTimer()) {
         return;
@@ -178,11 +171,9 @@ void SleepUntil(uint64_t system_time_ns) {
 }
 
 void SleepNano(uint64_t delta_ns) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
     SleepUntil(GetSystemTimer() + delta_ns);
 }
 
 void SleepMilli(uint32_t delta_ms) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
     SleepNano(((uint64_t) delta_ms) * 1000000ULL);
 }

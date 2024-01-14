@@ -40,7 +40,7 @@ static bool DisplayBootScreen(void) {
     SetCursor(2, 23);
     Puts("Press the ESC key to load boot options", BOOTCOL_GREY_ON_BLACK);
 
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 4 /* 8 */; ++i) {
         DrawBootMessage(i);
         Sleep(200);
         if (CheckKey() == BOOTKEY_ESCAPE) {

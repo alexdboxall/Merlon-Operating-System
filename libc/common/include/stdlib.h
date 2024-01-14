@@ -30,6 +30,8 @@ void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void *, co
 
 #ifndef COMPILE_KERNEL
 
+#define ATEXIT_MAX 64
+
 typedef struct {
     int quot;
     int rem;
@@ -53,10 +55,17 @@ div_t div(int numer, int denom);
 ldiv_t ldiv(long int numer, long int denom);
 lldiv_t lldiv(long long int numer, long long int denom);
 
+#define INCLUDED_STDLIB
 void _exit(int status);
+#define _Exit(status) _exit(status)
 
 void* malloc(size_t size);
 void free(void* ptr);
 void* calloc(size_t num, size_t size);
+
+int atexit(void (*function)(void));
+int on_exit(void (*function)(int , void *), void *arg);
+void exit(int status);
+void abort(void);
 
 #endif

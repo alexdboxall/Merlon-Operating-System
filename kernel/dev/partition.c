@@ -147,7 +147,7 @@ struct open_file* CreateMbrPartitionIfExists(struct open_file* disk, uint8_t* me
 }
 
 /*
- * caller to free return value.
+ * Caller to free return value.
  */
 struct open_file** GetMbrPartitions(struct open_file* disk) {
     size_t block_size = disk->node->stat.st_blksize;
@@ -176,13 +176,11 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
     }
 
     UnmapVirt((size_t) mem, block_size);
-    
     return partitions;
 }
 
 /*
- * null terminated array of struct vnode*
- * e.g. {vnode_ptr_1, vnode_ptr_2, vnode_ptr_3, NULL}
+ * Returns a null terminated array of partitions.
  */
 struct open_file** GetPartitionsForDisk(struct open_file* disk) {
     struct open_file** partitions = GetMbrPartitions(disk);

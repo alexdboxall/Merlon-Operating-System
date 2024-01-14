@@ -382,13 +382,13 @@ void AcpiOsDeleteLock(ACPI_HANDLE Handle)
 ACPI_CPU_FLAGS AcpiOsAcquireLock(ACPI_SPINLOCK Handle)
 {
     LogDeveloperWarning("AcpiOsAcquireLock\n");
-    //AcquireSpinlockIrql((struct spinlock*) Handle);
+    //AcquireSpinlock((struct spinlock*) Handle);
     return 0;
 }
 
 void AcpiOsReleaseLock(ACPI_SPINLOCK Handle, ACPI_CPU_FLAGS Flags)
 {
-    //ReleaseSpinlockIrql((struct spinlock*) Handle);
+    //ReleaseSpinlock((struct spinlock*) Handle);
     LogDeveloperWarning("AcpiOsReleaseLock\n");
 }
 
@@ -670,15 +670,15 @@ static void LOCKED_DRIVER_CODE PollIrqs() {
      * We do this as we can't run the handlers from the IRQ context for IRQL reasons.
      */
     while (true) {
-        int irql = AcquireSpinlockIrql(&irq_caught_lock);
+        int irql = AcquireSpinlock(&irq_caught_lock);
         if (acpica_caught_irq != -1) {
             int irq = acpica_caught_irq;
             acpica_caught_irq = -1;
-            ReleaseSpinlockIrql(&irq_caught_lock);
+            ReleaseSpinlock(&irq_caught_lock);
             HandleAcpicaInterrupt(irq);
 
         } else {
-            ReleaseSpinlockIrql(&irq_caught_lock);
+            ReleaseSpinlock(&irq_caught_lock);
         }
 
         SleepMilli(200);

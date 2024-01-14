@@ -337,10 +337,10 @@ static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t 
     }
 }
 
-void PerformDriverRelocationOnPage(struct vas*, size_t relocation_base, size_t virt) {
+void PerformRelocationsOnPage(struct vas*, size_t relocation_base, size_t virt) {
     struct loaded_driver* drv = GetDriverFromAddress(relocation_base);
     if (drv == NULL) {
-        PanicEx(PANIC_ASSERTION_FAILURE, "PerformDriverRelocationOnPage");
+        PanicEx(PANIC_ASSERTION_FAILURE, "PerformRelocationsOnPage");
     }
 
     ApplyRelocationsToPage(drv->quick_relocation_table, virt);

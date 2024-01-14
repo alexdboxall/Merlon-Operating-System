@@ -13,7 +13,6 @@ static size_t Loadx86Driver(const char* filename, const char* init) {
     size_t addr = GetSymbolAddress(init);
     if (addr == 0) {
         return GetDriverAddress(filename);
-        //PanicEx(PANIC_REQUIRED_DRIVER_MISSING_SYMBOL, filename);
     }
     return addr;
 }

@@ -27,42 +27,21 @@
 
 // TODO: lots of locks! especially the global cpu one
 
-static size_t SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, struct vas_entry* entry, int num_to_leave);
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual);
+static size_t SplitLargePageEntryIntoMultiple(
+    struct vas* vas, size_t virtual, struct vas_entry* entry, int num_to_leave
+);
+
 
 /**
- * Stores a pointer to any kernel VAS. Ensures that when processes are destroyed, we are using a VAS
- * that is different from the VAS that's being deleted. 
+ * Stores a pointer to any kernel VAS. Ensures that when processes are 
+ * destroyed, we are using a VAS that is different from the VAS that's being 
+ * deleted. 
  */
 static struct vas* kernel_vas;
 
-/**
- * Used in debugging as to print out the contents of the mappings tree.
- */
-void AvlPrinter(void* entry_) {
-    struct vas_entry* entry = (struct vas_entry*) entry_;
-
-    LogWriteSerial(
-        "[v: 0x%X, p: 0x%X; acrl: %d%d%d%d. ref: %d]; ", 
-        entry->virtual, entry->physical, entry->allocated, entry->cow, entry->in_ram, entry->lock, entry->ref_count
-    );
-}
-
-/**
- * Whether or not virtual memory is available for use. Can be read with IsVirtInitialised(), and is set when
- * InitVirt() has completed.
- * 
- * Does not have a lock, as only the bootstrap CPU should be modifiying it, and this happens before threads
- * are set up. Once set to true, it is never changed again, so there is no read/write problems.
- */
 static bool virt_initialised = false;
 
-/**
- * Used by the mappings tree as its comparison operator. Allows us to properly maintain the AVL properties,
- * and for `GetVirtEntry` to work.
- * 
- * Both parameters should be cast to `struct vas_entry*` and then used as normal.
- */
 static int VirtAvlComparator(void* a, void* b) {
     struct vas_entry* a_entry = (struct vas_entry*) a;
     struct vas_entry* b_entry = (struct vas_entry*) b;
@@ -71,8 +50,9 @@ static int VirtAvlComparator(void* a, void* b) {
     assert((b_entry->virtual & (ARCH_PAGE_SIZE - 1)) == 0);
 
     /*
-     * Check for overlapping regions for multi-mapping entries, and count that as equal. This allows us
-     * to return the correct entry if one of them is part of a multi-mapping entry.
+     * Check for overlapping regions for multi-mapping entries, and count that 
+     * as equal. This allows us to return the correct entry if one of them is 
+     * part of a multi-mapping entry.
      */
     size_t a_page = a_entry->virtual / ARCH_PAGE_SIZE;
     size_t b_page = b_entry->virtual / ARCH_PAGE_SIZE;
@@ -90,21 +70,14 @@ static int VirtAvlComparator(void* a, void* b) {
  * Initialises a virtual address space in an already allocated section of memory.
  * 
  * @param vas The memory to initialise a virtual address space object in.
- * @param flags Can be 0 or VAS_NO_ARCH_INIT. If VAS_NO_ARCH_INIT is provided, then no architecture-specific
- *              code will be called. This flag should only be set if called by architecture-specific functions
- *              (e.g. to create the initial address space). Normally, 0 should be passed in.
- * 
- * @maxirql IRQL_SCHEDULER
+ * @param flags Can be 0 or VAS_NO_ARCH_INIT. If VAS_NO_ARCH_INIT is provided, 
+ *              then no architecture-specific code will be called. This flag 
+ *              should only be set if called by architecture-specific functions.
  */
 void CreateVasEx(struct vas* vas, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     vas->mappings = AvlTreeCreate();
-
-    /*
-     * We are in for a world of hurt if someone is able to page fault while
-     * holding the lock on a virtual address space, so better make it IRQL_SCHEDULER.
-     */
     InitSpinlock(&vas->lock, "vas", IRQL_SCHEDULER);
     AvlTreeSetComparator(vas->mappings, VirtAvlComparator);
     if (!(flags & VAS_NO_ARCH_INIT)) {
@@ -112,13 +85,6 @@ void CreateVasEx(struct vas* vas, int flags) {
     }
 }
 
-/**
- * Allocates and initialises a new virtual address space.
- * 
- * @return The virtual address space which was created.
- * 
- * @maxirql IRQL_SCHEDULER
- */
 struct vas* CreateVas() {
     MAX_IRQL(IRQL_SCHEDULER);
 
@@ -145,33 +111,40 @@ static void PerformDeferredAccess(void* data) {
     size_t target_address = access->address;
     if (!write) {
         /*
-         * If we're reading, the page is not yet allocated or in memory (this is so we don't have other threads
-         * trying to use the partially-filled page). Therefore, we allocate a temporary page to write the data in, and
-         * then we can allocate the page and copy the data while we hold a lock.
+         * If we're reading, the page is not yet allocated or in memory (this is
+         * so we don't have other threads trying to use the partially-filled 
+         * page). Therefore, we allocate a temporary page to write the data in,
+         * and we can allocate the page and copy the data while we hold a lock.
          * 
-         * We can't just allocate the proper page entry now, as we can't hold the spinlock over the call to ReadFile.
+         * We can't just allocate the proper page entry now, as we can't hold 
+         * the spinlock over the call to ReadFile.
          */
         target_address = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE, NULL, 0);
     }
 
-    struct transfer tr = CreateKernelTransfer((void*) target_address, ARCH_PAGE_SIZE, access->offset, access->direction);
+    struct transfer tr = CreateKernelTransfer(
+        (void*) target_address, ARCH_PAGE_SIZE, access->offset, access->direction
+    );
 
     int res = (write ? WriteFile : ReadFile)(access->file, &tr);
     if (res != 0) {
         /*
-         * TODO: it's not actually always a failure. the only 'panic' condition is when it involves
-         *       the swapfile, but this code is also used for dealing with normal file-mapped pages.
+         * TODO: it's not actually always a failure. the only 'panic' condition 
+         *       is when it involves the swapfile, but this code is also used 
+         *       for dealing with normal file-mapped pages.
          * 
-         *       for file-mapped pages, failures due to reading past the end of the file should always
-         *       be okay - we need to fill the rest of the page with zero though (even if that page has
-         *       no file data on it, e.g. if we read really past the end of the array).
+         *       for file-mapped pages, failures due to reading past the end of 
+         *       the file should always be okay - we need to fill the rest of 
+         *       the page with zero though (even if that page has no file data 
+         *       on it, e.g. if we read really past the end of the array).
          */
         if (access->entry->swapfile) {
             Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
         } else {
-            // I think for reads, it's okay to not do anything here on error, and just make use of 
-            // the number of bytes that were actually transfered (and therefore complete failure means
-            // we just end up with a blanked-out page being allocated).
+            // I think for reads, it's okay to not do anything here on error, 
+            // and just make use of the number of bytes that were actually 
+            // transfered (and therefore complete failure means we just end up
+            // with a blanked-out page being allocated).
             Panic(PANIC_NOT_IMPLEMENTED);
         }
     }
@@ -184,7 +157,7 @@ static void PerformDeferredAccess(void* data) {
          * Now we can actually lock the page and allocate the actual mapping.
          */
         struct vas* vas = GetVas();
-        AcquireSpinlockIrql(&vas->lock);
+        AcquireSpinlock(&vas->lock);
 
         struct vas_entry* entry = GetVirtEntry(vas, access->address);
         assert(entry->num_pages == 1);
@@ -206,20 +179,23 @@ static void PerformDeferredAccess(void* data) {
         entry->allow_temp_write = false;
 
         /*
-         * If it was on the swapfile, we now need to mark that slot in the swapfile as free for future use.
+         * If it was on the swapfile, we now need to mark that slot in the 
+         * swapfile as free for future use.
          */
         if (access->deallocate_swap_on_read) {
             DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
         }
 
         /*
-         * Don't perform relocations on the first load, as the first load will be when 'proper' relocation
-         * happens (i.e. the 'all at once' relocations) - and therefore the quick relocation table will not 
-         * be created yet and we'll crash.
+         * Don't perform relocations on the first load, as the first load will 
+         * be when 'proper' relocation happens (i.e. the 'all at once' 
+         * relocations) - and therefore the quick relocation table will not be 
+         * created yet and we'll crash.
          * 
-         * The reason we can't just not do the initial big relocation and make it all work though demand loading
-         * is because not all pages with driver code/data end up being marked as VM_RELOCATABLE (e.g. for small
-         * parts of data segments, etc.).
+         * The reason we can't just not do the initial big relocation and make 
+         * it all work though demand loading is because not all pages with 
+         * driver code/data end up being marked as VM_RELOCATABLE (e.g. for 
+         * small parts of data segments, etc.).
          */
         bool needs_relocations = entry->relocatable && !entry->first_load;
 
@@ -227,42 +203,44 @@ static void PerformDeferredAccess(void* data) {
         ArchFlushTlb(vas);
 
         /*
-         * Need to keep page locked if we're doing relocations on it - otherwise by the time that we actually 
-         * load in all the data we need to do the relocations (e.g. ELF headers, the symbol table), we have probably
-         * already swapped out the page we are relocating (which leads to us getting nowhere).
+         * Need to keep page locked if we're doing relocations on it - otherwise
+         * by the time that we actually load in all the data we need to do the 
+         * relocations (e.g. ELF headers, the symbol table), we have probably
+         * already swapped out the page we are relocating (which leads to us 
+         * getting nowhere).
          */
         if (!needs_relocations) {
             entry->first_load = false;
             entry->load_in_progress = false;
             entry->lock = false;
         }
-        ReleaseSpinlockIrql(&vas->lock);
+        ReleaseSpinlock(&vas->lock);
 
         UnmapVirt(target_address, ARCH_PAGE_SIZE);
 
         if (needs_relocations) {
-            LogWriteSerial(" ----> ABOUT TO PERFORM RELOCATION FIXUPS\n");
-            PerformDriverRelocationOnPage(vas, entry->relocation_base, access->address);
-            AcquireSpinlockIrql(&vas->lock);
+            PerformRelocationsOnPage(vas, entry->relocation_base, access->address);
+            AcquireSpinlock(&vas->lock);
             entry->first_load = false;
             entry->load_in_progress = false;
             UnlockVirtEx(vas, access->address);
-            ReleaseSpinlockIrql(&vas->lock);
-            LogWriteSerial(" ----> PERFORMED RELOCATION FIXUPS\n");
+            ReleaseSpinlock(&vas->lock);
         }
-        
-        LogWriteSerial(" ----> FINISHED RELOADING FROM DISK 0x%X\n", entry->virtual);
     }
 
     FreeHeap(access);
 }
 
 /**
- * Given a virtual page, it defers a write to disk. It creates a copy of the virtual page, so that it may be safely
- * deleted as soon as this gets called.
+ * Given a virtual page, it defers a write to disk. It creates a copy of the 
+ * virtual page, so that it may be safely deleted as soon as this gets called.
  */
 static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset) {
-    size_t new_addr = MapVirt(0, 0, ARCH_PAGE_SIZE, VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0);
+    size_t new_addr = MapVirt(
+        0, 0, ARCH_PAGE_SIZE, 
+        VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0
+    );
+    
     inline_memcpy((void*) new_addr, (const char*) old_addr, ARCH_PAGE_SIZE);
     
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
@@ -274,7 +252,9 @@ static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset
     DeferUntilIrql(IRQL_STANDARD_HIGH_PRIORITY, PerformDeferredAccess, (void*) access);
 }
 
-static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset, bool deallocate_swap_on_read) {
+static void DeferDiskRead(
+    size_t new_addr, struct open_file* file, off_t offset, bool deallocate_swap_on_read
+) {
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
     access->file = file;
@@ -285,33 +265,20 @@ static void DeferDiskRead(size_t new_addr, struct open_file* file, off_t offset,
 }
 
 /**
- * Evicts a particular page mapping from virtual memory, freeing up its physical page (if it had one).
- * This will often involve accessing the disk to put it on swapfile (or save modifications to a file-backed
- * page).
- * 
- * @param vas The virtual address space that we're evicting from. Does not have to be the current one.
- * @param entry The virtual page to remove from virtual memory.
- * 
- * @maxirql IRQL_SCHEDULER
+ * Evicts a particular page mapping from virtual memory, freeing up its physical
+ * page (if it had one). This will often involve accessing the disk to put it on
+ * swapfile (or save modifications to a file-backed page).
  */
 void EvictPage(struct vas* vas, struct vas_entry* entry) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
 
     assert(!entry->lock);
     assert(!entry->cow);
+    assert(!entry->in_ram);
 
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
 
-    if (!entry->in_ram) {
-        /*
-         * Nothing happens, as this page isn't even in RAM.
-         */
-         
-    } else if (entry->file) {
-        /*
-         * We will just reload it from disk next time.
-         */
-
+    if (entry->file) {
         if (entry->write && !entry->relocatable) {
             DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
         }
@@ -323,17 +290,11 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         ArchFlushTlb(vas);
 
     } else {
-        /*
-         * Otherwise, we need to mark it as swapfile.
-         */
         entry->in_ram = false;
         entry->swapfile = true;
         entry->allocated = false;
         
         uint64_t offset = AllocateSwapfileIndex() * ARCH_PAGE_SIZE;
-        
-        //PutsConsole("PAGE OUT\n");
-        LogWriteSerial(" ----> WRITING VIRT 0x%X TO SWAP: DISK INDEX 0x%X (offset 0x%X)\n", entry->virtual, (int) offset / ARCH_PAGE_SIZE, (int) offset);
         DeferDiskWrite(entry->virtual, GetSwapfile(), offset);
         entry->swapfile_offset = offset;
 
@@ -342,39 +303,13 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         ArchFlushTlb(vas);
     }
 
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
 }
 
 /*
  * Lower value means it should be swapped out first.
  */
 static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
-    (void) vas;
-    
-    /*
-     * Want to evict in this order:
-     *      - file and non-writable
-     *      - file and writable
-     *      - non-writable
-     *      - writable
-     * 
-     * When we have a way of dealing with accessed / dirty, it should be in this order:
-     * 
-     *   0 VM_EVICT_FIRST
-     *  10 FILE, NON-WRITABLE, NON-ACCESSED
-     *  20 FILE, WRITABLE, NON-DIRTY, NON-ACCESSED
-     *  30 FILE, NON-WRITABLE, ACCESSED
-     *  40 FILE, WRITABLE, NON-DIRTY, ACCESSED 
-     *  50 NORMAL, NON-DIRTY, NON-ACCESSED
-     *  60 NORMAL, NON-DIRTY, ACCESSED
-     *  70 FILE, WRITABLE, DIRTY
-     *  80 NORMAL, DIRTY
-     *  90 COW
-     *  150 RELOCATABLE
-     * 
-     *  Globals add 3 points.
-     */
-
     bool accessed;
     bool dirty;
     ArchGetPageUsageBits(vas, entry, &accessed, &dirty);
@@ -412,7 +347,14 @@ struct eviction_candidate {
 
 #define PREV_SWAP_LIMIT 24
 
-void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* lowest_rank, struct eviction_candidate* lowest_ranked, int* count, struct vas_entry** prev_swaps) {
+void FindVirtToEvictFromSubtree(
+    struct vas* vas, 
+    struct avl_node* node, 
+    int* lowest_rank, 
+    struct eviction_candidate* lowest_ranked, 
+    int* count, 
+    struct vas_entry** prev_swaps
+) {
     static uint8_t rand = 0;
     
     if (node == NULL) {
@@ -429,7 +371,8 @@ void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* low
     *count += 1;
 
     /*
-     * After scanning through 500 entries, we'll allow early exits for less optimal pages.
+     * After scanning through 500 entries, we'll allow early exits for less 
+     * optimal pages.
      */
     int limit = (((*count - 500) / 75) + 10);
     if (*count > 500 && *lowest_rank < limit) {
@@ -441,8 +384,9 @@ void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* low
         int rank = GetPageEvictionRank(vas, entry);
 
         /*
-         * To ensure we mix up who gets evicted, when there's an equality, we use it 1/4 times.
-         * It is likely there are more than 4 to replace, so this ensures that we cycle through many of them.
+         * To ensure we mix up who gets evicted, when there's an equality, we 
+         * use it 1/4 times. It is likely there are more than 4 to replace, so 
+         * this ensures that we cycle through many of them.
          */
         bool equal = rank == *lowest_rank;
         if (equal) {
@@ -472,7 +416,13 @@ void FindVirtToEvictFromSubtree(struct vas* vas, struct avl_node* node, int* low
     FindVirtToEvictFromSubtree(vas, AvlTreeGetRight(node), lowest_rank, lowest_ranked, count, prev_swaps);
 }
 
-void FindVirtToEvictFromAddressSpace(struct vas* vas, int* lowest_rank, struct eviction_candidate* lowest_ranked, bool include_globals, struct vas_entry** prev_swaps) {
+void FindVirtToEvictFromAddressSpace(
+    struct vas* vas, 
+    int* lowest_rank, 
+    struct eviction_candidate* lowest_ranked, 
+    bool include_globals, 
+    struct vas_entry** prev_swaps
+) {
     int count = 0;
     FindVirtToEvictFromSubtree(vas, AvlTreeGetRootNode(vas->mappings), lowest_rank, lowest_ranked, &count, prev_swaps);
     if (include_globals) {
@@ -481,10 +431,9 @@ void FindVirtToEvictFromAddressSpace(struct vas* vas, int* lowest_rank, struct e
 }
 
 /**
- * Searches through virtual memory (that doesn't necessarily have to be in the current virtual address space),
- * and finds and evicts a page of virtual memory, to try free up physical memory. 
- * 
- * @maxirql IRQL_STANDARD
+ * Searches through virtual memory (that doesn't necessarily have to be in the 
+ * current virtual address space), and finds and evicts a page of virtual 
+ * memory, to try free up physical memory. 
  */
 void EvictVirt(void) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
@@ -499,20 +448,6 @@ void EvictVirt(void) {
     //       loaded in. Alternatively, TryEvictPages() can be a NOP the first time it is called after a page fault.
     //       This would give the code on the page that we loaded in time to 'progress' before being swapped out again.
 
-    /*
-    void TryEvictPages() {
-     if (had_page_fault) {
-        had_page_fault = false;
-        return;
-     }
-     EvictVirt()
-    }
-
-    void HandlePageFault() {
-        had_page_fault = true;
-    }
-     */
-
     // don't allow any of the last 8 swaps to be repeated (as an instruction may require at least 6 pages on x86
     // if it straddles many boundaries)
     static struct vas_entry* previous_swaps[PREV_SWAP_LIMIT] = {0};
@@ -522,9 +457,9 @@ void EvictVirt(void) {
     struct eviction_candidate lowest_ranked;
     lowest_ranked.entry = NULL;
     
-    AcquireSpinlockIrql(&GetVas()->lock);
+    AcquireSpinlock(&GetVas()->lock);
     FindVirtToEvictFromAddressSpace(GetVas(), &lowest_rank, &lowest_ranked, true, previous_swaps);
-    ReleaseSpinlockIrql(&GetVas()->lock);
+    ReleaseSpinlock(&GetVas()->lock);
 
     // TODO: go through other address spaces
 
@@ -546,9 +481,9 @@ static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
     assert(IsSpinlockHeld(&vas->lock));
     
     if (entry->global) { 
-        AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
+        AcquireSpinlock(&GetCpu()->global_mappings_lock);
         AvlTreeInsert(GetCpu()->global_vas_mappings, entry);
-        ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+        ReleaseSpinlock(&GetCpu()->global_mappings_lock);
 
     } else {        
         AvlTreeInsert(vas->mappings, entry);
@@ -558,9 +493,9 @@ static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
 static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
     assert(IsSpinlockHeld(&vas->lock));
     if (entry->global) {
-        AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
+        AcquireSpinlock(&GetCpu()->global_mappings_lock);
         AvlTreeDelete(GetCpu()->global_vas_mappings, entry);
-        ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+        ReleaseSpinlock(&GetCpu()->global_mappings_lock);
 
     } else {
         AvlTreeDelete(vas->mappings, entry); 
@@ -660,7 +595,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
      */
     
     if ((flags & VM_RECURSIVE) == 0) {
-        AcquireSpinlockIrql(&vas->lock);
+        AcquireSpinlock(&vas->lock);
     }
     InsertIntoAvl(vas, entry);
     ArchAddMapping(vas, entry);
@@ -678,7 +613,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     }
 
     if ((flags & VM_RECURSIVE) == 0) {
-        ReleaseSpinlockIrql(&vas->lock);
+        ReleaseSpinlock(&vas->lock);
     }
 }
 
@@ -692,7 +627,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
      * in separate loops to prevent the need to acquire both spinlocks at once, which could lead
      * to a deadlock.
      */
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
         if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
             in_use = true;
@@ -700,13 +635,13 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
         }
         dummy.virtual += ARCH_PAGE_SIZE;
     }
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
 
     if (in_use) {
         return true;
     }
 
-    AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
+    AcquireSpinlock(&GetCpu()->global_mappings_lock);
     dummy.virtual = virtual;
     for (size_t i = 0; i < pages; ++i) {
         if (AvlTreeContains(GetCpu()->global_vas_mappings, (void*) &dummy)) {
@@ -715,7 +650,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
         }
         dummy.virtual += ARCH_PAGE_SIZE;
     }
-    ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+    ReleaseSpinlock(&GetCpu()->global_mappings_lock);
 
     return in_use;
 }
@@ -798,79 +733,25 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
  * 
  * @maxirql IRQL_SCHEDULER
  */
+#define RETURN_FAIL_IF(err, cond) if (cond) {*error = err; return 0;}
 size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos, int* error) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     *error = 0;
 
-    /*
-     * We only specify a physical page when we need to map hardware directly (i.e. it's not
-     * part of the available RAM the physical memory manager can give).
-     */
-    if (physical != 0 && (flags & (VM_MAP_HARDWARE | VM_RELOCATABLE)) == 0) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_MAP_HARDWARE) && (flags & VM_FILE)) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_MAP_HARDWARE) && (flags & VM_LOCK) == 0) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_FILE) && file == NULL) {
-        *error = EBADF;
-        return 0;
-    }
-    
-    if ((flags & VM_FILE) == 0 && (file != NULL || pos != 0)) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_RELOCATABLE) && (flags & VM_FILE) == 0) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_RELOCATABLE) && (flags & VM_USER)) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_RELOCATABLE) && physical == 0) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_FILE) && (flags & VM_LOCK)) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_LOCK) && (flags & VM_SHARED)) {
-        *error = EINVAL;
-        return 0;
-    }
-
-    if ((flags & VM_FILE) && !(IFTODT(file->node->stat.st_mode) == DT_REG || IFTODT(file->node->stat.st_mode) == DT_BLK)) {
-        *error = EACCES;
-        return 0;
-    }
-    
-    if ((flags & VM_FILE) && !file->can_read) {
-        *error = EACCES;
-        return 0;
-    }
-
-    if ((flags & VM_FILE) && !file->can_write && (flags & VM_WRITE)) {
-        *error = EACCES;
-        return 0;
-    }
+    RETURN_FAIL_IF(EINVAL, physical != 0 && (flags & (VM_MAP_HARDWARE | VM_RELOCATABLE)) == 0);
+    RETURN_FAIL_IF(EINVAL, (flags & VM_MAP_HARDWARE) && (flags & VM_LOCK) == 0);
+    RETURN_FAIL_IF(EINVAL, (flags & VM_FILE) && (flags & VM_MAP_HARDWARE));
+    RETURN_FAIL_IF(EINVAL, (flags & VM_FILE) && file == NULL);
+    RETURN_FAIL_IF(EINVAL, (flags & VM_FILE) && (flags & VM_LOCK));
+    RETURN_FAIL_IF(EINVAL, (flags & VM_FILE) == 0 && (file != NULL || pos != 0));
+    RETURN_FAIL_IF(EINVAL, (flags & VM_RELOCATABLE) && (flags & VM_FILE) == 0);
+    RETURN_FAIL_IF(EINVAL, (flags & VM_RELOCATABLE) && (flags & VM_USER));
+    RETURN_FAIL_IF(EINVAL, (flags & VM_RELOCATABLE) && physical == 0);
+    RETURN_FAIL_IF(EINVAL, (flags & VM_LOCK) && (flags & VM_SHARED));
+    RETURN_FAIL_IF(EACCES, (flags & VM_FILE) && !(IFTODT(file->node->stat.st_mode) == DT_REG || IFTODT(file->node->stat.st_mode) == DT_BLK));
+    RETURN_FAIL_IF(EACCES, (flags & VM_FILE) && !file->can_read);
+    RETURN_FAIL_IF(EACCES, (flags & VM_FILE) && !file->can_write && (flags & VM_WRITE));
 
     /*
      * Get a virtual memory range that is not currently in use.
@@ -925,28 +806,26 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
  */
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
     int error;
-    size_t mem = MapVirtEx(GetVas(), physical, virtual, BytesToPages(bytes), flags, file, pos, &error);
     (void) error;
-    return mem;
+    return MapVirtEx(GetVas(), physical, virtual, BytesToPages(bytes), flags, file, pos, &error);
 }
 
 static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
-    struct vas_entry dummy = {.num_pages = 1, .virtual = virtual & ~(ARCH_PAGE_SIZE - 1)};
-
     assert(IsSpinlockHeld(&vas->lock));
 
+    struct vas_entry dummy = {.num_pages = 1, .virtual = virtual & ~(ARCH_PAGE_SIZE - 1)};
     struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
-        AcquireSpinlockIrql(&GetCpu()->global_mappings_lock);
+        AcquireSpinlock(&GetCpu()->global_mappings_lock);
         res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
-        ReleaseSpinlockIrql(&GetCpu()->global_mappings_lock);
+        ReleaseSpinlock(&GetCpu()->global_mappings_lock);
     }
     return res;
 }
 
 size_t GetPhysFromVirt(size_t virtual) {
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
     size_t result = entry->physical;
 
@@ -960,7 +839,7 @@ size_t GetPhysFromVirt(size_t virtual) {
         result += (target_page - entry_page) * ARCH_PAGE_SIZE;
     }
 
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
     return result;
 }
 
@@ -1174,17 +1053,17 @@ void UnlockVirtEx(struct vas* vas, size_t virtual) {
 
 bool LockVirt(size_t virtual) {
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     bool res = LockVirtEx(vas, virtual);
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
     return res;
 }
 
 void UnlockVirt(size_t virtual) {
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     UnlockVirtEx(vas, virtual);
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
 }
 
 /*
@@ -1200,16 +1079,16 @@ int SetVirtPermissions(size_t virtual, int set, int clear) {
     }
     
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
 
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
     if (entry == NULL) {
-        ReleaseSpinlockIrql(&vas->lock);
+        ReleaseSpinlock(&vas->lock);
         return ENOMEM;
     }
 
     if (entry->file && !entry->file_node->can_write && (set & VM_WRITE) && !entry->relocatable) {
-        ReleaseSpinlockIrql(&vas->lock);
+        ReleaseSpinlock(&vas->lock);
         return EACCES;
     }
         
@@ -1223,20 +1102,20 @@ int SetVirtPermissions(size_t virtual, int set, int clear) {
     ArchUpdateMapping(vas, entry);
     ArchFlushTlb(vas);
 
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
     return 0;
 }
 
 int GetVirtPermissions(size_t virtual) {
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     struct vas_entry* entry_ptr = GetVirtEntry(GetVas(), virtual);
     if (entry_ptr == NULL) {
-        ReleaseSpinlockIrql(&vas->lock);
+        ReleaseSpinlock(&vas->lock);
         return 0;
     }
     struct vas_entry entry = *entry_ptr;
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
 
     int permissions = 0;
     if (entry.read) permissions |= VM_READ;
@@ -1305,10 +1184,10 @@ static void WipeUsermodePagesRecursive(struct avl_node* node) {
 
 int WipeUsermodePages(void) {
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     WipeUsermodePagesRecursive(AvlTreeGetRootNode(GetVas()->mappings));
     ArchFlushTlb(vas);
-    ReleaseSpinlockIrql(&vas->lock); 
+    ReleaseSpinlock(&vas->lock); 
     return 0;  
 }
 
@@ -1338,9 +1217,9 @@ int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags) {
 
 int UnmapVirt(size_t virtual, size_t bytes) {
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     int res = UnmapVirtEx(vas, virtual, BytesToPages(bytes), 0);
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
     return res;
 }
 
@@ -1421,11 +1300,11 @@ struct vas* CopyVas(void) {
     struct vas* vas = GetVas();
     struct vas* new_vas = CreateVas();
 
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     // no need to change global - it's already there!
     CopyVasRecursive(AvlTreeGetRootNode(vas->mappings), new_vas);
     ArchFlushTlb(vas);
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
 
     return new_vas;
 }
@@ -1482,7 +1361,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     }
 
     struct vas* vas = GetVas();
-    AcquireSpinlockIrql(&vas->lock);
+    AcquireSpinlock(&vas->lock);
     ++handling_page_fault;
 
     struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
@@ -1493,7 +1372,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     if (entry->load_in_progress) {
         --handling_page_fault;
-        ReleaseSpinlockIrql(&vas->lock);
+        ReleaseSpinlock(&vas->lock);
         Schedule();
         return;
     }
@@ -1515,7 +1394,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     }
 
     --handling_page_fault;
-    ReleaseSpinlockIrql(&vas->lock);
+    ReleaseSpinlock(&vas->lock);
 }
 
 /**

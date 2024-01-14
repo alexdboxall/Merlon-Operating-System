@@ -1,11 +1,4 @@
 
-/***
- * thread/cleaner.c - Thread Termination Cleanup
- *
- * Threads are unable to delete their own stacks. Therefore, we have a seperate thread which
- * deletes the stacks (and any other leftover data) of threads that are marked as terminated.
- */
-
 #include <thread.h>
 #include <virtual.h>
 #include <threadlist.h>
@@ -55,21 +48,15 @@ void TerminateThreadLockHeld(struct thread* thr) {
         
     } else {
         /*
-         * We can't terminate it directly, as it may be on any queue somewhere else. Instead, we
-         * will terminate it next time it is up for scheduling.
+         * We can't terminate it directly, as it may be on any queue somewhere 
+         * else. Instead, we will terminate it next time it gets schedueld.
          */
         thr->needs_termination = true;
     }
 }
 
 /**
- * Terminates a thread. This function must not be called until after `InitCleaner` has been called.
- * The scheduler lock should not be already held.
- * 
- * @param thr The thread to terminated.
- * @return This function does not return if thr == GetThread(), and returns void otherwise.
- * 
- * @note MAX_IRQL(IRQL_SCHEDULER)
+ * Terminates a thread. The scheduler lock should not be already held.
  */
 void TerminateThread(struct thread* thr) {
     MAX_IRQL(IRQL_SCHEDULER);
@@ -84,7 +71,8 @@ void TerminateThread(struct thread* thr) {
 }
 
 /**
- * Creates the cleaner thread. This must be called before any calls to `TerminateThread` are made.
+ * Creates the cleaner thread. This must be called before any calls to 
+ * `TerminateThread` are made.
  */
 void InitCleaner(void) {
     ThreadListInit(&terminated_list, NEXT_INDEX_TERMINATED);

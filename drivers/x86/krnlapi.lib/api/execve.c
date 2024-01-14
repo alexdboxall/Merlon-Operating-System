@@ -15,6 +15,7 @@
 #include <virtual.h>
 #include <elf.h>
 #include <machine/config.h>
+#include <sys/wait.h>
 #include <sys/mman.h>
 
 struct dyn_data {
@@ -128,6 +129,8 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "unlink")) return (size_t) unlink;
     if (!xstrcmp(name, "rmdir")) return (size_t) rmdir;
     if (!xstrcmp(name, "isatty")) return (size_t) isatty;
+    if (!xstrcmp(name, "waitpid")) return (size_t) waitpid;
+    if (!xstrcmp(name, "fork")) return (size_t) fork;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
     return (size_t) loltest;
 }

@@ -14,6 +14,8 @@ enum system_call_numbers {
     SYSCALL_REMOVE,
     SYSCALL_MPROTECT,
     SYSCALL_PREPEXEC,
+    SYSCALL_WAITPID,
+    SYSCALL_FORK,
     
     _SYSCALL_NUM_ENTRIES
 };
