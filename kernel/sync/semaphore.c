@@ -57,7 +57,7 @@ struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_c
  * @maxirql IRQL_PAGE_FAULT
  */
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
     assert(sem != NULL);
 
     LockScheduler();
@@ -116,7 +116,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
  * @param sem The semaphore to release/signal 
  */
 void ReleaseSemaphore(struct semaphore* sem) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    MAX_IRQL(IRQL_HIGH);
 
     LockScheduler();
     assert(sem->current_count > 0);
