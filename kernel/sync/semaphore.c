@@ -39,7 +39,7 @@ struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_c
  *         can't be acquired. ETIMEDOUT if timeout_ms isn't 0, and we timed-out.
  */
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
     assert(sem != NULL);
 
     LockScheduler();
@@ -85,7 +85,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
  * Releases (i.e., does the signal, or V operation on) a semaphore.
  */
 void ReleaseSemaphore(struct semaphore* sem) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    MAX_IRQL(IRQL_HIGH);
 
     LockScheduler();
     assert(sem->current_count > 0);

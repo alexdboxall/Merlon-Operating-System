@@ -19,7 +19,15 @@ int AcquireSpinlock(struct spinlock* lock) {
         PanicEx(PANIC_SPINLOCK_DOUBLE_ACQUISITION, lock->name);
     }
 
+    /* 
+     * It's okay to take a spinlock to a higher level, and this is used for
+     * things like, e.g. releasing a semaphore from an interrupt handler.
+     */
     int prior_irql = RaiseIrql(lock->irql);
+    if (prior_irql < lock->irql) {
+        RaiseIrql(lock->irql);
+    }
+
     ArchSpinlockAcquire(&lock->lock);
     lock->prev_irql = prior_irql;
     return prior_irql;
