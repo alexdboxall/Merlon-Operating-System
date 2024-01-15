@@ -2,7 +2,7 @@
 
 #include <common.h>
 
-#define MAX_FD_PER_PROCESS 1024
+#define PROC_MAX_FD 1024
 
 struct open_file;
 struct filedes_table;
@@ -17,5 +17,5 @@ struct filedes_table* CreateFileDescriptorTable(void);
 struct filedes_table* CopyFileDescriptorTable(struct filedes_table* original);
 void DestroyFileDescriptorTable(struct filedes_table* table);
 
-int DuplicateFileDescriptor(struct filedes_table* table, int oldfd, int* newfd);
-int DuplicateFileDescriptor2(struct filedes_table* table, int oldfd, int newfd, int flags);
+int DupFd(struct filedes_table* table, int oldfd, int* newfd);
+int DupFd2(struct filedes_table* table, int oldfd, int newfd, int flags);

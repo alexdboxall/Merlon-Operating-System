@@ -23,6 +23,9 @@ struct transfer {
 
     enum transfer_direction direction;
     enum transfer_type type;
+
+    bool blockable;               /* true by default, ReadFile/WriteFile sets
+                                   * to no if O_NONBLOCK is in the openfile */
 };
 
 

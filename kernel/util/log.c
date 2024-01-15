@@ -4,8 +4,7 @@
 
 #define REAL_HW 0
 
-__attribute__((no_instrument_function)) static void IntToStr(uint32_t i, char* output, int base)
-{
+static void IntToStr(uint32_t i, char* output, int base) {
 	const char* digits = "0123456789ABCDEF";
 
     /*
@@ -32,13 +31,11 @@ __attribute__((no_instrument_function)) static void IntToStr(uint32_t i, char* o
 }
 
 #if REAL_HW == 0
-__attribute__((no_instrument_function)) static void outb(uint16_t port, uint8_t value)
-{
+static void outb(uint16_t port, uint8_t value) {
 	asm volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 
-__attribute__((no_instrument_function)) static uint8_t inb(uint16_t port)
-{
+static uint8_t inb(uint16_t port) {
 	uint8_t value;
 	asm volatile ("inb %1, %0"
 		: "=a"(value)
@@ -47,8 +44,7 @@ __attribute__((no_instrument_function)) static uint8_t inb(uint16_t port)
 }
 #endif
 
-__attribute__((no_instrument_function)) static void logcnv(char c, bool screen)
-{	
+static void LogChar(char c, bool screen) {
 	if (screen) {
 		DbgScreenPutchar(c);
 	}
@@ -60,19 +56,18 @@ __attribute__((no_instrument_function)) static void logcnv(char c, bool screen)
 #endif
 }
 
-__attribute__((no_instrument_function)) static void logsnv(char* a, bool screen)
-{
-	while (*a) logcnv(*a++, screen);
+static void LogStr(char* a, bool screen) {
+	while (*a) LogChar(*a++, screen);
 }
 
-__attribute__((no_instrument_function)) static void log_intnv(uint32_t i, int base, bool screen)
+static void LogInt(uint32_t i, int base, bool screen)
 {
 	char str[12];
     IntToStr(i, str, base);
-	logsnv(str, screen);
+	LogStr(str, screen);
 }
 
-__attribute__((no_instrument_function)) static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
+static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 	if (format == NULL) {
 		format = "NULL";
 	}
@@ -83,34 +78,34 @@ __attribute__((no_instrument_function)) static void LogWriteSerialVa(const char*
 		if (format[i] == '%') {
 			switch (format[++i]) {
 			case '%': 
-				logcnv('%', screen); break;
+				LogChar('%', screen); break;
 			case 'c':
-				logcnv(va_arg(list, int), screen); break;
+				LogChar(va_arg(list, int), screen); break;
 			case 's': 
-				logsnv(va_arg(list, char*), screen); break;
+				LogStr(va_arg(list, char*), screen); break;
 			case 'd': 
-				log_intnv(va_arg(list, signed), 10, screen); break;
+				LogInt(va_arg(list, signed), 10, screen); break;
 			case 'x':
 			case 'X': 
-				log_intnv(va_arg(list, unsigned), 16, screen); break;
+				LogInt(va_arg(list, unsigned), 16, screen); break;
 			case 'l':
 			case 'L': 
-				log_intnv(va_arg(list, unsigned long long), 16, screen); break;
+				LogInt(va_arg(list, unsigned long long), 16, screen); break;
 			case 'u':
-				log_intnv(va_arg(list, unsigned), 10, screen); break;
+				LogInt(va_arg(list, unsigned), 10, screen); break;
 			default: 
-				logcnv('%', screen); 
-				logcnv(format[i], screen);
+				LogChar('%', screen); 
+				LogChar(format[i], screen);
 				break;
 			}
 		} else {
-			logcnv(format[i], screen);
+			LogChar(format[i], screen);
 		}
 		i++;
 	}
 }
 
-__attribute__((no_instrument_function)) void LogWriteSerial(const char* format, ...)
+void LogWriteSerial(const char* format, ...)
 {
 	va_list list;
 	va_start(list, format);
@@ -118,15 +113,15 @@ __attribute__((no_instrument_function)) void LogWriteSerial(const char* format, 
 	va_end(list);
 }
 
-__attribute__((no_instrument_function)) void LogDeveloperWarning(const char* format, ...) {
+void LogDeveloperWarning(const char* format, ...) {
 	va_list list;
 	va_start(list, format);
-	LogWriteSerial("\n!!!!!!!!!!!!!!!!!!!!\n\n>>> KERNEL DEVELOPER WARNING:\n    ");
+	LogWriteSerial("\n!!!!!!!!!!!!!!!!\n\n>>> KERNEL DEVELOPER WARNING:\n    ");
 	LogWriteSerialVa(format, list, false);
 	va_end(list);
 }
 
-__attribute__((no_instrument_function)) void DbgScreenPrintf(const char* format, ...) {
+void DbgScreenPrintf(const char* format, ...) {
 	va_list list;
 	va_start(list, format);
 	LogWriteSerialVa(format, list, true);

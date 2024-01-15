@@ -17,7 +17,7 @@ int SysDup(size_t dup_num, size_t old_fd, size_t new_fd, size_t flags, size_t) {
 
 	if (dup_num == 1) {
 		int result_fd;
-		int res = DuplicateFileDescriptor(table, old_fd, &result_fd);
+		int res = DupFd(table, old_fd, &result_fd);
 		if (res != 0) {
 			return res;
 		}
@@ -25,7 +25,7 @@ int SysDup(size_t dup_num, size_t old_fd, size_t new_fd, size_t flags, size_t) {
 		return WriteWordToUsermode((size_t*) new_fd, result_fd);
 
 	} else if (dup_num == 2) {
-		return DuplicateFileDescriptor2(table, old_fd, new_fd, flags);
+		return DupFd2(table, old_fd, new_fd, flags);
 		
 	} else {
 		return EINVAL;

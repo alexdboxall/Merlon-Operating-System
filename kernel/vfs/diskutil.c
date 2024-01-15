@@ -10,15 +10,12 @@
 #include <partition.h>
 #include <sys/stat.h>
 
+static struct spinlock lock;
+
 /*
  * Stores how many disks of each type have been allocated so far.
  */
 static int type_table[__DISKUTIL_NUM_TYPES];
-
-/*
- * Protects `type_table` and `next_mounted_disk_num`
- */
-static struct spinlock type_table_lock;
 
 /*
  * Filesystems get mounted to the VFS as drvX:, where X is an increasing number.
@@ -46,7 +43,7 @@ static char* type_strings[__DISKUTIL_NUM_TYPES] = {
  */
 void InitDiskUtil(void) {
     EXACT_IRQL(IRQL_STANDARD);   
-    InitSpinlock(&type_table_lock, "diskutil", IRQL_SCHEDULER);
+    InitSpinlock(&lock, "diskutil", IRQL_SCHEDULER);
     memset(type_table, 0, sizeof(type_table));
 }
 
@@ -85,10 +82,6 @@ static int AppendNumberToString(char* str, int num) {
  * Returns the name the next-mounted filesystem should receive (e.g. drv0, 
  * drv1, etc.) Each call to this function will return a different string. The 
  * caller is responsible for freeing the returned string.
- * 
- * @return A caller-free string representing the drive name.
- * 
- * @maxirql IRQL_SCHEDULER
  */
 char* GenerateNewMountedDiskName() {
     MAX_IRQL(IRQL_SCHEDULER);
@@ -96,29 +89,23 @@ char* GenerateNewMountedDiskName() {
     char name[16];
     strcpy(name, "drv");
 
-    AcquireSpinlock(&type_table_lock);
+    AcquireSpinlock(&lock);
     int disk_num = next_mounted_disk_num++;
-    ReleaseSpinlock(&type_table_lock);
+    ReleaseSpinlock(&lock);
 
     AppendNumberToString(name, disk_num);
     return strdup(name);
 }
 
 /**
- * Returns the name the next-mounted raw disk should receive, based on its type (e.g. raw-hd0, raw-hd1, 
- * raw-fd0). Each call to this function will return a different string. The caller is responsible for 
- * freeing the returned string.
- * 
- * @param type The type of disk (one of DISKUTIL_TYPE_...)
- * @return The caller-free string representing the drive name.
- * 
- * @maxirql IRQL_SCHEDULER
+ * Returns the name the next-mounted raw disk should receive, based on its type 
+ * (e.g. raw-hd0, raw-hd1, raw-fd0). Each call to this function will return a 
+ * different string. The caller is responsible for freeing the returned string.
  */
 char* GenerateNewRawDiskName(int type) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    char name[16];
-    strcpy(name, "raw-");
+    char name[16] = "raw-";
 
     if (type >= __DISKUTIL_NUM_TYPES || type < 0) {
         type = DISKUTIL_TYPE_OTHER;
@@ -126,34 +113,29 @@ char* GenerateNewRawDiskName(int type) {
 
     strcat(name, type_strings[type]);
 
-    AcquireSpinlock(&type_table_lock);
+    AcquireSpinlock(&lock);
     int disk_num = type_table[type]++;
-    ReleaseSpinlock(&type_table_lock);
+    ReleaseSpinlock(&lock);
 
     AppendNumberToString(name, disk_num);
     return strdup(name);
 }
 
 /**
- * Generates and returns the name of a partition from its partition index within a drive (e.g. part0, part1)
- * The caller is responsible for freeing the returned string.
+ * Generates and returns the name of a partition from its partition index within
+ * a drive (e.g. part0, part1). The caller must free the returned string.
  */
 static char* GetPartitionNameString(int index) {
-    char name[16];
-    strcpy(name, "part");
+    char name[16] = "part";
     AppendNumberToString(name, index);
     return strdup(name);
 }
 
 /**
- * Given a disk, this function detects, creates and mounts partitions on that disk.
- * For each detected partition, the filesystem is also detected, and that is mounted if it exists.
- * If the disk has no partitions, a 'whole disk partition' will be created, the filesystem will
- * still be detected. This should only be called once per disk, after it has been initialised.
- * 
- * @param disk The disk to scan for partitions
- * 
- * @maxirql IRQL_STANDARD
+ * Given a disk, this function detects, creates and mounts partitions on that 
+ * disk. For each detected partition, the filesystem is also detected, and that 
+ * is mounted if it exists. If the disk has no partitions, a 'whole disk 
+ * partition' will be created, the filesystem will still be detected.
  */
 void CreateDiskPartitions(struct open_file* disk) {
     EXACT_IRQL(IRQL_STANDARD);   
@@ -162,8 +144,9 @@ void CreateDiskPartitions(struct open_file* disk) {
 
     if (partitions == NULL || partitions[0] == NULL) {
         struct stat st = disk->node->stat;
-        struct vnode* whole_disk_partition = CreatePartition(disk, 0, st.st_size, 0, st.st_blksize, 0, false)->node;
-        VnodeOpCreate(disk->node, &whole_disk_partition, GetPartitionNameString(0), 0, 0);
+        struct vnode* whole_disk = CreatePartition(
+            disk, 0, st.st_size, 0, st.st_blksize, 0, false)->node;
+        VnodeOpCreate(disk->node, &whole_disk, GetPartitionNameString(0), 0, 0);
         return;
     }
 
@@ -178,23 +161,25 @@ void InitDiskPartitionHelper(struct disk_partition_helper* helper) {
     helper->num_partitions = 0;
 }
 
-int DiskFollowHelper(struct disk_partition_helper* helper, struct vnode** out, const char* name) {
+int DiskFollowHelper(
+    struct disk_partition_helper* helper, struct vnode** out, const char* name
+) {
     for (int i = 0; i < helper->num_partitions; ++i) {
         if (!strcmp(helper->partition_names[i], name)) {
             *out = helper->partitions[i];
             return 0;
         }
     }
-
     *out = NULL;
     return EINVAL;
 }
 
-int DiskCreateHelper(struct disk_partition_helper* helper, struct vnode** in, const char* name) {
+int DiskCreateHelper(
+    struct disk_partition_helper* helper, struct vnode** in, const char* name
+) {
     if (helper->num_partitions >= MAX_PARTITIONS_PER_DISK) {
         return EINVAL;
     }
-
     helper->partitions[helper->num_partitions] = *in;
     helper->partition_names[helper->num_partitions] = (char*) name;
     helper->num_partitions++;

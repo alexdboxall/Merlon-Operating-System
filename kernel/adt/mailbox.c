@@ -9,6 +9,7 @@
 #include <panic.h>
 #include <log.h>
 #include <irql.h>
+#include <transfer.h>
 
 struct mailbox {
     uint8_t* data;
@@ -54,12 +55,10 @@ static int MailboxWaitAddableInternal(struct mailbox* mbox, int timeout) {
     if (res != 0) {
         return res;
     }
-    res = AcquireSemaphore(mbox->empty_sem, timeout);
-    if (res != 0) {
+    if ((res = AcquireSemaphore(mbox->empty_sem, timeout))) {
         ReleaseMutex(mbox->add_mtx);
-        return res;
     }
-    return 0;
+    return res;
 }
 
 int MailboxWaitAddable(struct mailbox* mbox, int timeout) {
@@ -67,7 +66,7 @@ int MailboxWaitAddable(struct mailbox* mbox, int timeout) {
     if (res != 0) {
         return res;
     }
-    ReleaseSemaphore(mbox->empty_sem);    // undo what MailboxWaitAddableInternal did
+    ReleaseSemaphore(mbox->empty_sem);
     ReleaseMutex(mbox->add_mtx);
     return 0;
 }
@@ -88,20 +87,17 @@ int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c) {
     return 0;
 }
 
-
-
-
 static int MailboxWaitGettableInternal(struct mailbox* mbox, int timeout) {
+    // TODO: you'll want to create a flag in struct semaphore* call 'interruptable'
+    //       or have 'timeout == -2' mean non-interruptable
     int res = AcquireMutex(mbox->get_mtx, timeout);
     if (res != 0) {
         return res;
     }
-    res = AcquireSemaphore(mbox->full_sem, timeout);
-    if (res != 0) {
+    if ((res = AcquireSemaphore(mbox->full_sem, timeout))) {
         ReleaseMutex(mbox->get_mtx);
-        return res;
     }
-    return 0;
+    return res;
 }
 
 int MailboxWaitGettable(struct mailbox* mbox, int timeout) {
@@ -109,7 +105,7 @@ int MailboxWaitGettable(struct mailbox* mbox, int timeout) {
     if (res != 0) {
         return res;
     }
-    ReleaseSemaphore(mbox->full_sem);    // undo what MailboxWaitGettableInternal did
+    ReleaseSemaphore(mbox->full_sem);
     ReleaseMutex(mbox->get_mtx);
     return 0;
 }
@@ -129,5 +125,43 @@ int MailboxGet(struct mailbox* mbox, int timeout, uint8_t* c) {
     ReleaseMutex(mbox->inner_mtx);
     ReleaseMutex(mbox->get_mtx);
     ReleaseSemaphore(mbox->empty_sem);
+    return 0;
+}
+
+int MailboxRead(struct mailbox* mbox, struct transfer* tr) {  
+    if (tr->length_remaining == 0) {
+        return MailboxWaitGettable(mbox, 0);
+    }
+
+    bool done_any = false;
+    while (tr->length_remaining > 0) {
+        uint8_t c;
+        int res = MailboxGet(mbox, tr->blockable && !done_any ? -1 : 0, &c);
+        if (res != 0) {
+            return done_any ? 0 : res;
+        }
+        PerformTransfer(&c, tr, 1);
+        done_any = true;
+    }
+
+    return 0;
+}
+
+int MailboxWrite(struct mailbox* mbox, struct transfer* tr) {  
+    if (tr->length_remaining == 0) {
+        return MailboxWaitAddableInternal(mbox, 0);
+    }
+
+    bool done_any = false;
+    while (tr->length_remaining > 0) {
+        uint8_t c;
+        PerformTransfer(&c, tr, 1);
+        int res = MailboxAdd(mbox, tr->blockable && !done_any ? -1 : 0, c);
+        if (res != 0) {
+            return done_any ? 0 : res;
+        }
+        done_any = true;
+    }
+
     return 0;
 }

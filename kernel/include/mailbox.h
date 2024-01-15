@@ -32,10 +32,10 @@ struct mailbox {
 struct mailbox* MailboxCreate(int size);
 void MailboxDestroy(struct mailbox* mbox);
 
-// Add()            -> with timeout = 0, it acts like TryAdd()
-// WaitAddable()    -> with timeout = 0, it acts like IsAddable()
-
 int MailboxWaitAddable(struct mailbox* mbox, int timeout);
 int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c);
 int MailboxWaitGettable(struct mailbox* mbox, int timeout);
 int MailboxGet(struct mailbox* mbox, int timeout, uint8_t* c);
+
+int MailboxRead(struct mailbox* mbox, struct transfer* tr);
+int MailboxWrite(struct mailbox* mbox, struct transfer* tr);

@@ -185,7 +185,7 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 	}
 }
 
-static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, struct quick_relocation_table* table)
+static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, struct relocation_table* table)
 {
 	size_t addr = (size_t) relocation_point + relocation_table->r_offset;
 	size_t* ref = (size_t*) addr;
@@ -241,7 +241,7 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	return success;
 }
 
-static bool ElfPerformRelocations(void* data, size_t relocation_point, struct quick_relocation_table** table) {
+static bool ElfPerformRelocations(void* data, size_t relocation_point, struct relocation_table** table) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Shdr* sect_headers = (struct Elf32_Shdr*) AddVoidPtr(data, elf_header->e_shoff);
 
@@ -282,7 +282,7 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct qu
 	return true;
 }
 
-static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table, bool driver) {
+static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file, struct relocation_table** table, bool driver) {
     MAX_IRQL(IRQL_PAGE_FAULT);
 
 	size_t load_point = *relocation_point;
@@ -309,7 +309,7 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
 	}
 }
 
-int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct quick_relocation_table** table, size_t* entry_point) {
+int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct relocation_table** table, size_t* entry_point) {
     EXACT_IRQL(IRQL_STANDARD);
 
 	bool driver = entry_point == NULL;

@@ -28,7 +28,7 @@ struct symbol {
 struct loaded_driver {
     char* filename;
     size_t relocation_point;
-    struct quick_relocation_table* quick_relocation_table;
+    struct relocation_table* relocation_table;
 };
 
 static int SymbolComparator(void* a_, void* b_) {
@@ -180,13 +180,13 @@ static int LoadDriver(const char* name) {
     
     struct loaded_driver* drv = AllocHeap(sizeof(struct loaded_driver));
     drv->filename = strdup_pageable(name);
-    drv->quick_relocation_table = NULL;
+    drv->relocation_table = NULL;
     drv->relocation_point = 0;      // allow driver to be placed anywhere
-    if ((res = ArchLoadDriver(&drv->relocation_point, file, &drv->quick_relocation_table, NULL))) {
+    if ((res = ArchLoadDriver(&drv->relocation_point, file, &drv->relocation_table, NULL))) {
         return res;
     }
 
-    assert(drv->quick_relocation_table != NULL);
+    assert(drv->relocation_table != NULL);
 
     AvlTreeInsert(loaded_drivers, drv);
     ArchLoadSymbols(file, drv->relocation_point);
@@ -215,21 +215,27 @@ int RequireDriver(const char* name) {
     return res;
 }
 
-void SortQuickRelocationTable(struct quick_relocation_table* table) {
-	struct quick_relocation* entries = table->entries;
-	qsort_pageable((void*) entries, table->used_entries, sizeof(struct quick_relocation), QuickRelocationTableComparator);
+void SortQuickRelocationTable(struct relocation_table* table) {
+	qsort_pageable(
+        (void*) table->entries, 
+        table->used_entries, 
+        sizeof(struct quick_relocation), 
+        QuickRelocationTableComparator
+    );
 }
 
-void AddToQuickRelocationTable(struct quick_relocation_table* table, size_t addr, size_t val) {
+void AddToQuickRelocationTable(struct relocation_table* table, size_t addr, size_t val) {
 	assert(table->used_entries < table->total_entries);
 	table->entries[table->used_entries].address = addr;
 	table->entries[table->used_entries].value = val;
 	table->used_entries++;
 }
 
-struct quick_relocation_table* CreateQuickRelocationTable(int count) {
-    struct quick_relocation_table* table = AllocHeap(sizeof(struct quick_relocation_table));
-    struct quick_relocation* entries = (struct quick_relocation*) MapVirt(0, 0, count * sizeof(struct quick_relocation), VM_READ | VM_WRITE, NULL, 0);
+struct relocation_table* CreateQuickRelocationTable(int count) {
+    struct relocation_table* table = AllocHeap(sizeof(struct relocation_table));
+    struct quick_relocation* entries = (struct quick_relocation*) MapVirt(
+        0, 0, count * sizeof(struct quick_relocation), VM_READ | VM_WRITE, NULL, 0
+    );
     table->entries = entries;
     table->used_entries = 0;
     table->total_entries = count;
@@ -254,7 +260,7 @@ static int BinarySearchComparator(const void* a_, const void* b_) {
     }
 }
 
-static void ApplyRelocationsToPage(struct quick_relocation_table* table, size_t virtual) {
+static void ApplyRelocationsToPage(struct relocation_table* table, size_t virtual) {
     struct quick_relocation target;
     target.address = virtual;
 
@@ -343,5 +349,5 @@ void PerformRelocationsOnPage(struct vas*, size_t relocation_base, size_t virt) 
         PanicEx(PANIC_ASSERTION_FAILURE, "PerformRelocationsOnPage");
     }
 
-    ApplyRelocationsToPage(drv->quick_relocation_table, virt);
+    ApplyRelocationsToPage(drv->relocation_table, virt);
 }

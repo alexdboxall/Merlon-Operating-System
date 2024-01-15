@@ -36,31 +36,6 @@ struct sub_data {
     int line_buffer_pos;
 };
 
-// "THE SCREEN"
-static int MasterRead(struct vnode* node, struct transfer* tr) {  
-    struct master_data* internal = node->data;
-    while (tr->length_remaining > 0) {
-        uint8_t c;
-        MailboxGet(internal->display_buffer, -1, &c);
-        PerformTransfer(&c, tr, 1);
-    }
-
-    return 0;
-}
-
-// "THE KEYBOARD"
-static int MasterWrite(struct vnode* node, struct transfer* tr) {
-    struct master_data* internal = node->data;
-
-    while (tr->length_remaining > 0) {
-        char c;
-        PerformTransfer(&c, tr, 1);
-        MailboxAdd(internal->keybrd_buffer, -1, c);
-    }
-
-    return 0;
-}
-
 static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct sub_data* internal = node->data;
     struct master_data* master_internal = internal->master->data;
@@ -138,47 +113,47 @@ static void LineProcessor(void* sub_) {
     }
 }
 
+
+// "THE SCREEN"
+static int MasterRead(struct vnode* node, struct transfer* tr) {  
+    struct master_data* internal = node->data;
+    return MailboxRead(internal->display_buffer, tr);
+}
+
+// "THE KEYBOARD"
+static int MasterWrite(struct vnode* node, struct transfer* tr) {
+    struct master_data* internal = node->data;
+    return MailboxWrite(internal->keybrd_buffer, tr);
+}
+
 // "THE STDIN LINE BUFFER"
 static int SubordinateRead(struct vnode* node, struct transfer* tr) {        
     struct sub_data* internal = (struct sub_data*) node->data;
     struct master_data* master_internal = (struct master_data*) internal->master->data;
-
-    if (tr->length_remaining == 0) {
-        return 0;
-    }
-
-    uint8_t c;
-    MailboxGet(master_internal->flushed_buffer, -1, &c);
-    PerformTransfer(&c, tr, 1);
-
-    while (tr->length_remaining > 0 && MailboxGet(master_internal->flushed_buffer, 0, (uint8_t*) &c) == 0) {
-        PerformTransfer(&c, tr, 1);
-    }
-
-    return 0;
+    return MailboxRead(master_internal->flushed_buffer, tr);
 }
 
 // "WRITING TO STDOUT"
 static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
     struct sub_data* internal = (struct sub_data*) node->data;
     struct master_data* master_internal = (struct master_data*) internal->master->data;
+    return MailboxWrite(master_internal->display_buffer, tr);
+}
 
-    while (tr->length_remaining > 0) {
-        char c;
-        int err = PerformTransfer(&c, tr, 1);
-        if (err) {
-            return err;
-        }
-
-        MailboxAdd(master_internal->display_buffer, -1, c);
-    }
-    
+static int MasterClose(struct vnode* node) {
+    struct master_data* internal = (struct master_data*) node->data;
+    MailboxDestroy(internal->display_buffer);
+    MailboxDestroy(internal->flushed_buffer);
+    MailboxDestroy(internal->keybrd_buffer);
+    TerminateThread(internal->line_processing_thread);
+    FreeHeap(internal);
     return 0;
 }
 
 static const struct vnode_operations master_operations = {
     .read           = MasterRead,
     .write          = MasterWrite,
+    .close          = MasterClose
 };
 
 static const struct vnode_operations subordinate_operations = {

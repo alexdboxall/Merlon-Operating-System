@@ -9,36 +9,22 @@
 
 static int ValidateCopy(const void* user_addr, size_t size, bool write) {
     size_t initial_address = (size_t) user_addr;
+    size_t final_address = initial_address + size;
 
-    /*
-    * Check if the memory range starts in user memory.
-    */
     if (initial_address < ARCH_USER_AREA_BASE || initial_address >= ARCH_USER_AREA_LIMIT) {
         return EINVAL;
     }
-
-    size_t final_address = initial_address + size;
-
-    /*
-    * Check for overflow when the initial address and size are added. If it would overflow,
-    * we cancel the operation, as the user is obviously outside their range.
-    */
-    if (final_address < initial_address) {
+    if (final_address < initial_address) {      /* Checks for overflow */
         return EINVAL;
     }
-
-    /*
-    * Ensure the end of the memory range is in user memory. As user memory must be contiguous,
-    * this ensures the entire range is in user memory.
-    */
     if (final_address < ARCH_USER_AREA_BASE || final_address >= ARCH_USER_AREA_LIMIT) {
         return EINVAL;
     }
 
     /*
-    * We must now check if the USER (and possibly WRITE) bits are set on the memory pages
-    * being accessed.
-    */
+     * We must now check if the USER (and possibly WRITE) bits are set on the memory pages
+     * being accessed.
+     */
     size_t initial_page = initial_address / ARCH_PAGE_SIZE;
     size_t pages = BytesToPages(size);
 
@@ -49,7 +35,6 @@ static int ValidateCopy(const void* user_addr, size_t size, bool write) {
         if (permissions == 0) {
             return EINVAL;
         }
-
         if (!(permissions & VM_READ)) {
             return EINVAL;
         }
@@ -57,9 +42,6 @@ static int ValidateCopy(const void* user_addr, size_t size, bool write) {
             return EINVAL;
         }
         if (write && !(permissions & VM_WRITE)) {
-            return EINVAL;
-        }
-        if (write && (permissions & VM_EXEC)) {
             return EINVAL;
         }
         if (write && (permissions & VM_EXEC)) {
@@ -119,7 +101,6 @@ int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uin
             
         } else {
             result = CopyIntoKernel(trusted_buffer, (const void*) untrusted_buffer->address, amount_to_copy);
-
         }
 
         if (result != 0) {
@@ -192,31 +173,29 @@ int ReadWordFromUsermode(size_t* location, size_t* output) {
 }
 
 static struct transfer CreateTransfer(void* addr, uint64_t length, uint64_t offset, int direction, int type) {
-    struct transfer trans;
-    trans.address = addr;
-    trans.direction = direction;
-    trans.length_remaining = length;
-    trans.offset = offset;
-    trans.type = type;
-    return trans;
+    return (struct transfer) {
+        .address = addr, .direction = direction, .length_remaining = length,
+        .offset = offset, .type = type, .blockable = true
+    };
 }
 
 struct transfer CreateKernelTransfer(void* addr, uint64_t length, uint64_t offset, int direction) {
     return CreateTransfer(addr, length, offset, direction, TRANSFER_INTRA_KERNEL);
 }
 
-struct transfer CreateTransferWritingToUser(void* untrusted_addr, uint64_t length, uint64_t offset) {
-    /*
-     * When we "write to the user", we are doing so because the user is trying to *read* from the kernel.
-     * i.e. someone is doing an "untrusted read" of kernel data (i.e. a TRANSFER_READ).
-     */
-    return CreateTransfer(untrusted_addr, length, offset, TRANSFER_READ, TRANSFER_USERMODE);
+/*
+ * When we "write to the user", we are doing so because the user is trying 
+ * to *read* from the kernel. i.e. someone is doing an "untrusted read" of 
+ * kernel data (i.e. a TRANSFER_READ). Likewise with the vice verse once.
+ */
+struct transfer CreateTransferWritingToUser(void* addr, uint64_t length, uint64_t offset) {
+    return CreateTransfer(
+        addr, length, offset, TRANSFER_READ, TRANSFER_USERMODE
+    );
 }
 
-struct transfer CreateTransferReadingFromUser(const void* untrusted_addr, uint64_t length, uint64_t offset) {
-    /*
-     * When we "read from the user", we are doing so because the user is trying to *write* to the kernel.
-     * i.e. as they are writing to the kernel, it is an "untrusted write" (i.e. a TRANSFER_WRITE).
-     */
-    return CreateTransfer((void*) untrusted_addr, length, offset, TRANSFER_WRITE, TRANSFER_USERMODE);
+struct transfer CreateTransferReadingFromUser(const void* addr, uint64_t length, uint64_t offset) {
+    return CreateTransfer(
+        (void*) addr, length, offset, TRANSFER_WRITE, TRANSFER_USERMODE
+    );
 }

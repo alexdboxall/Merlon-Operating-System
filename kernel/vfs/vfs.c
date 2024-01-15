@@ -513,16 +513,8 @@ static int FileAccess(struct open_file* file, struct transfer* io, bool write) {
         return EBADF;
     }
 	
-	if (file->flags & O_NONBLOCK) {
-		// TODO: probably need to pass flag to VnodeOpRead/VnodeOpWrite about
-		// the blockability of the call
-	}
-
-	if (write) {
-		return VnodeOpWrite(file->node, io);
-	} else {
-		return VnodeOpRead(file->node, io);
-	}
+	io->blockable = !(file->flags & O_NONBLOCK);
+	return (write ? VnodeOpWrite : VnodeOpRead)(file->node, io);
 }
 
 int ReadFile(struct open_file* file, struct transfer* io) {
