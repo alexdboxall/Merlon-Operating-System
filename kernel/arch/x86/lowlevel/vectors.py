@@ -13,6 +13,6 @@ for i in range(256):
 output += 'global isr_vectors\n'
 output += 'isr_vectors:\n'
 for i in range(256):
-    output += '    dd isr{}'.format(i)
+    output += '    dd isr{}\n'.format(i)
 
 open('vectors.s', 'w').write(output)
