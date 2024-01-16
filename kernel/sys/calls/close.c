@@ -5,8 +5,8 @@
 #include <filedes.h>
 
 int SysClose(size_t fd, size_t, size_t, size_t, size_t) {
-	struct open_file* file;
-	int res = GetFileFromDescriptor(GetFileDescriptorTable(GetProcess()), fd, &file);
+	struct file* file;
+	int res = GetFileFromFd(GetFileFromFdDescriptorTable(GetProcess()), fd, &file);
 	if (res != 0) {
 		return res;
 	}

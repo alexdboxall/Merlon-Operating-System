@@ -24,7 +24,7 @@
 
 #define VAS_NO_ARCH_INIT    1
 
-struct open_file;
+struct file;
 
 struct vas_entry {
     size_t virtual;
@@ -54,7 +54,7 @@ struct vas_entry {
     int num_pages;                      /* only used for non-allocated or hardware mapped to reduce the number of AVL entries */
 
     off_t file_offset;
-    struct open_file* file_node;
+    struct file* file_node;
     size_t physical;
     union {
         size_t swapfile_offset;
@@ -75,8 +75,8 @@ void UnlockVirtEx(struct vas* vas, size_t virtual);
 
 int SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
-size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos);
-size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos, int* error);
+size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct file* file, off_t pos);
+size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct file* file, off_t pos, int* error);
 int UnmapVirt(size_t virtual, size_t bytes);
 int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags);
 int WipeUsermodePages(void);

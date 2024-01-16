@@ -17,7 +17,7 @@ struct avl_tree {
     avl_comparator equality_handler;
 };
 
-static struct avl_node* AvlCreateNode(void* data, struct avl_node* restrict left, struct avl_node* restrict right) {
+static struct avl_node* AvlCreateNode(void* data, struct avl_node* left, struct avl_node* right) {
     struct avl_node* tree = AllocHeap(sizeof(struct avl_node));
     tree->left = left;
     tree->right = right;
@@ -157,8 +157,9 @@ static struct avl_node* AvlDelete(struct avl_node* tree, void* data, avl_compara
 }
 
 /**
- * Given an object, find it in the AVL tree and return it. This is useful if the comparator only compares
- * part of the object, and so the entire object can be retrieved by searching for only part of it.
+ * Given an object, find it in the AVL tree and return it. This is useful if the
+ * comparator only compares part of the object, and so the entire object can be
+ * retrieved by searching for only part of it.
  */
 static void* AvlGet(struct avl_node* tree, void* data, avl_comparator comparator) {
     if (tree == NULL) {
@@ -167,7 +168,8 @@ static void* AvlGet(struct avl_node* tree, void* data, avl_comparator comparator
 
     if (comparator(tree->data, data) == 0) {
         /*
-         * Must return `tree->data`, (and not `data`), as tree->data != data if there is a custom comparator.
+         * Must return `tree->data`, (and not `data`), as tree->data != data if
+         * there is a custom comparator.
          */
         return tree->data;
     }
@@ -231,7 +233,9 @@ struct avl_tree* AvlTreeCreate(void) {
     return tree;
 }
 
-avl_deletion_handler AvlTreeSetDeletionHandler(struct avl_tree* tree, avl_deletion_handler handler) {
+avl_deletion_handler AvlTreeSetDeletionHandler(
+    struct avl_tree* tree, avl_deletion_handler handler
+) {
     avl_deletion_handler ret = tree->deletion_handler;
     tree->deletion_handler = handler;
     return ret;

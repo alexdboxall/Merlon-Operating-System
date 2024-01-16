@@ -49,7 +49,7 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data) {
     return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
-static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct open_file* file, bool driver) {
+static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct file* file, bool driver) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
@@ -229,7 +229,7 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 
 	*ref = val;
 	if (table != NULL) {
-		AddToQuickRelocationTable(table, addr, val);
+		AddToRelocationTable(table, addr, val);
 	}
 	
 	if (needs_write_low) {
@@ -258,7 +258,7 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct re
 
 
 			if (table != NULL) {
-				*table = CreateQuickRelocationTable(count);
+				*table = CreateRelocationTable(count);
 			}
 			
 			for (int index = 0; index < count; ++index) {
@@ -270,7 +270,7 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct re
 			}
 
 			if (table != NULL) {
-				SortQuickRelocationTable(*table);
+				SortRelocationTable(*table);
 			}
 
 		} else if (section->sh_type == SHT_RELA) {
@@ -282,7 +282,7 @@ static bool ElfPerformRelocations(void* data, size_t relocation_point, struct re
 	return true;
 }
 
-static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file, struct relocation_table** table, bool driver) {
+static int ElfLoad(void* data, size_t* relocation_point, struct file* file, struct relocation_table** table, bool driver) {
     MAX_IRQL(IRQL_PAGE_FAULT);
 
 	size_t load_point = *relocation_point;
@@ -309,7 +309,7 @@ static int ElfLoad(void* data, size_t* relocation_point, struct open_file* file,
 	}
 }
 
-int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct relocation_table** table, size_t* entry_point) {
+int ArchLoadDriver(size_t* relocation_point, struct file* file, struct relocation_table** table, size_t* entry_point) {
     EXACT_IRQL(IRQL_STANDARD);
 
 	bool driver = entry_point == NULL;
@@ -349,7 +349,7 @@ int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct relo
     return res;
 }
 
-void ArchLoadSymbols(struct open_file* file, size_t adjust) {
+void ArchLoadSymbols(struct file* file, size_t adjust) {
 	off_t size = file->node->stat.st_size;
 	size_t mem = MapVirt(0, 0, size, VM_READ | VM_FILE, file, 0);
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) mem;

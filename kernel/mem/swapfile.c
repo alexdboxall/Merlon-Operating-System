@@ -11,25 +11,27 @@
 #include <spinlock.h>
 #include <arch.h>
 
-static struct open_file* swapfile = NULL;
+static struct file* swapfile = NULL;
 static struct spinlock swapfile_lock;
 static uint8_t* swapfile_bitmap;
 static int number_on_swapfile = 0;
-static size_t num_bitmap_entries = 0;
+static size_t bits_in_bitmap = 0;
 
 static int GetPageCountForBitmap(void) {
-    uint64_t bits_per_page = ARCH_PAGE_SIZE * 8;
-    uint64_t accessable_per_page = ARCH_PAGE_SIZE * bits_per_page;
-    size_t max_swapfile_size = (GetTotalPhysKilobytes() * 1024) * 4 + (32 * 1024 * 1024);
-    return (max_swapfile_size + accessable_per_page - 1) / accessable_per_page;
+    /*
+     * How many bytes of swapfile that each page in the bitmap keeps track of. 
+     */
+    uint64_t accessible_per_page = 8 * ARCH_PAGE_SIZE * ARCH_PAGE_SIZE;
+    size_t target_size = (GetTotalPhysKilobytes() * 4 + 32 * 1024) * 1024;
+    return (target_size + accessible_per_page - 1) / accessible_per_page;
 }
 
 static void SetupSwapfileBitmap(void) {
-    int num_pages_in_bitmap = GetPageCountForBitmap();
-    num_bitmap_entries = 8 * num_pages_in_bitmap * ARCH_PAGE_SIZE;
+    int pages_in_bitmap = GetPageCountForBitmap();
+    bits_in_bitmap = 8 * pages_in_bitmap * ARCH_PAGE_SIZE;
 
     swapfile_bitmap = (uint8_t*) MapVirt(
-        0, 0, num_pages_in_bitmap * ARCH_PAGE_SIZE, 
+        0, 0, pages_in_bitmap * ARCH_PAGE_SIZE, 
         VM_READ | VM_WRITE | VM_LOCK, NULL, 0
     );
 }
@@ -43,7 +45,7 @@ void InitSwapfile(void) {
     SetupSwapfileBitmap();
 }
 
-struct open_file* GetSwapfile(void) {
+struct file* GetSwapfile(void) {
     return swapfile;
 }
 
@@ -59,11 +61,11 @@ static void SetBitmapEntry(size_t index, bool value) {
     }
 }
 
-uint64_t AllocateSwapfileIndex(void) {
+uint64_t AllocSwap(void) {
     AcquireSpinlock(&swapfile_lock);
     ++number_on_swapfile;
 
-    for (size_t i = 0; i < num_bitmap_entries; ++i) {
+    for (size_t i = 0; i < bits_in_bitmap; ++i) {
         if (!GetBitmapEntry(i)) {
             SetBitmapEntry(i, true);
             ReleaseSpinlock(&swapfile_lock);
@@ -74,14 +76,14 @@ uint64_t AllocateSwapfileIndex(void) {
     Panic(PANIC_OUT_OF_SWAPFILE);
 }
 
-void DeallocateSwapfileIndex(uint64_t index) {
+void DeallocSwap(uint64_t index) {
     AcquireSpinlock(&swapfile_lock);
     --number_on_swapfile;
     SetBitmapEntry(index, false);
     ReleaseSpinlock(&swapfile_lock);
 }
 
-int GetNumberOfPagesOnSwapfile(void) {
+int GetSwapCount(void) {
     AcquireSpinlock(&swapfile_lock);
     int val = number_on_swapfile;
     ReleaseSpinlock(&swapfile_lock);

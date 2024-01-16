@@ -14,8 +14,11 @@ CPPDEFINES =
 COBJECTS = $(patsubst %.c, %.o, $(wildcard *.c) $(wildcard */*.c) $(wildcard */*/*.c) $(wildcard */*/*/*.c) $(wildcard */*/*/*/*.c) $(wildcard **/*.c))
 ASMOBJECTS = $(patsubst %.s, %.oo, $(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s) $(wildcard **/*.s))
 
-oskernel: $(COBJECTS) $(ASMOBJECTS) $(HOBJECTS)
-	$(CC) -T machine/linker.ld -o KERNEL.EXE $^ $(LINK_FLAGS) $(LINKER_STRIP)
+oskernel: $(COBJECTS) $(ASMOBJECTS)
+	python machine/lowlevel/vectors.py
+	$(AS) -felf32 vectors.s -o vectors.o
+	$(CC) -T machine/linker.ld -o KERNEL.EXE $^ vectors.o $(LINK_FLAGS) $(LINKER_STRIP)
+	rm vectors.*
 # rm -r include
 # rm -r machine
 	rm Makefile

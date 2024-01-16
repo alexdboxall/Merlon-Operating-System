@@ -16,9 +16,10 @@
 #include <mailbox.h>
 #include <virtual.h>
 
-#define INTERNAL_BUFFER_SIZE 256        // used to communicate with master and sub. can have any length - but lower means both input AND **PRINTING** will incur more semaphore trashing
-#define LINE_BUFFER_SIZE 300            // maximum length of a typed line
-#define FLUSHED_BUFFER_SIZE 500         // used to store any leftover after pressing '\n' that the program has yet to read
+
+#define INTERNAL_BUFFER_SIZE 256  // used to communicate with master and sub   
+#define LINE_BUFFER_SIZE 300      // maximum length of a typed line
+#define FLUSHED_BUFFER_SIZE 500   // used to store any leftover after pressing '\n'
 
 struct master_data {
     struct vnode* subordinate;
@@ -117,27 +118,27 @@ static void LineProcessor(void* sub_) {
 // "THE SCREEN"
 static int MasterRead(struct vnode* node, struct transfer* tr) {  
     struct master_data* internal = node->data;
-    return MailboxRead(internal->display_buffer, tr);
+    return MailboxAccess(internal->display_buffer, tr);
 }
 
 // "THE KEYBOARD"
 static int MasterWrite(struct vnode* node, struct transfer* tr) {
     struct master_data* internal = node->data;
-    return MailboxWrite(internal->keybrd_buffer, tr);
+    return MailboxAccess(internal->keybrd_buffer, tr);
 }
 
 // "THE STDIN LINE BUFFER"
 static int SubordinateRead(struct vnode* node, struct transfer* tr) {        
     struct sub_data* internal = (struct sub_data*) node->data;
     struct master_data* master_internal = (struct master_data*) internal->master->data;
-    return MailboxRead(master_internal->flushed_buffer, tr);
+    return MailboxAccess(master_internal->flushed_buffer, tr);
 }
 
 // "WRITING TO STDOUT"
 static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
     struct sub_data* internal = (struct sub_data*) node->data;
     struct master_data* master_internal = (struct master_data*) internal->master->data;
-    return MailboxWrite(master_internal->display_buffer, tr);
+    return MailboxAccess(master_internal->display_buffer, tr);
 }
 
 static int MasterClose(struct vnode* node) {
@@ -176,7 +177,7 @@ void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
     m_data->display_buffer = MailboxCreate(INTERNAL_BUFFER_SIZE);
     m_data->keybrd_buffer = MailboxCreate(INTERNAL_BUFFER_SIZE);
     m_data->flushed_buffer = MailboxCreate(FLUSHED_BUFFER_SIZE);
-    m_data->line_processing_thread = CreateThread(LineProcessor, (void*) s, GetVas(), "line processor");
+    m_data->line_processing_thread = CreateThread(LineProcessor, (void*) s, GetVas(), "ptty");
 
     s_data->master = m;
     s_data->termios.c_lflag = ICANON | ECHO;

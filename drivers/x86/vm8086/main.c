@@ -468,7 +468,7 @@ struct vm8086_monitor* CreateVm8086Task(const char* path) {
         return NULL;
     }
 
-    struct open_file* file;
+    struct file* file;
     int res = OpenFile(path, O_RDONLY, 0, &file);
     if (res != 0) {
         return NULL;

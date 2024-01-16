@@ -6,7 +6,7 @@
 
 struct vnode;
 
-struct open_file {
+struct file {
     bool can_read;
     bool can_write;
     mode_t initial_mode;
@@ -17,6 +17,6 @@ struct open_file {
     struct vnode* node;
 };
 
-struct open_file* CreateOpenFile(struct vnode* node, int mode, int flags, bool can_read, bool can_write);
-void ReferenceOpenFile(struct open_file* file);
-void DereferenceOpenFile(struct open_file* file);
+struct file* CreateFile(struct vnode* node, int mode, int flags, bool can_read, bool can_write);
+void ReferenceFile(struct file* file);
+void DereferenceFile(struct file* file);

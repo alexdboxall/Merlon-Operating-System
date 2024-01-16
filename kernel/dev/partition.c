@@ -13,8 +13,8 @@
 #include <filesystem.h>
 
 struct partition_data {
-    struct open_file* fs;
-    struct open_file* disk;
+    struct file* fs;
+    struct file* disk;
     int id;
     uint64_t start_byte;
     uint64_t length_bytes;
@@ -61,7 +61,7 @@ static int Create(struct vnode* node, struct vnode** fs, const char*, int flags,
         return EALREADY;
     }
 
-    partition->fs = CreateOpenFile(*fs, flags, mode, true, true);
+    partition->fs = CreateFile(*fs, flags, mode, true, true);
     return 0;
 }
 
@@ -87,7 +87,10 @@ static const struct vnode_operations dev_ops = {
     .follow         = Follow,
 };
 
-struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64_t length, int id, int sector_size, int media_type, bool boot) {
+struct file* CreatePartition(
+    struct file* disk, uint64_t start, uint64_t length, int id, 
+    int sector_size, int media_type, bool boot
+) {
     struct partition_data* data = AllocHeap(sizeof(struct partition_data));
     data->disk = disk;
     data->disk_bytes_per_sector = sector_size;
@@ -108,12 +111,14 @@ struct open_file* CreatePartition(struct open_file* disk, uint64_t start, uint64
 
     node->data = data;
 
-    struct open_file* partition = CreateOpenFile(node, 0, 0, true, true);
+    struct file* partition = CreateFile(node, 0, 0, true, true);
     MountFilesystemForDisk(partition);
     return partition;
 }
 
-struct open_file* CreateMbrPartitionIfExists(struct open_file* disk, uint8_t* mem, int index, int sector_size) {
+struct file* TryCreateMbrPartition(
+    struct file* disk, uint8_t* mem, int index, int sector_size
+) {
     int offset = 0x1BE + index * 16;
 
     uint8_t active = mem[offset + 0];
@@ -143,13 +148,18 @@ struct open_file* CreateMbrPartitionIfExists(struct open_file* disk, uint8_t* me
         return NULL;
     }
 
-    return CreatePartition(disk, ((uint64_t) start_sector) * sector_size, ((uint64_t) total_sectors) * sector_size, index, sector_size, media_type, active & 0x80);
+    return CreatePartition(
+        disk, 
+        ((uint64_t) start_sector) * sector_size, 
+        ((uint64_t) total_sectors) * sector_size, 
+        index, sector_size, media_type, active & 0x80
+    );
 }
 
 /*
  * Caller to free return value.
  */
-struct open_file** GetMbrPartitions(struct open_file* disk) {
+struct file** GetMbrPartitions(struct file* disk) {
     size_t block_size = disk->node->stat.st_blksize;
 
     uint8_t* mem = (uint8_t*) MapVirt(0, 0, block_size, VM_READ | VM_FILE, disk, 0);
@@ -164,12 +174,12 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
         return NULL;
     }
 
-    struct open_file** partitions = AllocHeap(sizeof(struct open_file) * 5);
-    inline_memset(partitions, 0, sizeof(struct open_file) * 5);
+    struct file** partitions = AllocHeap(sizeof(struct file) * 5);
+    inline_memset(partitions, 0, sizeof(struct file) * 5);
 
     int partitions_found = 0;
     for (int i = 0; i < 4; ++i) {
-        struct open_file* partition = CreateMbrPartitionIfExists(disk, mem, i, block_size);
+        struct file* partition = TryCreateMbrPartition(disk, mem, i, block_size);
         if (partition != NULL) {
             partitions[partitions_found++] = partition;
         }
@@ -182,8 +192,8 @@ struct open_file** GetMbrPartitions(struct open_file* disk) {
 /*
  * Returns a null terminated array of partitions.
  */
-struct open_file** GetPartitionsForDisk(struct open_file* disk) {
-    struct open_file** partitions = GetMbrPartitions(disk);
+struct file** GetPartitionsForDisk(struct file* disk) {
+    struct file** partitions = GetMbrPartitions(disk);
     
     if (partitions == NULL) {
         // check for GPT

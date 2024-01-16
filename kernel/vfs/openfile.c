@@ -1,35 +1,24 @@
-#include <openfile.h>
+#include <file.h>
 #include <spinlock.h>
 #include <assert.h>
 #include <heap.h>
 #include <irql.h>
 #include <vfs.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <dev.h>
 
 /**
- * Creates a new open file from an opened vnode. An open file is used to link a vnode with corresponding data,
- * about a particular instance of opening a file: such as a seek position, and ability to read or write; and is
- * used to maintain file descriptor tables for the C userspace library.
- * 
- * Open files maintain a reference counter that can be incremented and decremented with ReferenceOpenFile and
- * DereferenceOpenFile. A newly created open file has a reference count of 1. When the count reaches 0, the memory
- * is freed.
- * 
- * @param node      The already-open vnode to wrap with additional data
- * @param mode      The Unix-permissions passed to the OpenFile when the vnode was opened. Ignored by the kernel
- *                      so far.
- * @param flag      The flags that were passed to OpenFile when the vnode was opened. Should be a bitfield consisting of 
- *                      zero or more of: O_RDONLY, O_WRONLY, O_TRUNC, O_CREAT. See OpenFile for details. The storage of these
- *                      flags in an open file should only be of interest to usermode programs - the flags here may be be zero  
- *                      if the open file was created within the kernel, so the flags should be ignored within the kernel.
- * @param can_read  Whether or not this open file is allowed to make read operations on the underlying vnode
- * @param can_write Whether or not this open file is allowed to make write operations on the underlying vnode
- * 
- * @return A pointer to the newly created open file.
+ * Creates an open file from an open vnode. Open files are file descriptors, and
+ * keeps track of seek position, ability to read/write and O_CLOEXEC. Currently,
+ * the only flags stored here are O_NONBLOCK and O_APPEND.
  */
-struct open_file* CreateOpenFile(struct vnode* node, int mode, int flags, bool can_read, bool can_write) {
+struct file* CreateFile(
+    struct vnode* node, int mode, int flags, bool can_read, bool can_write
+) {
     MAX_IRQL(IRQL_SCHEDULER);
     
-	struct open_file* file = AllocHeap(sizeof(struct open_file));
+	struct file* file = AllocHeap(sizeof(struct file));
 	file->reference_count = 1;
 	file->node = node;
 	file->can_read = can_read;
@@ -45,12 +34,10 @@ struct open_file* CreateOpenFile(struct vnode* node, int mode, int flags, bool c
 }
 
 /**
- * Increments the reference counter for an opened file. This should be called everytime a reference to
- * the open file is kept, so that its memory can be managed correctly.
- * 
- * @param file The open file to reference
+ * Increments the reference counter for an opened file. Must be called everytime
+ * a reference to the open file is kept, so its memory can be managed correctly.
  */
-void ReferenceOpenFile(struct open_file* file) {
+void ReferenceFile(struct file* file) {
     MAX_IRQL(IRQL_SCHEDULER);
 	assert(file != NULL);
 
@@ -60,14 +47,13 @@ void ReferenceOpenFile(struct open_file* file) {
 }
 
 /**
- * Decrements the reference counter for an opened file. Should be called whenever a reference to the open
- * file is removed. If the reference counter reaches zero, the memory behind the open file will be freed.
- * The underlying vnode within the open file is not dereferenced - this should be done prior to calling this
- * function.
- * 
- * @param file The open file to dereference
+ * Decrements the reference counter for an opened file. Should be called when a
+ * reference to the open file is removed. If the reference counter reaches zero,
+ * the memory behind the open file will be freed. The underlying vnode within 
+ * the open file is dereferenced - this counteracts the one done in 
+ * CreateFile.
  */
-void DereferenceOpenFile(struct open_file* file) {
+void DereferenceFile(struct file* file) {
     MAX_IRQL(IRQL_SCHEDULER);
     assert(file != NULL);
 
@@ -77,10 +63,12 @@ void DereferenceOpenFile(struct open_file* file) {
     file->reference_count--;
 
     if (file->reference_count == 0) {
-        /*
-        * Must release the lock before we delete it so we can put interrupts back on
-        */
         ReleaseSpinlock(&file->reference_count_lock);
+
+        if (IFTODT(file->node->stat.st_mode) == DT_FIFO) {
+            BreakPipe(file->node);
+        }
+
         DereferenceVnode(file->node);
         FreeHeap(file);
         return;

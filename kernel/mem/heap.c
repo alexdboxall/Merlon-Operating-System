@@ -703,6 +703,10 @@ void FreeHeap(void* ptr) {
 }
 
 void ReinitHeap(void) {
+    /*
+     * The initialisation of the heap lock switches over the locking mechanism
+     * from spinlock based to mutex based.
+     */
     heap_lock = CreateMutex("heap");
 }
 

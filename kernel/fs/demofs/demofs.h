@@ -4,4 +4,4 @@
 #include <common.h>
 #include <filesystem.h>
 
-int DemofsMountCreator(struct open_file* raw_device, struct open_file** out);
+int DemofsMountCreator(struct file* raw_device, struct file** out);

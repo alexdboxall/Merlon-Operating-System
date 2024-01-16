@@ -1,6 +1,7 @@
 
 #include <common.h>
 #include <cpu.h>
+#include <log.h>
 
 /*
 * x86/lowlevel/idt.c - Interrupt Descriptor Table
@@ -15,45 +16,7 @@ extern void x86LoadIdt(size_t addr);
 * Our trap handlers, defined in lowlevel/trap.s, which will be called
 * when an interrupt occurs. 
 */
-extern void isr0();
-extern void isr1();
-extern void isr2();
-extern void isr3();
-extern void isr4();
-extern void isr5();
-extern void isr6();
-extern void isr7();
-extern void isr8();
-extern void isr9();
-extern void isr10();
-extern void isr11();
-extern void isr12();
-extern void isr13();
-extern void isr14();
-extern void isr15();
-extern void isr16();
-extern void isr17();
-extern void isr18();
-extern void isr19();
-extern void isr20();
-extern void isr21();
-extern void isr96();
-extern void irq0();
-extern void irq1();
-extern void irq2();
-extern void irq3();
-extern void irq4();
-extern void irq5();
-extern void irq6();
-extern void irq7();
-extern void irq8();
-extern void irq9();
-extern void irq10();
-extern void irq11();
-extern void irq12();
-extern void irq13();
-extern void irq14();
-extern void irq15();
+extern size_t isr_vectors;
 
 /*
 * Fill in an entry in the IDT. There are a number of 'types' of interrupt, determining
@@ -77,38 +40,16 @@ static void x86SetIdtEntry(int num, size_t isr_addr, uint8_t type)
 void x86InitIdt(void)
 {
 	platform_cpu_data_t* cpu_data = GetCpu()->platform_specific;
-
-	void (*const isrs[])() = {
-		isr0 , isr1 , isr2 , isr3 , isr4 , isr5 , isr6 , isr7 ,
-		isr8 , isr9 , isr10, isr11, isr12, isr13, isr14, isr15,
-		isr16, isr17, isr18, isr19, isr20, isr21,
-	};
-
-	void (*const irqs[])() = {
-		irq0 , irq1 , irq2 , irq3 , irq4 , irq5 , irq6 , irq7 ,
-		irq8 , irq9 , irq10, irq11, irq12, irq13, irq14, irq15
-	};
-
-	/*
-	* Install handlers for CPU exceptions (e.g. for page faults, divide-by-zero, etc.).
-	*/
-	for (int i = 0; i < 21; ++i) {
-		x86SetIdtEntry(i, (size_t) isrs[i], 0x8E);
-	}
 	
 	/*
-	* Install handlers for IRQs (hardware interrupts, e.g. keyboard, system timer).
-	*/
-	for (int i = 0; i < 16; ++i) {
-		x86SetIdtEntry(i + 32, (size_t) irqs[i], 0x8E);
+	 * Install the interrupt handlers. We set the system call interrupt vector
+	 * to be invokable from usermode.
+	 */
+	for (int i = 0; i < 256; ++i) {
+		LogWriteSerial("isrx%d seems to be at 0x%X\n", i, (&isr_vectors)[i]);
+		x86SetIdtEntry(i, (&isr_vectors)[i], i == 96 ? 0xEE : 0x8E);
 	}
 
-	/*
-	* Install our system call handler. Note that the flag byte is 0xEE instead of 0x8E,
-	* this allows user code to directly invoke this interrupt.
-	*/
-	x86SetIdtEntry(96, (size_t) isr96, 0xEE);
-	
 	cpu_data->idtr.location = (size_t) &cpu_data->idt;
 	cpu_data->idtr.size = sizeof(cpu_data->idt) - 1;
 	

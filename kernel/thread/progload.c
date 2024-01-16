@@ -15,7 +15,7 @@
 #include <arch.h>
 #include <vfs.h>
 
-static struct open_file* prog_loader;
+static struct file* prog_loader;
 
 void InitProgramLoader(void) {
     if (OpenFile("sys:/krnlapi.lib", O_RDONLY, 0, &prog_loader)) {

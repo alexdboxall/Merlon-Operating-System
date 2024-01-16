@@ -3,7 +3,7 @@
 #include <common.h>
 #include <sys/types.h>
 
-struct filedes_table;
+struct fd_table;
 struct process;
 
 void InitProcess(void);
@@ -16,7 +16,7 @@ struct process* GetProcessFromPid(pid_t pid);
 struct process* GetProcess(void);
 pid_t GetPid(struct process* prcss);
 
-struct filedes_table* GetFileDescriptorTable(struct process* prcss); 
+struct fd_table* GetFileFromFdDescriptorTable(struct process* prcss); 
 
 void AddThreadToProcess(struct process* prcss, struct thread* thr);
 struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* arg);

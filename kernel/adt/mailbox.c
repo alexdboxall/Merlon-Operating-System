@@ -128,40 +128,30 @@ int MailboxGet(struct mailbox* mbox, int timeout, uint8_t* c) {
     return 0;
 }
 
-int MailboxRead(struct mailbox* mbox, struct transfer* tr) {  
+int MailboxAccess(struct mailbox* mbox, struct transfer* tr) {  
+    bool write = tr->direction == TRANSFER_WRITE;
     if (tr->length_remaining == 0) {
-        return MailboxWaitGettable(mbox, 0);
+        return (write ? MailboxWaitAddable : MailboxWaitGettable)(mbox, 0);
     }
 
     bool done_any = false;
     while (tr->length_remaining > 0) {
         uint8_t c;
-        int res = MailboxGet(mbox, tr->blockable && !done_any ? -1 : 0, &c);
+        int res;
+        if (write) {
+            PerformTransfer(&c, tr, 1);
+            res = MailboxAdd(mbox, tr->blockable && !done_any ? -1 : 0, c);
+        } else {
+            res = MailboxGet(mbox, tr->blockable && !done_any ? -1 : 0, &c);   
+        }
         if (res != 0) {
             return done_any ? 0 : res;
         }
-        PerformTransfer(&c, tr, 1);
-        done_any = true;
-    }
-
-    return 0;
-}
-
-int MailboxWrite(struct mailbox* mbox, struct transfer* tr) {  
-    if (tr->length_remaining == 0) {
-        return MailboxWaitAddableInternal(mbox, 0);
-    }
-
-    bool done_any = false;
-    while (tr->length_remaining > 0) {
-        uint8_t c;
-        PerformTransfer(&c, tr, 1);
-        int res = MailboxAdd(mbox, tr->blockable && !done_any ? -1 : 0, c);
-        if (res != 0) {
-            return done_any ? 0 : res;
+        if (!write) {
+            PerformTransfer(&c, tr, 1);
         }
         done_any = true;
     }
-
+    
     return 0;
 }

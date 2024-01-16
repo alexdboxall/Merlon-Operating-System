@@ -4,4 +4,4 @@
 #include <common.h>
 #include <filesystem.h>
 
-int FatFsMountCreator(struct open_file* raw_device, struct open_file** out);
+int FatFsMountCreator(struct file* raw_device, struct file** out);

@@ -7,23 +7,14 @@
 static void IntToStr(uint32_t i, char* output, int base) {
 	const char* digits = "0123456789ABCDEF";
 
-    /*
-    * Work out where the end of the string is (this is based on the number).
-    * Using the do...while ensures that we always get at least one digit 
-    * (i.e. ensures a 0 is printed if the input was 0).
-    */
 	uint32_t shifter = i;
 	do {
 		++output;
 		shifter /= base;
 	} while (shifter);
 
-    /* Put in the null terminator. */
 	*output = '\0';
 
-    /*
-    * Now fill in the digits back-to-front.
-    */
 	do {
 		*--output = digits[i % base];
 		i /= base;

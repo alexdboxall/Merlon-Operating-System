@@ -9,4 +9,4 @@
 void InitDiskCaches(void);
 void SetDiskCaches(int mode);
 
-struct open_file* CreateDiskCache(struct open_file* underlying_disk);
+struct file* CreateDiskCache(struct file* underlying_disk);

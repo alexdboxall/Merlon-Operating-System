@@ -37,5 +37,4 @@ int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c);
 int MailboxWaitGettable(struct mailbox* mbox, int timeout);
 int MailboxGet(struct mailbox* mbox, int timeout, uint8_t* c);
 
-int MailboxRead(struct mailbox* mbox, struct transfer* tr);
-int MailboxWrite(struct mailbox* mbox, struct transfer* tr);
+int MailboxAccess(struct mailbox* mbox, struct transfer* tr);

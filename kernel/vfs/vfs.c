@@ -38,7 +38,7 @@
 */
 struct mounted_file {
 	/* The vnode representing the device / root directory of a filesystem */
-	struct open_file* node;
+	struct file* node;
 
 	/* What the device / filesystem mount is called */
 	char* name;
@@ -152,7 +152,7 @@ static int GetFinalPathComponent(const char* path, char* output_buffer, int max_
 * Takes in a device name, without the colon, and returns its vnode.
 * If no such device is mounted, it returns NULL.
 */
-static struct open_file* GetMountFromName(const char* name) {
+static struct file* GetMountFromName(const char* name) {
 	assert(name != NULL);
 
 	if (mount_points == NULL) {
@@ -190,7 +190,7 @@ int AddVfsMount(struct vnode* node, const char* name) {
 
     struct mounted_file* mount = AllocHeap(sizeof(struct mounted_file));
 	mount->name = strdup(name);
-    mount->node = CreateOpenFile(node, 0, 0, true, true);
+    mount->node = CreateFile(node, 0, 0, true, true);
 
     AvlTreeInsert(mount_points, (void*) mount);
 
@@ -233,7 +233,7 @@ int RemoveVfsMount(const char* name) {
      * and then the open file that was created alongside it.
      */
     DereferenceVnode(actual->node->node);
-    DereferenceOpenFile(actual->node);
+    DereferenceFile(actual->node);
 
     AvlTreeDelete(mount_points, actual);
     FreeHeap(actual->name);
@@ -276,7 +276,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 		return err;
 	}
 
-	struct open_file* current_file = GetMountFromName(component_buffer);
+	struct file* current_file = GetMountFromName(component_buffer);
 
 	/*
 	* No root device found, so we can't continue.
@@ -408,7 +408,7 @@ int RemoveFileOrDirectory(const char* path, bool rmdir) {
 	return res;
 }
 
-int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
+int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
     EXACT_IRQL(IRQL_STANDARD);   
 
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
@@ -454,8 +454,9 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 
 		} else if (flags & O_EXCL) {
 			/*
-			 * The file already exists (as we didn't get ENOENT), but we were passed O_EXCL so we
-			 * must give an error. If O_EXCL isn't passed, then O_CREAT will just open the existing file.
+			 * The file already exists (as we didn't get ENOENT), but we were 
+			 * passed O_EXCL so we must give an error. If O_EXCL isn't passed, 
+			 * then O_CREAT will just open the existing file.
 			 */
 			return EEXIST;
 		}
@@ -472,17 +473,16 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 
 	bool can_read = (flags & O_ACCMODE) != O_WRONLY;
 	bool can_write = (flags & O_ACCMODE) != O_RDONLY;
-	uint8_t dirent_type = VnodeOpDirentType(node);
 
-	if (dirent_type == DT_DIR && can_write) {
+	if (IFTODT(node->stat.st_mode) == DT_DIR && can_write) {
 		/*
-		* You cannot write to a directory. This also prevents truncation.
+		* You cannot write to a directory - this also prevents truncation.
 		*/
 		DereferenceVnode(node);
 		return EISDIR;
 	}
 
-	if ((flags & O_TRUNC) && dirent_type == DT_REG) {
+	if ((flags & O_TRUNC) && IFTODT(node->stat.st_mode) == DT_REG) {
 		if (can_write) {
 			status = VnodeOpTruncate(node, 0);
 			if (status) {
@@ -494,16 +494,14 @@ int OpenFile(const char* path, int flags, mode_t mode, struct open_file** out) {
 		}
 	}
 
-    /* TODO: clear out the flags that don't normally get saved */
-
 	// TODO: may need to actually have a VnodeOpOpen, for things like FatFS.
 
-	*out = CreateOpenFile(node, mode, flags, can_read, can_write);
+	node->flags = flags & (O_NONBLOCK | O_APPEND);
+	*out = CreateFile(node, mode, flags & O_CLOEXEC, can_read, can_write);
     return 0;
 }
 
-
-static int FileAccess(struct open_file* file, struct transfer* io, bool write) {
+static int FileAccess(struct file* file, struct transfer* io, bool write) {
 	EXACT_IRQL(IRQL_STANDARD);
 
     if (io == NULL || io->address == NULL || file == NULL || file->node == NULL) {
@@ -513,19 +511,19 @@ static int FileAccess(struct open_file* file, struct transfer* io, bool write) {
         return EBADF;
     }
 	
-	io->blockable = !(file->flags & O_NONBLOCK);
+	io->blockable = !(file->node->flags & O_NONBLOCK);
 	return (write ? VnodeOpWrite : VnodeOpRead)(file->node, io);
 }
 
-int ReadFile(struct open_file* file, struct transfer* io) {
+int ReadFile(struct file* file, struct transfer* io) {
 	return FileAccess(file, io, false);
 }
 
-int WriteFile(struct open_file* file, struct transfer* io) {
+int WriteFile(struct file* file, struct transfer* io) {
 	return FileAccess(file, io, true);
 }
 
-int CloseFile(struct open_file* file) {
+int CloseFile(struct file* file) {
 	EXACT_IRQL(IRQL_STANDARD);
 
     if (file == NULL || file->node == NULL) {
@@ -533,6 +531,6 @@ int CloseFile(struct open_file* file) {
 	}
 
     DereferenceVnode(file->node);
-	DereferenceOpenFile(file);
+	DereferenceFile(file);
 	return 0;
 }

@@ -8,7 +8,7 @@
 #include <log.h>
 
 int SysPrepExec(size_t, size_t, size_t, size_t, size_t) {
-	if (HandleFileDescriptorsOnExec(GetFileDescriptorTable(GetProcess()))) {
+	if (HandleExecFd(GetFileFromFdDescriptorTable(GetProcess()))) {
 		return EINVAL;
 	}
 	if (WipeUsermodePages()) {

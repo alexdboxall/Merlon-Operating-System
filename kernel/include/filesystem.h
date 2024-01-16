@@ -2,10 +2,10 @@
 
 #include <common.h>
 
-struct open_file;
+struct file;
 
-typedef int(*fs_mount_creator)(struct open_file*, struct open_file**);
+typedef int(*fs_mount_creator)(struct file*, struct file**);
 
 void InitFilesystemTable(void);
 int RegisterFilesystem(char* fs_name, fs_mount_creator mount);
-int MountFilesystemForDisk(struct open_file* partition);
+int MountFilesystemForDisk(struct file* partition);

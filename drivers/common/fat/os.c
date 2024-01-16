@@ -15,7 +15,7 @@
 
 static struct semaphore* mounting_mutex = NULL;
 
-static struct open_file* disks[FF_VOLUMES] = {0};
+static struct file* disks[FF_VOLUMES] = {0};
 static int disk_sector_sizes[FF_VOLUMES] = {0};
 static int disk_sector_counts[FF_VOLUMES] = {0};
 static uint8_t next_fatfs_volume = 0;
@@ -259,7 +259,7 @@ static struct vnode* CreateFatFsVnode() {
 	return node;
 }
 
-int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) { 
+int FatFsMountCreator(struct file* raw_device, struct file** out) { 
 	if (mounting_mutex == NULL) {
 		mounting_mutex = CreateMutex("fatfsmnt");
 	}  
@@ -272,7 +272,7 @@ int FatFsMountCreator(struct open_file* raw_device, struct open_file** out) {
     data->fatfs_dir = NULL;
     node->data = data;
 
-	*out = CreateOpenFile(node, 0, 0, true, false);
+	*out = CreateFile(node, 0, 0, true, false);
 
 	int mtxres = AcquireMutex(mounting_mutex, 2500);
 	if (mtxres != 0) {

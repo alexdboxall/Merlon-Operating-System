@@ -42,7 +42,7 @@
 struct vas;
 struct vas_entry;
 struct thread;
-struct open_file;
+struct file;
 struct cpu;
 struct relocation_table;
 
@@ -91,8 +91,8 @@ void ArchSetPageUsageBits(struct vas* vas, struct vas_entry* entry, bool accesse
 
 // responsible for loading all symbols. should not close the file!
 int ArchLoadProgramLoader(void* data, size_t* entry_point);
-int ArchLoadDriver(size_t* relocation_point, struct open_file* file, struct relocation_table** table, size_t* entry_point);
-void ArchLoadSymbols(struct open_file* file, size_t adjust);
+int ArchLoadDriver(size_t* relocation_point, struct file* file, struct relocation_table** table, size_t* entry_point);
+void ArchLoadSymbols(struct file* file, size_t adjust);
 void ArchSwitchThread(struct thread* old, struct thread* new);
 size_t ArchPrepareStack(size_t addr);
 

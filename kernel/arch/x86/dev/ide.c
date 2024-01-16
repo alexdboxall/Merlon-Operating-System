@@ -249,6 +249,6 @@ void InitIde(void) {
         InitDiskPartitionHelper(&ide->partitions);
 
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FIXED));
-        CreateDiskPartitions(CreateDiskCache(CreateOpenFile(node, 0, 0, true, true)));
+        CreateDiskPartitions(CreateDiskCache(CreateFile(node, 0, 0, true, true)));
     }
 }

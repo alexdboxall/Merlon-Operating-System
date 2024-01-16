@@ -9,11 +9,11 @@
 #include <heap.h>
 #include <irql.h>
 
-struct filedes_entry {
+struct fd {
     /*
      * Set to NULL if this entry isn't in use.
      */
-    struct open_file* file;
+    struct file* file;
 
     /*
      * The only flag here is FD_CLOEXEC (== O_CLOEXEC for this OS).
@@ -24,17 +24,17 @@ struct filedes_entry {
 /*
 * The table of all of the file descriptors in use by a process.
 */
-struct filedes_table {
+struct fd_table {
     struct semaphore* lock;
-    struct filedes_entry* entries;
+    struct fd* entries;
 };
 
-struct filedes_table* CreateFileDescriptorTable(void) {
-    struct filedes_table* table = AllocHeap(sizeof(struct filedes_table));
+struct fd_table* CreateFdTable(void) {
+    struct fd_table* table = AllocHeap(sizeof(struct fd_table));
 
     table->lock = CreateMutex("filedes");
     table->entries = AllocHeapEx(
-        sizeof(struct filedes_entry) * PROC_MAX_FD, HEAP_ALLOW_PAGING
+        sizeof(struct fd) * PROC_MAX_FD, HEAP_ALLOW_PAGING
     );
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
@@ -44,17 +44,17 @@ struct filedes_table* CreateFileDescriptorTable(void) {
     return table;
 }
 
-struct filedes_table* CopyFileDescriptorTable(struct filedes_table* original) {
-    struct filedes_table* new_table = CreateFileDescriptorTable();
+struct fd_table* CopyFdTable(struct fd_table* original) {
+    struct fd_table* new_table = CreateFdTable();
 
     AcquireMutex(original->lock, -1);
-    memcpy(new_table->entries, original->entries, sizeof(struct filedes_entry) * PROC_MAX_FD);
+    memcpy(new_table->entries, original->entries, sizeof(struct fd) * PROC_MAX_FD);
     ReleaseMutex(original->lock);
     
     return new_table;
 }
 
-void DestroyFileDescriptorTable(struct filedes_table* table) {
+void DestroyFdTable(struct fd_table* table) {
     AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
@@ -67,9 +67,7 @@ void DestroyFileDescriptorTable(struct filedes_table* table) {
     DestroyMutex(table->lock);
 }
 
-int CreateFileDescriptor(
-    struct filedes_table* table, struct open_file* file, int* fd_out, int flags
-) {
+int CreateFd(struct fd_table* table, struct file* file, int* fd_out, int flags) {
     if ((flags & ~O_CLOEXEC) != 0) {
         return EINVAL;
     }
@@ -90,7 +88,7 @@ int CreateFileDescriptor(
     return EMFILE;
 }
 
-int RemoveFileDescriptor(struct filedes_table* table, struct open_file* file) {
+int RemoveFd(struct fd_table* table, struct file* file) {
     AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
@@ -105,27 +103,27 @@ int RemoveFileDescriptor(struct filedes_table* table, struct open_file* file) {
     return EINVAL;
 }
 
-int GetFileFromDescriptor(struct filedes_table* table, int fd, struct open_file** out) {
+int GetFileFromFd(struct fd_table* table, int fd, struct file** out) {
     if (out == NULL || fd < 0 || fd >= PROC_MAX_FD) {
         *out = NULL;
         return out == NULL ? EINVAL : EBADF;
     }
 
     AcquireMutex(table->lock, -1);
-    struct open_file* result = table->entries[fd].file;
+    struct file* result = table->entries[fd].file;
     ReleaseMutex(table->lock);
 
     *out = result;
     return result == NULL ? EBADF : 0;
 }
 
-int HandleFileDescriptorsOnExec(struct filedes_table* table) {
+int HandleExecFd(struct fd_table* table) {
     AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
         if (table->entries[i].file != NULL) {
             if (table->entries[i].flags & O_CLOEXEC) {
-                struct open_file* file = table->entries[i].file;
+                struct file* file = table->entries[i].file;
                 table->entries[i].file = NULL;
                 int res = CloseFile(file);
                 if (res != 0) {
@@ -140,11 +138,11 @@ int HandleFileDescriptorsOnExec(struct filedes_table* table) {
     return 0;
 }
 
-int DupFd(struct filedes_table* table, int oldfd, int* newfd) {
+int DupFd(struct fd_table* table, int oldfd, int* newfd) {
     AcquireMutex(table->lock, -1);
 
-    struct open_file* original_file;
-    int res = GetFileFromDescriptor(table, oldfd, &original_file);
+    struct file* original_file;
+    int res = GetFileFromFd(table, oldfd, &original_file);
     if (res != 0 || original_file == NULL) {
         ReleaseMutex(table->lock);
         return EBADF;
@@ -164,15 +162,15 @@ int DupFd(struct filedes_table* table, int oldfd, int* newfd) {
     return EMFILE;
 }
 
-int DupFd2(struct filedes_table* table, int oldfd, int newfd, int flags) {
+int DupFd2(struct fd_table* table, int oldfd, int newfd, int flags) {
     if (flags & ~O_CLOEXEC) {
         return EINVAL;
     }
 
     AcquireMutex(table->lock, -1);
 
-    struct open_file* original_file;
-    int res = GetFileFromDescriptor(table, oldfd, &original_file);
+    struct file* original_file;
+    int res = GetFileFromFd(table, oldfd, &original_file);
 
     /*
     * "If oldfd is not a valid file descriptor, then the call fails,
@@ -192,8 +190,8 @@ int DupFd2(struct filedes_table* table, int oldfd, int newfd, int flags) {
         return 0;
     }
 
-    struct open_file* current_file;
-    res = GetFileFromDescriptor(table, oldfd, &current_file);
+    struct file* current_file;
+    res = GetFileFromFd(table, oldfd, &current_file);
     if (res == 0 && current_file != NULL) {
         /*
         * "If the file descriptor newfd was previously open, it is closed

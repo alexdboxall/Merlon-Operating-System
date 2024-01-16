@@ -50,8 +50,8 @@ static int DriverTableComparatorByName(void* a_, void* b_) {
 }
 
 static int QuickRelocationTableComparator(const void* a_, const void* b_) {
-	struct quick_relocation a = *((struct quick_relocation*) a_);
-	struct quick_relocation b = *((struct quick_relocation*) b_);
+	struct relocation a = *((struct relocation*) a_);
+	struct relocation b = *((struct relocation*) b_);
     return COMPARE_SIGN(a.address, b.address);
 }
 
@@ -94,7 +94,7 @@ void InitSymbolTable(void) {
     symbol_table = AvlTreeCreate();
     AvlTreeSetComparator(symbol_table, SymbolComparator);
 
-    struct open_file* kernel_file;
+    struct file* kernel_file;
     if (OpenFile("sys:/kernel.exe", O_RDONLY, 0, &kernel_file)) {
         Panic(PANIC_NO_FILESYSTEM);
     }
@@ -172,7 +172,7 @@ size_t GetSymbolAddress(const char* symbol) {
 }
 
 static int LoadDriver(const char* name) {
-    struct open_file* file;
+    struct file* file;
     int res;
     if ((res = OpenFile(name, O_RDONLY, 0, &file))) {
         return res;
@@ -215,26 +215,26 @@ int RequireDriver(const char* name) {
     return res;
 }
 
-void SortQuickRelocationTable(struct relocation_table* table) {
+void SortRelocationTable(struct relocation_table* table) {
 	qsort_pageable(
         (void*) table->entries, 
         table->used_entries, 
-        sizeof(struct quick_relocation), 
+        sizeof(struct relocation), 
         QuickRelocationTableComparator
     );
 }
 
-void AddToQuickRelocationTable(struct relocation_table* table, size_t addr, size_t val) {
+void AddToRelocationTable(struct relocation_table* table, size_t addr, size_t val) {
 	assert(table->used_entries < table->total_entries);
 	table->entries[table->used_entries].address = addr;
 	table->entries[table->used_entries].value = val;
 	table->used_entries++;
 }
 
-struct relocation_table* CreateQuickRelocationTable(int count) {
+struct relocation_table* CreateRelocationTable(int count) {
     struct relocation_table* table = AllocHeap(sizeof(struct relocation_table));
-    struct quick_relocation* entries = (struct quick_relocation*) MapVirt(
-        0, 0, count * sizeof(struct quick_relocation), VM_READ | VM_WRITE, NULL, 0
+    struct relocation* entries = (struct relocation*) MapVirt(
+        0, 0, count * sizeof(struct relocation), VM_READ | VM_WRITE, NULL, 0
     );
     table->entries = entries;
     table->used_entries = 0;
@@ -243,8 +243,8 @@ struct relocation_table* CreateQuickRelocationTable(int count) {
 }
 
 static int BinarySearchComparator(const void* a_, const void* b_) {
-    struct quick_relocation a = *((struct quick_relocation*) a_);
-	struct quick_relocation b = *((struct quick_relocation*) b_);
+    struct relocation a = *((struct relocation*) a_);
+	struct relocation b = *((struct relocation*) b_);
 
     size_t page_a = a.address / ARCH_PAGE_SIZE;
     size_t page_b = b.address / ARCH_PAGE_SIZE;
@@ -261,10 +261,10 @@ static int BinarySearchComparator(const void* a_, const void* b_) {
 }
 
 static void ApplyRelocationsToPage(struct relocation_table* table, size_t virtual) {
-    struct quick_relocation target;
+    struct relocation target;
     target.address = virtual;
 
-    struct quick_relocation* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct quick_relocation), BinarySearchComparator);
+    struct relocation* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct relocation), BinarySearchComparator);
     if (entry == NULL) {
         PanicEx(PANIC_ASSERTION_FAILURE, "quick relocation table doesn't contain lookup - bsearch or qsort is probably bugged");
     }
@@ -343,10 +343,10 @@ static void ApplyRelocationsToPage(struct relocation_table* table, size_t virtua
     }
 }
 
-void PerformRelocationsOnPage(struct vas*, size_t relocation_base, size_t virt) {
+void RelocatePage(struct vas*, size_t relocation_base, size_t virt) {
     struct loaded_driver* drv = GetDriverFromAddress(relocation_base);
     if (drv == NULL) {
-        PanicEx(PANIC_ASSERTION_FAILURE, "PerformRelocationsOnPage");
+        PanicEx(PANIC_ASSERTION_FAILURE, "RelocatePage");
     }
 
     ApplyRelocationsToPage(drv->relocation_table, virt);

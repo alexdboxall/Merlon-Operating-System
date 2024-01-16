@@ -6,7 +6,7 @@
 #include <transfer.h>
 
 struct demofs {
-    struct open_file* disk;
+    struct file* disk;
     ino_t root_inode;  
 };
 

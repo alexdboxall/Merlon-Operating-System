@@ -26,20 +26,20 @@ int SysOpen(size_t filename, size_t flags, size_t mode, size_t fdout, size_t) {
 		return res;
 	}
 
-	struct open_file* file;	
+	struct file* file;	
 	if ((res = OpenFile(path, flags, mode, &file))) {
 		return res;
 	}
 
-	struct filedes_table* table = GetFileDescriptorTable(GetProcess());
-	if ((res = CreateFileDescriptor(table, file, &fd, flags & O_CLOEXEC))) {
+	struct fd_table* table = GetFileFromFdDescriptorTable(GetProcess());
+	if ((res = CreateFd(table, file, &fd, flags & O_CLOEXEC))) {
 		CloseFile(file);
 		return res;
 	}	
 
 	if ((res = WriteWordToUsermode((size_t*) fdout, fd))) {
 		CloseFile(file);
-		RemoveFileDescriptor(table, file);
+		RemoveFd(table, file);
 		return res;
 	} 
 

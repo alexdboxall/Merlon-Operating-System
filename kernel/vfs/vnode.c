@@ -16,7 +16,7 @@
 struct vnode* CreateVnode(struct vnode_operations ops, struct stat st) {
     struct vnode* node = AllocHeap(sizeof(struct vnode));
     *node = (struct vnode) {
-        .ops = ops, .reference_count = 1, .data = NULL, .stat = st
+        .ops = ops, .reference_count = 1, .data = NULL, .stat = st, .flags = 0
     };
     InitSpinlock(&node->reference_count_lock, "vnoderefcnt", IRQL_SCHEDULER);
     return node;

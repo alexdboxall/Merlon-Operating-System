@@ -4,18 +4,18 @@
 
 #define PROC_MAX_FD 1024
 
-struct open_file;
-struct filedes_table;
+struct file;
+struct fd_table;
 
-int CreateFileDescriptor(struct filedes_table* table, struct open_file* file, int* fd_out, int flags);
-int RemoveFileDescriptor(struct filedes_table* table, struct open_file* file);
-int GetFileFromDescriptor(struct filedes_table* table, int fd, struct open_file** out);
+int CreateFd(struct fd_table* table, struct file* file, int* fd_out, int flags);
+int RemoveFd(struct fd_table* table, struct file* file);
+int GetFileFromFd(struct fd_table* table, int fd, struct file** out);
 
-int HandleFileDescriptorsOnExec(struct filedes_table* table);
+int HandleExecFd(struct fd_table* table);
 
-struct filedes_table* CreateFileDescriptorTable(void);
-struct filedes_table* CopyFileDescriptorTable(struct filedes_table* original);
-void DestroyFileDescriptorTable(struct filedes_table* table);
+struct fd_table* CreateFdTable(void);
+struct fd_table* CopyFdTable(struct fd_table* original);
+void DestroyFdTable(struct fd_table* table);
 
-int DupFd(struct filedes_table* table, int oldfd, int* newfd);
-int DupFd2(struct filedes_table* table, int oldfd, int newfd, int flags);
+int DupFd(struct fd_table* table, int oldfd, int* newfd);
+int DupFd2(struct fd_table* table, int oldfd, int newfd, int flags);

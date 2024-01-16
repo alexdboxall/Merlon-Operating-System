@@ -1,6 +1,6 @@
 
 #include <console.h>
-#include <pty.h>
+#include <dev.h>
 #include <vfs.h>
 #include <thread.h>
 #include <virtual.h>
@@ -10,8 +10,8 @@
 static struct vnode* console_master;
 static struct vnode* console_sub;
 
-static struct open_file* open_console_master;
-static struct open_file* open_console_sub;
+static struct file* open_console_master;
+static struct file* open_console_sub;
 
 static bool console_initialised = false;
 
@@ -28,8 +28,8 @@ static void ConsoleDriverThread(void*) {
 
 void InitConsole(void) {
 	CreatePseudoTerminal(&console_master, &console_sub);
-	open_console_master = CreateOpenFile(console_master, 0, 0, true, true);
-	open_console_sub = CreateOpenFile(console_sub, 0, 0, true, true);
+	open_console_master = CreateFile(console_master, 0, 0, true, true);
+	open_console_sub = CreateFile(console_sub, 0, 0, true, true);
     CreateThread(ConsoleDriverThread, NULL, GetVas(), "con");
 	console_initialised = true;
 }

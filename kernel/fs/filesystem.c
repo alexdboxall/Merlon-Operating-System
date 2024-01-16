@@ -57,10 +57,10 @@ int RegisterFilesystem(char* fs_name, fs_mount_creator mount) {
     return ret;
 }
 
-int MountFilesystemForDisk(struct open_file* partition) {
+int MountFilesystemForDisk(struct file* partition) {
     AcquireMutex(fs_table_lock, -1);
 
-    struct open_file* fs = NULL;
+    struct file* fs = NULL;
     for (int i = 0; i < num_filesystems; ++i) {
         fs = NULL;
         int res = registered_filesystems[i].mount_creator(partition, &fs);

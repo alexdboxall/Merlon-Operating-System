@@ -76,7 +76,7 @@ void InitUserspace(void) {
 }
 
 void InitSystemMounts(void) {
-    struct open_file* sys_folder;
+    struct file* sys_folder;
     int res = OpenFile("drv0:/System", O_RDONLY, 0, &sys_folder);
     if (res != 0) {
         PanicEx(PANIC_NO_FILESYSTEM, "sys A");
@@ -86,7 +86,7 @@ void InitSystemMounts(void) {
         PanicEx(PANIC_NO_FILESYSTEM, "sys B");
     }
 
-    struct open_file* swapfile;
+    struct file* swapfile;
     res = OpenFile("raw-hd0:/part1", O_RDWR, 0, &swapfile);
     if (res != 0) {
         PanicEx(PANIC_NO_FILESYSTEM, "swapfile A");

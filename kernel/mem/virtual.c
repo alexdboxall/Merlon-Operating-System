@@ -94,7 +94,7 @@ struct vas* CreateVas() {
 }
 
 struct defer_disk_access {
-    struct open_file* file;
+    struct file* file;
     struct vas_entry* entry;
     off_t offset;
     size_t address;
@@ -183,7 +183,7 @@ static void PerformDeferredAccess(void* data) {
          * swapfile as free for future use.
          */
         if (access->deallocate_swap_on_read) {
-            DeallocateSwapfileIndex(access->offset / ARCH_PAGE_SIZE);
+            DeallocSwap(access->offset / ARCH_PAGE_SIZE);
         }
 
         /*
@@ -219,7 +219,7 @@ static void PerformDeferredAccess(void* data) {
         UnmapVirt(target_address, ARCH_PAGE_SIZE);
 
         if (needs_relocations) {
-            PerformRelocationsOnPage(vas, entry->relocation_base, access->address);
+            RelocatePage(vas, entry->relocation_base, access->address);
             AcquireSpinlock(&vas->lock);
             entry->first_load = false;
             entry->load_in_progress = false;
@@ -235,7 +235,7 @@ static void PerformDeferredAccess(void* data) {
  * Given a virtual page, it defers a write to disk. It creates a copy of the 
  * virtual page, so that it may be safely deleted as soon as this gets called.
  */
-static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset) {
+static void DeferDiskWrite(size_t old_addr, struct file* file, off_t offset) {
     size_t new_addr = MapVirt(
         0, 0, ARCH_PAGE_SIZE, 
         VM_LOCK | VM_READ | VM_WRITE | VM_RECURSIVE, NULL, 0
@@ -253,7 +253,7 @@ static void DeferDiskWrite(size_t old_addr, struct open_file* file, off_t offset
 }
 
 static void DeferDiskRead(
-    size_t new_addr, struct open_file* file, off_t offset, bool deallocate_swap_on_read
+    size_t new_addr, struct file* file, off_t offset, bool deallocate_swap_on_read
 ) {
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
@@ -270,7 +270,9 @@ static void DeferDiskRead(
  * swapfile (or save modifications to a file-backed page).
  */
 void EvictPage(struct vas* vas, struct vas_entry* entry) {
-    MAX_IRQL(IRQL_PAGE_FAULT);   
+    EXACT_IRQL(IRQL_STANDARD);   
+
+    LogWriteSerial("Evicting page...\n");
 
     assert(!entry->lock);
     assert(!entry->cow);
@@ -294,7 +296,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         entry->swapfile = true;
         entry->allocated = false;
         
-        uint64_t offset = AllocateSwapfileIndex() * ARCH_PAGE_SIZE;
+        uint64_t offset = AllocSwap() * ARCH_PAGE_SIZE;
         DeferDiskWrite(entry->virtual, GetSwapfile(), offset);
         entry->swapfile_offset = offset;
 
@@ -525,7 +527,7 @@ static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
  * 
  * @maxirql IRQL_SCHEDULER
  */
-static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, struct open_file* file, off_t pos, size_t number) {
+static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int flags, struct file* file, off_t pos, size_t number) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     assert(!(file != NULL && (flags & VM_FILE) == 0));
@@ -734,7 +736,7 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
  * @maxirql IRQL_SCHEDULER
  */
 #define RETURN_FAIL_IF(err, cond) if (cond) {*error = err; return 0;}
-size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct open_file* file, off_t pos, int* error) {
+size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct file* file, off_t pos, int* error) {
     MAX_IRQL(IRQL_SCHEDULER);
 
     *error = 0;
@@ -781,7 +783,7 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
 
     for (size_t i = 0; i < (multi_page_mapping ? 1 : pages); ++i) {
         if (flags & VM_FILE) {
-            ReferenceOpenFile(file);
+            ReferenceFile(file);
         }
         AddMapping(
             vas, 
@@ -804,7 +806,7 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
 /**
  * Creates a virtual memory mapping in the current virtual address space.
  */
-size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct open_file* file, off_t pos) {
+size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct file* file, off_t pos) {
     int error;
     (void) error;
     return MapVirtEx(GetVas(), physical, virtual, BytesToPages(bytes), flags, file, pos, &error);
@@ -1140,7 +1142,7 @@ static bool DereferenceEntry(struct vas* vas, struct vas_entry* entry) {
     if (entry->ref_count == 0) {
         if (entry->file && entry->write && entry->in_ram) { 
             DeferDiskWrite(entry->virtual, entry->file_node, entry->file_offset);
-            // TODO: after that DeferDiskWrite, we need to defer a DereferenceOpenFile(entry->file_node)
+            // TODO: after that DeferDiskWrite, we need to defer a DereferenceFile(entry->file_node)
         }
         if (entry->in_ram) {
             ArchUnmap(vas, entry);
@@ -1148,7 +1150,7 @@ static bool DereferenceEntry(struct vas* vas, struct vas_entry* entry) {
         }
         if (entry->swapfile) {
             assert(!entry->allocated);
-            DeallocateSwapfileIndex(entry->physical / ARCH_PAGE_SIZE);
+            DeallocSwap(entry->physical / ARCH_PAGE_SIZE);
         }
         if (entry->allocated) {
             assert(!entry->swapfile);   // can't be on swap, as putting on swap clears allocated bit

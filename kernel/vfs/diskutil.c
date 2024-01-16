@@ -137,10 +137,10 @@ static char* GetPartitionNameString(int index) {
  * is mounted if it exists. If the disk has no partitions, a 'whole disk 
  * partition' will be created, the filesystem will still be detected.
  */
-void CreateDiskPartitions(struct open_file* disk) {
+void CreateDiskPartitions(struct file* disk) {
     EXACT_IRQL(IRQL_STANDARD);   
 
-    struct open_file** partitions = GetPartitionsForDisk(disk);
+    struct file** partitions = GetPartitionsForDisk(disk);
 
     if (partitions == NULL || partitions[0] == NULL) {
         struct stat st = disk->node->stat;

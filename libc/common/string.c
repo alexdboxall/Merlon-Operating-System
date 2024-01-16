@@ -1,12 +1,12 @@
 
 /*
-* memcpy and memset call the GCC's 'builtin' version of the function.
-* These may be optimised for the target platform, which increases efficiency
-* without resorting to writing custom versions for each architecture.
-*
-* If they are not supported by your compiler or platform, or simply end up calling
-* themselves, use the commented-out implementations instead.
-*/
+ * memcpy and memset call the GCC's 'builtin' version of the function.
+ * These may be optimised for the target platform, which increases efficiency
+ * without resorting to writing custom versions for each architecture.
+ *
+ * If they are not supported by your compiler or platform, or simply end up
+ * calling themselves, use the commented-out implementations instead.
+ */
 
 #include <string.h>
 #include <errno.h>
@@ -19,8 +19,7 @@
 #include <stdlib.h>
 #endif
 
-void* memchr(const void* s, int c, size_t n)
-{
+void* memchr(const void* s, int c, size_t n) {
 	const uint8_t* ptr = (const uint8_t*) s;
 
 	while (n--) {
@@ -34,8 +33,7 @@ void* memchr(const void* s, int c, size_t n)
 	return NULL;
 }
 
-int memcmp(const void* s1, const void* s2, size_t n)
-{
+int memcmp(const void* s1, const void* s2, size_t n) {
     const uint8_t* a = (const uint8_t*) s1;
 	const uint8_t* b = (const uint8_t*) s2;
 
@@ -47,8 +45,7 @@ int memcmp(const void* s1, const void* s2, size_t n)
 	return 0;
 }
 
-int strncmp(const char* s1, const char* s2, size_t n)
-{
+int strncmp(const char* s1, const char* s2, size_t n) {
 	while (n && *s1 && (*s1 == *s2)) {
 		++s1;
 		++s2;
@@ -99,8 +96,7 @@ void* memcpy(void* restrict dst, const void* restrict src, size_t n)
 
 #pragma GCC pop_options
 
-void* memmove(void* dst, const void* src, size_t n)
-{
+void* memmove(void* dst, const void* src, size_t n) {
 	uint8_t* a = (uint8_t*) dst;
 	const uint8_t* b = (const uint8_t*) src;
 
@@ -120,8 +116,7 @@ void* memmove(void* dst, const void* src, size_t n)
 	return dst;
 }
 
-char* strcat(char* restrict dst, const char* restrict src)
-{
+char* strcat(char* restrict dst, const char* restrict src) {
 	char* ret = dst;
 
 	while (*dst) {
@@ -135,8 +130,7 @@ char* strcat(char* restrict dst, const char* restrict src)
 	return ret;
 }
 
-int strcmp(const char* s1, const char* s2)
-{
+int strcmp(const char* s1, const char* s2) {
 	while ((*s1) && (*s1 == *s2)) {
 		++s1;
 		++s2;
@@ -145,8 +139,7 @@ int strcmp(const char* s1, const char* s2)
 	return (*(uint8_t*) s1 - *(uint8_t*) s2);
 }
 
-char* strcpy(char* restrict dst, const char* restrict src)
-{
+char* strcpy(char* restrict dst, const char* restrict src) {
 	char* ret = dst;
 
 	while ((*dst++ = *src++)) {
@@ -156,8 +149,7 @@ char* strcpy(char* restrict dst, const char* restrict src)
 	return ret;
 }
 
-size_t strlen(const char* str)
-{
+size_t strlen(const char* str) {
 	size_t len = 0;
 	while (str[len]) {
 		++len;
@@ -165,8 +157,7 @@ size_t strlen(const char* str)
 	return len;
 }
 
-char* strncpy(char* restrict dst, const char* restrict src, size_t n)
-{
+char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
 	char* ret = dst;
 
 	while (n--) {
@@ -180,28 +171,24 @@ char* strncpy(char* restrict dst, const char* restrict src, size_t n)
 	return ret;
 }
 
-char* strchr(const char* s, int c)
-{
+char* strchr(const char* s, int c) {
 	do {
 		if (*s == (char) c) {
 			return (char*) s;
 		}
 	} while (*s++);
-
 	return NULL;
 }
 
 #ifdef COMPILE_KERNEL
-char* strdup_pageable(const char* str){
+char* strdup_pageable(const char* str) {
 	char* copy = (char*) AllocHeapEx(strlen(str) + 1, HEAP_ALLOW_PAGING);
 	strcpy(copy, str);
 	return copy;
 }
-
 #endif
 
-char* strdup(const char* str)
-{
+char* strdup(const char* str) {
 	char* copy = (char*) malloc(strlen(str) + 1);
 	strcpy(copy, str);
 	return copy;
@@ -209,8 +196,7 @@ char* strdup(const char* str)
 
 #ifndef COMPILE_KERNEL
 
-char* strerror(int err)
-{
+char* strerror(int err) {
 	switch (err) {
 	case 0:
 		return "Success";
@@ -421,8 +407,9 @@ char* strtok(char* restrict s, const char* restrict delim) {
 	}
 
 	/*
-	 * Find the next non-delimiter character. If none are found, then we are at the end of the
-	 * string, and so saved_pointer goes to NULL, and will continue to be NULL. 
+	 * Find the next non-delimiter character. If none are found, then we are at 
+	 * the end of the string, and so saved_pointer goes to NULL, and will 
+	 * continue to be NULL. 
 	 */
 	for (size_t i = 0; saved_pointer[i]; ++i) {
 		bool found = false;

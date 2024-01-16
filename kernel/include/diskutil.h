@@ -3,7 +3,7 @@
 #include <common.h>
 
 struct vnode;
-struct open_file;
+struct file;
 
 #define MAX_PARTITIONS_PER_DISK 8
 
@@ -27,7 +27,7 @@ struct disk_partition_helper {
 void InitDiskUtil(void);
 char* GenerateNewRawDiskName(int type);
 char* GenerateNewMountedDiskName();
-void CreateDiskPartitions(struct open_file* disk);
+void CreateDiskPartitions(struct file* disk);
 void InitDiskPartitionHelper(struct disk_partition_helper* helper);
 
 int DiskFollowHelper(struct disk_partition_helper* helper, struct vnode** out, const char* name);

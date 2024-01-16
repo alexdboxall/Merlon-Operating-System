@@ -25,7 +25,7 @@ struct cache_entry {
 };
  
 struct cache_data {
-    struct open_file* underlying_disk;
+    struct file* underlying_disk;
     int block_size;
     struct avl_tree* cache;
     struct semaphore* lock;
@@ -99,7 +99,7 @@ void RemoveCacheEntryHandler(void* entry_) {
     UnmapVirt(entry->cache_addr, entry->size);
 }
 
-struct open_file* CreateDiskCache(struct open_file* underlying_disk)
+struct file* CreateDiskCache(struct file* underlying_disk)
 {
     if (VnodeOpDirentType(underlying_disk->node) != DT_BLK) {
         return underlying_disk;
@@ -118,7 +118,10 @@ struct open_file* CreateDiskCache(struct open_file* underlying_disk)
     AvlTreeSetDeletionHandler(data->cache, RemoveCacheEntryHandler);
     node->data = data;
 
-    struct open_file* cache = CreateOpenFile(node, underlying_disk->initial_mode, underlying_disk->flags, underlying_disk->can_read, underlying_disk->can_write);
+    struct file* cache = CreateFile(
+        node, underlying_disk->initial_mode, underlying_disk->flags, 
+        underlying_disk->can_read, underlying_disk->can_write
+    );
 
     AcquireMutex(cache_list_lock, -1);
     ListInsertEnd(cache_list, cache);
@@ -130,7 +133,7 @@ struct open_file* CreateDiskCache(struct open_file* underlying_disk)
 static void ReduceCacheAmounts(bool toss) {
     struct linked_list_node* node = ListGetFirstNode(cache_list);
     while (node != NULL) {
-        struct cache_data* data = ((struct open_file*) ListGetDataFromNode(node))->node->data;
+        struct cache_data* data = ((struct file*) ListGetDataFromNode(node))->node->data;
         (toss ? TossCache : ReduceCache)(data);
         node = ListGetNextNode(node);
     }

@@ -28,7 +28,7 @@ struct process {
     struct avl_tree* threads;
     struct semaphore* lock;
     struct semaphore* killed_children_semaphore;
-    struct filedes_table* filedes_table;
+    struct fd_table* fd_table;
     int retv;
     bool terminated;
 };
@@ -113,7 +113,7 @@ struct process* CreateProcess(pid_t parent_pid) {
     prcss->retv = 0;
     prcss->terminated = false;
     prcss->pid = InsertIntoProcessTable(prcss);
-    prcss->filedes_table = CreateFileDescriptorTable();
+    prcss->fd_table = CreateFdTable();
 
     if (parent_pid != 0) {
         struct process* parent = GetProcessFromPid(parent_pid);
@@ -166,7 +166,7 @@ static void ReapProcess(struct process* prcss) {
     (void) res;
     assert(res == 0);
     DestroyVas(prcss->vas);
-    DestroyFileDescriptorTable(prcss->filedes_table);
+    DestroyFdTable(prcss->fd_table);
     RemoveFromProcessTable(prcss->pid);
     if (prcss->parent != 0) {
         struct process* parent = GetProcessFromPid(prcss->parent);
@@ -343,12 +343,12 @@ struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(voi
  * Returns the file descriptor table of the given process. Returns NULL if 
  * `prcss` is null.
  */
-struct filedes_table* GetFileDescriptorTable(struct process* prcss) {
+struct fd_table* GetFileFromFdDescriptorTable(struct process* prcss) {
     if (prcss == NULL) {
         return NULL;
     }
 
-    return prcss->filedes_table;
+    return prcss->fd_table;
 }
 
 /** 

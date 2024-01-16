@@ -48,8 +48,8 @@ int isprint(int c) {
 
 int ispunct(int c) {
     /*
-     * In the "C" locale, ispunct returns true for every printing character for which neither 
-     * isspace nor isalnum is true
+     * In the "C" locale, ispunct returns true for every printing character for 
+     * which neither isspace nor isalnum is true.
      */
     return isprint(c) && !isspace(c) && !isalnum(c);
 }

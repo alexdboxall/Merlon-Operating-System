@@ -284,7 +284,7 @@ extern char                 *AcpiGbl_Optarg;
  * cmfsize - Common get file size function
  */
 UINT32
-CmGetFileSize (
+CmGetFileFromFdSize (
     ACPI_FILE               File);
 
 
@@ -336,7 +336,7 @@ FlSplitInputPathname (
     char                    **OutFilename);
 
 char *
-FlGetFileBasename (
+FlGetFileFromFdBasename (
     char                    *FilePathname);
 
 char *

@@ -208,7 +208,7 @@ void ShowRAMUsage(void*) {
 
         size_t free = GetFreePhysKilobytes();
         size_t total = GetTotalPhysKilobytes();
-        size_t pages_on_swap = GetNumberOfPagesOnSwapfile();
+        size_t pages_on_swap = GetSwapCount();
 
         char buffer[128];
         memset(buffer, 0, 128);
@@ -412,7 +412,7 @@ void InitVesa(void) {
 
     _GenericVideoPutrect(data->framebuffer_virtual, data->pitch, data->depth_in_bits, 0, 0, vesa_width, vesa_height, BGCOL /*0x3880F8*/);
 
-    /*struct open_file* img_file;
+    /*struct file* img_file;
     OpenFile("sys:/bwsc.img", O_RDONLY, 0, &img_file);
     uint8_t* test_image = (uint8_t*) MapVirt(0, 0, 1024 * 768 * 3, VM_READ | VM_FILE, img_file, 0);
     

@@ -201,32 +201,14 @@ size_t AllocPhys(void) {
 
 /**
  * Allocates a section of contigous physical memory, that may or may not have 
- * requirements as to where the memory can be located. Must only be called after
- * a call to ReinitPhys() is made. Deallocation should be done by 
- * DeallocPhysContiguous(), passing in the same size value as passed into 
- * AllocPhysContiguous() on allocation. Will not cause pages to be evicted from 
- * RAM, so sufficient memory must exist on the system for this to succeed.
+ * requirements as to where the memory can be located. Will not cause pages to 
+ * be evicted from RAM to 'make room' so sufficient memory must already exit.
  *
- * @param bytes The size of the allocation, in bytes.
- * @param min_addr Allocated memory will not contain any addresses lower than 
- *                 this value.
- * @param max_addr Allocated memory will not contain any addresses greater or 
- *                 equal to this value. For no maximum, set to 0.
- * @param boundary Allocated memory will not contain any addresses that are an 
- *                 integer multiple of this value (although it may start at an 
- *                 integer multiple of this address). If there are no boundary 
- *                 requirements, set this to 0.
- * @return The start address of the returned physical memory area. If the 
- *         request could not be satisfied, 0 is returned.
+ * If there is no minimum, maximum, or boundary, specifiy these as zero.
  */
 size_t AllocPhysContiguous(
     size_t bytes, size_t min_addr, size_t max_addr, size_t boundary
 ) {
-    /*
-     * This function should not be called before the stack allocator is setup.
-     * (There is no need for InitVirt() to use this function, and so checking 
-     * here removes a check that would have to be done in a loop later).
-     */
     if (allocation_stack == NULL) {
         return 0;
     }
@@ -238,31 +220,20 @@ size_t AllocPhysContiguous(
 
     AcquireSpinlock(&phys_lock);
 
-    /*
-     * We need to check we won't try to over-allocate memory, or allocate so
-     * much memory that it puts us in a critical position.
-     */
     if (pages + NUM_EMERGENCY_PAGES >= pages_left) {
         ReleaseSpinlock(&phys_lock);
         return 0;
     }
 
     for (size_t index = min_index; index < max_index; ++index) {
-        /*
-         * Reset the counter if we are no longer contiguous, or if we have cross
-         * a boundary that we can't cross.
-         */
-        bool cross_boundary = (boundary != 0 && (index % (boundary / ARCH_PAGE_SIZE) == 0));
-        if (!IsBitmapEntryFree(index) || cross_boundary) {
+        bool crossed_boundary = (boundary != 0 && (index % (boundary / ARCH_PAGE_SIZE) == 0));
+        if (!IsBitmapEntryFree(index) || crossed_boundary) {
             count = 0;
             continue;
         }
 
         ++count;
         if (count == pages) {
-            /*
-             * Go back to the start of the section and mark it all as allocated.
-             */
             size_t start_index = index - count + 1;
             while (start_index <= index) {
                 AllocateBitmapEntry(start_index);
@@ -288,14 +259,10 @@ size_t AllocPhysContiguous(
 void InitPhys(struct kernel_boot_info* boot_info) {
     InitSpinlock(&phys_lock, "phys", IRQL_SCHEDULER);
 
-	/*
-	* Scan the memory tables and fill in the memory that is there.
-	*/
 	while (true) {
 		struct boot_memory_entry* range = ArchGetMemory(boot_info);
 
 		if (range == NULL) {
-			/* No more memory exists */
 			break;
 
 		} else {

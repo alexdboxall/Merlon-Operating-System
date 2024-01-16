@@ -85,6 +85,11 @@ struct vnode {
     int reference_count;
     struct spinlock reference_count_lock;
     struct stat stat;
+
+    /*
+     * O_NONBLOCK
+     */
+    int flags;
 };
 
 /*

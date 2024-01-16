@@ -1,8 +1,5 @@
 #include <byteswap.h>
 
-// from here: 
-// https://stackoverflow.com/questions/2182002/how-to-convert-big-endian-to-little-endian-in-c-without-using-library-functions
-
 uint16_t bswap_16(uint16_t val) {
     return (val << 8) | (val >> 8);
 }

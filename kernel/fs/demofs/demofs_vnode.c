@@ -116,7 +116,7 @@ static struct vnode* CreateDemoFsVnode(ino_t inode, off_t size) {
     });
 }
 
-static int CheckForDemofsSignature(struct open_file* raw_device) {
+static int CheckForDemofsSignature(struct file* raw_device) {
     struct stat st = raw_device->node->stat;
 
     uint8_t* buffer = AllocHeapEx(st.st_blksize, HEAP_ALLOW_PAGING);
@@ -138,7 +138,7 @@ static int CheckForDemofsSignature(struct open_file* raw_device) {
     return 0;
 }
 
-int DemofsMountCreator(struct open_file* raw_device, struct open_file** out) {   
+int DemofsMountCreator(struct file* raw_device, struct file** out) {   
 	int sig_check = CheckForDemofsSignature(raw_device);
     if (sig_check != 0) {
         return sig_check;
@@ -155,6 +155,6 @@ int DemofsMountCreator(struct open_file* raw_device, struct open_file** out) {
 
     node->data = data;
 
-	*out = CreateOpenFile(node, 0, 0, true, false);
+	*out = CreateFile(node, 0, 0, true, false);
     return 0;
 }

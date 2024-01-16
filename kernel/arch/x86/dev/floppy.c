@@ -493,6 +493,6 @@ void InitFloppy(void) {
         InitDiskPartitionHelper(&flp->partitions);
 
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
-        CreateDiskPartitions(CreateOpenFile(node, 0, 0, true, true));
+        CreateDiskPartitions(CreateFile(node, 0, 0, true, true));
     }
 }

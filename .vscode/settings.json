@@ -146,7 +146,8 @@
         "stdio.h": "c",
         "bootloader.h": "c",
         "alloc.h": "c",
-        "wait.h": "c"
+        "wait.h": "c",
+        "mailbox.h": "c"
     },
     "files.exclude": {
         "**/.git": true,
