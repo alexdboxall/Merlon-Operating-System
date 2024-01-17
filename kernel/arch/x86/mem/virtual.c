@@ -5,7 +5,7 @@
 #include <physical.h>
 #include <arch.h>
 #include <log.h>
-#include <avl.h>
+#include <tree.h>
 #include <heap.h>
 #include <virtual.h>
 

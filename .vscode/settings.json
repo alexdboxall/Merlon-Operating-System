@@ -25,7 +25,7 @@
         "irq.h": "c",
         "pic.h": "c",
         "log.h": "c",
-        "avl.h": "c",
+        "tree.h": "c",
         "ios": "c",
         "__locale": "c",
         "errno.h": "c",
@@ -147,7 +147,12 @@
         "bootloader.h": "c",
         "alloc.h": "c",
         "wait.h": "c",
-        "mailbox.h": "c"
+        "mailbox.h": "c",
+        "any": "c",
+        "type_traits": "c",
+        "variant": "c",
+        "utility": "c",
+        "compare": "c"
     },
     "files.exclude": {
         "**/.git": true,

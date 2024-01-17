@@ -4,7 +4,19 @@
 #include <sys/types.h>
 
 struct fd_table;
-struct process;
+
+struct process {
+    pid_t pid;
+    pid_t parent;
+    struct vas* vas;
+    struct tree* children;
+    struct tree* threads;
+    struct semaphore* lock;
+    struct semaphore* killed_children_semaphore;
+    struct fd_table* fd_table;
+    int retv;
+    bool terminated;
+};
 
 void InitProcess(void);
 struct process* CreateProcess(pid_t parent_pid);

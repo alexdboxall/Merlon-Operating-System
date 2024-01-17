@@ -2,7 +2,7 @@
 #include <driver.h>
 #include <semaphore.h>
 #include <irql.h>
-#include <avl.h>
+#include <tree.h>
 #include <string.h>
 #include <vfs.h>
 #include <errno.h>
@@ -17,8 +17,8 @@
 
 static struct semaphore* driver_table_lock;
 static struct semaphore* symbol_table_lock;
-static struct avl_tree* loaded_drivers;
-static struct avl_tree* symbol_table;
+static struct tree* loaded_drivers;
+static struct tree* symbol_table;
 
 struct symbol {
     const char* name;
@@ -28,7 +28,7 @@ struct symbol {
 struct loaded_driver {
     char* filename;
     size_t relocation_point;
-    struct relocation_table* relocation_table;
+    struct rel_table* relocation_table;
 };
 
 static int SymbolComparator(void* a_, void* b_) {
@@ -49,17 +49,17 @@ static int DriverTableComparatorByName(void* a_, void* b_) {
     return strcmp(a->filename, b->filename);
 }
 
-static int QuickRelocationTableComparator(const void* a_, const void* b_) {
-	struct relocation a = *((struct relocation*) a_);
-	struct relocation b = *((struct relocation*) b_);
-    return COMPARE_SIGN(a.address, b.address);
+static int RelocationTableComparator(const void* a, const void* b) {
+    return COMPARE_SIGN(
+        ((struct rel*) a)->address, ((struct rel*) b)->address
+    );
 }
 
 static size_t GetDriverAddressWithLockHeld(const char* name) {
     struct loaded_driver dummy = {.filename = (char*) name};
 
-    AvlTreeSetComparator(loaded_drivers, DriverTableComparatorByName);
-    struct loaded_driver* res = AvlTreeGet(loaded_drivers, &dummy);
+    TreeSetComparator(loaded_drivers, DriverTableComparatorByName);
+    struct loaded_driver* res = TreeGet(loaded_drivers, &dummy);
     if (res == NULL) {
         return 0;
     }
@@ -69,9 +69,9 @@ static size_t GetDriverAddressWithLockHeld(const char* name) {
 static struct loaded_driver* GetDriverFromAddress(size_t relocation_point) {
     AcquireMutex(driver_table_lock, -1);
 
-    AvlTreeSetComparator(loaded_drivers, DriverTableComparatorByRelocationPoint);
+    TreeSetComparator(loaded_drivers, DriverTableComparatorByRelocationPoint);
     struct loaded_driver dummy = {.relocation_point = relocation_point};
-    struct loaded_driver* res = AvlTreeGet(loaded_drivers, &dummy);
+    struct loaded_driver* res = TreeGet(loaded_drivers, &dummy);
 
     ReleaseMutex(driver_table_lock);
     return res;
@@ -90,9 +90,9 @@ void InitSymbolTable(void) {
     driver_table_lock = CreateMutex("drv table");
     symbol_table_lock = CreateMutex("sym table");
 
-    loaded_drivers = AvlTreeCreate();
-    symbol_table = AvlTreeCreate();
-    AvlTreeSetComparator(symbol_table, SymbolComparator);
+    loaded_drivers = TreeCreate();
+    symbol_table = TreeCreate();
+    TreeSetComparator(symbol_table, SymbolComparator);
 
     struct file* kernel_file;
     if (OpenFile("sys:/kernel.exe", O_RDONLY, 0, &kernel_file)) {
@@ -123,7 +123,7 @@ void AddSymbol(const char* symbol, size_t address) {
     entry->addr = address;
 
     AcquireMutex(symbol_table_lock, -1);
-    if (AvlTreeContains(symbol_table, entry)) {
+    if (TreeContains(symbol_table, entry)) {
         /*
          * The kernel has some symbols declared 'static' to file scope, with
          * duplicate names (e.g. in /dev each file has its own 'Stat'). These 
@@ -138,7 +138,7 @@ void AddSymbol(const char* symbol, size_t address) {
         FreeHeap(entry);
     } else {
         LogWriteSerial("adding symbol %s -> 0x%X\n", symbol, address);
-        AvlTreeInsert(symbol_table, entry);
+        TreeInsert(symbol_table, entry);
     }
     ReleaseMutex(symbol_table_lock);
 }
@@ -159,7 +159,7 @@ size_t GetSymbolAddress(const char* symbol) {
     struct symbol dummy = {.name = symbol};
 
     AcquireMutex(symbol_table_lock, -1);
-    struct symbol* result = AvlTreeGet(symbol_table, &dummy);
+    struct symbol* result = TreeGet(symbol_table, &dummy);
     ReleaseMutex(symbol_table_lock);
 
     if (result == NULL) {
@@ -188,7 +188,7 @@ static int LoadDriver(const char* name) {
 
     assert(drv->relocation_table != NULL);
 
-    AvlTreeInsert(loaded_drivers, drv);
+    TreeInsert(loaded_drivers, drv);
     ArchLoadSymbols(file, drv->relocation_point);
     return 0;
 }
@@ -215,26 +215,26 @@ int RequireDriver(const char* name) {
     return res;
 }
 
-void SortRelocationTable(struct relocation_table* table) {
+void SortRelocationTable(struct rel_table* table) {
 	qsort_pageable(
         (void*) table->entries, 
         table->used_entries, 
-        sizeof(struct relocation), 
-        QuickRelocationTableComparator
+        sizeof(struct rel), 
+        RelocationTableComparator
     );
 }
 
-void AddToRelocationTable(struct relocation_table* table, size_t addr, size_t val) {
+void AddToRelocationTable(struct rel_table* table, size_t addr, size_t val) {
 	assert(table->used_entries < table->total_entries);
 	table->entries[table->used_entries].address = addr;
 	table->entries[table->used_entries].value = val;
 	table->used_entries++;
 }
 
-struct relocation_table* CreateRelocationTable(int count) {
-    struct relocation_table* table = AllocHeap(sizeof(struct relocation_table));
-    struct relocation* entries = (struct relocation*) MapVirt(
-        0, 0, count * sizeof(struct relocation), VM_READ | VM_WRITE, NULL, 0
+struct rel_table* CreateRelocationTable(int count) {
+    struct rel_table* table = AllocHeap(sizeof(struct rel_table));
+    struct rel* entries = (struct rel*) MapVirt(
+        0, 0, count * sizeof(struct rel), VM_READ | VM_WRITE, NULL, 0
     );
     table->entries = entries;
     table->used_entries = 0;
@@ -243,8 +243,8 @@ struct relocation_table* CreateRelocationTable(int count) {
 }
 
 static int BinarySearchComparator(const void* a_, const void* b_) {
-    struct relocation a = *((struct relocation*) a_);
-	struct relocation b = *((struct relocation*) b_);
+    struct rel a = *((struct rel*) a_);
+	struct rel b = *((struct rel*) b_);
 
     size_t page_a = a.address / ARCH_PAGE_SIZE;
     size_t page_b = b.address / ARCH_PAGE_SIZE;
@@ -260,13 +260,13 @@ static int BinarySearchComparator(const void* a_, const void* b_) {
     }
 }
 
-static void ApplyRelocationsToPage(struct relocation_table* table, size_t virtual) {
-    struct relocation target;
+static void ApplyRelocationsToPage(struct rel_table* table, size_t virtual) {
+    struct rel target;
     target.address = virtual;
 
-    struct relocation* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct relocation), BinarySearchComparator);
+    struct rel* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct rel), BinarySearchComparator);
     if (entry == NULL) {
-        PanicEx(PANIC_ASSERTION_FAILURE, "quick relocation table doesn't contain lookup - bsearch or qsort is probably bugged");
+        PanicEx(PANIC_ASSERTION_FAILURE, "relocation table doesn't contain lookup - bsearch or qsort is probably bugged");
     }
 
     /*

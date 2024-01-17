@@ -6,7 +6,7 @@
 
 struct vas;
 struct thread;
-struct avl_tree;
+struct tree;
 
 struct cpu {
     struct vas* current_vas;
@@ -20,7 +20,7 @@ struct cpu {
     bool init_irql_done;
     bool postponed_task_switch;
 
-    struct avl_tree* global_vas_mappings;
+    struct tree* global_vas_mappings;
     struct spinlock global_mappings_lock;
 };
 

@@ -1,4 +1,10 @@
 
+/*
+ * dev/random.c - Null Device
+ *
+ * A device which generates an indefinite number of random bytes.
+ */
+
 #include <heap.h>
 #include <stdlib.h>
 #include <vfs.h>

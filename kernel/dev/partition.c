@@ -1,4 +1,11 @@
 
+/*
+ * dev/partition.c - Disk Partitions
+ *
+ * Implements functions for detecting and returning partitions on a disk, and a
+ * partition device driver that sits between the filesystem and the disk driver.
+ */
+
 #include <heap.h>
 #include <stdlib.h>
 #include <vfs.h>

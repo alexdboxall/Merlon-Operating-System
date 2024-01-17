@@ -1,4 +1,11 @@
 
+/*
+ * dev/pipe.c - Unnamed Pipes
+ *
+ * Implements unnamed pipes - including the device driver and functions for 
+ * creating pipes.
+ */
+
 #include <heap.h>
 #include <stdlib.h>
 #include <vfs.h>

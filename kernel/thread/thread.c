@@ -13,7 +13,7 @@
 #include <panic.h>
 #include <common.h>
 #include <threadlist.h>
-#include <avl.h>
+#include <tree.h>
 #include <priorityqueue.h>
 #include <progload.h>
 #include <semaphore.h>

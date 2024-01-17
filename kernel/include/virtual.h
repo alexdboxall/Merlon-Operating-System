@@ -101,7 +101,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type);
 #include <spinlock.h>
 
 struct vas {
-    struct avl_tree* mappings;
+    struct tree* mappings;
     platform_vas_data_t* arch_data;
     struct spinlock lock;
 };

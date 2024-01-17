@@ -8,7 +8,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <heap.h>
-#include <avl.h>
+#include <tree.h>
 #include <fcntl.h>
 #include <stackadt.h>
 
@@ -45,7 +45,7 @@ struct mounted_file {
 };
 
 static struct spinlock vfs_lock;
-static struct avl_tree* mount_points = NULL;
+static struct tree* mount_points = NULL;
 
 int MountedDeviceComparator(void* a_, void* b_) {
     struct mounted_file* a = a_;
@@ -55,8 +55,8 @@ int MountedDeviceComparator(void* a_, void* b_) {
 
 void InitVfs(void) {
     InitSpinlock(&vfs_lock, "vfs", IRQL_SCHEDULER);
-    mount_points = AvlTreeCreate();
-    AvlTreeSetComparator(mount_points, MountedDeviceComparator);
+    mount_points = TreeCreate();
+    TreeSetComparator(mount_points, MountedDeviceComparator);
 }
 
 static int CheckValidComponentName(const char* name)
@@ -84,7 +84,7 @@ static int DoesMountPointExist(const char* name) {
 
     struct mounted_file target;
     target.name = (char*) name;
-    if (AvlTreeContains(mount_points, &target)) {
+    if (TreeContains(mount_points, &target)) {
         return EEXIST;
     }
 
@@ -161,7 +161,7 @@ static struct file* GetMountFromName(const char* name) {
 
 	struct mounted_file target;
     target.name = (char*) name;
-    struct mounted_file* mount = AvlTreeGet(mount_points, (void*) &target);
+    struct mounted_file* mount = TreeGet(mount_points, (void*) &target);
     return mount->node;
 }
 
@@ -192,7 +192,7 @@ int AddVfsMount(struct vnode* node, const char* name) {
 	mount->name = strdup(name);
     mount->node = CreateFile(node, 0, 0, true, true);
 
-    AvlTreeInsert(mount_points, (void*) mount);
+    TreeInsert(mount_points, (void*) mount);
 
 	LogWriteSerial("MOUNTED TO THE VFS: %s\n", name);
 
@@ -219,7 +219,7 @@ int RemoveVfsMount(const char* name) {
 	struct mounted_file target;
     target.name = (char*) name;
 
-    struct mounted_file* actual = AvlTreeGet(mount_points, &target);
+    struct mounted_file* actual = TreeGet(mount_points, &target);
     if (actual == NULL) {
         ReleaseSpinlock(&vfs_lock);
         return ENODEV;
@@ -235,7 +235,7 @@ int RemoveVfsMount(const char* name) {
     DereferenceVnode(actual->node->node);
     DereferenceFile(actual->node);
 
-    AvlTreeDelete(mount_points, actual);
+    TreeDelete(mount_points, actual);
     FreeHeap(actual->name);
 
     ReleaseSpinlock(&vfs_lock);

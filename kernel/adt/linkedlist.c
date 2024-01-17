@@ -1,3 +1,10 @@
+
+/*
+ * adt/list.c - Linked Lists
+ *
+ * Implements a generic linked list data structure.
+ */
+
 #include <common.h>
 #include <linkedlist.h>
 #include <heap.h>

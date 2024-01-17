@@ -19,3 +19,5 @@ int SysMprotect(size_t, size_t, size_t, size_t, size_t);
 int SysPrepExec(size_t, size_t, size_t, size_t, size_t);
 int SysWaitpid(size_t, size_t, size_t, size_t, size_t);
 int SysFork(size_t, size_t, size_t, size_t, size_t);
+int SysGetPid(size_t, size_t, size_t, size_t, size_t);
+int SysGetTid(size_t, size_t, size_t, size_t, size_t);

@@ -1,1185 +1,1314 @@
-KernelMain: kernel is initialising...
+c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+007911A0+006F11A0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
 A
+Reached TFW_SP 0
 B
 RAM TABLE AT 0xC000C634. entries = 6
 RAM TABLE AT 0xC000C634. entries = 6
 RAM TABLE AT 0xC000C634. entries = 6
+Reached TFW_SP 1
 C
 D
 E
 F
 G
-isrx0 seems to be at 0xC010C340
-isrx1 seems to be at 0xC010C346
-isrx2 seems to be at 0xC010C34C
-isrx3 seems to be at 0xC010C352
-isrx4 seems to be at 0xC010C358
-isrx5 seems to be at 0xC010C35E
-isrx6 seems to be at 0xC010C364
-isrx7 seems to be at 0xC010C36A
-isrx8 seems to be at 0xC010C370
-isrx9 seems to be at 0xC010C374
-isrx10 seems to be at 0xC010C37A
-isrx11 seems to be at 0xC010C37E
-isrx12 seems to be at 0xC010C382
-isrx13 seems to be at 0xC010C386
-isrx14 seems to be at 0xC010C38A
-isrx15 seems to be at 0xC010C38E
-isrx16 seems to be at 0xC010C399
-isrx17 seems to be at 0xC010C39F
-isrx18 seems to be at 0xC010C3A3
-isrx19 seems to be at 0xC010C3A9
-isrx20 seems to be at 0xC010C3AF
-isrx21 seems to be at 0xC010C3B5
-isrx22 seems to be at 0xC010C3BB
-isrx23 seems to be at 0xC010C3C1
-isrx24 seems to be at 0xC010C3C7
-isrx25 seems to be at 0xC010C3CD
-isrx26 seems to be at 0xC010C3D3
-isrx27 seems to be at 0xC010C3D9
-isrx28 seems to be at 0xC010C3DF
-isrx29 seems to be at 0xC010C3E5
-isrx30 seems to be at 0xC010C3EB
-isrx31 seems to be at 0xC010C3F1
-isrx32 seems to be at 0xC010C3F7
-isrx33 seems to be at 0xC010C3FD
-isrx34 seems to be at 0xC010C403
-isrx35 seems to be at 0xC010C409
-isrx36 seems to be at 0xC010C40F
-isrx37 seems to be at 0xC010C415
-isrx38 seems to be at 0xC010C41B
-isrx39 seems to be at 0xC010C421
-isrx40 seems to be at 0xC010C427
-isrx41 seems to be at 0xC010C42D
-isrx42 seems to be at 0xC010C433
-isrx43 seems to be at 0xC010C439
-isrx44 seems to be at 0xC010C43F
-isrx45 seems to be at 0xC010C445
-isrx46 seems to be at 0xC010C44B
-isrx47 seems to be at 0xC010C451
-isrx48 seems to be at 0xC010C45C
-isrx49 seems to be at 0xC010C462
-isrx50 seems to be at 0xC010C468
-isrx51 seems to be at 0xC010C46E
-isrx52 seems to be at 0xC010C474
-isrx53 seems to be at 0xC010C47A
-isrx54 seems to be at 0xC010C480
-isrx55 seems to be at 0xC010C486
-isrx56 seems to be at 0xC010C48C
-isrx57 seems to be at 0xC010C492
-isrx58 seems to be at 0xC010C498
-isrx59 seems to be at 0xC010C49E
-isrx60 seems to be at 0xC010C4A4
-isrx61 seems to be at 0xC010C4AA
-isrx62 seems to be at 0xC010C4B0
-isrx63 seems to be at 0xC010C4B6
-isrx64 seems to be at 0xC010C4BC
-isrx65 seems to be at 0xC010C4C2
-isrx66 seems to be at 0xC010C4C8
-isrx67 seems to be at 0xC010C4CE
-isrx68 seems to be at 0xC010C4D4
-isrx69 seems to be at 0xC010C4DA
-isrx70 seems to be at 0xC010C4E0
-isrx71 seems to be at 0xC010C4E6
-isrx72 seems to be at 0xC010C4EC
-isrx73 seems to be at 0xC010C4F2
-isrx74 seems to be at 0xC010C4F8
-isrx75 seems to be at 0xC010C4FE
-isrx76 seems to be at 0xC010C504
-isrx77 seems to be at 0xC010C50A
-isrx78 seems to be at 0xC010C510
-isrx79 seems to be at 0xC010C516
-isrx80 seems to be at 0xC010C521
-isrx81 seems to be at 0xC010C527
-isrx82 seems to be at 0xC010C52D
-isrx83 seems to be at 0xC010C533
-isrx84 seems to be at 0xC010C539
-isrx85 seems to be at 0xC010C53F
-isrx86 seems to be at 0xC010C545
-isrx87 seems to be at 0xC010C54B
-isrx88 seems to be at 0xC010C551
-isrx89 seems to be at 0xC010C557
-isrx90 seems to be at 0xC010C55D
-isrx91 seems to be at 0xC010C563
-isrx92 seems to be at 0xC010C569
-isrx93 seems to be at 0xC010C56F
-isrx94 seems to be at 0xC010C575
-isrx95 seems to be at 0xC010C57B
-isrx96 seems to be at 0xC010C581
-isrx97 seems to be at 0xC010C587
-isrx98 seems to be at 0xC010C58D
-isrx99 seems to be at 0xC010C593
-isrx100 seems to be at 0xC010C599
-isrx101 seems to be at 0xC010C59F
-isrx102 seems to be at 0xC010C5A5
-isrx103 seems to be at 0xC010C5AB
-isrx104 seems to be at 0xC010C5B1
-isrx105 seems to be at 0xC010C5B7
-isrx106 seems to be at 0xC010C5BD
-isrx107 seems to be at 0xC010C5C3
-isrx108 seems to be at 0xC010C5C9
-isrx109 seems to be at 0xC010C5CF
-isrx110 seems to be at 0xC010C5D5
-isrx111 seems to be at 0xC010C5DB
-isrx112 seems to be at 0xC010C5E6
-isrx113 seems to be at 0xC010C5EC
-isrx114 seems to be at 0xC010C5F2
-isrx115 seems to be at 0xC010C5F8
-isrx116 seems to be at 0xC010C5FE
-isrx117 seems to be at 0xC010C604
-isrx118 seems to be at 0xC010C60A
-isrx119 seems to be at 0xC010C610
-isrx120 seems to be at 0xC010C616
-isrx121 seems to be at 0xC010C61C
-isrx122 seems to be at 0xC010C622
-isrx123 seems to be at 0xC010C628
-isrx124 seems to be at 0xC010C62E
-isrx125 seems to be at 0xC010C634
-isrx126 seems to be at 0xC010C63A
-isrx127 seems to be at 0xC010C640
-isrx128 seems to be at 0xC010C646
-isrx129 seems to be at 0xC010C64C
-isrx130 seems to be at 0xC010C652
-isrx131 seems to be at 0xC010C658
-isrx132 seems to be at 0xC010C65E
-isrx133 seems to be at 0xC010C664
-isrx134 seems to be at 0xC010C66A
-isrx135 seems to be at 0xC010C670
-isrx136 seems to be at 0xC010C676
-isrx137 seems to be at 0xC010C67C
-isrx138 seems to be at 0xC010C682
-isrx139 seems to be at 0xC010C688
-isrx140 seems to be at 0xC010C68E
-isrx141 seems to be at 0xC010C694
-isrx142 seems to be at 0xC010C69A
-isrx143 seems to be at 0xC010C6A0
-isrx144 seems to be at 0xC010C6AB
-isrx145 seems to be at 0xC010C6B1
-isrx146 seems to be at 0xC010C6B7
-isrx147 seems to be at 0xC010C6BD
-isrx148 seems to be at 0xC010C6C3
-isrx149 seems to be at 0xC010C6C9
-isrx150 seems to be at 0xC010C6CF
-isrx151 seems to be at 0xC010C6D5
-isrx152 seems to be at 0xC010C6DB
-isrx153 seems to be at 0xC010C6E1
-isrx154 seems to be at 0xC010C6E7
-isrx155 seems to be at 0xC010C6ED
-isrx156 seems to be at 0xC010C6F3
-isrx157 seems to be at 0xC010C6F9
-isrx158 seems to be at 0xC010C6FF
-isrx159 seems to be at 0xC010C705
-isrx160 seems to be at 0xC010C70B
-isrx161 seems to be at 0xC010C711
-isrx162 seems to be at 0xC010C717
-isrx163 seems to be at 0xC010C71D
-isrx164 seems to be at 0xC010C723
-isrx165 seems to be at 0xC010C729
-isrx166 seems to be at 0xC010C72F
-isrx167 seems to be at 0xC010C735
-isrx168 seems to be at 0xC010C73B
-isrx169 seems to be at 0xC010C741
-isrx170 seems to be at 0xC010C747
-isrx171 seems to be at 0xC010C74D
-isrx172 seems to be at 0xC010C753
-isrx173 seems to be at 0xC010C759
-isrx174 seems to be at 0xC010C75F
-isrx175 seems to be at 0xC010C765
-isrx176 seems to be at 0xC010C770
-isrx177 seems to be at 0xC010C776
-isrx178 seems to be at 0xC010C77C
-isrx179 seems to be at 0xC010C782
-isrx180 seems to be at 0xC010C788
-isrx181 seems to be at 0xC010C78E
-isrx182 seems to be at 0xC010C794
-isrx183 seems to be at 0xC010C79A
-isrx184 seems to be at 0xC010C7A0
-isrx185 seems to be at 0xC010C7A6
-isrx186 seems to be at 0xC010C7AC
-isrx187 seems to be at 0xC010C7B2
-isrx188 seems to be at 0xC010C7B8
-isrx189 seems to be at 0xC010C7BE
-isrx190 seems to be at 0xC010C7C4
-isrx191 seems to be at 0xC010C7CA
-isrx192 seems to be at 0xC010C7D0
-isrx193 seems to be at 0xC010C7D6
-isrx194 seems to be at 0xC010C7DC
-isrx195 seems to be at 0xC010C7E2
-isrx196 seems to be at 0xC010C7E8
-isrx197 seems to be at 0xC010C7EE
-isrx198 seems to be at 0xC010C7F4
-isrx199 seems to be at 0xC010C7FA
-isrx200 seems to be at 0xC010C800
-isrx201 seems to be at 0xC010C806
-isrx202 seems to be at 0xC010C80C
-isrx203 seems to be at 0xC010C812
-isrx204 seems to be at 0xC010C818
-isrx205 seems to be at 0xC010C81E
-isrx206 seems to be at 0xC010C824
-isrx207 seems to be at 0xC010C82A
-isrx208 seems to be at 0xC010C835
-isrx209 seems to be at 0xC010C83B
-isrx210 seems to be at 0xC010C841
-isrx211 seems to be at 0xC010C847
-isrx212 seems to be at 0xC010C84D
-isrx213 seems to be at 0xC010C853
-isrx214 seems to be at 0xC010C859
-isrx215 seems to be at 0xC010C85F
-isrx216 seems to be at 0xC010C865
-isrx217 seems to be at 0xC010C86B
-isrx218 seems to be at 0xC010C871
-isrx219 seems to be at 0xC010C877
-isrx220 seems to be at 0xC010C87D
-isrx221 seems to be at 0xC010C883
-isrx222 seems to be at 0xC010C889
-isrx223 seems to be at 0xC010C88F
-isrx224 seems to be at 0xC010C895
-isrx225 seems to be at 0xC010C89B
-isrx226 seems to be at 0xC010C8A1
-isrx227 seems to be at 0xC010C8A7
-isrx228 seems to be at 0xC010C8AD
-isrx229 seems to be at 0xC010C8B3
-isrx230 seems to be at 0xC010C8B9
-isrx231 seems to be at 0xC010C8BF
-isrx232 seems to be at 0xC010C8C5
-isrx233 seems to be at 0xC010C8CB
-isrx234 seems to be at 0xC010C8D1
-isrx235 seems to be at 0xC010C8D7
-isrx236 seems to be at 0xC010C8DD
-isrx237 seems to be at 0xC010C8E3
-isrx238 seems to be at 0xC010C8E9
-isrx239 seems to be at 0xC010C8EF
-isrx240 seems to be at 0xC010C8FA
-isrx241 seems to be at 0xC010C900
-isrx242 seems to be at 0xC010C906
-isrx243 seems to be at 0xC010C90C
-isrx244 seems to be at 0xC010C912
-isrx245 seems to be at 0xC010C918
-isrx246 seems to be at 0xC010C91E
-isrx247 seems to be at 0xC010C924
-isrx248 seems to be at 0xC010C92A
-isrx249 seems to be at 0xC010C930
-isrx250 seems to be at 0xC010C936
-isrx251 seems to be at 0xC010C93C
-isrx252 seems to be at 0xC010C942
-isrx253 seems to be at 0xC010C948
-isrx254 seems to be at 0xC010C94E
-isrx255 seems to be at 0xC010C954
-can access 292 MB of kernel virtual memory
-Adding mapping at 0xC4000000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x4A000.
-Adding mapping at 0xC4001000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x136000.
-Adding mapping at 0xC4002000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x135000.
-Adding mapping at 0xC4003000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x134000.
-Adding mapping at 0xC4004000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x133000.
-Adding mapping at 0xC4005000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x132000.
-Adding mapping at 0xC4006000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x131000.
-Adding mapping at 0xC4007000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x130000.
-Adding mapping at 0xC4008000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DF000.
-Adding mapping at 0xC4009000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DE000.
-Adding mapping at 0xC400A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DD000.
-Adding mapping at 0xC400B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DC000.
-Adding mapping at 0xC400C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DB000.
-Adding mapping at 0xC400D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1DA000.
-Adding mapping at 0xC400E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D9000.
-Adding mapping at 0xC400F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D8000.
-Adding mapping at 0xC4010000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D7000.
+Reached TFW_SP 2
+isrx0 seems to be at 0xC0110470
+isrx1 seems to be at 0xC0110476
+isrx2 seems to be at 0xC011047C
+isrx3 seems to be at 0xC0110482
+isrx4 seems to be at 0xC0110488
+isrx5 seems to be at 0xC011048E
+isrx6 seems to be at 0xC0110494
+isrx7 seems to be at 0xC011049A
+isrx8 seems to be at 0xC01104A0
+isrx9 seems to be at 0xC01104A4
+isrx10 seems to be at 0xC01104AA
+isrx11 seems to be at 0xC01104AE
+isrx12 seems to be at 0xC01104B2
+isrx13 seems to be at 0xC01104B6
+isrx14 seems to be at 0xC01104BA
+isrx15 seems to be at 0xC01104BE
+isrx16 seems to be at 0xC01104C9
+isrx17 seems to be at 0xC01104CF
+isrx18 seems to be at 0xC01104D3
+isrx19 seems to be at 0xC01104D9
+isrx20 seems to be at 0xC01104DF
+isrx21 seems to be at 0xC01104E5
+isrx22 seems to be at 0xC01104EB
+isrx23 seems to be at 0xC01104F1
+isrx24 seems to be at 0xC01104F7
+isrx25 seems to be at 0xC01104FD
+isrx26 seems to be at 0xC0110503
+isrx27 seems to be at 0xC0110509
+isrx28 seems to be at 0xC011050F
+isrx29 seems to be at 0xC0110515
+isrx30 seems to be at 0xC011051B
+isrx31 seems to be at 0xC0110521
+isrx32 seems to be at 0xC0110527
+isrx33 seems to be at 0xC011052D
+isrx34 seems to be at 0xC0110533
+isrx35 seems to be at 0xC0110539
+isrx36 seems to be at 0xC011053F
+isrx37 seems to be at 0xC0110545
+isrx38 seems to be at 0xC011054B
+isrx39 seems to be at 0xC0110551
+isrx40 seems to be at 0xC0110557
+isrx41 seems to be at 0xC011055D
+isrx42 seems to be at 0xC0110563
+isrx43 seems to be at 0xC0110569
+isrx44 seems to be at 0xC011056F
+isrx45 seems to be at 0xC0110575
+isrx46 seems to be at 0xC011057B
+isrx47 seems to be at 0xC0110581
+isrx48 seems to be at 0xC011058C
+isrx49 seems to be at 0xC0110592
+isrx50 seems to be at 0xC0110598
+isrx51 seems to be at 0xC011059E
+isrx52 seems to be at 0xC01105A4
+isrx53 seems to be at 0xC01105AA
+isrx54 seems to be at 0xC01105B0
+isrx55 seems to be at 0xC01105B6
+isrx56 seems to be at 0xC01105BC
+isrx57 seems to be at 0xC01105C2
+isrx58 seems to be at 0xC01105C8
+isrx59 seems to be at 0xC01105CE
+isrx60 seems to be at 0xC01105D4
+isrx61 seems to be at 0xC01105DA
+isrx62 seems to be at 0xC01105E0
+isrx63 seems to be at 0xC01105E6
+isrx64 seems to be at 0xC01105EC
+isrx65 seems to be at 0xC01105F2
+isrx66 seems to be at 0xC01105F8
+isrx67 seems to be at 0xC01105FE
+isrx68 seems to be at 0xC0110604
+isrx69 seems to be at 0xC011060A
+isrx70 seems to be at 0xC0110610
+isrx71 seems to be at 0xC0110616
+isrx72 seems to be at 0xC011061C
+isrx73 seems to be at 0xC0110622
+isrx74 seems to be at 0xC0110628
+isrx75 seems to be at 0xC011062E
+isrx76 seems to be at 0xC0110634
+isrx77 seems to be at 0xC011063A
+isrx78 seems to be at 0xC0110640
+isrx79 seems to be at 0xC0110646
+isrx80 seems to be at 0xC0110651
+isrx81 seems to be at 0xC0110657
+isrx82 seems to be at 0xC011065D
+isrx83 seems to be at 0xC0110663
+isrx84 seems to be at 0xC0110669
+isrx85 seems to be at 0xC011066F
+isrx86 seems to be at 0xC0110675
+isrx87 seems to be at 0xC011067B
+isrx88 seems to be at 0xC0110681
+isrx89 seems to be at 0xC0110687
+isrx90 seems to be at 0xC011068D
+isrx91 seems to be at 0xC0110693
+isrx92 seems to be at 0xC0110699
+isrx93 seems to be at 0xC011069F
+isrx94 seems to be at 0xC01106A5
+isrx95 seems to be at 0xC01106AB
+isrx96 seems to be at 0xC01106B1
+isrx97 seems to be at 0xC01106B7
+isrx98 seems to be at 0xC01106BD
+isrx99 seems to be at 0xC01106C3
+isrx100 seems to be at 0xC01106C9
+isrx101 seems to be at 0xC01106CF
+isrx102 seems to be at 0xC01106D5
+isrx103 seems to be at 0xC01106DB
+isrx104 seems to be at 0xC01106E1
+isrx105 seems to be at 0xC01106E7
+isrx106 seems to be at 0xC01106ED
+isrx107 seems to be at 0xC01106F3
+isrx108 seems to be at 0xC01106F9
+isrx109 seems to be at 0xC01106FF
+isrx110 seems to be at 0xC0110705
+isrx111 seems to be at 0xC011070B
+isrx112 seems to be at 0xC0110716
+isrx113 seems to be at 0xC011071C
+isrx114 seems to be at 0xC0110722
+isrx115 seems to be at 0xC0110728
+isrx116 seems to be at 0xC011072E
+isrx117 seems to be at 0xC0110734
+isrx118 seems to be at 0xC011073A
+isrx119 seems to be at 0xC0110740
+isrx120 seems to be at 0xC0110746
+isrx121 seems to be at 0xC011074C
+isrx122 seems to be at 0xC0110752
+isrx123 seems to be at 0xC0110758
+isrx124 seems to be at 0xC011075E
+isrx125 seems to be at 0xC0110764
+isrx126 seems to be at 0xC011076A
+isrx127 seems to be at 0xC0110770
+isrx128 seems to be at 0xC0110776
+isrx129 seems to be at 0xC011077C
+isrx130 seems to be at 0xC0110782
+isrx131 seems to be at 0xC0110788
+isrx132 seems to be at 0xC011078E
+isrx133 seems to be at 0xC0110794
+isrx134 seems to be at 0xC011079A
+isrx135 seems to be at 0xC01107A0
+isrx136 seems to be at 0xC01107A6
+isrx137 seems to be at 0xC01107AC
+isrx138 seems to be at 0xC01107B2
+isrx139 seems to be at 0xC01107B8
+isrx140 seems to be at 0xC01107BE
+isrx141 seems to be at 0xC01107C4
+isrx142 seems to be at 0xC01107CA
+isrx143 seems to be at 0xC01107D0
+isrx144 seems to be at 0xC01107DB
+isrx145 seems to be at 0xC01107E1
+isrx146 seems to be at 0xC01107E7
+isrx147 seems to be at 0xC01107ED
+isrx148 seems to be at 0xC01107F3
+isrx149 seems to be at 0xC01107F9
+isrx150 seems to be at 0xC01107FF
+isrx151 seems to be at 0xC0110805
+isrx152 seems to be at 0xC011080B
+isrx153 seems to be at 0xC0110811
+isrx154 seems to be at 0xC0110817
+isrx155 seems to be at 0xC011081D
+isrx156 seems to be at 0xC0110823
+isrx157 seems to be at 0xC0110829
+isrx158 seems to be at 0xC011082F
+isrx159 seems to be at 0xC0110835
+isrx160 seems to be at 0xC011083B
+isrx161 seems to be at 0xC0110841
+isrx162 seems to be at 0xC0110847
+isrx163 seems to be at 0xC011084D
+isrx164 seems to be at 0xC0110853
+isrx165 seems to be at 0xC0110859
+isrx166 seems to be at 0xC011085F
+isrx167 seems to be at 0xC0110865
+isrx168 seems to be at 0xC011086B
+isrx169 seems to be at 0xC0110871
+isrx170 seems to be at 0xC0110877
+isrx171 seems to be at 0xC011087D
+isrx172 seems to be at 0xC0110883
+isrx173 seems to be at 0xC0110889
+isrx174 seems to be at 0xC011088F
+isrx175 seems to be at 0xC0110895
+isrx176 seems to be at 0xC01108A0
+isrx177 seems to be at 0xC01108A6
+isrx178 seems to be at 0xC01108AC
+isrx179 seems to be at 0xC01108B2
+isrx180 seems to be at 0xC01108B8
+isrx181 seems to be at 0xC01108BE
+isrx182 seems to be at 0xC01108C4
+isrx183 seems to be at 0xC01108CA
+isrx184 seems to be at 0xC01108D0
+isrx185 seems to be at 0xC01108D6
+isrx186 seems to be at 0xC01108DC
+isrx187 seems to be at 0xC01108E2
+isrx188 seems to be at 0xC01108E8
+isrx189 seems to be at 0xC01108EE
+isrx190 seems to be at 0xC01108F4
+isrx191 seems to be at 0xC01108FA
+isrx192 seems to be at 0xC0110900
+isrx193 seems to be at 0xC0110906
+isrx194 seems to be at 0xC011090C
+isrx195 seems to be at 0xC0110912
+isrx196 seems to be at 0xC0110918
+isrx197 seems to be at 0xC011091E
+isrx198 seems to be at 0xC0110924
+isrx199 seems to be at 0xC011092A
+isrx200 seems to be at 0xC0110930
+isrx201 seems to be at 0xC0110936
+isrx202 seems to be at 0xC011093C
+isrx203 seems to be at 0xC0110942
+isrx204 seems to be at 0xC0110948
+isrx205 seems to be at 0xC011094E
+isrx206 seems to be at 0xC0110954
+isrx207 seems to be at 0xC011095A
+isrx208 seems to be at 0xC0110965
+isrx209 seems to be at 0xC011096B
+isrx210 seems to be at 0xC0110971
+isrx211 seems to be at 0xC0110977
+isrx212 seems to be at 0xC011097D
+isrx213 seems to be at 0xC0110983
+isrx214 seems to be at 0xC0110989
+isrx215 seems to be at 0xC011098F
+isrx216 seems to be at 0xC0110995
+isrx217 seems to be at 0xC011099B
+isrx218 seems to be at 0xC01109A1
+isrx219 seems to be at 0xC01109A7
+isrx220 seems to be at 0xC01109AD
+isrx221 seems to be at 0xC01109B3
+isrx222 seems to be at 0xC01109B9
+isrx223 seems to be at 0xC01109BF
+isrx224 seems to be at 0xC01109C5
+isrx225 seems to be at 0xC01109CB
+isrx226 seems to be at 0xC01109D1
+isrx227 seems to be at 0xC01109D7
+isrx228 seems to be at 0xC01109DD
+isrx229 seems to be at 0xC01109E3
+isrx230 seems to be at 0xC01109E9
+isrx231 seems to be at 0xC01109EF
+isrx232 seems to be at 0xC01109F5
+isrx233 seems to be at 0xC01109FB
+isrx234 seems to be at 0xC0110A01
+isrx235 seems to be at 0xC0110A07
+isrx236 seems to be at 0xC0110A0D
+isrx237 seems to be at 0xC0110A13
+isrx238 seems to be at 0xC0110A19
+isrx239 seems to be at 0xC0110A1F
+isrx240 seems to be at 0xC0110A2A
+isrx241 seems to be at 0xC0110A30
+isrx242 seems to be at 0xC0110A36
+isrx243 seems to be at 0xC0110A3C
+isrx244 seems to be at 0xC0110A42
+isrx245 seems to be at 0xC0110A48
+isrx246 seems to be at 0xC0110A4E
+isrx247 seems to be at 0xC0110A54
+isrx248 seems to be at 0xC0110A5A
+isrx249 seems to be at 0xC0110A60
+isrx250 seems to be at 0xC0110A66
+isrx251 seems to be at 0xC0110A6C
+isrx252 seems to be at 0xC0110A72
+isrx253 seems to be at 0xC0110A78
+isrx254 seems to be at 0xC0110A7E
+isrx255 seems to be at 0xC0110A84
+Reached TFW_SP 3
+can access 956 MB of kernel virtual memory
+Reached TFW_SP 4
+Adding mapping at 0xC4000000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x145000.
+Adding mapping at 0xC4001000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x146000.
+Reached TFW_SP 5
+Adding mapping at 0xC4002000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x13C000.
+Adding mapping at 0xC4003000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x13B000.
+Adding mapping at 0xC4004000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x13A000.
+Adding mapping at 0xC4005000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x139000.
+Reached TFW_SP 6
+Adding mapping at 0xC4006000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x138000.
+Adding mapping at 0xC4007000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x137000.
+Adding mapping at 0xC4008000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x136000.
+Adding mapping at 0xC4009000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7DF000.
+Adding mapping at 0xC400A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7DE000.
+Adding mapping at 0xC400B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7DD000.
+Adding mapping at 0xC400C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7DC000.
+Adding mapping at 0xC400D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7DB000.
+Adding mapping at 0xC400E000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7DA000.
+Adding mapping at 0xC400F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D9000.
+Adding mapping at 0xC4010000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D8000.
+Adding mapping at 0xC4011000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D7000.
+Adding mapping at 0xC4012000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D6000.
+Adding mapping at 0xC4013000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D5000.
+Adding mapping at 0xC4014000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D4000.
+Adding mapping at 0xC4015000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D3000.
+Adding mapping at 0xC4016000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D2000.
+Adding mapping at 0xC4017000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D1000.
 MOUNTED TO THE VFS: rand
 MOUNTED TO THE VFS: null
-Adding mapping at 0xC4011000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D6000.
-Adding mapping at 0xC4012000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D5000.
-Adding mapping at 0xC4013000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D4000.
-Adding mapping at 0xC4014000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D3000.
-Adding mapping at 0xC4015000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D2000.
-Adding mapping at 0xC4016000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D1000.
-Adding mapping at 0xC4017000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1D0000.
-Adding mapping at 0xC4018000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CF000.
-Adding mapping at 0xC4019000 to vas 0xC013A080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Adding mapping at 0xC4018000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D0000.
+Adding mapping at 0xC4019000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7CF000.
+Adding mapping at 0xC401A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7CE000.
+Adding mapping at 0xC401B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7CD000.
+Adding mapping at 0xC401C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7CC000.
+Adding mapping at 0xC401D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7CB000.
+Adding mapping at 0xC401E000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7CA000.
+Adding mapping at 0xC401F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C9000.
+Adding mapping at 0xC4020000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C8000.
+Adding mapping at 0xC4021000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C7000.
+Adding mapping at 0xC4022000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C6000.
+Adding mapping at 0xC4023000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C5000.
+Adding mapping at 0xC4024000 to vas 0xC0143080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC4019000, eip 0xC0103497, nos-err 0x0
-Adding mapping at 0xC401A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CD000.
-Adding mapping at 0xC401B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CC000.
-Adding mapping at 0xC401C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CB000.
-Adding mapping at 0xC401D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1CA000.
+Page fault: cr2 0xC4024000, eip 0xC01036E5, nos-err 0x0
+Adding mapping at 0xC4025000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C3000.
+Adding mapping at 0xC4026000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C2000.
+Adding mapping at 0xC4027000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C1000.
+Adding mapping at 0xC4028000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7C0000.
 MOUNTED TO THE VFS: raw-hd0
-Adding mapping at 0xC401E000 to vas 0xC013A080 - num is 1. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Adding mapping at 0xC4029000 to vas 0xC0143080 - num is 1. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC401E1FE, eip 0xC010283C, nos-err 0x0
-Adding mapping at 0xC401F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000.
+Page fault: cr2 0xC40291FE, eip 0xC010297C, nos-err 0x0
+Adding mapping at 0xC402A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BF000.
 MOUNTED TO THE VFS: drv0
 MOUNTED TO THE VFS: sys
 MOUNTED TO THE VFS: swap
-Adding mapping at 0xC4020000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C8000.
-Adding mapping at 0xC4021000 to vas 0xC013A080 - num is 25. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Adding mapping at 0xC402B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BE000.
+Adding mapping at 0xC402C000 to vas 0xC0143080 - num is 32. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4021000, eip 0xC010B259, nos-err 0x0
-Adding mapping at 0xC403A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000.
+Page fault: cr2 0xC402C000, eip 0xC010F2CA, nos-err 0x0
+Adding mapping at 0xC404C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BF000.
 
 
-Page fault: cr2 0xC4039B5C, eip 0xC010B2B4, nos-err 0x0
-Adding mapping at 0xC403B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000.
+Page fault: cr2 0xC404B768, eip 0xC010F325, nos-err 0x0
+Adding mapping at 0xC404D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BF000.
 
 
-Page fault: cr2 0xC4032C04, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC403C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000.
+Page fault: cr2 0xC4043C04, eip 0xC010F3C2, nos-err 0x0
+Adding mapping at 0xC404E000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BF000.
 
 
-Page fault: cr2 0xC4036AB3, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC403D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000.
-adding symbol AvlGetHeight -> 0xC0101348
-adding symbol AvlGet -> 0xC0101383
-adding symbol AvlContains -> 0xC01013C0
-adding symbol AvlDefaultComparator -> 0xC0101411
-adding symbol AvlDestroy -> 0xC0101423
-adding symbol AvlPrint -> 0xC010145E
-adding symbol AvlGetBalance -> 0xC010149B
-adding symbol AvlBalance -> 0xC01014C2
-adding symbol AvlDelete -> 0xC010152A
-adding symbol AvlInsert -> 0xC01015BD
-adding symbol MailboxWaitAddableInternal -> 0xC0101980
-adding symbol MailboxWaitGettableInternal -> 0xC0101A02
-adding symbol SwapElements -> 0xC0101D21
-adding symbol GetMinOrMaxIndex -> 0xC0101D82
-adding symbol ReduceCache -> 0xC0102135
-adding symbol Follow -> 0xC010216C
-adding symbol Create -> 0xC0102181
-adding symbol TossCache -> 0xC0102196
-adding symbol Close -> 0xC01021C9
-adding symbol Write -> 0xC01021DE
-adding symbol Read -> 0xC01021F3
-adding symbol ReduceCacheAmounts -> 0xC0102208
-adding symbol cache_list -> 0xC0110004
-adding symbol cache_list_lock -> 0xC0110000
-adding symbol current_mode -> 0xC0110008
-adding symbol dev_ops -> 0xC010D000
-adding symbol ReadWrite -> 0xC0102407
-Adding mapping at 0xC403E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C9000.
-Adding mapping at 0xC403F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C3000.
-Adding mapping at 0xC4040000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C2000.
-Adding mapping at 0xC4041000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C1000.
-adding symbol SubordinateWrite -> 0xC0102989
-adding symbol SubordinateRead -> 0xC01029A1
-adding symbol MasterWrite -> 0xC01029B9
-adding symbol MasterRead -> 0xC01029CC
-adding symbol MasterClose -> 0xC01029DF
-adding symbol LineProcessor -> 0xC0102A1C
-adding symbol master_operations -> 0xC010D140
-adding symbol subordinate_operations -> 0xC010D100
-adding symbol fs_table_lock -> 0xC0110020
+Page fault: cr2 0xC40480A4, eip 0xC010839C, nos-err 0x0
+Adding mapping at 0xC404F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BF000.
+adding symbol SwapElements -> 0xC0101348
+adding symbol GetMinOrMaxIndex -> 0xC01013A9
+adding symbol MailboxWaitAddableInternal -> 0xC010182C
+adding symbol MailboxWaitGettableInternal -> 0xC01018AE
+adding symbol AvlGetHeight -> 0xC0101DF2
+adding symbol AvlGet -> 0xC0101E2D
+adding symbol AvlContains -> 0xC0101E6A
+adding symbol AvlDefaultComparator -> 0xC0101EBB
+adding symbol AvlDestroy -> 0xC0101ECD
+adding symbol AvlPrint -> 0xC0101F08
+adding symbol AvlGetBalance -> 0xC0101F45
+adding symbol AvlBalance -> 0xC0101F6C
+adding symbol AvlDelete -> 0xC0101FF5
+adding symbol AvlInsert -> 0xC0102088
+adding symbol ReduceCache -> 0xC0102275
+Adding mapping at 0xC4050000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BF000.
+Adding mapping at 0xC4051000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B9000.
+Adding mapping at 0xC4052000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B8000.
+Adding mapping at 0xC4053000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B7000.
+adding symbol Follow -> 0xC01022AC
+adding symbol Create -> 0xC01022C1
+adding symbol TossCache -> 0xC01022D6
+adding symbol Close -> 0xC0102309
+adding symbol Write -> 0xC010231E
+adding symbol Read -> 0xC0102333
+adding symbol ReduceCacheAmounts -> 0xC0102348
+adding symbol cache_list -> 0xC0116004
+adding symbol cache_list_lock -> 0xC0116000
+adding symbol current_mode -> 0xC0116008
+adding symbol dev_ops -> 0xC0111000
+adding symbol ReadWrite -> 0xC0102547
+adding symbol SubordinateWrite -> 0xC0102AC9
+adding symbol SubordinateRead -> 0xC0102AE1
+adding symbol MasterWrite -> 0xC0102AF9
+adding symbol MasterRead -> 0xC0102B0C
+adding symbol MasterClose -> 0xC0102B1F
+adding symbol LineProcessor -> 0xC0102B5C
+MOUNTED TO THE VFS: con
+adding symbol master_operations -> 0xC0111140
+adding symbol subordinate_operations -> 0xC0111100
+adding symbol fs_table_lock -> 0xC0116020
 
 
-Page fault: cr2 0xC4033004, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC4042000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C0000.
-adding symbol num_filesystems -> 0xC0110024
-adding symbol registered_filesystems -> 0xC0110040
-adding symbol InitCpuTableEntry -> 0xC01030D9
-adding symbol cpu_table -> 0xC0110920
-adding symbol num_cpus_running -> 0xC010F000
-adding symbol irq_table -> 0xC0110D20
-adding symbol SetSizeTags -> 0xC0103497
-adding symbol LockHeap -> 0xC01034AA
-adding symbol heap_locker_lock -> 0xC0112134
-adding symbol lock_entry_threads -> 0xC011212C
-adding symbol heap_lock -> 0xC011216C
-adding symbol heap_spinlock -> 0xC0112150
-adding symbol MarkSwappability -> 0xC0103542
-adding symbol GetInsertionIndex -> 0xC0103559
-adding symbol free_list_block_sizes -> 0xC010D1C0
-adding symbol UnlockHeap -> 0xC0103580
-adding symbol RestoreEmergencyPages -> 0xC01035B7
-adding symbol emergency_blocks -> 0xC010F020
-adding symbol RemoveBlock -> 0xC01036B7
-adding symbol _head_block_swappable -> 0xC0112000
-adding symbol _head_block -> 0xC01120A0
-adding symbol AllocateBlock -> 0xC0103827
-adding symbol bootstrap_memory_area -> 0xC0113000
-adding symbol IsBitmapEntryFree -> 0xC0103B8E
-adding symbol allocation_bitmap -> 0xC0117020
-adding symbol AllocateBitmapEntry -> 0xC0103BA5
-adding symbol DeallocateBitmapEntry -> 0xC0103BBB
-adding symbol EvictPagesIfNeeded -> 0xC0103BD1
-adding symbol pages_left -> 0xC0117008
-adding symbol phys_lock -> 0xC0137020
-adding symbol allocation_stack -> 0xC0117010
-adding symbol allocation_stack_pointer -> 0xC011700C
-adding symbol highest_page_index -> 0xC0117000
-adding symbol total_pages -> 0xC0117004
-adding symbol SetBitmapEntry -> 0xC0103FD1
-adding symbol swapfile_bitmap -> 0xC0137044
-adding symbol swapfile -> 0xC0137064
-adding symbol swapfile_lock -> 0xC0137048
-adding symbol bits_in_bitmap -> 0xC013703C
-adding symbol number_on_swapfile -> 0xC0137040
+Page fault: cr2 0xC4044004, eip 0xC010F3C2, nos-err 0x0
+Adding mapping at 0xC4054000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B6000.
+adding symbol num_filesystems -> 0xC0116024
+adding symbol registered_filesystems -> 0xC0116040
+adding symbol InitCpuTableEntry -> 0xC010322A
+adding symbol cpu_table -> 0xC0116920
+adding symbol num_cpus_running -> 0xC0115000
+adding symbol irq_table -> 0xC0116D20
+adding symbol SetSizeTags -> 0xC01036E5
+adding symbol LockHeap -> 0xC01036F8
+adding symbol heap_locker_lock -> 0xC0118138
+adding symbol lock_entry_threads -> 0xC0118130
+adding symbol heap_lock -> 0xC0118170
+adding symbol heap_spinlock -> 0xC0118154
+adding symbol MarkSwappability -> 0xC0103790
+adding symbol GetSize -> 0xC01037A7
+adding symbol GetInsertionIndex -> 0xC01037D1
+adding symbol free_list_block_sizes -> 0xC01111C0
+adding symbol UnlockHeap -> 0xC010381D
+adding symbol RefillReservePages -> 0xC0103854
+adding symbol reserve_blocks -> 0xC0115020
+adding symbol RemoveBlock -> 0xC0103954
+adding symbol _head_block_swappable -> 0xC0118000
+adding symbol _head_block -> 0xC01180A0
+adding symbol AllocateBlock -> 0xC0103BAA
+adding symbol outstanding_allocations -> 0xC011812C
+adding symbol bootstrap_memory_area -> 0xC0119000
+adding symbol IsBitmapEntryFree -> 0xC0104006
+adding symbol allocation_bitmap -> 0xC011D020
+adding symbol DeallocateBitmapEntry -> 0xC010401D
+adding symbol PushIndex -> 0xC010405F
+adding symbol highest_page_index -> 0xC011D000
+adding symbol allocation_stack_pointer -> 0xC011D00C
+adding symbol allocation_stack -> 0xC011D010
+adding symbol AllocateBitmapEntry -> 0xC010409C
+adding symbol EvictPagesIfNeeded -> 0xC01040DE
+adding symbol pages_left -> 0xC011D008
+adding symbol phys_lock -> 0xC013D020
+adding symbol total_pages -> 0xC011D004
+adding symbol SetBitmapEntry -> 0xC01045A2
+adding symbol swapfile_bitmap -> 0xC013D044
+adding symbol swapfile -> 0xC013D064
+adding symbol swapfile_lock -> 0xC013D048
+adding symbol bits_in_bitmap -> 0xC013D03C
+adding symbol number_on_swapfile -> 0xC013D040
+adding symbol VirtAvlComparator -> 0xC0104729
+adding symbol GetVirtEntry -> 0xC01047B3
+adding symbol InsertIntoAvl -> 0xC0104858
+adding symbol DeleteFromAvl -> 0xC01048D4
+adding symbol BringIntoMemoryFromCow -> 0xC0105428
+adding symbol BringIntoMemory -> 0xC01054E9
+adding symbol PerformDeferredAccess -> 0xC010606E
+adding symbol CopyVasRecursive -> 0xC0105A0C
+adding symbol DeferDiskWrite -> 0xC0105BD2
+adding symbol DereferenceEntry -> 0xC0105D70
+adding symbol WipeUsermodePagesRecursive -> 0xC0105F90
+adding symbol kernel_vas -> 0xC013D104
+adding symbol virt_initialised -> 0xC013D101
+adding symbol rand_seed -> 0xC01150E8
+adding symbol MergeSort -> 0xC01064AE
+adding symbol system_call_table -> 0xC0111260
+adding symbol NotifyCleaner -> 0xC0106B76
+adding symbol cleaner_semaphore -> 0xC013D108
+adding symbol CleanerThread -> 0xC0106B84
+adding symbol terminated_list -> 0xC013D10C
+adding symbol IdleThread -> 0xC0106D1A
+adding symbol ProcessTableComparator -> 0xC0106D4D
+adding symbol RecursivelyKillRemainingThreads -> 0xC0106D67
+adding symbol pid_lock -> 0xC013D120
+adding symbol process_table_mutex -> 0xC013D118
+adding symbol process_table -> 0xC013D11C
+adding symbol KillProcessHelper -> 0xC01072FF
+adding symbol RecursivelyMakeChildrenOrphans -> 0xC0107141
+adding symbol ReapProcess -> 0xC0107198
+adding symbol prog_loader -> 0xC013D13C
+adding symbol GetMinPriorityValueForPolicy -> 0xC01074E5
+adding symbol UpdateTimesliceExpiry -> 0xC0107565
+adding symbol SwitchToNewTask -> 0xC01075B5
+adding symbol ready_list -> 0xC013D1A8
+adding symbol innermost_lock -> 0xC013D170
+adding symbol scheduler_lock -> 0xC013D18C
+adding symbol ScheduleWithLockHeld -> 0xC0107A2C
+adding symbol sleep_wakeups_posted -> 0xC013D1B8
+adding symbol sleep_queue -> 0xC013D1D4
+adding symbol sleep_overflow_list -> 0xC013D1C8
+adding symbol timer_lock -> 0xC013D1D8
+adding symbol system_time -> 0xC013D1C0
+adding symbol ConsoleDriverThread -> 0xC0108032
+adding symbol console_sub -> 0xC013D200
+adding symbol open_console_master -> 0xC013D1FC
+adding symbol console_master -> 0xC013D204
+adding symbol open_console_sub -> 0xC013D1F8
+adding symbol console_initialised -> 0xC013D1F4
+adding symbol DriverTableComparatorByRelocationPoint -> 0xC01081DF
+adding symbol BinarySearchComparator -> 0xC01081FB
+adding symbol GetDriverAddressWithLockHeld -> 0xC010821D
+adding symbol DriverTableComparatorByName -> 0xC0108262
+adding symbol loaded_drivers -> 0xC013D20C
+adding symbol driver_table_lock -> 0xC013D214
+adding symbol symbol_table_lock -> 0xC013D210
+adding symbol symbol_table -> 0xC013D208
+adding symbol LogChar -> 0xC010883A
+adding symbol LogInt -> 0xC010886A
+adding symbol LogWriteSerialVa -> 0xC01088C2
+adding symbol graphical_panic_handler -> 0xC013D218
+adding symbol message_table -> 0xC01112C0
+adding symbol video_driver -> 0xC013D21C
+adding symbol GetPartitionNameString -> 0xC0108BEF
+adding symbol lock -> 0xC013D280
+adding symbol type_table -> 0xC013D260
+adding symbol next_mounted_disk_num -> 0xC013D240
+adding symbol type_strings -> 0xC0111360
+adding symbol ValidateCopy -> 0xC0109438
+adding symbol FileAccess -> 0xC0109892
+adding symbol CleanupVnodeStack -> 0xC0109931
+adding symbol CheckValidComponentName -> 0xC010996B
+adding symbol GetVnodeFromPath -> 0xC0109A16
+adding symbol mount_points -> 0xC013D29C
+adding symbol vfs_lock -> 0xC013D2A0
+adding symbol CheckVnode -> 0xC010A16A
+adding symbol DbgWriteByte -> 0xC010A52B
+adding symbol DbgReadByte -> 0xC010A540
+adding symbol ReadAck -> 0xC010A666
+adding symbol SetHostState -> 0xC010A6B0
+adding symbol all_tests_done -> 0xC013D425
+adding symbol test_state -> 0xC01401A0
+adding symbol registered_tests -> 0xC013D440
+adding symbol num_tests_registered -> 0xC013D428
+adding symbol in_test -> 0xC013D424
+adding symbol nightly_mode -> 0xC013D426
+adding symbol AVLTreeBasic -> 0xC010AAB6
+adding symbol defer_me -> 0xC010AD2B
+adding symbol counter -> 0xC0140208
+adding symbol defer_me_2 -> 0xC010AD35
+adding symbol DeferRunsImmediatelyAtLevel -> 0xC010AD40
+adding symbol DeferWithDeferringInHandler -> 0xC010AE0C
+adding symbol defer_me_4 -> 0xC010AEAC
+adding symbol defer_me_5 -> 0xC010B9D2
+Adding mapping at 0xC4055000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B6000.
+Adding mapping at 0xC4056000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B4000.
+Adding mapping at 0xC4057000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B3000.
+Adding mapping at 0xC4058000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B2000.
+adding symbol internal_def4_1 -> 0xC010BA32
+adding symbol internal_def4_2 -> 0xC010BA02
+adding symbol DeferWithLoweringInHandler -> 0xC010AF34
+adding symbol defer_me_3 -> 0xC010AFC3
+adding symbol DeferDoesntRunLowHandlers -> 0xC010AFE3
+adding symbol DeferWorksThroughLevelsInOrder -> 0xC010B15A
+adding symbol defer_me_6 -> 0xC010BA62
+adding symbol DeferWorksThroughLevelsStepping -> 0xC010B2D1
+adding symbol DeferWorksThroughLevels -> 0xC010B501
+adding symbol DeferMultipleAtSameLevel -> 0xC010B678
+adding symbol DeferDoesntWorkBeforeHeap -> 0xC010B763
+adding symbol DeferWorksNormally -> 0xC010B81E
+adding symbol RaiseLowerTest -> 0xC010B8D9
+adding symbol SanityCheck -> 0xC010BBA2
+adding symbol DoubleDeallocationFails -> 0xC010BBB2
+adding symbol DeallocationChecksForPageAlignment -> 0xC010BBD3
+adding symbol BasicDeallocationTest -> 0xC010BBEF
+adding symbol StressTest -> 0xC010BC24
+adding symbol ContiguousAllocationRequiresStackAllocator -> 0xC010BD41
+adding symbol IsPageAligned -> 0xC010BD78
+adding symbol BasicAllocationTest -> 0xC010BDA4
+adding symbol HeapAdtStangeSizes4 -> 0xC010BF8C
 
 
-Page fault: cr2 0xC4037000, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC4043000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C0000.
-adding symbol VirtAvlComparator -> 0xC0104158
-adding symbol InsertIntoAvl -> 0xC01041A2
-adding symbol DeleteFromAvl -> 0xC01041F3
-adding symbol BringIntoMemoryFromCow -> 0xC0104CAD
-adding symbol BringIntoMemory -> 0xC0104D6E
-adding symbol PerformDeferredAccess -> 0xC0105756
-adding symbol CopyVasRecursive -> 0xC01051BE
-adding symbol DeferDiskWrite -> 0xC0105360
-adding symbol WipeUsermodePagesRecursive -> 0xC0105648
-adding symbol kernel_vas -> 0xC0137104
-adding symbol virt_initialised -> 0xC0137101
-adding symbol rand_seed -> 0xC010F0E8
-adding symbol MergeSort -> 0xC0105ABD
-adding symbol system_call_table -> 0xC010D260
-adding symbol NotifyCleaner -> 0xC0106059
-adding symbol cleaner_semaphore -> 0xC0137108
-adding symbol CleanerThread -> 0xC0106067
-adding symbol terminated_list -> 0xC013710C
-adding symbol IdleThread -> 0xC0106181
-adding symbol ProcessTableComparator -> 0xC01061B4
-adding symbol RecursivelyKillRemainingThreads -> 0xC01061CE
-adding symbol pid_lock -> 0xC0137120
-adding symbol process_table_mutex -> 0xC0137118
-adding symbol process_table -> 0xC013711C
-adding symbol KillProcessHelper -> 0xC0106696
-adding symbol RecursivelyMakeChildrenOrphans -> 0xC01064E6
-adding symbol ReapProcess -> 0xC0106551
-adding symbol prog_loader -> 0xC013713C
-adding symbol GetMinPriorityValueForPolicy -> 0xC01067F8
-adding symbol UpdateTimesliceExpiry -> 0xC0106894
-adding symbol SwitchToNewTask -> 0xC01068E4
-adding symbol ready_list -> 0xC01371A8
-aMOUNTED TO THE VFS: con
-dding symbol innermost_lock -> 0xC0137170
-adding symbol ScheduleWithLockHeld -> 0xC0106994
-adding symbol scheduler_lock -> 0xC013718C
-adding symbol sleep_wakeups_posted -> 0xC01371B8
-adding symbol sleep_queue -> 0xC01371D4
-adding symbol sleep_overflow_list -> 0xC01371C8
-adding symbol timer_lock -> 0xC01371D8
-adding symbol system_time -> 0xC01371C0
-adding symbol ConsoleDriverThread -> 0xC010719E
-adding symbol console_sub -> 0xC0137200
-adding symbol open_console_master -> 0xC01371FC
-adding symbol console_master -> 0xC0137204
-adding symbol open_console_sub -> 0xC01371F8
-adding symbol console_initialised -> 0xC01371F4
-adding symbol DriverTableComparatorByRelocationPoint -> 0xC010734B
-adding symbol BinarySearchComparator -> 0xC0107367
-adding symbol GetDriverAddressWithLockHeld -> 0xC0107389
-adding symbol DriverTableComparatorByName -> 0xC01073CE
-adding symbol loaded_drivers -> 0xC013720C
-adding symbol driver_table_lock -> 0xC0137214
-adding symbol symbol_table_lock -> 0xC0137210
-adding symbol symbol_table -> 0xC0137208
-adding symbol LogChar -> 0xC01078C6
-adding symbol LogInt -> 0xC01078F6
-adding symbol LogWriteSerialVa -> 0xC010794E
-adding symbol graphical_panic_handler -> 0xC0137218
-adding symbol message_table -> 0xC010D2A0
-adding symbol video_driver -> 0xC013721C
-adding symbol GetPartitionNameString -> 0xC0107C4D
-adding symbol lock -> 0xC0137280
-adding symbol type_table -> 0xC0137260
-adding symbol next_mounted_disk_num -> 0xC0137240
-adding symbol type_strings -> 0xC010D340
-adding symbol ValidateCopy -> 0xC010835B
-adding symbol FileAccess -> 0xC0108752
-adding symbol CleanupVnodeStack -> 0xC01087E0
-adding symbol CheckValidComponentName -> 0xC010881A
-adding symbol mount_points -> 0xC013729C
-adding symbol GetVnodeFromPath -> 0xC0108A45
-adding symbol vfs_lock -> 0xC01372A0
-adding symbol CheckVnode -> 0xC0108F11
-adding symbol Ioctl -> 0xC010971C
-adding symbol CreateDemoFsVnode -> 0xC010973D
-adding symbol CheckOpen -> 0xC0109875
-adding symbol ready_for_irqs -> 0xC01372BC
-adding symbol FloppyIrqHandler -> 0xC0109B74
-adding symbol floppy_got_irq -> 0xC01372C4
-adding symbol FloppyMotorControlThread -> 0xC0109C04
-adding symbol floppy_motor_state -> 0xC01372CC
-adding symbol floppy_motor_ticks -> 0xC01372C8
-adding symbol FloppyMotor -> 0xC0109C45
-adding symbol FloppyCheckInterrupt -> 0xC0109D25
-adding symbol FloppySeek -> 0xC0109D59
-adding symbol FloppyDoCylinder -> 0xC0109F27
-adding symbol Loadx86Driver -> 0xC010AA30
-adding symbol LoadSlowDriversInBackground -> 0xC010AA70
-adding symbol HandlePit -> 0xC010AB8C
-adding symbol pit_nanos -> 0xC01372D8
-adding symbol x86AllocatePageTable -> 0xC010B7B7
-adding symbol x86GetPageEntry -> 0xC010B7F3
-adding symbol x86MapPage -> 0xC010B847
-adding symbol kernel_page_directory -> 0xC0139000
-adding symbol vas_data_table -> 0xC013A000
-adding symbol vas_table -> 0xC013A080
-adding symbol first_page_table -> 0xC0138000
+Page fault: cr2 0xC4049000, eip 0xC010839C, nos-err 0x0
+Adding mapping at 0xC4059000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B1000.
+adding symbol HeapAdtStangeSizes3 -> 0xC010BF9E
+adding symbol HeapAdtStangeSizes2 -> 0xC010BFB0
+adding symbol HeapAdtStangeSizes1 -> 0xC010BFC2
+adding symbol HeapAdtPopWhenEmpty -> 0xC010BFD4
+adding symbol HeapAdtPeekWhenEmpty -> 0xC010BFEE
+adding symbol HeapAdtInsertWhenFill -> 0xC010C00F
+adding symbol HeapAdtStress -> 0xC010C04A
+adding symbol PQInsertionAndDeletionTest -> 0xC010C1D7
+adding symbol HeapAdtCombined -> 0xC010C360
+adding symbol Thread3B -> 0xC010C453
+adding symbol sems -> 0xC0140220
+adding symbol Thread4 -> 0xC010C5F9
+adding symbol Thread3 -> 0xC010C60E
+adding symbol SemaphoreTimeout2 -> 0xC010C664
+adding symbol Thread2 -> 0xC010C7AE
+adding symbol Thread1Ok -> 0xC0140270
+adding symbol SemaphoreTimeout1 -> 0xC010C6FE
+adding symbol Thread1 -> 0xC010C7ED
+adding symbol SchedulerHeartAttack -> 0xC010C82D
+adding symbol InitialProcessThread5 -> 0xC010C9FF
+adding symbol ZombieProcess -> 0xC010CD23
+adding symbol ok -> 0xC0140271
+adding symbol InitialProcessThread4 -> 0xC010CB09
+adding symbol InitialProcessThread3 -> 0xC010CB7D
+adding symbol InitialProcessThread2 -> 0xC010CBF2
+adding symbol SecondProcessThread -> 0xC010CD30
+adding symbol InitialProcessThread1 -> 0xC010CD4F
+adding symbol WaitOnManyTest3 -> 0xC010CE70
+adding symbol WaitOnManyTest2 -> 0xC010CED1
+adding symbol WaitOnManyTest1 -> 0xC010CF32
+adding symbol WaitOnZombieTest2 -> 0xC010CF93
+adding symbol WaitOnZombieTest1 -> 0xC010CFF4
+adding symbol WaitTestWithNeg1 -> 0xC010D055
+adding symbol BasicWaitTest -> 0xC010D0B6
+adding symbol Ioctl -> 0xC010D737
+adding symbol CreateDemoFsVnode -> 0xC010D758
+
+
+Page fault: cr2 0xC4045004, eip 0xC010F3C2, nos-err 0x0
+Adding mapping at 0xC405A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B1000.
+adding symbol CheckOpen -> 0xC010D890
+adding symbol ready_for_irqs -> 0xC0140272
+adding symbol FloppyIrqHandler -> 0xC010DB8F
+adding symbol floppy_got_irq -> 0xC0140278
+adding symbol FloppyMotorControlThread -> 0xC010DC1F
+adding symbol floppy_motor_state -> 0xC0140280
+adding symbol floppy_motor_ticks -> 0xC014027C
+adding symbol FloppyMotor -> 0xC010DC60
+adding symbol FloppyCheckInterrupt -> 0xC010DD40
+adding symbol FloppySeek -> 0xC010DD74
+adding symbol FloppyDoCylinder -> 0xC010DF42
+adding symbol Loadx86Driver -> 0xC010EA72
+adding symbol LoadSlowDriversInBackground -> 0xC010EAB2
+adding symbol HandlePit -> 0xC010EBCE
+adding symbol pit_nanos -> 0xC0140288
+adding symbol x86AllocatePageTable -> 0xC010F84C
+adding symbol x86GetPageEntry -> 0xC010F888
+adding symbol x86MapPage -> 0xC010F8DC
+adding symbol kernel_page_directory -> 0xC0142000
+adding symbol vas_data_table -> 0xC0143000
+adding symbol vas_table -> 0xC0143080
+adding symbol first_page_table -> 0xC0141000
 adding symbol MBALIGN -> 0x1
 adding symbol MEMINFO -> 0x2
 adding symbol FLAGS -> 0x3
 adding symbol MAGIC -> 0x1BADB002
 adding symbol CHECKSUM -> 0xE4524FFB
-adding symbol stack_bottom -> 0xC013B000
-adding symbol stack_top -> 0xC013C000
-Adding mapping at 0xC4044000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C0000.
-Adding mapping at 0xC4045000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BD000.
-Adding mapping at 0xC4046000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BC000.
-Adding mapping at 0xC4047000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BB000.
+adding symbol stack_bottom -> 0xC0144000
+adding symbol stack_top -> 0xC0145000
+adding symbol KernelEntryPoint -> 0xC01102FF
+adding symbol isrx0 -> 0xC0110470
+adding symbol isrx1 -> 0xC0110476
+adding symbol isrx2 -> 0xC011047C
+adding symbol isrx3 -> 0xC0110482
+adding symbol isrx4 -> 0xC0110488
+adding symbol isrx5 -> 0xC011048E
+adding symbol isrx6 -> 0xC0110494
+adding symbol isrx7 -> 0xC011049A
+adding symbol isrx8 -> 0xC01104A0
+adding symbol isrx9 -> 0xC01104A4
+adding symbol isrx10 -> 0xC01104AA
+adding symbol isrx11 -> 0xC01104AE
+adding symbol isrx12 -> 0xC01104B2
+adding symbol isrx13 -> 0xC01104B6
+adding symbol isrx14 -> 0xC01104BA
+adding symbol isrx15 -> 0xC01104BE
+adding symbol thunk0 -> 0xC01104C4
+adding symbol isrx16 -> 0xC01104C9
+adding symbol isrx17 -> 0xC01104CF
+adding symbol isrx18 -> 0xC01104D3
+adding symbol isrx19 -> 0xC01104D9
+adding symbol isrx20 -> 0xC01104DF
+adding symbol isrx21 -> 0xC01104E5
+adding symbol isrx22 -> 0xC01104EB
+adding symbol isrx23 -> 0xC01104F1
+adding symbol isrx24 -> 0xC01104F7
+adding symbol isrx25 -> 0xC01104FD
+adding symbol isrx26 -> 0xC0110503
+adding symbol isrx27 -> 0xC0110509
+adding symbol isrx28 -> 0xC011050F
+adding symbol isrx29 -> 0xC0110515
+adding symbol isrx30 -> 0xC011051B
+adding symbol isrx31 -> 0xC0110521
+adding symbol isrx32 -> 0xC0110527
+adding symbol isrx33 -> 0xC011052D
+adding symbol isrx34 -> 0xC0110533
+adding symbol isrx35 -> 0xC0110539
+adding symbol isrx36 -> 0xC011053F
+adding symbol isrx37 -> 0xC0110545
+adding symbol isrx38 -> 0xC011054B
+adding symbol isrx39 -> 0xC0110551
+adding symbol isrx40 -> 0xC0110557
+adding symbol isrx41 -> 0xC011055D
+adding symbol isrx42 -> 0xC0110563
+adding symbol isrx43 -> 0xC0110569
+adding symbol isrx44 -> 0xC011056F
+adding symbol isrx45 -> 0xC0110575
+adding symbol isrx46 -> 0xC011057B
+adding symbol isrx47 -> 0xC0110581
+adding symbol thunk1 -> 0xC0110587
+adding symbol isrx48 -> 0xC011058C
+adding symbol isrx49 -> 0xC0110592
+adding symbol isrx50 -> 0xC0110598
+adding symbol isrx51 -> 0xC011059E
+adding symbol isrx52 -> 0xC01105A4
+adding symbol isrx53 -> 0xC01105AA
+adding symbol isrx54 -> 0xC01105B0
+adding symbol isrx55 -> 0xC01105B6
+adding symbol isrx56 -> 0xC01105BC
+adding symbol isrx57 -> 0xC01105C2
+adding symbol isrx58 -> 0xC01105C8
+adding symbol isrx59 -> 0xC01105CE
+adding symbol isrx60 -> 0xC01105D4
+adding symbol isrx61 -> 0xC01105DA
+adding symbol isrx62 -> 0xC01105E0
+adding symbol isrx63 -> 0xC01105E6
+adding symbol isrx64 -> 0xC01105EC
+adding symbol isrx65 -> 0xC01105F2
+adding symbol isrx66 -> 0xC01105F8
+adding symbol isrx67 -> 0xC01105FE
+adding symbol isrx68 -> 0xC0110604
+adding symbol isrx69 -> 0xC011060A
+adding symbol isrx70 -> 0xC0110610
+adding symbol isrx71 -> 0xC0110616
+adding symbol isrx72 -> 0xC011061C
+adding symbol isrx73 -> 0xC0110622
+adding symbol isrx74 -> 0xC0110628
+adding symbol isrx75 -> 0xC011062E
+adding symbol isrx76 -> 0xC0110634
+adding symbol isrx77 -> 0xC011063A
+adding symbol isrx78 -> 0xC0110640
+adding symbol isrx79 -> 0xC0110646
+Adding mapping at 0xC405B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B1000.
+Adding mapping at 0xC405C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7AE000.
+Adding mapping at 0xC405D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7AD000.
+Adding mapping at 0xC405E000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7AC000.
+adding symbol thunk2 -> 0xC011064C
+adding symbol isrx80 -> 0xC0110651
+adding symbol isrx81 -> 0xC0110657
+adding symbol isrx82 -> 0xC011065D
+adding symbol isrx83 -> 0xC0110663
+adding symbol isrx84 -> 0xC0110669
+adding symbol isrx85 -> 0xC011066F
+adding symbol isrx86 -> 0xC0110675
+adding symbol isrx87 -> 0xC011067B
+adding symbol isrx88 -> 0xC0110681
+adding symbol isrx89 -> 0xC0110687
+adding symbol isrx90 -> 0xC011068D
+adding symbol isrx91 -> 0xC0110693
+adding symbol isrx92 -> 0xC0110699
+adding symbol isrx93 -> 0xC011069F
+adding symbol isrx94 -> 0xC01106A5
+adding symbol isrx95 -> 0xC01106AB
+adding symbol isrx96 -> 0xC01106B1
+adding symbol isrx97 -> 0xC01106B7
+adding symbol isrx98 -> 0xC01106BD
+adding symbol isrx99 -> 0xC01106C3
+adding symbol isrx100 -> 0xC01106C9
+adding symbol isrx101 -> 0xC01106CF
+adding symbol isrx102 -> 0xC01106D5
+adding symbol isrx103 -> 0xC01106DB
+adding symbol isrx104 -> 0xC01106E1
+adding symbol isrx105 -> 0xC01106E7
+adding symbol isrx106 -> 0xC01106ED
+adding symbol isrx107 -> 0xC01106F3
+adding symbol isrx108 -> 0xC01106F9
+adding symbol isrx109 -> 0xC01106FF
+adding symbol isrx110 -> 0xC0110705
+adding symbol isrx111 -> 0xC011070B
+adding symbol thunk3 -> 0xC0110711
+adding symbol isrx112 -> 0xC0110716
+adding symbol isrx113 -> 0xC011071C
+adding symbol isrx114 -> 0xC0110722
+adding symbol isrx115 -> 0xC0110728
+adding symbol isrx116 -> 0xC011072E
+adding symbol isrx117 -> 0xC0110734
+adding symbol isrx118 -> 0xC011073A
+adding symbol isrx119 -> 0xC0110740
+adding symbol isrx120 -> 0xC0110746
+adding symbol isrx121 -> 0xC011074C
+adding symbol isrx122 -> 0xC0110752
+adding symbol isrx123 -> 0xC0110758
+adding symbol isrx124 -> 0xC011075E
+adding symbol isrx125 -> 0xC0110764
+adding symbol isrx126 -> 0xC011076A
+adding symbol isrx127 -> 0xC0110770
+adding symbol isrx128 -> 0xC0110776
+adding symbol isrx129 -> 0xC011077C
+adding symbol isrx130 -> 0xC0110782
+adding symbol isrx131 -> 0xC0110788
+adding symbol isrx132 -> 0xC011078E
+adding symbol isrx133 -> 0xC0110794
+adding symbol isrx134 -> 0xC011079A
+adding symbol isrx135 -> 0xC01107A0
+adding symbol isrx136 -> 0xC01107A6
+adding symbol isrx137 -> 0xC01107AC
+adding symbol isrx138 -> 0xC01107B2
+adding symbol isrx139 -> 0xC01107B8
+adding symbol isrx140 -> 0xC01107BE
+adding symbol isrx141 -> 0xC01107C4
+adding symbol isrx142 -> 0xC01107CA
+adding symbol isrx143 -> 0xC01107D0
+adding symbol thunk4 -> 0xC01107D6
+adding symbol isrx144 -> 0xC01107DB
+adding symbol isrx145 -> 0xC01107E1
+adding symbol isrx146 -> 0xC01107E7
+adding symbol isrx147 -> 0xC01107ED
+adding symbol isrx148 -> 0xC01107F3
+adding symbol isrx149 -> 0xC01107F9
+adding symbol isrx150 -> 0xC01107FF
+adding symbol isrx151 -> 0xC0110805
+adding symbol isrx152 -> 0xC011080B
+adding symbol isrx153 -> 0xC0110811
+adding symbol isrx154 -> 0xC0110817
+adding symbol isrx155 -> 0xC011081D
 
 
-Page fault: cr2 0xC4034004, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC4048000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BA000.
-adding symbol KernelEntryPoint -> 0xC010C1CF
-adding symbol isrx0 -> 0xC010C340
-adding symbol isrx1 -> 0xC010C346
-adding symbol isrx2 -> 0xC010C34C
-adding symbol isrx3 -> 0xC010C352
-adding symbol isrx4 -> 0xC010C358
-adding symbol isrx5 -> 0xC010C35E
-adding symbol isrx6 -> 0xC010C364
-adding symbol isrx7 -> 0xC010C36A
-adding symbol isrx8 -> 0xC010C370
-adding symbol isrx9 -> 0xC010C374
-adding symbol isrx10 -> 0xC010C37A
-adding symbol isrx11 -> 0xC010C37E
-adding symbol isrx12 -> 0xC010C382
-adding symbol isrx13 -> 0xC010C386
-adding symbol isrx14 -> 0xC010C38A
-adding symbol isrx15 -> 0xC010C38E
-adding symbol thunk0 -> 0xC010C394
-adding symbol isrx16 -> 0xC010C399
-adding symbol isrx17 -> 0xC010C39F
-adding symbol isrx18 -> 0xC010C3A3
-adding symbol isrx19 -> 0xC010C3A9
-adding symbol isrx20 -> 0xC010C3AF
-adding symbol isrx21 -> 0xC010C3B5
-adding symbol isrx22 -> 0xC010C3BB
-adding symbol isrx23 -> 0xC010C3C1
-adding symbol isrx24 -> 0xC010C3C7
-adding symbol isrx25 -> 0xC010C3CD
-adding symbol isrx26 -> 0xC010C3D3
-adding symbol isrx27 -> 0xC010C3D9
-adding symbol isrx28 -> 0xC010C3DF
-adding symbol isrx29 -> 0xC010C3E5
-adding symbol isrx30 -> 0xC010C3EB
-adding symbol isrx31 -> 0xC010C3F1
-adding symbol isrx32 -> 0xC010C3F7
-adding symbol isrx33 -> 0xC010C3FD
-adding symbol isrx34 -> 0xC010C403
-adding symbol isrx35 -> 0xC010C409
-adding symbol isrx36 -> 0xC010C40F
-adding symbol isrx37 -> 0xC010C415
-adding symbol isrx38 -> 0xC010C41B
-adding symbol isrx39 -> 0xC010C421
-adding symbol isrx40 -> 0xC010C427
-adding symbol isrx41 -> 0xC010C42D
-adding symbol isrx42 -> 0xC010C433
-adding symbol isrx43 -> 0xC010C439
-adding symbol isrx44 -> 0xC010C43F
-adding symbol isrx45 -> 0xC010C445
-adding symbol isrx46 -> 0xC010C44B
-adding symbol isrx47 -> 0xC010C451
-adding symbol thunk1 -> 0xC010C457
-adding symbol isrx48 -> 0xC010C45C
-adding symbol isrx49 -> 0xC010C462
-adding symbol isrx50 -> 0xC010C468
-adding symbol isrx51 -> 0xC010C46E
-adding symbol isrx52 -> 0xC010C474
-adding symbol isrx53 -> 0xC010C47A
-adding symbol isrx54 -> 0xC010C480
-adding symbol isrx55 -> 0xC010C486
-adding symbol isrx56 -> 0xC010C48C
-adding symbol isrx57 -> 0xC010C492
-adding symbol isrx58 -> 0xC010C498
-adding symbol isrx59 -> 0xC010C49E
-adding symbol isrx60 -> 0xC010C4A4
-adding symbol isrx61 -> 0xC010C4AA
-adding symbol isrx62 -> 0xC010C4B0
-adding symbol isrx63 -> 0xC010C4B6
-adding symbol isrx64 -> 0xC010C4BC
-adding symbol isrx65 -> 0xC010C4C2
-adding symbol isrx66 -> 0xC010C4C8
-adding symbol isrx67 -> 0xC010C4CE
-adding symbol isrx68 -> 0xC010C4D4
-adding symbol isrx69 -> 0xC010C4DA
-adding symbol isrx70 -> 0xC010C4E0
-adding symbol isrx71 -> 0xC010C4E6
-adding symbol isrx72 -> 0xC010C4EC
-adding symbol isrx73 -> 0xC010C4F2
-adding symbol isrx74 -> 0xC010C4F8
-adding symbol isrx75 -> 0xC010C4FE
-adding symbol isrx76 -> 0xC010C504
-adding symbol isrx77 -> 0xC010C50A
-adding symbol isrx78 -> 0xC010C510
-adding symbol isrx79 -> 0xC010C516
-adding symbol thunk2 -> 0xC010C51C
-adding symbol isrx80 -> 0xC010C521
-adding symbol isrx81 -> 0xC010C527
-adding symbol isrx82 -> 0xC010C52D
-adding symbol isrx83 -> 0xC010C533
-adding symbol isrx84 -> 0xC010C539
-adding symbol isrx85 -> 0xC010C53F
-adding symbol isrx86 -> 0xC010C545
-adding symbol isrx87 -> 0xC010C54B
-adding symbol isrx88 -> 0xC010C551
-adding symbol isrx89 -> 0xC010C557
-adding symbol isrx90 -> 0xC010C55D
-adding symbol isrx91 -> 0xC010C563
-adding symbol isrx92 -> 0xC010C569
-adding symbol isrx93 -> 0xC010C56F
-adding symbol isrx94 -> 0xC010C575
-adding symbol isrx95 -> 0xC010C57B
-adding symbol isrx96 -> 0xC010C581
-adding symbol isrx97 -> 0xC010C587
-adding symbol isrx98 -> 0xC010C58D
-adding symbol isrx99 -> 0xC010C593
-adding symbol isrx100 -> 0xC010C599
-adding symbol isrx101 -> 0xC010C59F
-adding symbol isrx102 -> 0xC010C5A5
-adding symbol isrx103 -> 0xC010C5AB
-adding symbol isrx104 -> 0xC010C5B1
-adding symbol isrx105 -> 0xC010C5B7
-adding symbol isrx106 -> 0xC010C5BD
-adding symbol isrx107 -> 0xC010C5C3
-adding symbol isrx108 -> 0xC010C5C9
-adding symbol isrx109 -> 0xC010C5CF
-adding symbol isrx110 -> 0xC010C5D5
-adding symbol isrx111 -> 0xC010C5DB
-adding symbol thunk3 -> 0xC010C5E1
-adding symbol isrx112 -> 0xC010C5E6
-adding symbol isrx113 -> 0xC010C5EC
-adding symbol isrx114 -> 0xC010C5F2
-adding symbol isrx115 -> 0xC010C5F8
-adding symbol isrx116 -> 0xC010C5FE
-adding symbol isrx117 -> 0xC010C604
-adding symbol isrx118 -> 0xC010C60A
-adding symbol isrx119 -> 0xC010C610
-adding symbol isrx120 -> 0xC010C616
-adding symbol isrx121 -> 0xC010C61C
-adding symbol isrx122 -> 0xC010C622
-adding symbol isrx123 -> 0xC010C628
-adding symbol isrx124 -> 0xC010C62E
-adding symbol isrx125 -> 0xC010C634
-adding symbol isrx126 -> 0xC010C63A
-adding symbol isrx127 -> 0xC010C640
-adding symbol isrx128 -> 0xC010C646
-adding symbol isrx129 -> 0xC010C64C
-adding symbol isrx130 -> 0xC010C652
-adding symbol isrx131 -> 0xC010C658
-adding symbol isrx132 -> 0xC010C65E
-adding symbol isrx133 -> 0xC010C664
-adding symbol isrx134 -> 0xC010C66A
-adding symbol isrx135 -> 0xC010C670
-
-
-Page fault: cr2 0xC4038000, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC4049000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BA000.
-adding symbol isrx136 -> 0xC010C676
-adding symbol isrx137 -> 0xC010C67C
-adding symbol isrx138 -> 0xC010C682
-adding symbol isrx139 -> 0xC010C688
-adding symbol isrx140 -> 0xC010C68E
-adding symbol isrx141 -> 0xC010C694
-adding symbol isrx142 -> 0xC010C69A
-adding symbol isrx143 -> 0xC010C6A0
-adding symbol thunk4 -> 0xC010C6A6
-adding symbol isrx144 -> 0xC010C6AB
-adding symbol isrx145 -> 0xC010C6B1
-adding symbol isrx146 -> 0xC010C6B7
-adding symbol isrx147 -> 0xC010C6BD
-adding symbol isrx148 -> 0xC010C6C3
-adding symbol isrx149 -> 0xC010C6C9
-adding symbol isrx150 -> 0xC010C6CF
-adding symbol isrx151 -> 0xC010C6D5
-adding symbol isrx152 -> 0xC010C6DB
-adding symbol isrx153 -> 0xC010C6E1
-adding symbol isrx154 -> 0xC010C6E7
-adding symbol isrx155 -> 0xC010C6ED
-adding symbol isrx156 -> 0xC010C6F3
-adding symbol isrx157 -> 0xC010C6F9
-adding symbol isrx158 -> 0xC010C6FF
-adding symbol isrx159 -> 0xC010C705
-adding symbol isrx160 -> 0xC010C70B
-adding symbol isrx161 -> 0xC010C711
-adding symbol isrx162 -> 0xC010C717
-adding symbol isrx163 -> 0xC010C71D
-adding symbol isrx164 -> 0xC010C723
-adding symbol isrx165 -> 0xC010C729
-adding symbol isrx166 -> 0xC010C72F
-adding symbol isrx167 -> 0xC010C735
-adding symbol isrx168 -> 0xC010C73B
-adding symbol isrx169 -> 0xC010C741
-adding symbol isrx170 -> 0xC010C747
-adding symbol isrx171 -> 0xC010C74D
-adding symbol isrx172 -> 0xC010C753
-adding symbol isrx173 -> 0xC010C759
-adding symbol isrx174 -> 0xC010C75F
-adding symbol isrx175 -> 0xC010C765
-adding symbol thunk5 -> 0xC010C76B
-adding symbol isrx176 -> 0xC010C770
-Adding mapping at 0xC404A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BA000.
-Adding mapping at 0xC404B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B7000.
-Adding mapping at 0xC404C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B6000.
-Adding mapping at 0xC404D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B5000.
-adding symbol isrx177 -> 0xC010C776
-adding symbol isrx178 -> 0xC010C77C
-adding symbol isrx179 -> 0xC010C782
-adding symbol isrx180 -> 0xC010C788
-adding symbol isrx181 -> 0xC010C78E
-adding symbol isrx182 -> 0xC010C794
-adding symbol isrx183 -> 0xC010C79A
-adding symbol isrx184 -> 0xC010C7A0
-adding symbol isrx185 -> 0xC010C7A6
-adding symbol isrx186 -> 0xC010C7AC
-adding symbol isrx187 -> 0xC010C7B2
-adding symbol isrx188 -> 0xC010C7B8
-adding symbol isrx189 -> 0xC010C7BE
-adding symbol isrx190 -> 0xC010C7C4
-adding symbol isrx191 -> 0xC010C7CA
-adding symbol isrx192 -> 0xC010C7D0
-adding symbol isrx193 -> 0xC010C7D6
-adding symbol isrx194 -> 0xC010C7DC
-adding symbol isrx195 -> 0xC010C7E2
-adding symbol isrx196 -> 0xC010C7E8
-adding symbol isrx197 -> 0xC010C7EE
-adding symbol isrx198 -> 0xC010C7F4
-adding symbol isrx199 -> 0xC010C7FA
-adding symbol isrx200 -> 0xC010C800
-adding symbol isrx201 -> 0xC010C806
-adding symbol isrx202 -> 0xC010C80C
-adding symbol isrx203 -> 0xC010C812
-adding symbol isrx204 -> 0xC010C818
-adding symbol isrx205 -> 0xC010C81E
-adding symbol isrx206 -> 0xC010C824
-adding symbol isrx207 -> 0xC010C82A
-adding symbol thunk6 -> 0xC010C830
-adding symbol isrx208 -> 0xC010C835
-adding symbol isrx209 -> 0xC010C83B
-adding symbol isrx210 -> 0xC010C841
-adding symbol isrx211 -> 0xC010C847
-adding symbol isrx212 -> 0xC010C84D
-adding symbol isrx213 -> 0xC010C853
-adding symbol isrx214 -> 0xC010C859
-adding symbol isrx215 -> 0xC010C85F
-adding symbol isrx216 -> 0xC010C865
-adding symbol isrx217 -> 0xC010C86B
-adding symbol isrx218 -> 0xC010C871
-adding symbol isrx219 -> 0xC010C877
-adding symbol isrx220 -> 0xC010C87D
-adding symbol isrx221 -> 0xC010C883
-adding symbol isrx222 -> 0xC010C889
-adding symbol isrx223 -> 0xC010C88F
-adding symbol isrx224 -> 0xC010C895
-adding symbol isrx225 -> 0xC010C89B
-adding symbol isrx226 -> 0xC010C8A1
-adding symbol isrx227 -> 0xC010C8A7
-adding symbol isrx228 -> 0xC010C8AD
-adding symbol isrx229 -> 0xC010C8B3
-adding symbol isrx230 -> 0xC010C8B9
-adding symbol isrx231 -> 0xC010C8BF
-
-
-Page fault: cr2 0xC4035004, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC404E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B4000.
-adding symbol isrx232 -> 0xC010C8C5
-adding symbol isrx233 -> 0xC010C8CB
-adding symbol isrx234 -> 0xC010C8D1
-adding symbol isrx235 -> 0xC010C8D7
-adding symbol isrx236 -> 0xC010C8DD
-adding symbol isrx237 -> 0xC010C8E3
-adding symbol isrx238 -> 0xC010C8E9
-adding symbol isrx239 -> 0xC010C8EF
-adding symbol thunk7 -> 0xC010C8F5
-adding symbol isrx240 -> 0xC010C8FA
-adding symbol isrx241 -> 0xC010C900
-adding symbol isrx242 -> 0xC010C906
-adding symbol isrx243 -> 0xC010C90C
-adding symbol isrx244 -> 0xC010C912
-adding symbol isrx245 -> 0xC010C918
-adding symbol isrx246 -> 0xC010C91E
-adding symbol isrx247 -> 0xC010C924
-adding symbol isrx248 -> 0xC010C92A
-adding symbol isrx249 -> 0xC010C930
-adding symbol isrx250 -> 0xC010C936
-adding symbol isrx251 -> 0xC010C93C
-adding symbol isrx252 -> 0xC010C942
-adding symbol isrx253 -> 0xC010C948
-adding symbol isrx254 -> 0xC010C94E
-adding symbol isrx255 -> 0xC010C954
-adding symbol _end_pageablek_section -> 0xC010F000
-adding symbol _start_pageablek_section -> 0xC010E000
+Page fault: cr2 0xC4046004, eip 0xC010F3C2, nos-err 0x0
+Adding mapping at 0xC405F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7AB000.
+adding symbol isrx156 -> 0xC0110823
+adding symbol isrx157 -> 0xC0110829
+adding symbol isrx158 -> 0xC011082F
+adding symbol isrx159 -> 0xC0110835
+adding symbol isrx160 -> 0xC011083B
+adding symbol isrx161 -> 0xC0110841
+adding symbol isrx162 -> 0xC0110847
+adding symbol isrx163 -> 0xC011084D
+adding symbol isrx164 -> 0xC0110853
+adding symbol isrx165 -> 0xC0110859
+adding symbol isrx166 -> 0xC011085F
+adding symbol isrx167 -> 0xC0110865
+adding symbol isrx168 -> 0xC011086B
+adding symbol isrx169 -> 0xC0110871
+adding symbol isrx170 -> 0xC0110877
+adding symbol isrx171 -> 0xC011087D
+adding symbol isrx172 -> 0xC0110883
+adding symbol isrx173 -> 0xC0110889
+adding symbol isrx174 -> 0xC011088F
+adding symbol isrx175 -> 0xC0110895
+adding symbol thunk5 -> 0xC011089B
+adding symbol isrx176 -> 0xC01108A0
+adding symbol isrx177 -> 0xC01108A6
+adding symbol isrx178 -> 0xC01108AC
+adding symbol isrx179 -> 0xC01108B2
+adding symbol isrx180 -> 0xC01108B8
+adding symbol isrx181 -> 0xC01108BE
+adding symbol isrx182 -> 0xC01108C4
+adding symbol isrx183 -> 0xC01108CA
+adding symbol isrx184 -> 0xC01108D0
+adding symbol isrx185 -> 0xC01108D6
+adding symbol isrx186 -> 0xC01108DC
+adding symbol isrx187 -> 0xC01108E2
+adding symbol isrx188 -> 0xC01108E8
+adding symbol isrx189 -> 0xC01108EE
+adding symbol isrx190 -> 0xC01108F4
+adding symbol isrx191 -> 0xC01108FA
+adding symbol isrx192 -> 0xC0110900
+adding symbol isrx193 -> 0xC0110906
+adding symbol isrx194 -> 0xC011090C
+adding symbol isrx195 -> 0xC0110912
+adding symbol isrx196 -> 0xC0110918
+adding symbol isrx197 -> 0xC011091E
+adding symbol isrx198 -> 0xC0110924
+adding symbol isrx199 -> 0xC011092A
+adding symbol isrx200 -> 0xC0110930
+adding symbol isrx201 -> 0xC0110936
+adding symbol isrx202 -> 0xC011093C
+adding symbol isrx203 -> 0xC0110942
+adding symbol isrx204 -> 0xC0110948
+adding symbol isrx205 -> 0xC011094E
+adding symbol isrx206 -> 0xC0110954
+adding symbol isrx207 -> 0xC011095A
+adding symbol thunk6 -> 0xC0110960
+adding symbol isrx208 -> 0xC0110965
+adding symbol isrx209 -> 0xC011096B
+adding symbol isrx210 -> 0xC0110971
+adding symbol isrx211 -> 0xC0110977
+adding symbol isrx212 -> 0xC011097D
+adding symbol isrx213 -> 0xC0110983
+adding symbol isrx214 -> 0xC0110989
+adding symbol isrx215 -> 0xC011098F
+adding symbol isrx216 -> 0xC0110995
+adding symbol isrx217 -> 0xC011099B
+adding symbol isrx218 -> 0xC01109A1
+adding symbol isrx219 -> 0xC01109A7
+adding symbol isrx220 -> 0xC01109AD
+adding symbol isrx221 -> 0xC01109B3
+adding symbol isrx222 -> 0xC01109B9
+adding symbol isrx223 -> 0xC01109BF
+adding symbol isrx224 -> 0xC01109C5
+adding symbol isrx225 -> 0xC01109CB
+adding symbol isrx226 -> 0xC01109D1
+adding symbol isrx227 -> 0xC01109D7
+adding symbol isrx228 -> 0xC01109DD
+adding symbol isrx229 -> 0xC01109E3
+adding symbol isrx230 -> 0xC01109E9
+adding symbol isrx231 -> 0xC01109EF
+adding symbol isrx232 -> 0xC01109F5
+adding symbol isrx233 -> 0xC01109FB
+adding symbol isrx234 -> 0xC0110A01
+adding symbol isrx235 -> 0xC0110A07
+adding symbol isrx236 -> 0xC0110A0D
+adding symbol isrx237 -> 0xC0110A13
+adding symbol isrx238 -> 0xC0110A19
+adding symbol isrx239 -> 0xC0110A1F
+adding symbol thunk7 -> 0xC0110A25
+adding symbol isrx240 -> 0xC0110A2A
+adding symbol isrx241 -> 0xC0110A30
+adding symbol isrx242 -> 0xC0110A36
+adding symbol isrx243 -> 0xC0110A3C
+adding symbol isrx244 -> 0xC0110A42
+adding symbol isrx245 -> 0xC0110A48
+adding symbol isrx246 -> 0xC0110A4E
+adding symbol isrx247 -> 0xC0110A54
+adding symbol isrx248 -> 0xC0110A5A
+adding symbol isrx249 -> 0xC0110A60
+adding symbol isrx250 -> 0xC0110A66
+adding symbol isrx251 -> 0xC0110A6C
+adding symbol isrx252 -> 0xC0110A72
+adding symbol isrx253 -> 0xC0110A78
+adding symbol isrx254 -> 0xC0110A7E
+adding symbol isrx255 -> 0xC0110A84
+adding symbol _end_pageablek_section -> 0xC0115000
+adding symbol _start_pageablek_section -> 0xC0112000
 adding symbol _kernel_start -> 0x100000
-adding symbol int_common_handler -> 0xC010C250
-adding symbol x86AreCpusOn -> 0xC010C23D
-adding symbol ArchReadTimestamp -> 0xC010C234
-adding symbol x86_grub_table -> 0xC010C1CB
-adding symbol vesa_pitch -> 0xC010C1C9
-adding symbol vesa_height -> 0xC010C1C7
-adding symbol vesa_width -> 0xC010C1C5
-adding symbol vesa_framebuffer -> 0xC010C1C1
-adding symbol vesa_depth -> 0xC010C1C0
+adding symbol int_common_handler -> 0xC0110380
+Adding mapping at 0xC4060000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7AB000.
+Adding mapping at 0xC4061000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A9000.
+Adding mapping at 0xC4062000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A8000.
+Adding mapping at 0xC4063000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A7000.
+adding symbol x86AreCpusOn -> 0xC011036D
+adding symbol ArchReadTimestamp -> 0xC0110364
+adding symbol x86_grub_table -> 0xC01102FB
+adding symbol vesa_pitch -> 0xC01102F9
+adding symbol vesa_height -> 0xC01102F7
+adding symbol vesa_width -> 0xC01102F5
+adding symbol vesa_framebuffer -> 0xC01102F1
+adding symbol vesa_depth -> 0xC01102F0
 adding symbol _start -> 0x10000C
-adding symbol boot_page_table1 -> 0xC013D000
-adding symbol boot_page_directory -> 0xC013C000
-adding symbol x86SetCr3 -> 0xC010C294
-adding symbol x86KernelMemoryToPhysical -> 0xC010B752
-adding symbol _kernel_end -> 0xC013E000
-adding symbol x86LoadTss -> 0xC010C280
-adding symbol x86LoadIdt -> 0xC010C220
-adding symbol isr_vectors -> 0xC010F0F8
-adding symbol x86AddTssToGdt -> 0xC010B4BC
-adding symbol x86LoadGdt -> 0xC010C200
-adding symbol ArchLoadProgramLoader -> 0xC010B391
-adding symbol IsPicIrqSpurious -> 0xC010AAD6
-adding symbol InitIde -> 0xC010A897
-adding symbol IdePoll -> 0xC010A4B1
-adding symbol IdeCheckError -> 0xC010A483
-adding symbol ide_lock -> 0xC01372D0
-adding symbol InitFloppy -> 0xC010A2B6
-adding symbol floppy_lock -> 0xC01372C0
-adding symbol x86IsReadyForIrqs -> 0xC0109B52
-adding symbol DisablePicLines -> 0xC010AB30
-adding symbol SendPicEoi -> 0xC010AB20
-adding symbol x86GetCr2 -> 0xC010C290
-adding symbol x86HandleInterrupt -> 0xC0109A36
-adding symbol ArchSetPowerState -> 0xC01099AD
-adding symbol x86MakeReadyForIrqs -> 0xC0109B58
-adding symbol ArchEnableInterrupts -> 0xC010C237
-adding symbol InitPit -> 0xC010ABA6
-adding symbol InitPic -> 0xC010AB4F
-adding symbol x86InitTss -> 0xC010B5A1
-adding symbol x86InitIdt -> 0xC010B4F4
-adding symbol x86InitGdt -> 0xC010B44D
-adding symbol demofs_read_directory_entry -> 0xC0109578
-adding symbol demofs_follow -> 0xC0109434
-adding symbol demofs_read_file -> 0xC0109268
-adding symbol demofs_read_inode -> 0xC0109230
-adding symbol VnodeOpClose -> 0xC0109090
-adding symbol VnodeOpIoctl -> 0xC0109059
-adding symbol VnodeOpTruncate -> 0xC0109105
-adding symbol VnodeOpCheckOpen -> 0xC0108FBC
-adding symbol VnodeOpUnlink -> 0xC0109176
-adding symbol VnodeOpDelete -> 0xC01091A0
-adding symbol RemoveFileOrDirectory -> 0xC0108C68
-adding symbol RemoveVfsMount -> 0xC0108BB4
-adding symbol MountedDeviceComparator -> 0xC01087C5
-adding symbol CreateTransferReadingFromUser -> 0xC0108717
-adding symbol CreateTransferWritingToUser -> 0xC01086DE
-adding symbol ReadWordFromUsermode -> 0xC0108644
-adding symbol WriteWordToUsermode -> 0xC01085E6
-adding symbol ReadStringFromUsermode -> 0xC0108557
-adding symbol WriteStringToUsermode -> 0xC01084BD
-adding symbol DereferenceVnode -> 0xC01091CA
-adding symbol DereferenceFile -> 0xC01082F0
-adding symbol ReferenceVnode -> 0xC0108F99
-adding symbol DupFd2 -> 0xC01081A9
-adding symbol DupFd -> 0xC010810E
-adding symbol HandleExecFd -> 0xC010809B
-adding symbol GetFileFromFd -> 0xC0108043
-adding symbol RemoveFd -> 0xC0107FEB
-adding symbol CreateFd -> 0xC0107F69
-adding symbol CopyFdTable -> 0xC0107EDA
-adding symbol DiskCreateHelper -> 0xC0107E60
-adding symbol DiskFollowHelper -> 0xC0107E23
-adding symbol InitDiskPartitionHelper -> 0xC0107E19
-adding symbol CreateDiskPartitions -> 0xC0107D74
-adding symbol GenerateNewRawDiskName -> 0xC0107CF8
-adding symbol InitVideoConsole -> 0xC0107BA7
-adding symbol DbgScreenPuts -> 0xC0107B86
-adding symbol DeferPutchar -> 0xC0107B4F
-adding symbol DeferPuts -> 0xC0107B49
-adding symbol GetPanicMessageFromCode -> 0xC0107AC9
-adding symbol SetGraphicalPanicHandler -> 0xC0107AAF
-adding symbol CreateRelocationTable -> 0xC01076C6
-adding symbol AddToRelocationTable -> 0xC01076A1
-adding symbol SortRelocationTable -> 0xC0107684
-adding symbol RequireDriver -> 0xC01075AF
-adding symbol GetSymbolAddress -> 0xC010755F
-Adding mapping at 0xC404F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B4000.
-Adding mapping at 0xC4050000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B2000.
-Adding mapping at 0xC4051000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B1000.
-Adding mapping at 0xC4052000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B0000.
-adding symbol AddSymbol -> 0xC01074A4
-adding symbol CloseFile -> 0xC0108EDE
-adding symbol ArchLoadSymbols -> 0xC010B227
-adding symbol GetDriverAddress -> 0xC01073E7
-adding symbol PutsConsole -> 0xC0107327
-adding symbol PutcharConsole -> 0xC01072E2
-adding symbol GetcharConsole -> 0xC01072A1
-adding symbol SendKeystrokeConsole -> 0xC010725C
-adding symbol DbgScreenPutchar -> 0xC0107B5E
-adding symbol AssertionFail -> 0xC010716F
-adding symbol SleepNano -> 0xC0107134
-adding symbol SleepUntil -> 0xC01070E4
-adding symbol ReceivedTimer -> 0xC0106F0D
-adding symbol HandleSleepWakeups -> 0xC0106E33
-adding symbol UnassignThreadToCpu -> 0xC0106D07
-adding symbol AssignThreadToCpu -> 0xC0106D07
-adding symbol ThreadInitialisationHandler -> 0xC0106CC3
-adding symbol ArchSwitchToUsermode -> 0xC010C310
-adding symbol ArchPrepareStack -> 0xC010C2D0
-adding symbol ThreadExecuteInUsermode -> 0xC0106C1A
-adding symbol HasBeenSignalled -> 0xC0106A45
-adding symbol ArchSwitchThread -> 0xC010C2DF
-adding symbol UpdateThreadTimeUsed -> 0xC0106849
-adding symbol ArchLoadDriver -> 0xC010ABF6
-adding symbol LoadProgramLoaderIntoAddressSpace -> 0xC01067D3
-adding symbol WaitProcess -> 0xC010671F
-adding symbol GetPid -> 0xC0106712
-adding symbol DestroyFdTable -> 0xC0107F16
-adding symbol CreateProcessWithEntryPoint -> 0xC01064B1
-adding symbol ForkProcess -> 0xC010646B
-adding symbol CreateFdTable -> 0xC0107E8B
-adding symbol CreateProcess -> 0xC0106366
-adding symbol GetProcessFromPid -> 0xC0106314
-adding symbol GetFileFromFdDescriptorTable -> 0xC0106308
-adding symbol KillProcess -> 0xC01062C5
-adding symbol AddThreadToProcess -> 0xC0106283
-adding symbol UnlockProcess -> 0xC010622E
-adding symbol LockProcess -> 0xC0106219
-adding symbol InitIdle -> 0xC010618B
-adding symbol ArchStallProcessor -> 0xC010C23B
-adding symbol InitCleaner -> 0xC010613B
-adding symbol TerminateThreadLockHeld -> 0xC01060BC
-adding symbol SysFork -> 0xC010BC0A
-adding symbol SysWaitpid -> 0xC010C0FB
-adding symbol SysPrepExec -> 0xC010BE70
-adding symbol SysMprotect -> 0xC010BD03
-adding symbol SysRemove -> 0xC010BF61
-adding symbol SysExit -> 0xC010BBF5
-adding symbol SysDup -> 0xC010BB66
-adding symbol SysSeek -> 0xC010BFAC
-adding symbol SysClose -> 0xC010BB29
-adding symbol SysReadWrite -> 0xC010BEAB
-adding symbol SysOpen -> 0xC010BD8F
-adding symbol SysUnmapVirt -> 0xC010C0CE
-adding symbol SysMapVirt -> 0xC010BC10
-adding symbol SysTerminate -> 0xC010C0B4
-adding symbol SysYield -> 0xC010C1AB
-adding symbol HandleSystemCall -> 0xC0106010
-adding symbol IsSpinlockHeld -> 0xC0106005
-adding symbol ArchSpinlockRelease -> 0xC010C2B8
-adding symbol ArchSpinlockAcquire -> 0xC010C2A0
-adding symbol AssertSchedulerLockHeld -> 0xC0106D07
-adding symbol CancelSemaphoreOfThread -> 0xC0105F46
-adding symbol UnblockThread -> 0xC010694F
-adding symbol TryDequeueForSleep -> 0xC010705B
-adding symbol BlockThread -> 0xC010681E
-adding symbol QueueForSleep -> 0xC0107002
-adding symbol GetSystemTimer -> 0xC0106F98
-adding symbol UnlockSchedulerX -> 0xC0106A87
-adding symbol LockSchedulerX -> 0xC0106A76
-adding symbol bsearch -> 0xC0105D36
-adding symbol qsort_pageable -> 0xC0105D0C
-adding symbol qsort -> 0xC0105CE4
-adding symbol srand -> 0xC0105AAC
-adding symbol DestroyVas -> 0xC0105A52
-adding symbol HandleVirtFault -> 0xC010598B
-adding symbol ArchInitVirt -> 0xC010BA0C
-adding symbol GetKernelVas -> 0xC0105943
-adding symbol ArchSetVas -> 0xC010B7A5
-adding symbol SetVas -> 0xC0105927
-adding symbol RelocatePage -> 0xC0107703
-adding symbol CreateKernelTransfer -> 0xC01086A5
-adding symbol WipeUsermodePages -> 0xC01056CD
-adding symbol UnmapVirtEx -> 0xC0105512
-adding symbol ArchUnmap -> 0xC010B90B
-adding symbol EvictPage -> 0xC01053CA
-adding symbol CopyVas -> 0xC01052E1
-adding symbol GetVirtPermissions -> 0xC0105119
-adding symbol SetVirtPermissions -> 0xC0104FBC
-adding symbol UnlockVirt -> 0xC0104F8A
-adding symbol LockVirt -> 0xC0104F56
-adding symbol LockVirtEx -> 0xC0104EEB
-adding symbol ArchUpdateMapping -> 0xC010B87C
-adding symbol GetPhysFromVirt -> 0xC0104C5E
-adding symbol ArchFlushTlb -> 0xC010B992
-adding symbol ArchAddMapping -> 0xC010B906
-adding symbol ReferenceFile -> 0xC01082CD
-adding symbol MapVirtEx -> 0xC0104687
-adding symbol UnlockVirtEx -> 0xC010464C
-adding symbol FindVirtToEvictFromAddressSpace -> 0xC01045DA
-adding symbol ArchSetPageUsageBits -> 0xC010B954
-adding symbol ArchGetPageUsageBits -> 0xC010B922
-adding symbol FindVirtToEvictFromSubtree -> 0xC0104424
-adding symbol CreateVas -> 0xC0104404
-adding symbol ArchInitVas -> 0xC010B997
-adding symbol CreateVasEx -> 0xC01043BB
-adding symbol GetSwapCount -> 0xC0104131
-adding symbol DeallocSwap -> 0xC01040FF
-adding symbol AllocSwap -> 0xC0104087
-adding symbol GetSwapfile -> 0xC0104081
-adding symbol ArchVirtualToPhysical -> 0xC010B759
-adding symbol ArchGetMemory -> 0xC010B5ED
-adding symbol AllocPhysContiguous -> 0xC0103D5A
-adding symbol AllocPhys -> 0xC0103CCD
-adding symbol BytesToPages -> 0xC0105A45
-adding symbol DeallocPhysContiguous -> 0xC0103C98
-adding symbol DeallocPhys -> 0xC0103C2B
-adding symbol EvictVirt -> 0xC0105595
-adding symbol handling_page_fault -> 0xC0137080
-adding symbol IsVirtInitialised -> 0xC0105A3F
-adding symbol LogDeveloperWarning -> 0xC0107A76
-adding symbol ReleaseSpinlock -> 0xC0105FD2
-adding symbol AcquireSpinlock -> 0xC0105F82
-adding symbol GetNumberInDeferQueue -> 0xC0103480
-adding symbol PostponeScheduleUntilStandardIrql -> 0xC0103448
-adding symbol Schedule -> 0xC0106D08
-adding symbol ArchSetIrql -> 0xC0109B05
-adding symbol ArchDisableInterrupts -> 0xC010C239
-adding symbol DeferUntilIrql -> 0xC01032AF
-adding symbol GetIrql -> 0xC01032A0
-adding symbol GetProcess -> 0xC01062B2
-adding symbol UnhandledFault -> 0xC010326C
-adding symbol LowerIrql -> 0xC010336D
-adding symbol ArchSendEoi -> 0xC0109B00
-adding symbol RaiseIrql -> 0xC0103333
-adding symbol RespondToIrq -> 0xC01031FF
-adding symbol RegisterIrqHandler -> 0xC01031B3
-adding symbol ArchGetCurrentCpuIndex -> 0xC010C230
-adding symbol GetCpu -> 0xC010319F
-adding symbol GetCpuAtIndex -> 0xC0103192
-adding symbol GetCpuCount -> 0xC010318C
-adding symbol ArchInitNextCpu -> 0xC0102407
-adding symbol ArchInitBootstrapCpu -> 0xC0109975
-adding symbol InitSpinlock -> 0xC0105F67
-adding symbol StartMultitasking -> 0xC0106DAE
-adding symbol CreateThreadEx -> 0xC0106A98
-adding symbol InitOtherCpu -> 0xC0103151
-adding symbol ReinitPhys -> 0xC0103F22
-adding symbol InitVirt -> 0xC0105949
-adding symbol InitBootstrapCpu -> 0xC0103140
-adding symbol InitHeap -> 0xC0103B62
-adding symbol InitDiskUtil -> 0xC0107C7E
-adding symbol InitScheduler -> 0xC0106D73
-adding symbol InitTimer -> 0xC0106FC9
-adding symbol InitVfs -> 0xC0108A92
-adding symbol InitIrql -> 0xC0103458
-adding symbol InitPhys -> 0xC0103E98
-adding symbol InitCpuTable -> 0xC0103139
-adding symbol KernelMain -> 0xC0102FB2
-adding symbol SleepMilli -> 0xC0107158
-adding symbol InitProgramLoader -> 0xC01067A4
-adding symbol InitSymbolTable -> 0xC0107418
-Adding mapping at 0xC4053000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AF000.
-Adding mapping at 0xC4054000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AE000.
-Adding mapping at 0xC4055000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AD000.
-Adding mapping at 0xC4056000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AC000.
-adding symbol InitSwapfile -> 0xC0104001
-adding symbol ArchInitDev -> 0xC010AA87
-adding symbol InitProcess -> 0xC010623E
-adding symbol InitConsole -> 0xC01071ED
-adding symbol ReinitHeap -> 0xC0103B48
-adding symbol InitThread -> 0xC0102F4B
-adding symbol OpenFile -> 0xC0108CE4
-adding symbol InitSystemMounts -> 0xC0102EB3
-adding symbol CreateUsermodeProcess -> 0xC0106A54
-adding symbol DbgScreenPrintf -> 0xC0107A96
-adding symbol GetTotalPhysKilobytes -> 0xC0103FBF
-adding symbol GetFreePhysKilobytes -> 0xC0103FC8
-adding symbol InitUserspace -> 0xC0102E78
-adding symbol GenerateNewMountedDiskName -> 0xC0107CA7
-adding symbol DemofsMountCreator -> 0xC01098A4
-adding symbol InitFilesystemTable -> 0xC0102D9E
-adding symbol RegisterFilesystem -> 0xC0102CEF
-adding symbol InitRandomDevice -> 0xC0102C93
-adding symbol rand -> 0xC0105A6E
-adding symbol CreateThread -> 0xC0106BF2
-adding symbol GetVas -> 0xC0104679
-adding symbol CreatePseudoTerminal -> 0xC0102B58
-adding symbol SetThreadPriority -> 0xC0106DCA
-adding symbol GetThread -> 0xC010683A
-adding symbol TerminateThread -> 0xC0106105
-adding symbol CreatePipe -> 0xC0102906
-adding symbol BreakPipe -> 0xC01028D5
-adding symbol GetPartitionsForDisk -> 0xC01028A8
-adding symbol MapVirt -> 0xC0105326
-adding symbol GetMbrPartitions -> 0xC010280B
-adding symbol TryCreateMbrPartition -> 0xC0102721
-adding symbol MountFilesystemForDisk -> 0xC0102DD0
-adding symbol CreatePartition -> 0xC0102607
-adding symbol WriteFile -> 0xC0108ECC
-adding symbol ReadFile -> 0xC0108EBD
-adding symbol AddVfsMount -> 0xC0108AC1
-adding symbol InitNullDevice -> 0xC010240A
-adding symbol InitDiskCaches -> 0xC01023E2
-adding symbol SetDiskCaches -> 0xC0102373
-adding symbol CreateFile -> 0xC0108266
-adding symbol CreateVnode -> 0xC0108F3E
-adding symbol VnodeOpDirentType -> 0xC010916B
-adding symbol CreateDiskCache -> 0xC0102289
-adding symbol IsCacheCreationAllowed -> 0xC0102259
-adding symbol VnodeOpRead -> 0xC0108FEF
-adding symbol VnodeOpWrite -> 0xC0109024
-adding symbol VnodeOpCreate -> 0xC01090AA
-adding symbol VnodeOpFollow -> 0xC0109134
-adding symbol UnmapVirt -> 0xC010570D
-adding symbol RemoveCacheEntryHandler -> 0xC0102157
-adding symbol ThreadListDelete -> 0xC01020C4
-adding symbol ThreadListDeleteTop -> 0xC01020A8
-adding symbol ThreadListContains -> 0xC0102082
-adding symbol ThreadListInsert -> 0xC0102059
-adding symbol ThreadListInit -> 0xC0102040
-adding symbol StackAdtSize -> 0xC0102031
-adding symbol StackAdtPop -> 0xC010200D
-adding symbol StackAdtPeek -> 0xC0101FF3
-adding symbol StackAdtPush -> 0xC0101FE4
-adding symbol StackAdtDestroy -> 0xC0101FC8
-adding symbol StackAdtCreate -> 0xC0101FAD
-adding symbol HeapAdtGetUsedSize -> 0xC010176D
-adding symbol HeapAdtGetCapacity -> 0xC0101746
-adding symbol HeapAdtPop -> 0xC0101F34
-adding symbol HeapAdtPeek -> 0xC0101EF8
-adding symbol PanicEx -> 0xC0107ADF
-adding symbol HeapAdtInsert -> 0xC0101E41
-adding symbol HeapAdtDestroy -> 0xC0101E24
-adding symbol HeapAdtCreate -> 0xC0101DD4
-adding symbol PerformTransfer -> 0xC01083ED
-adding symbol MailboxAccess -> 0xC0101C4E
-adding symbol MailboxGet -> 0xC0101BEA
-adding symbol MailboxAdd -> 0xC0101B86
-adding symbol DestroySemaphore -> 0xC0105EFB
-adding symbol MailboxDestroy -> 0xC0101B37
-adding symbol CreateSemaphore -> 0xC0105D85
-adding symbol MailboxCreate -> 0xC0101A84
-adding symbol MailboxWaitGettable -> 0xC0101A49
-adding symbol MailboxWaitAddable -> 0xC01019C7
-adding symbol ReleaseSemaphore -> 0xC0105E8E
-adding symbol AcquireSemaphore -> 0xC0105DBA
-adding symbol ListGetDataFromNode -> 0xC0101965
-adding symbol ListGetNextNode -> 0xC0101949
-adding symbol ListGetFirstNode -> 0xC0101949
-adding symbol ListDestroy -> 0xC0101920
-adding symbol ListSize -> 0xC0101746
-adding symbol ListDeleteData -> 0xC0101904
-adding symbol ListDeleteIndex -> 0xC0101898
-adding symbol Panic -> 0xC0107B34
-adding symbol ListGetData -> 0xC010186A
-adding symbol ListContains -> 0xC0101856
-adding symbol ListGetIndex -> 0xC0101837
-adding symbol ListInsertEnd -> 0xC01017E7
-adding symbol ListInsertStart -> 0xC01017B6
-adding symbol AllocHeapZero -> 0xC0103AF7
-adding symbol ListCreate -> 0xC01017A8
-adding symbol AvlTreePrint -> 0xC0101798
-adding symbol AvlTreeGetData -> 0xC010178C
-adding symbol AvlTreeGetRight -> 0xC0101780
-adding symbol AvlTreeGetLeft -> 0xC0101775
-adding symbol AvlTreeGetRootNode -> 0xC010176D
-adding symbol AvlTreeDestroy -> 0xC010174D
-adding symbol AvlTreeSize -> 0xC0101746
-adding symbol AvlTreeGet -> 0xC0101733
-adding symbol AvlTreeContains -> 0xC0101720
-adding symbol AvlTreeDelete -> 0xC01016FF
-adding symbol AvlTreeInsert -> 0xC01016BD
-adding symbol AvlTreeSetComparator -> 0xC01016AE
-adding symbol AvlTreeSetDeletionHandler -> 0xC010169F
-adding symbol AvlTreeCreate -> 0xC0101680
-adding symbol LogWriteSerial -> 0xC0107A60
-adding symbol FreeHeap -> 0xC0103B09
-adding symbol AllocHeap -> 0xC0103AE5
+adding symbol boot_page_table1 -> 0xC0146000
+adding symbol boot_page_directory -> 0xC0145000
+adding symbol x86SetCr3 -> 0xC01103C4
+
+
+Page fault: cr2 0xC404A000, eip 0xC010839C, nos-err 0x0
+Adding mapping at 0xC4064000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A6000.
+adding symbol x86KernelMemoryToPhysical -> 0xC010F7C3
+adding symbol _kernel_end -> 0xC0147000
+adding symbol x86LoadTss -> 0xC01103B0
+adding symbol x86LoadIdt -> 0xC0110350
+adding symbol isr_vectors -> 0xC01150F8
+adding symbol x86AddTssToGdt -> 0xC010F52D
+adding symbol x86LoadGdt -> 0xC0110330
+adding symbol ArchLoadProgramLoader -> 0xC010F402
+adding symbol IsPicIrqSpurious -> 0xC010EB18
+adding symbol InitIde -> 0xC010E8D9
+adding symbol IdePoll -> 0xC010E4D1
+adding symbol IdeCheckError -> 0xC010E4A3
+adding symbol ide_lock -> 0xC0140284
+adding symbol InitFloppy -> 0xC010E2D6
+adding symbol floppy_lock -> 0xC0140274
+adding symbol x86IsReadyForIrqs -> 0xC010DB6D
+adding symbol DisablePicLines -> 0xC010EB72
+adding symbol SendPicEoi -> 0xC010EB62
+adding symbol x86GetCr2 -> 0xC01103C0
+adding symbol x86HandleInterrupt -> 0xC010DA51
+adding symbol x86MakeReadyForIrqs -> 0xC010DB73
+adding symbol ArchEnableInterrupts -> 0xC0110367
+adding symbol InitPit -> 0xC010EBE8
+adding symbol InitPic -> 0xC010EB91
+adding symbol x86InitTss -> 0xC010F612
+adding symbol x86InitIdt -> 0xC010F565
+adding symbol x86InitGdt -> 0xC010F4BE
+adding symbol demofs_read_directory_entry -> 0xC010D593
+adding symbol demofs_follow -> 0xC010D3C7
+adding symbol demofs_read_file -> 0xC010D1FB
+adding symbol demofs_read_inode -> 0xC010D1C3
+adding symbol Thread5 -> 0xC010C471
+adding symbol RegisterTfwHeapAdtTests -> 0xC010C377
+adding symbol RegisterTfwAVLTreeTests -> 0xC010ACF3
+adding symbol RegisterTfwPhysTests -> 0xC010BE05
+adding symbol RegisterTfwSemaphoreTests -> 0xC010C935
+adding symbol RegisterTfwWaitTests -> 0xC010D117
+adding symbol RegisterTfwIrqlTests -> 0xC010BA96
+adding symbol RegisterTfwInitTests -> 0xC010AD0F
+adding symbol RegisterTfwTests -> 0xC010A9A8
+adding symbol RegisterNightlyTfwTest -> 0xC010A851
+adding symbol RegisterTfwTest -> 0xC010A7C5
+adding symbol packet_buffer -> 0xC013D2C0
+adding symbol DbgReadPacket -> 0xC010A5BA
+adding symbol DbgWritePacket -> 0xC010A551
+adding symbol VnodeOpClose -> 0xC010A359
+adding symbol VnodeOpIoctl -> 0xC010A322
+adding symbol VnodeOpTruncate -> 0xC010A3CE
+adding symbol VnodeOpCheckOpen -> 0xC010A285
+adding symbol VnodeOpUnlink -> 0xC010A43F
+adding symbol VnodeOpDelete -> 0xC010A469
+adding symbol RemoveFileOrDirectory -> 0xC0109E7B
+adding symbol RemoveVfsMount -> 0xC0109D82
+adding symbol MountedDeviceComparator -> 0xC0109877
+adding symbol CreateTransferReadingFromUser -> 0xC010983C
+adding symbol CreateTransferWritingToUser -> 0xC0109803
+adding symbol ReadWordFromUsermode -> 0xC0109769
+adding symbol WriteWordToUsermode -> 0xC010970B
+adding symbol ReadStringFromUsermode -> 0xC010967C
+adding symbol WriteStringToUsermode -> 0xC01095E2
+adding symbol DereferenceVnode -> 0xC010A493
+adding symbol DereferenceFile -> 0xC0109381
+adding symbol ReferenceVnode -> 0xC010A244
+adding symbol DupFd2 -> 0xC01091DB
+adding symbol DupFd -> 0xC0109140
+adding symbol HandleExecFd -> 0xC01090CD
+adding symbol GetFileFromFd -> 0xC0109075
+adding symbol RemoveFd -> 0xC010901D
+adding symbol CreateFd -> 0xC0108F9B
+adding symbol CopyFdTable -> 0xC0108F0C
+adding symbol DiskCreateHelper -> 0xC0108E92
+adding symbol DiskFollowHelper -> 0xC0108E55
+adding symbol InitDiskPartitionHelper -> 0xC0108E4B
+adding symbol CreateDiskPartitions -> 0xC0108D81
+adding symbol GenerateNewRawDiskName -> 0xC0108CE2
+adding symbol InitVideoConsole -> 0xC0108B49
+adding symbol DbgScreenPuts -> 0xC0108B28
+adding symbol DeferPutchar -> 0xC0108AF1
+adding symbol DeferPuts -> 0xC0108AEB
+adding symbol ArchSetPowerState -> 0xC010D9C8
+adding symbol FinishedTfwTest -> 0xC010A881
+adding symbol IsInTfwTest -> 0xC010A7BF
+adding symbol GetPanicMessageFromCode -> 0xC0108A3D
+adding symbol SetGraphicalPanicHandler -> 0xC0108A23
+adding symbol CreateRelocationTable -> 0xC010863A
+adding symbol AddToRelocationTable -> 0xC01085F2
+adding symbol SortRelocationTable -> 0xC01085D5
+adding symbol RequireDriver -> 0xC01084D4
+adding symbol GetSymbolAddress -> 0xC010843A
+adding symbol AddSymbol -> 0xC010835C
+adding symbol CloseFile -> 0xC010A113
+adding symbol ArchLoadSymbols -> 0xC010F298
+adding symbol GetDriverAddress -> 0xC010827B
+adding symbol PutsConsole -> 0xC01081BB
+adding symbol PutcharConsole -> 0xC0108176
+adding symbol GetcharConsole -> 0xC0108135
+adding symbol SendKeystrokeConsole -> 0xC01080F0
+adding symbol DbgScreenPutchar -> 0xC0108B00
+adding symbol SleepNano -> 0xC0107FC8
+adding symbol SleepUntil -> 0xC0107F56
+adding symbol ReceivedTimer -> 0xC0107D5C
+adding symbol HandleSleepWakeups -> 0xC0107C60
+adding symbol UnassignThreadToCpu -> 0xC0107C5F
+adding symbol AssignThreadToCpu -> 0xC0107C5F
+adding symbol ThreadInitialisationHandler -> 0xC01078EA
+adding symbol ArchSwitchToUsermode -> 0xC0110440
+adding symbol ArchPrepareStack -> 0xC0110400
+adding symbol ThreadExecuteInUsermode -> 0xC0107822
+adding symbol HasBeenSignalled -> 0xC0107620
+adding symbol ArchSwitchThread -> 0xC011040F
+adding symbol UpdateThreadTimeUsed -> 0xC010751A
+adding symbol ArchLoadDriver -> 0xC010EC38
+adding symbol LoadProgramLoaderIntoAddressSpace -> 0xC01074C0
+adding symbol WaitProcess -> 0xC01073ED
+adding symbol GetPid -> 0xC01073B5
+adding symbol DestroyFdTable -> 0xC0108F48
+adding symbol CreateProcessWithEntryPoint -> 0xC01070E7
+adding symbol ForkProcess -> 0xC010707E
+adding symbol CreateFdTable -> 0xC0108EBD
+adding symbol CreateProcess -> 0xC0106F57
+adding symbol GetProcessFromPid -> 0xC0106EE1
+adding symbol GetFileFromFdDescriptorTable -> 0xC0106ED5
+adding symbol KillProcess -> 0xC0106E70
+adding symbol AddThreadToProcess -> 0xC0106E0B
+adding symbol UnlockProcess -> 0xC0106DB6
+adding symbol LockProcess -> 0xC0106DA1
+adding symbol InitIdle -> 0xC0106D24
+adding symbol ArchStallProcessor -> 0xC011036B
+adding symbol InitCleaner -> 0xC0106CD4
+adding symbol TerminateThreadLockHeld -> 0xC0106BFA
+adding symbol SysGetTid -> 0xC010FD0A
+adding symbol SysGetPid -> 0xC010FCA5
+adding symbol SysFork -> 0xC010FC9F
+
+
+Page fault: cr2 0xC4047004, eip 0xC010F3C2, nos-err 0x0
+Adding mapping at 0xC4065000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A6000.
+adding symbol SysWaitpid -> 0xC0110226
+adding symbol SysPrepExec -> 0xC010FF79
+adding symbol SysMprotect -> 0xC010FE0C
+adding symbol SysRemove -> 0xC011006A
+adding symbol SysExit -> 0xC010FC8A
+adding symbol SysDup -> 0xC010FBFB
+adding symbol SysSeek -> 0xC01100B5
+adding symbol SysClose -> 0xC010FBBE
+Adding mapping at 0xC4066000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A6000.
+Adding mapping at 0xC4067000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A3000.
+Adding mapping at 0xC4068000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A2000.
+Adding mapping at 0xC4069000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A1000.
+adding symbol SysReadWrite -> 0xC010FFB4
+adding symbol SysOpen -> 0xC010FE98
+adding symbol SysUnmapVirt -> 0xC01101F9
+adding symbol SysMapVirt -> 0xC010FD19
+adding symbol SysTerminate -> 0xC01101BD
+adding symbol SysYield -> 0xC01102D6
+adding symbol HandleSystemCall -> 0xC0106B2D
+adding symbol ArchSpinlockRelease -> 0xC01103E8
+adding symbol ArchSpinlockAcquire -> 0xC01103D0
+adding symbol AssertSchedulerLockHeld -> 0xC010792E
+adding symbol CancelSemaphoreOfThread -> 0xC01069E6
+adding symbol UnblockThread -> 0xC01079E2
+adding symbol TryDequeueForSleep -> 0xC0107ECD
+adding symbol BlockThread -> 0xC010795F
+adding symbol QueueForSleep -> 0xC0107E74
+adding symbol GetSystemTimer -> 0xC0107E0A
+adding symbol UnlockSchedulerX -> 0xC0107662
+adding symbol LockSchedulerX -> 0xC0107651
+adding symbol bsearch -> 0xC0106727
+adding symbol qsort_pageable -> 0xC01066FD
+adding symbol qsort -> 0xC01066D5
+adding symbol srand -> 0xC010649D
+adding symbol DestroyVas -> 0xC0106443
+adding symbol HandleVirtFault -> 0xC010630B
+adding symbol ArchInitVirt -> 0xC010FAA1
+adding symbol GetKernelVas -> 0xC0106295
+adding symbol ArchSetVas -> 0xC010F83A
+adding symbol SetVas -> 0xC0106279
+adding symbol RelocatePage -> 0xC0108677
+adding symbol CreateKernelTransfer -> 0xC01097CA
+adding symbol WipeUsermodePages -> 0xC0105FE8
+adding symbol UnmapVirtEx -> 0xC0105E49
+adding symbol ArchUnmap -> 0xC010F9A0
+adding symbol EvictPage -> 0xC0105C3C
+adding symbol CopyVas -> 0xC0105B56
+adding symbol GetVirtPermissions -> 0xC0105969
+adding symbol SetVirtPermissions -> 0xC010580C
+adding symbol UnlockVirt -> 0xC01057DA
+adding symbol LockVirt -> 0xC01057A6
+adding symbol LockVirtEx -> 0xC010571E
+adding symbol ArchUpdateMapping -> 0xC010F911
+adding symbol GetPhysFromVirt -> 0xC01053D9
+adding symbol ArchFlushTlb -> 0xC010FA27
+adding symbol ReferenceFile -> 0xC0109325
+adding symbol ArchAddMapping -> 0xC010F99B
+adding symbol MapVirtEx -> 0xC0104D6D
+adding symbol UnlockVirtEx -> 0xC0104D34
+adding symbol FindVirtToEvict -> 0xC0104CCD
+adding symbol ArchSetPageUsageBits -> 0xC010F9E9
+adding symbol ArchGetPageUsageBits -> 0xC010F9B7
+adding symbol FindVirtToEvictRecursive -> 0xC0104B35
+adding symbol CreateVas -> 0xC0104AEF
+adding symbol ArchInitVas -> 0xC010FA2C
+adding symbol CreateVasEx -> 0xC0104A83
+adding symbol IsSpinlockHeld -> 0xC0106B22
+adding symbol GetSwapCount -> 0xC0104702
+adding symbol DeallocSwap -> 0xC01046D0
+adding symbol AllocSwap -> 0xC0104658
+adding symbol GetSwapfile -> 0xC0104652
+adding symbol ArchVirtualToPhysical -> 0xC010F7EE
+adding symbol ArchGetMemory -> 0xC010F65E
+adding symbol AllocPhysContiguous -> 0xC01042F7
+adding symbol AllocPhys -> 0xC010422F
+adding symbol BytesToPages -> 0xC0106436
+adding symbol DeallocPhysContiguous -> 0xC01041FA
+adding symbol DeallocPhys -> 0xC0104159
+adding symbol EvictVirt -> 0xC0105EBA
+adding symbol handling_page_fault -> 0xC013D080
+adding symbol IsVirtInitialised -> 0xC0106430
+adding symbol DbgGetOutstandingHeapAllocations -> 0xC0103C56
+adding symbol LogDeveloperWarning -> 0xC01089EA
+adding symbol ReleaseSpinlock -> 0xC0106AEF
+adding symbol AcquireSpinlock -> 0xC0106A9F
+adding symbol GetNumberInDeferQueue -> 0xC01036CE
+adding symbol PostponeScheduleUntilStandardIrql -> 0xC0103696
+adding symbol Schedule -> 0xC0107B34
+adding symbol ArchSetIrql -> 0xC010DB20
+adding symbol ArchDisableInterrupts -> 0xC0110369
+adding symbol DeferUntilIrql -> 0xC01034AC
+adding symbol GetProcess -> 0xC0106E3A
+adding symbol UnhandledFault -> 0xC0103469
+adding symbol LowerIrql -> 0xC010356A
+adding symbol ArchSendEoi -> 0xC010DB1B
+adding symbol RaiseIrql -> 0xC0103530
+adding symbol RespondToIrq -> 0xC01033DB
+adding symbol RegisterIrqHandler -> 0xC010338F
+adding symbol ArchGetCurrentCpuIndex -> 0xC0110360
+adding symbol GetCpu -> 0xC010337B
+adding symbol GetCpuAtIndex -> 0xC0103343
+adding symbol GetCpuCount -> 0xC010333D
+adding symbol ArchInitNextCpu -> 0xC0102547
+adding symbol ArchInitBootstrapCpu -> 0xC010D990
+adding symbol GetIrql -> 0xC010349D
+adding symbol InitSpinlock -> 0xC0106A36
+adding symbol StartMultitasking -> 0xC0107BDA
+adding symbol CreateThreadEx -> 0xC0107673
+adding symbol InitOtherCpu -> 0xC01032F8
+adding symbol ReinitPhys -> 0xC01044D1
+adding symbol InitVirt -> 0xC010629B
+adding symbol InitBootstrapCpu -> 0xC01032B6
+adding symbol InitHeap -> 0xC0103FCE
+adding symbol InitDiskUtil -> 0xC0108C20
+adding symbol InitScheduler -> 0xC0107B9F
+adding symbol InitTimer -> 0xC0107E3B
+adding symbol InitVfs -> 0xC0109C18
+adding symbol InitIrql -> 0xC01036A6
+adding symbol InitPhys -> 0xC0104435
+adding symbol InitTfw -> 0xC010A9D1
+adding symbol InitCpuTable -> 0xC010328A
+adding symbol KernelMain -> 0xC01030FE
+adding symbol SleepMilli -> 0xC0107FEC
+adding symbol MarkTfwStartPoint -> 0xC010A908
+adding symbol InitProgramLoader -> 0xC0107491
+adding symbol InitSymbolTable -> 0xC01082D0
+adding symbol InitSwapfile -> 0xC01045D2
+adding symbol ArchInitDev -> 0xC010EAC9
+adding symbol InitProcess -> 0xC0106DC6
+adding symbol InitConsole -> 0xC0108081
+adding symbol ReinitHeap -> 0xC0103FB4
+adding symbol InitThread -> 0xC010308B
+adding symbol OpenFile -> 0xC0109EF7
+adding symbol InitSystemMounts -> 0xC0102FF3
+adding symbol CreateUsermodeProcess -> 0xC010762F
+adding symbol DbgScreenPrintf -> 0xC0108A0A
+adding symbol GetTotalPhysKilobytes -> 0xC0104590
+adding symbol GetFreePhysKilobytes -> 0xC0104599
+adding symbol InitUserspace -> 0xC0102FB8
+adding symbol GenerateNewMountedDiskName -> 0xC0108C6C
+adding symbol DemofsMountCreator -> 0xC010D8BF
+adding symbol InitFilesystemTable -> 0xC0102EDE
+adding symbol RegisterFilesystem -> 0xC0102E2F
+adding symbol InitRandomDevice -> 0xC0102DD3
+adding symbol rand -> 0xC010645F
+adding symbol CreateThread -> 0xC01077FA
+adding symbol GetVas -> 0xC0104D5F
+adding symbol CreatePseudoTerminal -> 0xC0102C98
+adding symbol SetThreadPriority -> 0xC0107BF6
+adding symbol GetThread -> 0xC010750B
+adding symbol TerminateThread -> 0xC0106C7B
+adding symbol CreatePipe -> 0xC0102A46
+adding symbol BreakPipe -> 0xC0102A15
+adding symbol GetPartitionsForDisk -> 0xC01029E8
+adding symbol MapVirt -> 0xC0105B98
+adding symbol GetMbrPartitions -> 0xC010294B
+adding symbol TryCreateMbrPartition -> 0xC0102861
+adding symbol MountFilesystemForDisk -> 0xC0102F10
+adding symbol CreatePartition -> 0xC0102747
+adding symbol WriteFile -> 0xC010A101
+adding symbol ReadFile -> 0xC010A0F2
+adding symbol AddVfsMount -> 0xC0109C47
+adding symbol InitNullDevice -> 0xC010254A
+adding symbol InitDiskCaches -> 0xC0102522
+adding symbol SetDiskCaches -> 0xC01024B3
+adding symbol CreateFile -> 0xC0109298
+adding symbol CreateVnode -> 0xC010A1E9
+adding symbol VnodeOpDirentType -> 0xC010A434
+adding symbol CreateDiskCache -> 0xC01023C9
+adding symbol IsCacheCreationAllowed -> 0xC0102399
+adding symbol VnodeOpRead -> 0xC010A2B8
+adding symbol VnodeOpWrite -> 0xC010A2ED
+Adding mapping at 0xC406A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A0000.
+Adding mapping at 0xC406B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79F000.
+Adding mapping at 0xC406C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79E000.
+Adding mapping at 0xC406D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79D000.
+adding symbol VnodeOpCreate -> 0xC010A373
+adding symbol VnodeOpFollow -> 0xC010A3FD
+adding symbol UnmapVirt -> 0xC0106025
+adding symbol RemoveCacheEntryHandler -> 0xC0102297
+adding symbol TreePrint -> 0xC0102265
+adding symbol TreeDestroy -> 0xC0102245
+adding symbol TreeSize -> 0xC0101609
+adding symbol TreeGet -> 0xC0102232
+adding symbol TreeContains -> 0xC010221F
+adding symbol TreeDelete -> 0xC01021FE
+adding symbol TreeInsert -> 0xC01021BC
+adding symbol TreeSetComparator -> 0xC01021AD
+adding symbol TreeSetDeletionHandler -> 0xC010219E
+adding symbol TreeCreate -> 0xC010217F
+adding symbol LogWriteSerial -> 0xC01089D4
+adding symbol ThreadListDelete -> 0xC0101D4D
+adding symbol ThreadListDeleteTop -> 0xC0101D08
+adding symbol ThreadListInsert -> 0xC0101C9F
+adding symbol ThreadListContains -> 0xC0101C79
+adding symbol ThreadListInit -> 0xC0101C60
+adding symbol StackAdtSize -> 0xC0101C51
+adding symbol StackAdtPop -> 0xC0101C2D
+adding symbol StackAdtPeek -> 0xC0101C13
+adding symbol StackAdtPush -> 0xC0101C04
+adding symbol StackAdtDestroy -> 0xC0101BE8
+adding symbol StackAdtCreate -> 0xC0101BCD
+adding symbol PerformTransfer -> 0xC01094CA
+adding symbol MailboxAccess -> 0xC0101AFA
+adding symbol MailboxGet -> 0xC0101A96
+adding symbol MailboxAdd -> 0xC0101A32
+adding symbol DestroySemaphore -> 0xC0106978
+adding symbol MailboxDestroy -> 0xC01019E3
+adding symbol CreateSemaphore -> 0xC0106776
+adding symbol MailboxCreate -> 0xC0101930
+adding symbol MailboxWaitGettable -> 0xC01018F5
+adding symbol MailboxWaitAddable -> 0xC0101873
+adding symbol ReleaseSemaphore -> 0xC01068E1
+adding symbol AcquireSemaphore -> 0xC01067D1
+adding symbol ListGetDataFromNode -> 0xC0101811
+adding symbol ListGetNextNode -> 0xC01017F5
+adding symbol ListGetFirstNode -> 0xC01017F5
+adding symbol ListDestroy -> 0xC01017CC
+adding symbol ListSize -> 0xC0101609
+adding symbol ListDeleteData -> 0xC01017B0
+adding symbol ListDeleteIndex -> 0xC0101744
+adding symbol Panic -> 0xC0108AD6
+adding symbol ListGetData -> 0xC0101716
+adding symbol ListContains -> 0xC0101702
+adding symbol ListGetIndex -> 0xC01016E3
+adding symbol ListInsertEnd -> 0xC0101674
+adding symbol ListInsertStart -> 0xC0101626
+adding symbol AllocHeapZero -> 0xC0103F3A
+adding symbol ListCreate -> 0xC0101618
+adding symbol HeapAdtGetUsedSize -> 0xC0101610
+adding symbol HeapAdtGetCapacity -> 0xC0101609
+adding symbol HeapAdtPop -> 0xC0101590
+adding symbol HeapAdtPeek -> 0xC0101554
+adding symbol PanicEx -> 0xC0108A53
+adding symbol HeapAdtInsert -> 0xC010149D
+adding symbol FreeHeap -> 0xC0103F4C
+adding symbol HeapAdtDestroy -> 0xC0101480
+adding symbol AssertionFail -> 0xC0108003
+adding symbol HeapAdtCreate -> 0xC01013FB
+adding symbol AllocHeap -> 0xC0103F28
 adding symbol strdup -> 0xC010131F
-adding symbol AllocHeapEx -> 0xC0103896
+adding symbol AllocHeapEx -> 0xC0103C5C
 adding symbol strdup_pageable -> 0xC01012F5
 adding symbol strchr -> 0xC01012E1
 adding symbol strncpy -> 0xC01012B8
@@ -1211,1137 +1340,576 @@ adding symbol bswap_64 -> 0xC0101013
 adding symbol bswap_32 -> 0xC0101007
 adding symbol bswap_16 -> 0xC0101000
 Requiring driver: sys:/vga.sys
-Adding mapping at 0xC4057000 to vas 0xC013A080 - num is 3. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Adding mapping at 0xC406E000 to vas 0xC0143080 - num is 3. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4057000, eip 0xC010AC3B, nos-err 0x0
-Adding mapping at 0xC405A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C6000.
-Adding mapping at 0xC405B000 to vas 0xC013A080 - num is 3. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
+Page fault: cr2 0xC406E000, eip 0xC010ECC0, nos-err 0x0
+Adding mapping at 0xC4071000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BC000.
+Adding mapping at 0xC4072000 to vas 0xC0143080 - num is 3. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
 
 
-Page fault: cr2 0xC4058000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC405E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C6000.
+Page fault: cr2 0xC406F000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4075000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BC000.
 
 
-Page fault: cr2 0xC405B000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4072000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4059000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC405F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C4000.
+Page fault: cr2 0xC4070000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4076000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BA000.
 
 
-Page fault: cr2 0xC405C000, eip 0xC0101219, nos-err 0x2
-Adding mapping at 0xC4060000 to vas 0xC013A080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Page fault: cr2 0xC4073000, eip 0xC0101219, nos-err 0x2
+Adding mapping at 0xC4077000 to vas 0xC0143080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC4060000, eip 0xC01076B0, nos-err 0x2
-Adding mapping at 0xC4061000 to vas 0xC013A080 - num is 3. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Page fault: cr2 0xC4077000, eip 0xC0108621, nos-err 0x2
+Adding mapping at 0xC4078000 to vas 0xC0143080 - num is 3. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4061000, eip 0xC010B259, nos-err 0x0
-Adding mapping at 0xC4064000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B3000.
+Page fault: cr2 0xC4078000, eip 0xC010F2CA, nos-err 0x0
+Adding mapping at 0xC407B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A4000.
 
 
-Page fault: cr2 0xC4063380, eip 0xC010B2B4, nos-err 0x0
-Adding mapping at 0xC4065000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B3000.
-adding symbol data -> 0xC405D000
-adding symbol _DYNAMIC -> 0xC405C000
-adding symbol DrvConsolePuts -> 0xC405B13B
-adding symbol DrvConsolePutchar -> 0xC405B06B
-adding symbol InitVga -> 0xC405B15F
+Page fault: cr2 0xC407A380, eip 0xC010F325, nos-err 0x0
+Adding mapping at 0xC407C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A4000.
+adding symbol data -> 0xC4074000
+adding symbol _DYNAMIC -> 0xC4073000
+adding symbol DrvConsolePuts -> 0xC407213B
+adding symbol DrvConsolePutchar -> 0xC407206B
+adding symbol InitVga -> 0xC407215F
 Requiring driver: sys:/ps2.sys
-Adding mapping at 0xC4066000 to vas 0xC013A080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Adding mapping at 0xC407D000 to vas 0xC0143080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4066000, eip 0xC010AC3B, nos-err 0x0
-Adding mapping at 0xC406B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B8000.
-Adding mapping at 0xC406C000 to vas 0xC013A080 - num is 4. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
+Page fault: cr2 0xC407D000, eip 0xC010ECC0, nos-err 0x0
+Adding mapping at 0xC4082000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A5000.
+Adding mapping at 0xC4083000 to vas 0xC0143080 - num is 4. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
 
 
-Page fault: cr2 0xC4067000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4070000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B8000.
+Page fault: cr2 0xC407E000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4087000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A5000.
 
 
-Page fault: cr2 0xC406C000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4083000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4068000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4071000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BF000.
+Page fault: cr2 0xC407F000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4088000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7AF000.
 
 
-Page fault: cr2 0xC406D000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4084000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4069000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4072000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C7000.
+Page fault: cr2 0xC4080000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4089000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BB000.
 
 
-Page fault: cr2 0xC406E000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4085000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC406A000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4073000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AA000.
+Page fault: cr2 0xC4081000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC408A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79C000.
 
 
-Page fault: cr2 0xC406F000, eip 0xC0101219, nos-err 0x2
-Adding mapping at 0xC4074000 to vas 0xC013A080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Page fault: cr2 0xC4086000, eip 0xC0101219, nos-err 0x2
+Adding mapping at 0xC408B000 to vas 0xC0143080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC4074000, eip 0xC01076B0, nos-err 0x2
-Adding mapping at 0xC4075000 to vas 0xC013A080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Page fault: cr2 0xC408B000, eip 0xC0108621, nos-err 0x2
+Adding mapping at 0xC408C000 to vas 0xC0143080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4075000, eip 0xC010B259, nos-err 0x0
-Adding mapping at 0xC407A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A9000.
+Page fault: cr2 0xC408C000, eip 0xC010F2CA, nos-err 0x0
+Adding mapping at 0xC4091000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79B000.
 
 
-Page fault: cr2 0xC4079864, eip 0xC010B2B4, nos-err 0x0
-Adding mapping at 0xC407B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A9000.
-adding symbol Ps2ControllerRead -> 0xC406E022
-adding symbol release_mode -> 0xC406F003
-adding symbol shift_held -> 0xC406F002
-adding symbol shift_r_held -> 0xC406F001
-adding symbol caps_lock_on -> 0xC406F000
-adding symbol set1_map_lower_norm -> 0xC406E420
-adding symbol set1_map_upper_caps -> 0xC406E2A0
-adding symbol set1_map_lower_caps -> 0xC406E320
-Adding mapping at 0xC407C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A9000.
-Adding mapping at 0xC407D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1B3000.
-Adding mapping at 0xC407E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1BE000.
-Adding mapping at 0xC407F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A7000.
-adding symbol set1_map_upper_norm -> 0xC406E3A0
-adding symbol Ps2KeyboardIrqHandler -> 0xC406E27D
-adding symbol Ps2KeyboardGetScancodeSet -> 0xC406C0F0
-adding symbol Ps2KeyboardSetScancodeSet -> 0xC406C147
-adding symbol Ps2KeyboardSetTranslation -> 0xC406C17F
-adding symbol HandleCharacter -> 0xC406E107
-adding symbol InitPs2Keyboard -> 0xC406C1AD
-adding symbol Ps2DeviceRead -> 0xC406E057
-adding symbol Ps2ControllerEnableDevice -> 0xC406C015
-adding symbol Ps2ControllerSetConfiguration -> 0xC406E039
-adding symbol Ps2ControllerSetIrqEnable -> 0xC406E0D8
-adding symbol Ps2ControllerGetConfiguration -> 0xC406E033
-adding symbol Ps2DeviceWrite -> 0xC406E059
-adding symbol InitPs2 -> 0xC406C04E
-adding symbol Ps2ControllerTestPort -> 0xC406C02A
+Page fault: cr2 0xC4090864, eip 0xC010F325, nos-err 0x0
+Adding mapping at 0xC4092000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79B000.
+adding symbol Ps2ControllerRead -> 0xC4085022
+adding symbol release_mode -> 0xC4086003
+adding symbol shift_held -> 0xC4086002
+adding symbol shift_r_held -> 0xC4086001
+adding symbol caps_lock_on -> 0xC4086000
+adding symbol set1_map_lower_norm -> 0xC4085420
+adding symbol set1_map_upper_caps -> 0xC40852A0
+adding symbol set1_map_lower_caps -> 0xC4085320
+adding symbol set1_map_upper_norm -> 0xC40853A0
+adding symbol Ps2KeyboardIrqHandler -> 0xC408527D
+adding symbol Ps2KeyboardGetScancodeSet -> 0xC40830F0
+adding symbol Ps2KeyboardSetScancodeSet -> 0xC4083147
+adding symbol Ps2KeyboardSetTranslation -> 0xC408317F
+adding symbol HandleCharacter -> 0xC4085107
+adding symbol InitPs2Keyboard -> 0xC40831AD
+adding symbol Ps2DeviceRead -> 0xC4085057
+adding symbol Ps2ControllerEnableDevice -> 0xC4083015
+adding symbol Ps2ControllerSetConfiguration -> 0xC4085039
+adding symbol Ps2ControllerSetIrqEnable -> 0xC40850D8
+adding symbol Ps2ControllerGetConfiguration -> 0xC4085033
+adding symbol Ps2DeviceWrite -> 0xC4085059
+adding symbol InitPs2 -> 0xC408304E
+adding symbol Ps2ControllerTestPort -> 0xC408302A
 Keybrd: translation is on, and scancode set 1
 we have a second PS/2 port
-Adding mapping at 0xC4080000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1C5000.
-Adding mapping at 0xC4081000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1AB000.
-Adding mapping at 0xC4082000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A6000.
-Adding mapping at 0xC4083000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x1A5000.
+Adding mapping at 0xC4093000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B5000.
+Adding mapping at 0xC4094000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7BD000.
+Adding mapping at 0xC4095000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x79B000.
+Adding mapping at 0xC4096000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7A4000.
+Adding mapping at 0xC4097000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7B0000.
+Adding mapping at 0xC4098000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x799000.
 
 
-Page fault: cr2 0xC405D000, eip 0xC405B008, nos-err 0x2
+Page fault: cr2 0xC4074000, eip 0xC4072008, nos-err 0x2
 
 
 NOS Kernel
 Copyright Alex Boxall 2022-2024
 
-552 / 1184 KB used (53% free)
+1268 / 7292 KB used (82% free)
 
-Adding mapping at 0xC4084000 to vas 0xC013A080 - num is 1. flags = 0x17, rwxgu'lfia = 11011'1011. p 0x1A3000.
-Adding mapping at 0xC4085000 to vas 0xC013A080 - num is 5. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4085000, eip 0xC0103497, nos-err 0x0
+Adding mapping at 0xC4099000 to vas 0xC0143080 - num is 1. flags = 0x17, rwxgu'lfia = 11011'1011. p 0x797000.
+Adding mapping at 0xC409A000 to vas 0xC0143080 - num is 5. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC4089FF4, eip 0xC01034A5, nos-err 0x2
+Page fault: cr2 0xC409A000, eip 0xC01036E5, nos-err 0x0
 
 
-Page fault: cr2 0xC4087FEC, eip 0xC01034A5, nos-err 0x2
+Page fault: cr2 0xC409EFF4, eip 0xC01036F3, nos-err 0x2
 
 
-Page fault: cr2 0xC4088004, eip 0xC0107EC6, nos-err 0x2
-Adding mapping at 0xC408A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19E000.
-Adding mapping at 0xC408B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19D000.
-Adding mapping at 0xC408C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19C000.
-Adding mapping at 0xC408D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19B000.
+Page fault: cr2 0xC409CFEC, eip 0xC01036F3, nos-err 0x2
+
+
+Page fault: cr2 0xC409D004, eip 0xC0108EF8, nos-err 0x2
+Adding mapping at 0xC409F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x792000.
+Adding mapping at 0xC40A0000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x791000.
+Adding mapping at 0xC40A1000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x790000.
+Adding mapping at 0xC40A2000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x78F000.
+Adding mapping at 0xC40A3000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x78E000.
+Adding mapping at 0xC40A4000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x78D000.
+Reached TFW_SP 7
 Requiring driver: sys:/acpi.sys
-Adding mapping at 0xC408E000 to vas 0xC013A080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Adding mapping at 0xC40A5000 to vas 0xC0143080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC408E000, eip 0xC010AC3B, nos-err 0x0
-Adding mapping at 0xC40D9000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19A000.
-Adding mapping at 0xC40DA000 to vas 0xC013A080 - num is 51. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
-Adding mapping at 0xC40DA000 to vas 0xC013A080 - num is 34. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0.
+Page fault: cr2 0xC40A5000, eip 0xC010ECC0, nos-err 0x0
+Adding mapping at 0xC40F0000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x78C000.
+Adding mapping at 0xC40F1000 to vas 0xC0143080 - num is 51. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
+Adding mapping at 0xC40F1000 to vas 0xC0143080 - num is 34. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0.
 
 
-Page fault: cr2 0xC40B1000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC410D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x19A000.
+Page fault: cr2 0xC40C8000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4124000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x78C000.
 
 
-Page fault: cr2 0xC40FC000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4113000, eip 0xC0101219, nos-err 0x2
+Adding mapping at 0xC4125000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x789000.
+Adding mapping at 0xC4126000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x788000.
+Adding mapping at 0xC4127000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x787000.
+Adding mapping at 0xC4128000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x786000.
 
 
-Page fault: cr2 0xC40B2000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC410E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x197000.
+Page fault: cr2 0xC40C9000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4129000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x785000.
 
 
-Page fault: cr2 0xC40FD000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4114000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B3000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC410F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x195000.
+Page fault: cr2 0xC40CA000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC412A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x783000.
 
 
-Page fault: cr2 0xC40FE000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4115000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B4000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4110000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x193000.
+Page fault: cr2 0xC40CB000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC412B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x781000.
 
 
-Page fault: cr2 0xC40FF000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4116000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B5000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4111000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x191000.
+Page fault: cr2 0xC40CC000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC412C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x77F000.
 
 
-Page fault: cr2 0xC4100000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4117000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B6000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4112000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18F000.
+Page fault: cr2 0xC40CD000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC412D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x77D000.
 
 
-Page fault: cr2 0xC4101000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4118000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B7000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4113000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18D000.
+Page fault: cr2 0xC40CE000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC412E000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x77B000.
 
 
-Page fault: cr2 0xC4102000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC4119000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B8000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4114000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18B000.
+Page fault: cr2 0xC40CF000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC412F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x779000.
 
 
-Page fault: cr2 0xC4103000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC411A000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40B9000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4115000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x189000.
-Adding mapping at 0xC4116000 to vas 0xC4053644 - num is 4. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+Page fault: cr2 0xC40D0000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4130000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x777000.
 
 
-Page fault: cr2 0xC4116018, eip 0xC010AC32, nos-err 0x0
-Adding mapping at 0xC411A000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x188000.
+Page fault: cr2 0xC411B000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4104000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC40D1000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4131000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x775000.
 
 
-Page fault: cr2 0xC40BA000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC411B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x186000.
-Adding mapping at 0xBFC00000 to vas 0xC4053644 - num is 20. flags = 0x145, rwxgu'lfia = 10001'0000. p 0x0.
+Page fault: cr2 0xC411C000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4117000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC411C000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x184000.
+Page fault: cr2 0xC40D2000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4132000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x773000.
 
 
-Page fault: cr2 0xC4105000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0xC411D000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC40BB000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC411D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x182000.
+Page fault: cr2 0xC40D3000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4133000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x771000.
+
+
+Page fault: cr2 0xC411E000, eip 0xC0101219, nos-err 0x2
+
+
+Page fault: cr2 0xC40D4000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4134000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x76F000.
+
+
+Page fault: cr2 0xC411F000, eip 0xC0101219, nos-err 0x2
+
+
+Page fault: cr2 0xC40D5000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4135000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x76D000.
+
+
+Page fault: cr2 0xC4120000, eip 0xC0101219, nos-err 0x2
+
+
+Page fault: cr2 0xC40D6000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4136000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x76B000.
+
+
+Page fault: cr2 0xC4121000, eip 0xC0101219, nos-err 0x2
+
+
+Page fault: cr2 0xC40D7000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4137000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x769000.
+
+
+Page fault: cr2 0xC4122000, eip 0xC0101219, nos-err 0x2
+
+
+Page fault: cr2 0xC40EF28C, eip 0xC010EF49, nos-err 0x0
+Adding mapping at 0xC4138000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x767000.
+Adding mapping at 0xC4139000 to vas 0xC0143080 - num is 7. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC40F1192, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4140000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x767000.
+
+
+Page fault: cr2 0xC4139000, eip 0xC0108621, nos-err 0x2
+
+
+Page fault: cr2 0xC40F20C7, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4141000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x764000.
+
+
+Page fault: cr2 0xC40F307C, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4142000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x764000.
+Adding mapping at 0xC4143000 to vas 0xC4069B24 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+
+
+Page fault: cr2 0xC4143018, eip 0xC010EC94, nos-err 0x0
+Adding mapping at 0xC4148000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x764000.
+Adding mapping at 0xBFC00000 to vas 0xC4069B24 - num is 20. flags = 0x145, rwxgu'lfia = 10001'0000. p 0x0.
+
+
+Page fault: cr2 0xC4144000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC4149000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x760000.
 
 
 Page fault: cr2 0xBFC00000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4118000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC411E000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x180000.
-
-
-Page fault: cr2 0xC4106000, eip 0xC0101219, nos-err 0x2
-
-
-Page fault: cr2 0xC40BC000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC411F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17E000.
+Page fault: cr2 0xC4145000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC414A000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x75E000.
 
 
 Page fault: cr2 0xBFC01000, eip 0xC0101219, nos-err 0x2
 
 
-Page fault: cr2 0xC4119000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4120000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17C000.
-
-
-Page fault: cr2 0xC4107000, eip 0xC0101219, nos-err 0x2
-
-
-Page fault: cr2 0xC40BD000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4121000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17A000.
+Page fault: cr2 0xC4146000, eip 0xC0101219, nos-err 0x0
+Adding mapping at 0xC414B000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x75C000.
 
 
 Page fault: cr2 0xBFC02000, eip 0xC0101219, nos-err 0x2
-Adding mapping at 0xFC00000 to vas 0xC4053644 - num is 1024. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
-Page fault: cr2 0xFFFFFFC, eip 0xBFC00C20, nos-err 0x6
+Page fault: cr2 0xC4147034, eip 0xC010EF77, nos-err 0x0
+Adding mapping at 0xC414C000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x75A000.
+Adding mapping at 0xFC00000 to vas 0xC4069B24 - num is 1024. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
-Page fault: cr2 0xBFC13044, eip 0xBFC00AE8, nos-err 0x4
+Page fault: cr2 0xFFFFFFC, eip 0xBFC00C70, nos-err 0x6
 
 
-Page fault: cr2 0xBFC03020, eip 0xBFC00AF7, nos-err 0x4
+Page fault: cr2 0xBFC13044, eip 0xBFC00B3E, nos-err 0x4
 
 
-Page fault: cr2 0xC4108000, eip 0xC0101219, nos-err 0x2
-
-
-Page fault: cr2 0xC40BE000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4122000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x177000.
-Adding mapping at 0x20000000 to vas 0xC4053644 - num is 7. flags = 0x125, rwxgu'lfia = 10001'0100. p 0x0.
+Page fault: cr2 0xBFC03020, eip 0xBFC00B4D, nos-err 0x4
+Adding mapping at 0x20000000 to vas 0xC4069B24 - num is 7. flags = 0x125, rwxgu'lfia = 10001'0100. p 0x0.
 
 
 Page fault: cr2 0x20000000, eip 0xBFC00634, nos-err 0x4
-Adding mapping at 0xC4123000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x175000.
+Adding mapping at 0xC414D000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x75A000.
+Adding mapping at 0x107FF000 to vas 0xC4069B24 - num is 4. flags = 0x10F, rwxgu'lfia = 11101'0000. p 0x0.
 
 
-Page fault: cr2 0xC4109000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0x107FF000, eip 0xBFC00BEE, nos-err 0x6
 
 
-Page fault: cr2 0xC40BF000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4124000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x173000.
-Adding mapping at 0x107FF000 to vas 0xC4053644 - num is 4. flags = 0x10F, rwxgu'lfia = 11101'0000. p 0x0.
+Page fault: cr2 0x20001000, eip 0xBFC00BEE, nos-err 0x4
+Adding mapping at 0xC414E000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x755000.
 
 
-Page fault: cr2 0x107FF000, eip 0xBFC00B98, nos-err 0x6
+Page fault: cr2 0x10800000, eip 0xBFC00BEE, nos-err 0x6
 
 
-Page fault: cr2 0x20001000, eip 0xBFC00B98, nos-err 0x4
-Adding mapping at 0xC4125000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16F000.
+Page fault: cr2 0x20002000, eip 0xBFC00BEE, nos-err 0x4
+Adding mapping at 0xC414F000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x753000.
 
 
-Page fault: cr2 0xC410A000, eip 0xC0101219, nos-err 0x2
+Page fault: cr2 0x10801000, eip 0xBFC00BEE, nos-err 0x6
 
 
-Page fault: cr2 0xC40C0000, eip 0xC0101219, nos-err 0x0
-Adding mapping at 0xC4126000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16D000.
+Page fault: cr2 0x20003000, eip 0xBFC00BEE, nos-err 0x4
+Adding mapping at 0xC4150000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x751000.
 
 
-Page fault: cr2 0x10800000, eip 0xBFC00B98, nos-err 0x6
-
-
-Page fault: cr2 0x20002000, eip 0xBFC00B98, nos-err 0x4
-Adding mapping at 0xC4127000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16B000.
-
-
-Page fault: cr2 0xC410B000, eip 0xC0101219, nos-err 0x2
-
-
-Page fault: cr2 0xC40D828C, eip 0xC010AED3, nos-err 0x0
-Adding mapping at 0xC4128000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x169000.
-
-
-Page fault: cr2 0x10801000, eip 0xBFC00B98, nos-err 0x6
-
-
-Page fault: cr2 0x20003000, eip 0xBFC00B98, nos-err 0x4
-Adding mapping at 0xC4129000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x167000.
-Adding mapping at 0xC412A000 to vas 0xC013A080 - num is 7. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC40DA192, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4131000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x169000.
-
-
-Page fault: cr2 0x10802000, eip 0xBFC00B98, nos-err 0x6
+Page fault: cr2 0x10802000, eip 0xBFC00BEE, nos-err 0x6
 
 
 Page fault: cr2 0x20005278, eip 0xBFC004D9, nos-err 0x4
-Adding mapping at 0xC4132000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x164000.
-
-
-Page fault: cr2 0xC412A000, eip 0xC01076B0, nos-err 0x2
-
-
-Page fault: cr2 0xC40DB0C7, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4133000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
+Adding mapping at 0xC4151000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x74F000.
 
 
 Page fault: cr2 0x200063E0, eip 0xBFC004EE, nos-err 0x4
-Adding mapping at 0xC4134000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x164000.
+Adding mapping at 0xC4152000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x74F000.
 
 
-Page fault: cr2 0xC40DC07C, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4135000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
-
-
-Page fault: cr2 0x20004C0F, eip 0xBFC00BA3, nos-err 0x4
-Adding mapping at 0xC4136000 to vas 0xC4053644 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x164000.
-
-
-Page fault: cr2 0xC40DD097, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4137000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
-Adding mapping at 0x20007000 to vas 0xC4053644 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Page fault: cr2 0x20004C0F, eip 0xBFC00BF9, nos-err 0x4
+Adding mapping at 0xC4153000 to vas 0xC4069B24 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x74F000.
+Adding mapping at 0x20007000 to vas 0xC4069B24 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
 Page fault: cr2 0x20007000, eip 0x1080186E, nos-err 0x4
-Adding mapping at 0x20008000 to vas 0xC4053644 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x20008000 to vas 0xC4069B24 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
 Page fault: cr2 0x20008000, eip 0x1080186E, nos-err 0x4
-Adding mapping at 0x20009000 to vas 0xC4053644 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x20009000 to vas 0xC4069B24 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
 Page fault: cr2 0x20009000, eip 0x1080186E, nos-err 0x4
-Adding mapping at 0x2000A000 to vas 0xC4053644 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x2000A000 to vas 0xC4069B24 - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
 Page fault: cr2 0x2000A000, eip 0x1080186E, nos-err 0x4
 
 
-Page fault: cr2 0xC40DE003, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4138000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
+Page fault: cr2 0xC40F4097, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4154000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x748000.
 
 
-Page fault: cr2 0xC40DF01C, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4139000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
+Page fault: cr2 0xC40F5003, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4155000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x748000.
 
 
-Page fault: cr2 0xC40E0002, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC413A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
+Page fault: cr2 0xC40F601C, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4156000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x748000.
 
 
-Page fault: cr2 0xC40E1019, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC413B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
+Page fault: cr2 0xC40F7002, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4157000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x748000.
 
 
-Page fault: cr2 0xC40E2006, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC413C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x162000.
+Page fault: cr2 0xC40F8019, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4158000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x748000.
 
 
-Page fault: cr2 0xC412B000, eip 0xC01076B0, nos-err 0x2
+Page fault: cr2 0xC40F9006, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4159000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x748000.
 
 
-Page fault: cr2 0xC40E3003, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC413D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC413A000, eip 0xC0108621, nos-err 0x2
 
 
-Page fault: cr2 0xC40E4068, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC413E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC40FA003, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC415A000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40E5127, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC413F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC40FB068, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC415B000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40E6046, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4140000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC40FC127, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC415C000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40E7010, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4141000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC40FD046, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC415D000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40E80DF, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4142000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC40FE010, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC415E000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40E9009, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4143000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC40FF0DF, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC415F000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40EA030, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4144000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x153000.
+Page fault: cr2 0xC4100009, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4160000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC412C000, eip 0xC01076B0, nos-err 0x2
+Page fault: cr2 0xC4101030, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4161000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x741000.
 
 
-Page fault: cr2 0xC40EB000, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4145000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC413B000, eip 0xC0108621, nos-err 0x2
 
 
-Page fault: cr2 0xC40EC102, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4146000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC4102000, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4162000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40ED04C, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4147000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC4103102, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4163000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40EE18C, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4148000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC410404C, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4164000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40EF04A, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4149000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC410518C, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4165000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40F01C9, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC414A000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC410604A, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4166000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40F1016, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC414B000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC41071C9, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4167000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40F20CF, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC414C000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC4108016, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4168000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
 
 
-Page fault: cr2 0xC40F3017, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC414D000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x14A000.
+Page fault: cr2 0xC41090CF, eip 0xC010F125, nos-err 0x0
+Adding mapping at 0xC4169000 to vas 0xC0143080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x738000.
+MarkTfwStartPoint: running test 0
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 0, expected 3 vs. actual 3
+c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
 
 
-Page fault: cr2 0xC412D000, eip 0xC01076B0, nos-err 0x2
-
-
-Page fault: cr2 0xC40F4002, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC414E000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x140000.
-
-
-Page fault: cr2 0xC40F5009, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC414F000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x140000.
-
-
-Page fault: cr2 0xC40F60AE, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4150000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x140000.
-
-
-Page fault: cr2 0xC40F70E8, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4151000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x140000.
-
-
-Page fault: cr2 0xC40F810A, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4152000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x140000.
-
-
-Page fault: cr2 0xC40F9000, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4153000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x140000.
-
-
-Page fault: cr2 0xC412E000, eip 0xC01076B0, nos-err 0x2
-
-
-Page fault: cr2 0xC40FA000, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4154000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D000.
-
-
-Page fault: cr2 0xC40FB5CC, eip 0xC010B0AB, nos-err 0x0
-Adding mapping at 0xC4155000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x7D000.
-
-
-Page fault: cr2 0xC412F000, eip 0xC01076B0, nos-err 0x2
-
-
-Page fault: cr2 0xC4130000, eip 0xC01076B0, nos-err 0x2
-
-
-Page fault: cr2 0xC40867AC, eip 0xC01034A5, nos-err 0x2
-Adding mapping at 0xC4156000 to vas 0xC013A080 - num is 5. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4156000, eip 0xC0103497, nos-err 0x0
-
-
-Page fault: cr2 0xC415AFF4, eip 0xC01034A5, nos-err 0x2
-
-
-Page fault: cr2 0xC41597C4, eip 0xC01034A5, nos-err 0x2
-
-
-Page fault: cr2 0xC4157F94, eip 0xC01034A5, nos-err 0x2
-Adding mapping at 0xC415B000 to vas 0xC013A080 - num is 9. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC415B000, eip 0xC0103497, nos-err 0x0
-
-
-Page fault: cr2 0xC4163FF4, eip 0xC01034A5, nos-err 0x2
-
-
-Page fault: cr2 0xC4160F9C, eip 0xC01034A5, nos-err 0x2
-
-
-Page fault: cr2 0xC4158000, eip 0xC0101219, nos-err 0x2
-
-
-Page fault: cr2 0xC4161000, eip 0xC0101219, nos-err 0x2
-
-
-Page fault: cr2 0xC4162000, eip 0xC0101219, nos-err 0x2
-Adding mapping at 0xC4164000 to vas 0xC013A080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
-
-
-Page fault: cr2 0xC4164000, eip 0xC010B259, nos-err 0x0
-Adding mapping at 0xC41AF000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x166000.
-
-
-Page fault: cr2 0xC41AE298, eip 0xC010B2B4, nos-err 0x0
-Adding mapping at 0xC41B0000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x166000.
-
-
-Page fault: cr2 0xC4197920, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC41B1000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x166000.
-
-
-Page fault: cr2 0xC419CACC, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC41B2000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x166000.
-adding symbol _AcpiModuleName -> 0xC40F99D8
-adding symbol AcpiDsGetFieldNames -> 0xC40DA548
-adding symbol AcpiDsInitOneObject -> 0xC40DAC20
-adding symbol AcpiDsDetectNamedOpcodes -> 0xC40DAD75
-adding symbol AcpiDsInitBufferField -> 0xC40DBCC2
-adding symbol AcpiGbl_OpTypeDispatch -> 0xC40F9B00
-adding symbol AcpiEvGlobalLockHandler -> 0xC40DE6B7
-adding symbol AcpiEvAsynchEnableGpe -> 0xC40DEACA
-adding symbol AcpiEvAsynchExecuteGpeMethod -> 0xC40DEAFD
-adding symbol AcpiEvInstallHandler -> 0xC40DF8FF
-adding symbol AcpiEvNotifyDispatch -> 0xC40DFBE0
-adding symbol AcpiEvRegRun -> 0xC40E032B
-adding symbol AcpiEvSciXruptHandler -> 0xC40E08D1
-adding symbol AcpiEvInstallGpeHandler -> 0xC40E0991
-adding symbol AcpiExAddTable -> 0xC40E221E
-adding symbol AcpiExRegionRead -> 0xC40E2261
-Adding mapping at 0xC41B3000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x166000.
-Adding mapping at 0xC41B4000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17B000.
-Adding mapping at 0xC41B5000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x17F000.
-Adding mapping at 0xC41B6000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x183000.
-adding symbol AcpiExConvertToAscii -> 0xC40E2661
-
-
-Page fault: cr2 0xC4198000, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC41B7000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x187000.
-adding symbol AcpiExFieldDatumIo -> 0xC40E3A74
-adding symbol AcpiExAllocateNameString -> 0xC40E46AC
-adding symbol AcpiExNameSegment -> 0xC40E473B
-adding symbol AcpiExDoMatch -> 0xC40E5DF0
-adding symbol AcpiExCheckObjectType -> 0xC40E6C4B
-adding symbol AcpiExStoreDirectToNode -> 0xC40E73D1
-adding symbol AcpiExInterpreterTraceEnabled -> 0xC40E7C17
-adding symbol AcpiGbl_TraceMethodObject -> 0xC410C000
-adding symbol AcpiHwEnableWakeupGpeBlock -> 0xC40E8422
-
-
-Page fault: cr2 0xC419D000, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC41B8000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x187000.
-adding symbol AcpiHwDeletePciList -> 0xC40E86E8
-adding symbol AcpiHwGetAccessBitWidth -> 0xC40E8890
-adding symbol AcpiHwReadMultiple -> 0xC40E8B9E
-adding symbol AcpiHwWriteMultiple -> 0xC40E8D52
-adding symbol AcpiHwValidateIoRequest -> 0xC40E93C0
-adding symbol AcpiProtectedPorts -> 0xC40F9F40
-adding symbol AcpiHwSleepDispatch -> 0xC40E98F0
-adding symbol AcpiSleepDispatch -> 0xC40FA024
-adding symbol AcpiNsInitOneDevice -> 0xC40EAC23
-adding symbol AcpiNsFindIniMethods -> 0xC40EACE5
-adding symbol AcpiNsInitOneObject -> 0xC40EAF3D
-adding symbol AcpiNsCheckPackageElements -> 0xC40EBBE1
-adding symbol AcpiNsCheckPackageList -> 0xC40EBC5C
-adding symbol AcpiObjectRepairInfo -> 0xC40FAA00
-adding symbol AcpiNsRepair_PRT -> 0xC40EC475
-adding symbol AcpiNsRepair_HID -> 0xC40EC4ED
-adding symbol AcpiNsRepair_CID -> 0xC40EC5A0
-adding symbol AcpiNsRepair_FDE -> 0xC40EC615
-adding symbol AcpiNsRepair_CST -> 0xC40EC7F7
-adding symbol AcpiNsRepair_PSS -> 0xC40EC911
-adding symbol AcpiNsRepair_TSS -> 0xC40EC99E
-adding symbol AcpiNsRepair_ALR -> 0xC40EC9E2
-adding symbol AcpiNsRepairableNames -> 0xC40FAA80
-adding symbol AcpiNsGetDeviceCallback -> 0xC40ED322
-adding symbol AcpiNsCopyDeviceId -> 0xC40EDA35
-adding symbol AcpicaLidNotifyHandler -> 0xC40EE185
-adding symbol AcpicaInterruptCatcher -> 0xC40FE000
-adding symbol acpica_caught_irq -> 0xC410B000
-adding symbol AcpicaPowerButtonHandler -> 0xC40EE19A
-adding symbol AcpicaSleepNotifyHandler -> 0xC40EE1AA
-adding symbol AcpicaGlobalEventHandler -> 0xC40EE1BA
-adding symbol AcpicaPowerNotifyHandler -> 0xC40EE204
-adding symbol acpica_interrupt_handlers -> 0xC410C020
-adding symbol AcpiPsGetNextPackageLength -> 0xC40EF060
-adding symbol AcpiGbl_ArgumentCount -> 0xC40FB5C0
-adding symbol AcpiPsUpdateParameterList -> 0xC40F0D57
-adding symbol AcpiRsConvertGeneralFlags -> 0xC40FB624
-adding symbol AcpiRsConvertMemFlags -> 0xC40FB610
-adding symbol AcpiRsConvertIoFlags -> 0xC40FB600
-adding symbol AcpiRsValidateParameters -> 0xC40F252F
-adding symbol AcpiRsMatchVendorResource -> 0xC40F257F
-adding symbol FadtInfoTable -> 0xC40FBE00
-adding symbol FadtPmInfoTable -> 0xC40FBDE0
-adding symbol AcpiTbFixString -> 0xC40F3C1E
-adding symbol AcpiUtCopyIsimpleToEsimple -> 0xC40F53CB
-adding symbol AcpiUtCopyIelementToEelement -> 0xC40F5511
-adding symbol AcpiUtCopySimpleObject -> 0xC40F559B
-adding symbol AcpiUtCopyIelementToIelement -> 0xC40F56B6
-adding symbol AcpiGbl_EventTypes -> 0xC40FC028
-adding symbol AcpiGbl_BadType -> 0xC40FC01C
-adding symbol AcpiGbl_NsTypeNames -> 0xC40FBFA0
-adding symbol AcpiGbl_DescTypeNames -> 0xC40FBF60
-adding symbol AcpiGbl_RefClassNames -> 0xC40FBF38
-adding symbol AcpiGbl_MutexNames -> 0xC40FBF20
-adding symbol AcpiUtUpdateRefCount -> 0xC40F5C77
-adding symbol AcpiGbl_ExceptionNames_Env -> 0xC40FC260
-adding symbol AcpiGbl_ExceptionNames_Pgm -> 0xC40FC220
-adding symbol AcpiGbl_ExceptionNames_Tbl -> 0xC40FC1F8
-adding symbol AcpiGbl_ExceptionNames_Aml -> 0xC40FC160
-adding symbol AcpiGbl_ExceptionNames_Ctrl -> 0xC40FC120
-adding symbol AcpiGbl_HexToAscii -> 0xC40FC3A0
-adding symbol AcpiUtGetSimpleObjectSize -> 0xC40F73B1
-adding symbol AcpiUtGetElementLength -> 0xC40F74E8
-
-
-Page fault: cr2 0xC4199000, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC41B9000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x187000.
-adding symbol AcpiDefaultSupportedInterfaces -> 0xC40FD280
-adding symbol UtRtypeNames -> 0xC40FC3E8
-adding symbol AcpiUtFormatNumber -> 0xC40F7DBD
-adding symbol AcpiGbl_ResourceTypes -> 0xC40FC460
-adding symbol AcpiUtInsertDigit -> 0xC40F8B1D
-adding symbol AcpiUtGetMutexObject -> 0xC40F96C1
-adding symbol AcpiUtValidateResource -> 0xC40F85D4
-adding symbol AcpiUtCreateUpdateStateAndPush -> 0xC40F6FB3
-adding symbol AcpiUtMethodError -> 0xC40F62B5
-adding symbol AcpiGbl_StateCache -> 0xC410C4B8
-adding symbol AcpiDsEvalTableRegionOperands -> 0xC40DC0D7
-adding symbol AcpiExOpcode_6A_0T_1R -> 0xC40E5E72
-adding symbol AcpiDsResolveOperands -> 0xC40DC99C
-adding symbol AcpiEvTerminate -> 0xC40DFD08
-adding symbol AcpiUtPopGenericState -> 0xC40F8872
-adding symbol AcpiGetSleepTypeData -> 0xC40E978F
-adding symbol AcpiUtDetectOctalPrefix -> 0xC40F8D5C
-adding symbol AcpiUtValidObjectType -> 0xC40F5C08
-adding symbol AcpiGbl_OwnerIdMask -> 0xC410C280
-adding symbol AcpiUtCopyEobjectToIobject -> 0xC40F5816
-adding symbol AcpiUtCreateInternalObjectDbg -> 0xC40F75CB
-adding symbol AcpiHwGetGpeStatus -> 0xC40E85B2
-adding symbol AcpiNsCheckPackage -> 0xC40EBE47
-adding symbol AcpiOsAllocate -> 0xC40EE68F
-adding symbol AcpiEvGpeDispatch -> 0xC40DEBC8
-adding symbol AcpiHwDisableGpeBlock -> 0xC40E83E8
-adding symbol AcpiOsPhysicalTableOverride -> 0xC40EE2B6
-adding symbol AcpiReleaseGlobalLock -> 0xC40E1310
-adding symbol AcpiPsGetNextPackageEnd -> 0xC40EF09E
-adding symbol AcpiEvCmosRegionSetup -> 0xC40E07C5
-adding symbol AcpiGbl_StepToNextCall -> 0xC410C266
-adding symbol AcpiDsMethodDataInit -> 0xC40DB3F9
-adding symbol AcpiDsExecEndOp -> 0xC40DD067
-adding symbol AcpiGbl_RootTableList -> 0xC410C5C8
-adding symbol AcpiDsCreateWalkState -> 0xC40DE2C1
-adding symbol AcpiGetEventStatus -> 0xC40E1539
-adding symbol AcpiAcquireMutex -> 0xC40F9738
-adding symbol AcpiUtShortMultiply -> 0xC40F6DB4
-adding symbol AcpiGbl_FadtGpeDevice -> 0xC410C234
-adding symbol AcpiGetTable -> 0xC40F43BF
-adding symbol AcpiPsParseAml -> 0xC40F060C
-adding symbol AcpiTbValidateTable -> 0xC40F2AFA
-adding symbol AcpiHwReadPort -> 0xC40E94D2
-adding symbol AcpiRsGetIrq -> 0xC40FB960
-adding symbol AcpiDsLoad2BeginOp -> 0xC40DD8A4
-adding symbol AcpiException -> 0xC40F93DD
-adding symbol AcpiUtExecute_CLS -> 0xC40F6964
-adding symbol AcpiRemoveFixedEventHandler -> 0xC40E10F4
-adding symbol AcpiExOpcode_2A_0T_0R -> 0xC40E5520
-adding symbol AcpiExDoConcatenate -> 0xC40E1F2D
-adding symbol AcpiTbReleaseTable -> 0xC40F2A52
-adding symbol AcpiExStartTraceOpcode -> 0xC40E7D8A
-adding symbol AcpiExOpcode_1A_1T_1R -> 0xC40E4B12
-adding symbol AcpiUtAcquireReadLock -> 0xC40F6CE1
-adding symbol AcpiNsLocal -> 0xC40ECCA1
-adding symbol AcpiExLoadOp -> 0xC40E24A4
-adding symbol AcpiEvMatchGpeMethod -> 0xC40DF34E
-adding symbol AcpiExIntegerToString -> 0xC40E7FB3
-adding symbol AcpiOsRemoveInterruptHandler -> 0xC40EEF5F
-Adding mapping at 0xC41BA000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x187000.
-Adding mapping at 0xC41BB000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x190000.
-Adding mapping at 0xC41BC000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x192000.
-Adding mapping at 0xC41BD000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x194000.
-adding symbol AcpiOsAllocateZeroed -> 0xC40F4D38
-adding symbol AcpiNsLoadTable -> 0xC40EB058
-adding symbol AcpiInstallGpeHandler -> 0xC40E1176
-adding symbol AcpiGbl_GpeXruptListHead -> 0xC410C218
-adding symbol AcpiGbl_GlobalLockHandle -> 0xC410C4E0
-adding symbol AcpiNsHandleToPathname -> 0xC40EB24F
-adding symbol AcpiExReadSerialBus -> 0xC40E719C
-adding symbol AcpiExDoDebugObject -> 0xC40E2ECE
-adding symbol AcpiUtAddReference -> 0xC40F60EB
-adding symbol AcpiGbl_SetResourceDispatch -> 0xC40FD0E0
-adding symbol AcpiUtValidInternalObject -> 0xC40F7532
-adding symbol AcpiGbl_CopyDsdtLocally -> 0xC410C708
-adding symbol AcpiDsExecEndControlOp -> 0xC40DA32F
-adding symbol AcpiNsConvertToInteger -> 0xC40EA5CA
-adding symbol AcpiGbl_ResourceAmlSerialBusSizes -> 0xC40FC484
-adding symbol AcpiExOpcode_1A_1T_0R -> 0xC40E4AC8
-adding symbol AcpiUtCreatePkgState -> 0xC40F8917
-adding symbol AcpiNsGetExternalPathname -> 0xC40EB32E
-
-
-Page fault: cr2 0xC419E000, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC41BE000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x196000.
-adding symbol AcpiPsGetOpcodeSize -> 0xC40F038C
-adding symbol AcpiDsBuildInternalBufferObj -> 0xC40DB7F4
-adding symbol AcpiPsGetName -> 0xC40F0CDB
-adding symbol AcpiUtStrlwr -> 0xC40F731E
-adding symbol AcpiExOpcode_3A_1T_1R -> 0xC40E5C47
-adding symbol AcpiUtWalkAmlResources -> 0xC40F8725
-adding symbol AcpiEnableEvent -> 0xC40E13E8
-adding symbol AcpiUtGetResourceEndTag -> 0xC40F8830
-adding symbol AcpiTbInvalidateTable -> 0xC40F2B2F
-adding symbol AcpiGbl_TruncateIoAddresses -> 0xC410C705
-adding symbol AcpiUtDebugDumpBuffer -> 0xC40F51A2
-adding symbol AcpiHwExecuteSleepMethod -> 0xC40E8212
-adding symbol AcpiPsBuildNamedOp -> 0xC40EFCBE
-adding symbol snprintf -> 0xC40F8574
-adding symbol AcpiRsSetResourceLength -> 0xC40F21FF
-adding symbol AcpiEnterSleepStatePrep -> 0xC40E99D9
-adding symbol AcpiRsGetAmlLength -> 0xC40F10FF
-adding symbol AcpiGbl_RootNodeStruct -> 0xC410C23C
-adding symbol AcpiOsInitialize -> 0xC40EE215
-adding symbol AcpiUtPredefinedWarning -> 0xC40F6114
-adding symbol AcpiGbl_EnableTableValidation -> 0xC40FD276
-adding symbol AcpiDsInitializeRegion -> 0xC40DBEE2
-adding symbol AcpiRemoveSciHandler -> 0xC40E0F47
-adding symbol AcpiPsGetOpcodeName -> 0xC40F0371
-adding symbol AcpiTbIsTableLoaded -> 0xC40F3093
-adding symbol AcpicaShutdown -> 0xC40EF01A
-adding symbol AcpiOsWriteMemory -> 0xC40EE565
-adding symbol AcpiNsDeleteChildren -> 0xC40EA1CF
-adding symbol AcpiTbNotifyTable -> 0xC40F3126
-adding symbol AcpiHwGetBitRegisterInfo -> 0xC40E8D90
-adding symbol AcpiReset -> 0xC40E962C
-adding symbol AcpiRemoveNotifyHandler -> 0xC40E0CD0
-adding symbol AcpiUtCheckAndRepairAscii -> 0xC40F4F9C
-adding symbol AcpiLoadTables -> 0xC40F478D
-adding symbol AcpiExOpcode_2A_2T_1R -> 0xC40E55AF
-adding symbol AcpiDsGetBankFieldArguments -> 0xC40DA178
-adding symbol AcpiLeaveSleepStatePrep -> 0xC40E9ABE
-adding symbol AcpiFindRootPointer -> 0xC40F49E7
-adding symbol AcpiGbl_FACS -> 0xC410C594
-adding symbol AcpiExStopTraceOpcode -> 0xC40E7D91
-adding symbol AcpiEvUpdateGpes -> 0xC40DF573
-adding symbol AcpiRsCreateAmlResources -> 0xC40F18C2
-adding symbol AcpiProtocolLengths -> 0xC40F9C28
-adding symbol AcpiMarkGpeForWake -> 0xC40E17C4
-adding symbol AcpiGbl_ResourceAmlSizes -> 0xC40FC4A0
-adding symbol AcpiGbl_LastListHead -> 0xC410C220
-adding symbol AcpiExTruncateFor32bitTable -> 0xC40E7E46
-adding symbol AcpiInstallGpeBlock -> 0xC40E1B55
-adding symbol AcpiGbl_AllGpesInitialized -> 0xC410C21C
-adding symbol AcpiExSystemSignalEvent -> 0xC40E7B95
-adding symbol AcpiExGetNameString -> 0xC40E47F5
-adding symbol AcpiUtOsiImplementation -> 0xC40F7A7F
-adding symbol AcpiUtAddAddressRange -> 0xC40F4B3E
-adding symbol AcpiGbl_StartupFlags -> 0xC410C4A8
-adding symbol AcpiTbSetTableLoadedFlag -> 0xC40F30D7
-adding symbol AcpiExAcquireMutexObject -> 0xC40E4347
-adding symbol AcpiDsGetBufferArguments -> 0xC40DA17A
-adding symbol AcpiEnterSleepState -> 0xC40E9A6B
-adding symbol AcpiUtDeleteInternalObjectList -> 0xC40F5C48
-adding symbol AcpiPsNextParseState -> 0xC40F053C
-adding symbol AcpiUtDeleteCaches -> 0xC40F4DF4
-adding symbol AcpiExOpcode_2A_0T_1R -> 0xC40E5A65
-adding symbol AcpiGetEventResources -> 0xC40F26EC
-adding symbol AcpiGbl_NamespaceInitialized -> 0xC410C278
-adding symbol AcpiUtExecute_STA -> 0xC40F64D6
-adding symbol AcpiExExitInterpreter -> 0xC40E7DEF
-adding symbol AcpiGetType -> 0xC40EE010
-adding symbol AcpiRsGetMethodData -> 0xC40F241C
-adding symbol AcpiInitializeSubsystem -> 0xC40F9564
-adding symbol AcpiPsGetNextNamestring -> 0xC40EF0B4
-adding symbol AcpiUtRepairName -> 0xC40F8AA7
-adding symbol AcpiNsInitOnePackage -> 0xC40EAEEE
-adding symbol AcpiUtConvertOctalString -> 0xC40F8BC7
-adding symbol AcpiUtGetResourceHeaderLength -> 0xC40F86ED
-adding symbol AcpiEvWalkGpeList -> 0xC40DF626
-adding symbol AcpiHwLegacyWake -> 0xC40E921C
-adding symbol AcpiUtAllocateOwnerId -> 0xC40F7B86
-adding symbol AcpiPsPushScope -> 0xC40F09B0
-adding symbol AcpiSetFirmwareWakingVector -> 0xC40E991F
-adding symbol AcpiEvMaskGpe -> 0xC40DE8E7
-adding symbol AcpiExOpcode_2A_1T_1R -> 0xC40E56C7
-adding symbol AcpiGbl_PredefinedMethods -> 0xC40FA0C0
-adding symbol AcpiEvaluateObjectTyped -> 0xC40ED68F
-adding symbol AcpiUtShortDivide -> 0xC40F6E31
-adding symbol AcpiEvAddGpeReference -> 0xC40DE96D
-adding symbol AcpiTbInitializeFacs -> 0xC40F3DCD
-adding symbol AcpiDsEvalBufferFieldOperands -> 0xC40DBEFC
-adding symbol AcpiPsGetNextNamepath -> 0xC40EF100
-adding symbol AcpiGbl_AmlResourceSizes -> 0xC40FB7E4
-adding symbol AcpiNsGetNodeUnlocked -> 0xC40ED0D4
-adding symbol AcpiDsScopeStackClear -> 0xC40DDE8D
-adding symbol AcpiGetPossibleResources -> 0xC40F266A
-adding symbol AcpiHwValidateRegister -> 0xC40E8965
-adding symbol AcpiUtExplicitStrtoul64 -> 0xC40F8E93
-adding symbol AcpiHwLowSetGpe -> 0xC40E84C6
-adding symbol AcpiPsFreeOp -> 0xC40F0C8E
-adding symbol AcpiPsParseLoop -> 0xC40EF770
-adding symbol AcpiPsPeekOpcode -> 0xC40F039D
-adding symbol AcpiNsSimpleRepair -> 0xC40EC265
-adding symbol AcpiDsClearImplicitReturn -> 0xC40DC7AC
-adding symbol AcpiOsPurgeCache -> 0xC40F5237
-adding symbol AcpiInstallInitializationHandler -> 0xC40F8FE7
-adding symbol AcpiNsRootInitialize -> 0xC40E9AE2
-adding symbol AcpiNsHandleToName -> 0xC40EB0E9
-adding symbol AcpiExConvertToInteger -> 0xC40E2748
-adding symbol AcpiDecodePldBuffer -> 0xC40F924D
-adding symbol AcpiExUnlinkMutex -> 0xC40E430E
-adding symbol AcpiDsEvalRegionOperands -> 0xC40DBFD9
-adding symbol AcpiExPciClsToString -> 0xC40E803B
-adding symbol AcpiClearEvent -> 0xC40E1502
-adding symbol AcpiHwRegisterWrite -> 0xC40E8ED6
-adding symbol AcpiUtGetResourceLength -> 0xC40F85BD
-adding symbol AcpiExWriteSerialBus -> 0xC40E7296
-adding symbol AcpiUtGetRegionName -> 0xC40F5AB1
-adding symbol AcpiOsWritable -> 0xC40EED09
-adding symbol AcpiEvInstallSpaceHandler -> 0xC40DF9A3
-adding symbol AcpiRemoveTableHandler -> 0xC40F4556
-adding symbol AcpiRsConvertAddress32 -> 0xC40FB664
-adding symbol AcpiNsGetNextNodeTyped -> 0xC40ED1A9
-adding symbol AcpiExDataTableSpaceHandler -> 0xC40E6614
-adding symbol AcpiDsInitObjectFromOp -> 0xC40DB8E0
-adding symbol AcpiDsClearOperands -> 0xC40DC9D8
-adding symbol AcpiGetName -> 0xC40EDAED
-adding symbol AcpiGbl_ShortOpIndex -> 0xC40FB4C0
-adding symbol AcpiReadBitRegister -> 0xC40E9691
-adding symbol AcpiHwLegacySleep -> 0xC40E901A
-adding symbol vsnprintf -> 0xC40F813A
-adding symbol AcpiUtUpdateInterfaces -> 0xC40F7A03
-adding symbol AcpiRsGetAddressCommon -> 0xC40F1053
-adding symbol AcpiPsAllocOp -> 0xC40F0BE3
-adding symbol AcpiDsBeginMethodExecution -> 0xC40DAEF1
-adding symbol AcpiEvQueueNotifyRequest -> 0xC40DFC4E
-adding symbol AcpiGbl_GetResourceDispatch -> 0xC40FD040
-adding symbol AcpiDetachData -> 0xC40ED951
-adding symbol AcpiGbl_GlobalLockMutex -> 0xC410C4EC
-adding symbol AcpiEvInstallSciHandler -> 0xC40E0901
-adding symbol AcpiUtValidNameChar -> 0xC40F4F42
-Adding mapping at 0xC41BF000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x196000.
-Adding mapping at 0xC41C0000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x199000.
-Adding mapping at 0xC41C1000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6E000.
-Adding mapping at 0xC41C2000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6D000.
-adding symbol AcpicaThread -> 0xC40EE6DB
-adding symbol AcpiGetHandle -> 0xC40EDA64
-adding symbol AcpiDsResultPop -> 0xC40DDF8B
-adding symbol AcpiOsWaitSemaphore -> 0xC40EEDF7
-adding symbol AcpiOsStall -> 0xC40EED81
-adding symbol AcpiDsInitCallbacks -> 0xC40DD815
-adding symbol AcpiGetVendorResource -> 0xC40F296B
-adding symbol AcpiGbl_IntegerByteWidth -> 0xC410C561
-adding symbol AcpiGbl_Pm1EnableRegisterSave -> 0xC410C268
-adding symbol AcpiPsGetOpcodeInfo -> 0xC40F032F
-adding symbol AcpiUtStrupr -> 0xC40F7347
-adding symbol AcpiDsCreateOperand -> 0xC40DCA13
-adding symbol AcpiGbl_LongOpIndex -> 0xC40FB420
-adding symbol AcpiExWriteGpio -> 0xC40E714B
-adding symbol AcpiOsVprintf -> 0xC40EEFB6
-adding symbol AcpiTbReleaseOwnerId -> 0xC40F2FFB
-adding symbol AcpiGbl_DefaultAddressSpaces -> 0xC40FD000
-
-
-Page fault: cr2 0xC419A000, eip 0xC010B351, nos-err 0x0
-Adding mapping at 0xC41C3000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6C000.
-adding symbol AcpiNsGetAttachedData -> 0xC40EB756
-adding symbol AcpiExEnterInterpreter -> 0xC40E7D98
-adding symbol AcpiDsResultPush -> 0xC40DE07C
-adding symbol AcpiDsInitPackageElement -> 0xC40DC3C6
-adding symbol AcpiRsConvertExtAddress64 -> 0xC40FB63C
-adding symbol AcpiNsGetNode -> 0xC40ED152
-adding symbol AcpiTbGetRsdpLength -> 0xC40F4922
-adding symbol AcpiUtDeleteObjectDesc -> 0xC40F7581
-adding symbol AcpiGbl_NsLookupCount -> 0xC410C270
-adding symbol AcpiNsInitializeDevices -> 0xC40EAD87
-adding symbol AcpiExTracePoint -> 0xC40E7C82
-adding symbol AcpiGbl_FixedEventInfo -> 0xC40FD1A0
-adding symbol AcpiNsWalkNamespace -> 0xC40ED1D8
-adding symbol AcpiTbPutTable -> 0xC40F4145
-adding symbol AcpiCurrentGpeCount -> 0xC410C5DC
-adding symbol AcpiTerminate -> 0xC40F8F0D
-adding symbol AcpiEvInitializeGpeBlock -> 0xC40DF26D
-adding symbol AcpiOsReadMemory -> 0xC40EE4EE
-adding symbol AcpiUtRemoveInterface -> 0xC40F798D
-adding symbol AcpiPsHasCompletedScope -> 0xC40F094C
-adding symbol AcpiExGetObjectReference -> 0xC40E3F15
-adding symbol AcpiNsGetInternalNameLength -> 0xC40ECCE2
-adding symbol __umoddi3 -> 0xC40F98BC
-adding symbol AcpiTbLoadNamespace -> 0xC40F45A1
-adding symbol AcpiDsPushWalkState -> 0xC40DE29A
-adding symbol AcpiPsCompleteFinalOp -> 0xC40F020F
-adding symbol AcpiUtEvaluateNumericObject -> 0xC40F648C
-adding symbol AcpiPsCompleteThisOp -> 0xC40F03B8
-adding symbol AcpiGbl_IntegerBitWidth -> 0xC410C562
-adding symbol AcpiExPciBarSpaceHandler -> 0xC40E6611
-adding symbol AcpiTbCheckDsdtHeader -> 0xC40F3E3D
-adding symbol __udivdi3 -> 0xC40F97B0
-adding symbol AcpiReleaseMutex -> 0xC40F977A
-adding symbol AcpiSetGpeWakeMask -> 0xC40E190D
-adding symbol AcpiRsSetAddressCommon -> 0xC40F10B2
-adding symbol AcpiHwWritePm1Control -> 0xC40E8DC3
-adding symbol AcpiDebugTrace -> 0xC40F0D91
-adding symbol AcpiDsPopWalkState -> 0xC40DE2AD
-adding symbol AcpiDsRestartControlMethod -> 0xC40DB0DC
-adding symbol AcpiGbl_NamespaceCache -> 0xC410C4BC
-
-
-Page fault: cr2 0xC419F000, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC41C4000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6C000.
-Evicting page...
-
-
-Page fault: cr2 0xC419F000, eip 0xC01074B1, nos-err 0x0
-Adding mapping at 0xC41C5000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6C000.
-Evicting page...
-adding symbol AcpiUtCreateControlState -> 0xC40F8945
-adding symbol AcpiAttachData -> 0xC40ED8D8
-adding symbol AcpiOsSleep -> 0xC40EED5E
-adding symbol AcpiUtInstallInterface -> 0xC40F7916
-adding symbol AcpiRsSetResourceHeader -> 0xC40F2232
-adding symbol InitAcpica -> 0xC40EF03E
-adding symbol AcpiGetCurrentResources -> 0xC40F2636
-adding symbol AcpiHwDisableAllGpes -> 0xC40E86AC
-adding symbol AcpiUtExecutePowerMethods -> 0xC40F6524
-adding symbol AcpiInfo -> 0xC40F946D
-adding symbol AcpiTbAcquireTempTable -> 0xC40F2A72
-adding symbol AcpiUtPrintString -> 0xC40F8980
-adding symbol AcpiWalkNamespace -> 0xC40ED7C2
-adding symbol AcpiGbl_TableHandler -> 0xC410C48C
-adding symbol AcpiEvInitializeRegion -> 0xC40E07DF
-adding symbol AcpiRsConvertAmlToResource -> 0xC40F1B07
-adding symbol AcpiHwExtendedSleep -> 0xC40E8276
-adding symbol AcpiTbFindTable -> 0xC40F377C
-adding symbol AcpiGbl_HardwareLock -> 0xC410C4D4
-adding symbol AcpiExOpcode_3A_0T_0R -> 0xC40E5B98
-adding symbol AcpiGbl_AmlOpInfo -> 0xC40FABE0
-adding symbol AcpiDsEvalBankFieldOperands -> 0xC40DC324
-adding symbol AcpiNsInstallNode -> 0xC40EA174
-adding symbol AcpiNsGetAttachedObject -> 0xC40EB637
-adding symbol AcpiLoadTable -> 0xC40F4816
-adding symbol AcpiExSystemDoStall -> 0xC40E7B18
-adding symbol AcpiBufferToResource -> 0xC40F1581
-adding symbol AcpiBiosException -> 0xC40F94D4
-adding symbol AcpiUtDivide -> 0xC40F6EA9
-adding symbol AcpiRsConvertPinGroup -> 0xC40FBB80
-adding symbol AcpiGbl_TraceMethodName -> 0xC410C6F8
-adding symbol AcpiEvExecuteRegMethods -> 0xC40E038C
-adding symbol AcpiUtReleaseWriteLock -> 0xC40F6D9D
-adding symbol AcpiEvGpeDetect -> 0xC40DEDE0
-adding symbol AcpiOsAcquireObject -> 0xC40F5349
-adding symbol AcpiGbl_DisplayDebugTimer -> 0xC410C6F4
-adding symbol AcpiGbl_FixedEventHandlers -> 0xC410C1E0
-adding symbol AcpiUtPrintNumber -> 0xC40F80B7
-adding symbol AcpiUtShortShiftRight -> 0xC40F6E05
-adding symbol AcpiHwGetMode -> 0xC40E80DD
-adding symbol AcpiGetTimerDuration -> 0xC40E932B
-adding symbol AcpiTbGetNextTableDescriptor -> 0xC40F2E64
-adding symbol AcpiTbVerifyTempTable -> 0xC40F2B81
-adding symbol AcpiUtGetReferenceName -> 0xC40F5BB3
-adding symbol AcpiUtReleaseMutex -> 0xC40F729A
-adding symbol AcpiDsGetBufferFieldArguments -> 0xC40DA13D
-adding symbol AcpiRsConvertDma -> 0xC40FB8B0
-adding symbol AcpiInstallInterface -> 0xC40F9047
-adding symbol AcpiExOpcode_1A_0T_1R -> 0xC40E505A
-adding symbol AcpiTbValidateRsdp -> 0xC40F4957
-adding symbol AcpiPsPopScope -> 0xC40F0A15
-adding symbol AcpiSciCount -> 0xC410C1BC
-adding symbol AcpiUtRemoveAddressRange -> 0xC40F4BA9
-adding symbol AcpiGbl_DSDT -> 0xC410C5C4
-adding symbol AcpiGbl_GlobalNotify -> 0xC410C498
-adding symbol AcpiGbl_TraceDbgLevel -> 0xC40FD26C
-adding symbol AcpiHwClearAcpiStatus -> 0xC40E8FC7
-adding symbol AcpiOsTerminate -> 0xC40EE229
-adding symbol AcpiTbInstallStandardTable -> 0xC40F3AED
-adding symbol AcpiUtAcquireWriteLock -> 0xC40F6D84
-adding symbol AcpiEvInitGlobalLockHandler -> 0xC40DE724
-adding symbol AcpiDsCreateBankField -> 0xC40DAA9C
-adding symbol AcpiSetCurrentResources -> 0xC40F269E
-adding symbol AcpiExReadDataFromField -> 0xC40E3288
-adding symbol AcpiRsConvertPinFunction -> 0xC40FBD20
-adding symbol AcpiNsCheckArgumentCount -> 0xC40EA4F6
-adding symbol AcpiEvHasDefaultHandler -> 0xC40DF8A7
-adding symbol AcpiGbl_DisableSsdtTableInstall -> 0xC410C703
-adding symbol AcpiRemoveAddressSpaceHandler -> 0xC40E1DD9
-adding symbol AcpiGbl_GlobalLockSemaphore -> 0xC410C4E8
-adding symbol AcpiNsRemoveNode -> 0xC40EA141
-adding symbol AcpiRsConvertFixedMemory32 -> 0xC40FB9C0
-adding symbol AcpiExStopTraceMethod -> 0xC40E7D18
-adding symbol AcpiNsTerminate -> 0xC40ED05C
-adding symbol AcpiInstallInterfaceHandler -> 0xC40F9143
-adding symbol AcpiExPciConfigSpaceHandler -> 0xC40E65B0
-adding symbol AcpiGbl_SystemAwakeAndRunning -> 0xC410C5D8
-adding symbol AcpiExSystemMemorySpaceHandler -> 0xC40E6317
-adding symbol AcpiPsCompleteOp -> 0xC40EFFDC
-adding symbol AcpiGetData -> 0xC40ED9BC
-adding symbol AcpiGbl_DbOutputFlags -> 0xC40FD24C
-adding symbol AcpiUtCheckAddressRange -> 0xC40F4BF4
-adding symbol AcpiUtCreateRwLock -> 0xC40F6C7F
-adding symbol AcpiDisableGpe -> 0xC40E1697
-adding symbol AcpiUtCreateIntegerObject -> 0xC40F76A5
-adding symbol AcpiGbl_InterfaceHandler -> 0xC410C484
-adding symbol AcpiUtDeleteAddressLists -> 0xC40F4CE9
-adding symbol AcpiGbl_HighestDstateNames -> 0xC40FD210
-adding symbol AcpiOsGetTimer -> 0xC40EE373
-adding symbol AcpiSetGpe -> 0xC40E16EA
-adding symbol AcpiEvSciDispatch -> 0xC40E0876
-adding symbol AcpiUtMatchPredefinedMethod -> 0xC40F7D27
-adding symbol AcpiFormatException -> 0xC40F6618
-adding symbol AcpiInstallMethod -> 0xC40EDE6B
-adding symbol AcpiExPrepCommonFieldObject -> 0xC40E601B
-adding symbol AcpiRsConvertUartSerialBus -> 0xC40FBC00
-adding symbol AcpiEvEnableGpe -> 0xC40DE8D5
-adding symbol AcpiUtScanNumber -> 0xC40F8056
-adding symbol AcpiUtConvertDecimalString -> 0xC40F8C14
-Adding mapping at 0xC41C6000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6C000.
-Evicting page...
-Adding mapping at 0xC41C7000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x18C000.
-Evicting page...
-Adding mapping at 0xC41C8000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x174000.
-Evicting page...
-Adding mapping at 0xC41C9000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x16E000.
-
-
-Page fault: cr2 0xC419A8B0, eip 0xC010B351, nos-err 0x0
-Evicting page...
-Adding mapping at 0xC41CA000 to vas 0xC013A080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x6B000.
-Evicting page...
-adding symbol AcpiPsGetNextArg -> 0xC40EF37C
-adding symbol AcpiDsEvaluateNamePath -> 0xC40DCCCE
-adding symbol AcpiUtGetEventName -> 0xC40F5AE9
-adding symbol AcpiBiosError -> 0xC40F949C
-adding symbol AcpiEvDeleteGpeBlock -> 0xC40DEEB7
-adding symbol AcpiDispatchGpe -> 0xC40E1A57
-adding symbol AcpiEvRemoveGlobalLockHandler -> 0xC40DE793
-adding symbol AcpiOsInstallInterruptHandler -> 0xC40EEEE0
-adding symbol AcpiRsConvertResourcesToAml -> 0xC40F19EA
-adding symbol AcpiExLoadTableOp -> 0xC40E2328
-adding symbol AcpiRsConvertAddress16 -> 0xC40FB678
-adding symbol AcpiRsConvertPinConfig -> 0xC40FBBC0
-adding symbol AcpiUtPredefinedBiosError -> 0xC40F619A
-adding symbol AcpiNsWrapWithPackage -> 0xC40EC22E
-adding symbol AcpiGbl_EventsInitialized -> 0xC410C264
-adding symbol AcpiDsScopeStackPush -> 0xC40DDEBA
-adding symbol AcpiNsConvertToString -> 0xC40EA680
-adding symbol AcpiWarning -> 0xC40F9435
-adding symbol AcpiNsCheckArgumentTypes -> 0xC40EA383
-adding symbol AcpiDsGetPackageArguments -> 0xC40DA1C4
-adding symbol AcpiOsSignalSemaphore -> 0xC40EEE47
-adding symbol AcpiGbl_SupportedInterfaces -> 0xC410C260
-adding symbol AcpiUnloadTable -> 0xC40F490C
-adding symbol AcpiGbl_GpeLock -> 0xC410C4D8
-adding symbol AcpiGetParent -> 0xC40EE080
-adding symbol AcpiDbgLevel -> 0xC40FD264
-adding symbol AcpiGbl_SleepTypeB -> 0xC410C21D
-adding symbol AcpiEvDeleteGpeHandlers -> 0xC40DF81C
-adding symbol AcpiOsReadPciConfiguration -> 0xC40EE3AA
-adding symbol AcpiRsGetCrsMethodData -> 0xC40F2359
-adding symbol AcpiNsExternalizeName -> 0xC40ECEA1
-adding symbol AcpiGbl_Use32BitFacsAddresses -> 0xC40FD275
-adding symbol AcpiInstallGpeRawHandler -> 0xC40E119B
-adding symbol AcpiHwGetGpeRegisterBit -> 0xC40E84AD
-adding symbol AcpiGbl_NsProperties -> 0xC40FC03C
-adding symbol AcpiUtInitializeInterfaces -> 0xC40F7841
-adding symbol AcpiUtGetInterface -> 0xC40F7A51
-adding symbol AcpiRemoveInterface -> 0xC40F90DA
-adding symbol AcpiCheckAddressRange -> 0xC40F91EB
-adding symbol AcpiNsRemoveNullElements -> 0xC40EC1E2
-adding symbol AcpiGbl_EnableAmlDebugObject -> 0xC410C709
-adding symbol AcpiUtStricmp -> 0xC40F7370
-adding symbol AcpiOsCreateCache -> 0xC40F51C6
-adding symbol AcpiRsConvertGpio -> 0xC40FBD60
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+007911A0+006F11A0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
+A
+Reached TFW_SP 0
+B
+RAM TABLE AT 0xC000C634. entries = 6
+RAM TABLE AT 0xC000C634. entries = 6
+RAM TABLE AT 0xC000C634. entries = 6
+Reached TFW_SP 1
+C
+D
+E
+F
+G
+Reached TFW_SP 2
+MarkTfwStartPoint: running test 1
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 1, expected 3 vs. actual 3
+c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+007911A0+006F11A0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
+A
+Reached TFW_SP 0
+B
+RAM TABLE AT 0xC000C634. entries = 6
+RAM TABLE AT 0xC000C634. entries = 6
+RAM TABLE AT 0xC000C634. entries = 6
+Reached TFW_SP 1
+C
+D
+E
+F
+G
+Reached TFW_SP 2
+MarkTfwStartPoint: running test 2
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 2, expected 3 vs. actual 3
+c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+007911A0+006F11A0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
+A
+Reached TFW_SP 0
+B
+RAM TABLE AT 0xC000C634. entries = 6
+RAM TABLE AT 0xC000C634. entries = 6
+RAM TABLE AT 0xC000C634. entries = 6
+Reached TFW_SP 1
+C
+D
+E
+F
+G
+Reached TFW_SP 2
+MarkTfwStartPoint: running test 3
+PANIC 3 unit test ok
+in test.
+FinishedTfwTest: finished test 3, expected 3 vs. actual 3
+c[?7l[2J[0mSeaBIOS (version rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+007911A0+006F11A0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from Hard Disk..c[?7l[2J[0m.KernelMain: kernel is initialising...
+A

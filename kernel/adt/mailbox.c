@@ -1,4 +1,11 @@
 
+/*
+ * adt/mailbox.c - Blocking Buffers
+ *
+ * Implements fixed-sized byte queues that can block on read/write if they are
+ * empty/full. Useful for implementing pipes and ptys.
+ */
+
 #include <heap.h>
 #include <assert.h>
 #include <common.h>
@@ -152,6 +159,6 @@ int MailboxAccess(struct mailbox* mbox, struct transfer* tr) {
         }
         done_any = true;
     }
-    
+
     return 0;
 }

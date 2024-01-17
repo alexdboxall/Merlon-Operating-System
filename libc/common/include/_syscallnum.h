@@ -16,6 +16,8 @@ enum system_call_numbers {
     SYSCALL_PREPEXEC,
     SYSCALL_WAITPID,
     SYSCALL_FORK,
+    SYSCALL_GETPID,
+    SYSCALL_GETTID,
     
     _SYSCALL_NUM_ENTRIES
 };

@@ -1,4 +1,12 @@
 
+/*
+ * dev/pipe.c - Unnamed Pipes
+ *
+ * Implements pseudoterminals (pty) - a pair of devices which act as a virtual
+ * terminal, with the master implementing the terminal emulator, and the
+ * subordinate acting as the text terminal.
+ */
+
 #include <heap.h>
 #include <stdlib.h>
 #include <vfs.h>
@@ -15,7 +23,6 @@
 #include <termios.h>
 #include <mailbox.h>
 #include <virtual.h>
-
 
 #define INTERNAL_BUFFER_SIZE 256  // used to communicate with master and sub   
 #define LINE_BUFFER_SIZE 300      // maximum length of a typed line

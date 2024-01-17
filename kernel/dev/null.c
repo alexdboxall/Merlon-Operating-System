@@ -1,4 +1,10 @@
 
+/*
+ * dev/null.c - Null Device
+ *
+ * A device which ignores any read or write operations.
+ */
+
 #include <heap.h>
 #include <stdlib.h>
 #include <vfs.h>

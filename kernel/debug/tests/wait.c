@@ -35,24 +35,24 @@ static void InitialProcessThread1(void*) {
     struct process* child3 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333);
     int retv;
     LogWriteSerial("ABC1\n");
-    WaitProcess(GetPid(child3), &retv, 0);
+    WaitProcess(child3->pid, &retv, 0);
     LogWriteSerial("ABC2\n");
     assert(retv == 333);
-    WaitProcess(GetPid(child2), &retv, 0);
+    WaitProcess(child2->pid, &retv, 0);
     LogWriteSerial("ABC3\n");
     assert(retv == 222);
-    WaitProcess(GetPid(child1), &retv, 0);
+    WaitProcess(child1->pid, &retv, 0);
     LogWriteSerial("ABC4\n");
     assert(retv == 111);
     ok = true;
 }
 
 static void InitialProcessThread2(void*) {
-    pid_t c1pid = GetPid(CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 111));
+    pid_t c1pid = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 111)->pid;
     SleepMilli(500);
-    pid_t c2pid = GetPid(CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 222));
+    pid_t c2pid = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 222)->pid;
     SleepMilli(500);
-    pid_t c3pid = GetPid(CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333));
+    pid_t c3pid = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333)->pid;
     
     int retv;
     pid_t pid = WaitProcess(-1, &retv, 0);
@@ -71,7 +71,7 @@ static void InitialProcessThread2(void*) {
 }
 
 static void InitialProcessThread3(void*) {
-    pid_t zombie = GetPid(CreateProcessWithEntryPoint(1, ZombieProcess, NULL));
+    pid_t zombie = CreateProcessWithEntryPoint(1, ZombieProcess, NULL)->pid;
     SleepMilli(500);
     
     int retv;
@@ -82,7 +82,7 @@ static void InitialProcessThread3(void*) {
 }
 
 static void InitialProcessThread4(void*) {
-    pid_t zombie = GetPid(CreateProcessWithEntryPoint(1, ZombieProcess, NULL));
+    pid_t zombie = CreateProcessWithEntryPoint(1, ZombieProcess, NULL)->pid;
     SleepMilli(500);
     
     int retv;
@@ -97,7 +97,7 @@ static void InitialProcessThread5(void* mode_) {
 
     pid_t pids[30];
     for (int i = 0; i < 30; ++i) {
-        pids[i] = GetPid(CreateProcessWithEntryPoint(1, ZombieProcess, NULL));
+        pids[i] = CreateProcessWithEntryPoint(1, ZombieProcess, NULL)->pid;
     }
     
     int retv;

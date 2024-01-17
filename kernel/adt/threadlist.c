@@ -1,3 +1,11 @@
+
+/*
+ * adt/threadlist.c - Thread-Specific Linked Lists
+ *
+ * An allocation-free linked list implementation designed specifically for 
+ * `struct thread`. Required by the scheduler.
+ */
+
 #include <common.h>
 #include <threadlist.h>
 #include <heap.h>

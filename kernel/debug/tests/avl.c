@@ -4,48 +4,48 @@
 #include <panic.h>
 #include <string.h>
 #include <log.h>
-#include <avl.h>
+#include <tree.h>
 #include <heap.h>
 #include <physical.h>
 
 #ifndef NDEBUG
 
 /*
-typedef void (*avl_deletion_handler)(void*);
-typedef int (*avl_comparator)(void*, void*);
+typedef void (*tree_deletion_handler)(void*);
+typedef int (*tree_comparator)(void*, void*);
 
-void* AvlTreeGet(struct avl_tree* tree, void* data);
-struct avl_node* AvlTreeGetRootNode(struct avl_tree* tree);
-struct avl_node* AvlTreeGetLeft(struct avl_node* node);
-struct avl_node* AvlTreeGetRight(struct avl_node* node);
-void* AvlTreeGetData(struct avl_node* node);
-avl_deletion_handler AvlTreeSetDeletionHandler(struct avl_tree* tree, avl_deletion_handler handler);
-avl_comparator AvlTreeSetComparator(struct avl_tree* tree, avl_comparator comparator);*/
+void* TreeGet(struct tree* tree, void* data);
+struct tree_node* TreeGetRootNode(struct tree* tree);
+struct tree_node* TreeGetLeft(struct tree_node* node);
+struct tree_node* TreeGetRight(struct tree_node* node);
+void* TreeGetData(struct tree_node* node);
+tree_deletion_handler TreeSetDeletionHandler(struct tree* tree, tree_deletion_handler handler);
+tree_comparator TreeSetComparator(struct tree* tree, tree_comparator comparator);*/
 
 TFW_CREATE_TEST(AVLTreeBasic) { TFW_IGNORE_UNUSED
     int heap_allocations = DbgGetOutstandingHeapAllocations();
-    struct avl_tree* tree = AvlTreeCreate();
-    assert(AvlTreeSize(tree) == 0);
-    AvlTreeInsert(tree, (void*) 5);
-    assert(AvlTreeSize(tree) == 1);
-    assert(AvlTreeContains(tree, (void*) 5));
-    assert(!AvlTreeContains(tree, (void*) 7));
-    assert(AvlTreeGet(tree, (void*) 5) == (void*) 5);
-    AvlTreeInsert(tree, (void*) 7);
-    AvlTreeInsert(tree, (void*) 9);
-    AvlTreeInsert(tree, (void*) 11);
-    AvlTreeInsert(tree, (void*) 8);
-    AvlTreeInsert(tree, (void*) 6);
-    assert(AvlTreeSize(tree) == 6);
-    AvlTreeInsert(tree, (void*) 4);
-    assert(AvlTreeSize(tree) == 7);
-    AvlTreeDelete(tree, (void*) 5);
-    assert(AvlTreeSize(tree) == 6);
-    assert(AvlTreeContains(tree, (void*) 4));
-    assert(!AvlTreeContains(tree, (void*) 5));
-    assert(AvlTreeContains(tree, (void*) 6));
-    assert(AvlTreeContains(tree, (void*) 7));
-    AvlTreeDestroy(tree);
+    struct tree* tree = TreeCreate();
+    assert(TreeSize(tree) == 0);
+    TreeInsert(tree, (void*) 5);
+    assert(TreeSize(tree) == 1);
+    assert(TreeContains(tree, (void*) 5));
+    assert(!TreeContains(tree, (void*) 7));
+    assert(TreeGet(tree, (void*) 5) == (void*) 5);
+    TreeInsert(tree, (void*) 7);
+    TreeInsert(tree, (void*) 9);
+    TreeInsert(tree, (void*) 11);
+    TreeInsert(tree, (void*) 8);
+    TreeInsert(tree, (void*) 6);
+    assert(TreeSize(tree) == 6);
+    TreeInsert(tree, (void*) 4);
+    assert(TreeSize(tree) == 7);
+    TreeDelete(tree, (void*) 5);
+    assert(TreeSize(tree) == 6);
+    assert(TreeContains(tree, (void*) 4));
+    assert(!TreeContains(tree, (void*) 5));
+    assert(TreeContains(tree, (void*) 6));
+    assert(TreeContains(tree, (void*) 7));
+    TreeDestroy(tree);
 
     /*
      * Ensure there aren't any memory leaks.

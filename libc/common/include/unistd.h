@@ -26,4 +26,8 @@ int execve(const char* path, char* const argv[], char* const envp[]);
 int unlink(const char* path);
 int rmdir(const char* path);
 
+pid_t getpid(void);
+pid_t getppid(void);
+pid_t gettid(void);
+
 #endif

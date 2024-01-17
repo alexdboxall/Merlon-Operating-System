@@ -21,6 +21,8 @@ static const system_call_t system_call_table[_SYSCALL_NUM_ENTRIES] = {
 	[SYSCALL_PREPEXEC] = SysPrepExec,
 	[SYSCALL_WAITPID] = SysWaitpid,
 	[SYSCALL_FORK] = SysFork,
+	[SYSCALL_GETPID] = SysGetPid,
+	[SYSCALL_GETTID] = SysGetTid,
 };
 
 int HandleSystemCall(int call, size_t a, size_t b, size_t c, size_t d, size_t e) {

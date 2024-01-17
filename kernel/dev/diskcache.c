@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <linkedlist.h>
-#include <avl.h>
+#include <tree.h>
 #include <semaphore.h>
 #include <diskcache.h>
 
@@ -27,7 +27,7 @@ struct cache_entry {
 struct cache_data {
     struct file* underlying_disk;
     int block_size;
-    struct avl_tree* cache;
+    struct tree* cache;
     struct semaphore* lock;
 };
 
@@ -60,8 +60,8 @@ static int Write(struct vnode* node, struct transfer* io) {
 
 static void TossCache(struct cache_data* data) {
     AcquireMutex(data->lock, -1);
-    AvlTreeDestroy(data->cache);
-    data->cache = AvlTreeCreate();
+    TreeDestroy(data->cache);
+    data->cache = TreeCreate();
     ReleaseMutex(data->lock);
 }
 
@@ -112,10 +112,10 @@ struct file* CreateDiskCache(struct file* underlying_disk)
     struct vnode* node = CreateVnode(dev_ops, underlying_disk->node->stat);
     struct cache_data* data = AllocHeap(sizeof(struct cache_data));
     data->underlying_disk = underlying_disk;
-    data->cache = AvlTreeCreate();
+    data->cache = TreeCreate();
     data->lock = CreateMutex("vcache");
     data->block_size = MAX(ARCH_PAGE_SIZE, underlying_disk->node->stat.st_blksize);
-    AvlTreeSetDeletionHandler(data->cache, RemoveCacheEntryHandler);
+    TreeSetDeletionHandler(data->cache, RemoveCacheEntryHandler);
     node->data = data;
 
     struct file* cache = CreateFile(

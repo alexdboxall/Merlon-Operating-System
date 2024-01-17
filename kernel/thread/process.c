@@ -10,7 +10,7 @@
 #include <virtual.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <avl.h>
+#include <tree.h>
 #include <panic.h>
 #include <semaphore.h>
 #include <filedes.h>
@@ -20,26 +20,13 @@
 #include <log.h>
 #include <linkedlist.h>
 
-struct process {
-    pid_t pid;
-    struct vas* vas;
-    pid_t parent;
-    struct avl_tree* children;
-    struct avl_tree* threads;
-    struct semaphore* lock;
-    struct semaphore* killed_children_semaphore;
-    struct fd_table* fd_table;
-    int retv;
-    bool terminated;
-};
-
 struct process_table_node {
     pid_t pid;
     struct process* process;
 };
 
 static struct spinlock pid_lock;
-static struct avl_tree* process_table;
+static struct tree* process_table;
 static struct semaphore* process_table_mutex;
 
 static int ProcessTableComparator(void* a_, void* b_) {
@@ -66,7 +53,7 @@ static int InsertIntoProcessTable(struct process* prcss) {
     struct process_table_node* node = AllocHeap(sizeof(struct process_table_node));
     node->pid = pid;
     node->process = prcss;
-    AvlTreeInsert(process_table, (void*) node);
+    TreeInsert(process_table, (void*) node);
 
     ReleaseMutex(process_table_mutex);
 
@@ -77,8 +64,8 @@ static void RemoveFromProcessTable(pid_t pid) {
     AcquireMutex(process_table_mutex, -1);
 
     struct process_table_node dummy = {.pid = pid};
-    struct process_table_node* actual = AvlTreeGet(process_table, (void*) &dummy);
-    AvlTreeDelete(process_table, (void*) actual);
+    struct process_table_node* actual = TreeGet(process_table, (void*) &dummy);
+    TreeDelete(process_table, (void*) actual);
     FreeHeap(actual);       // this was allocated on 'InsertIntoProcessTable'
 
     ReleaseMutex(process_table_mutex);
@@ -95,8 +82,8 @@ void UnlockProcess(struct process* prcss) {
 void InitProcess(void) {
     InitSpinlock(&pid_lock, "pid", IRQL_SCHEDULER);
     process_table_mutex = CreateMutex("prcss table");
-    process_table = AvlTreeCreate();
-    AvlTreeSetComparator(process_table, ProcessTableComparator);
+    process_table = TreeCreate();
+    TreeSetComparator(process_table, ProcessTableComparator);
 }
 
 struct process* CreateProcess(pid_t parent_pid) {
@@ -107,8 +94,8 @@ struct process* CreateProcess(pid_t parent_pid) {
     prcss->lock = CreateMutex("prcss");
     prcss->vas = CreateVas();
     prcss->parent = parent_pid;
-    prcss->children = AvlTreeCreate();
-    prcss->threads = AvlTreeCreate();
+    prcss->children = TreeCreate();
+    prcss->threads = TreeCreate();
     prcss->killed_children_semaphore = CreateSemaphore("killed children", SEM_BIG_NUMBER, SEM_BIG_NUMBER);
     prcss->retv = 0;
     prcss->terminated = false;
@@ -118,7 +105,7 @@ struct process* CreateProcess(pid_t parent_pid) {
     if (parent_pid != 0) {
         struct process* parent = GetProcessFromPid(parent_pid);
         LockProcess(parent);
-        AvlTreeInsert(parent->children, (void*) prcss);
+        TreeInsert(parent->children, (void*) prcss);
         UnlockProcess(parent);
     }
 
@@ -127,7 +114,7 @@ struct process* CreateProcess(pid_t parent_pid) {
 
 void AddThreadToProcess(struct process* prcss, struct thread* thr) {
     LockProcess(prcss);
-    AvlTreeInsert(prcss->threads, (void*) thr);
+    TreeInsert(prcss->threads, (void*) thr);
     thr->process = prcss;
     UnlockProcess(prcss);
 }
@@ -170,7 +157,7 @@ static void ReapProcess(struct process* prcss) {
     RemoveFromProcessTable(prcss->pid);
     if (prcss->parent != 0) {
         struct process* parent = GetProcessFromPid(prcss->parent);
-        AvlTreeDelete(parent->children, prcss);
+        TreeDelete(parent->children, prcss);
     }
     FreeHeap(prcss);
 }
@@ -185,12 +172,12 @@ static void ReapProcess(struct process* prcss) {
  * @param status If a child is reaped, its return value will be written here.
  * @return The process ID of the reaped child, or 0 if no children are reaped.
  */
-static pid_t RecursivelyTryReap(struct process* parent, struct avl_node* node, pid_t target, int* status) {    
+static pid_t RecursivelyTryReap(struct process* parent, struct tree_node* node, pid_t target, int* status) {    
     if (node == NULL) {
         return 0;
     }
 
-    struct process* child = (struct process*) AvlTreeGetData(node);
+    struct process* child = (struct process*) node->data;
 
     LockProcess(child);
 
@@ -204,11 +191,11 @@ static pid_t RecursivelyTryReap(struct process* parent, struct avl_node* node, p
 
     UnlockProcess(child);
 
-    pid_t left_retv = RecursivelyTryReap(parent, AvlTreeGetLeft(node), target, status);
+    pid_t left_retv = RecursivelyTryReap(parent, node->left, target, status);
     if (left_retv != 0) {
         return left_retv;
     }
-    return RecursivelyTryReap(parent, AvlTreeGetRight(node), target, status);
+    return RecursivelyTryReap(parent, node->right, target, status);
 }
 
 
@@ -220,7 +207,7 @@ static void AdoptOrphan(struct process* adopter, struct process* ophan) {
     LockProcess(adopter);
 
     ophan->parent = adopter->pid;
-    AvlTreeInsert(adopter->children, (void*) ophan);
+    TreeInsert(adopter->children, (void*) ophan);
     ReleaseSemaphore(adopter->killed_children_semaphore);
 
     UnlockProcess(adopter);
@@ -231,14 +218,14 @@ static void AdoptOrphan(struct process* adopter, struct process* ophan) {
  * 
  * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
  */
-static void RecursivelyMakeChildrenOrphans(struct avl_node* node) {
+static void RecursivelyMakeChildrenOrphans(struct tree_node* node) {
     if (node == NULL) {
         return;
     }
     
-    RecursivelyMakeChildrenOrphans(AvlTreeGetLeft(node));
-    RecursivelyMakeChildrenOrphans(AvlTreeGetRight(node));
-    AdoptOrphan(GetProcessFromPid(1), AvlTreeGetData(node));
+    RecursivelyMakeChildrenOrphans(node->left);
+    RecursivelyMakeChildrenOrphans(node->right);
+    AdoptOrphan(GetProcessFromPid(1), node->data);
 }
 
 /**
@@ -246,15 +233,15 @@ static void RecursivelyMakeChildrenOrphans(struct avl_node* node) {
  * 
  * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
  */
-static void RecursivelyKillRemainingThreads(struct avl_node* node) {
+static void RecursivelyKillRemainingThreads(struct tree_node* node) {
     if (node == NULL) {
         return;
     }
 
-    RecursivelyKillRemainingThreads(AvlTreeGetLeft(node));
-    RecursivelyKillRemainingThreads(AvlTreeGetRight(node));
+    RecursivelyKillRemainingThreads(node->left);
+    RecursivelyKillRemainingThreads(node->right);
 
-    struct thread* victim = AvlTreeGetData(node);
+    struct thread* victim = node->data;
     if (victim->state != THREAD_STATE_TERMINATED && !victim->needs_termination) {
         TerminateThread(victim);
     }
@@ -272,11 +259,11 @@ static void KillProcessHelper(void* arg) {
     assert(GetProcess() == NULL);
     assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
 
-    RecursivelyKillRemainingThreads(AvlTreeGetRootNode(prcss->threads));    
-    RecursivelyMakeChildrenOrphans(AvlTreeGetRootNode(prcss->children));
+    RecursivelyKillRemainingThreads(prcss->threads->root);    
+    RecursivelyMakeChildrenOrphans(prcss->children->root);
 
-    AvlTreeDestroy(prcss->threads);
-    AvlTreeDestroy(prcss->children);
+    TreeDestroy(prcss->threads);
+    TreeDestroy(prcss->children);
 
     DestroyVas(prcss->vas);
 
@@ -361,7 +348,7 @@ struct process* GetProcessFromPid(pid_t pid) {
     AcquireMutex(process_table_mutex, -1);
 
     struct process_table_node dummy = {.pid = pid};
-    struct process_table_node* node = AvlTreeGet(process_table, (void*) &dummy);
+    struct process_table_node* node = TreeGet(process_table, (void*) &dummy);
 
     ReleaseMutex(process_table_mutex);
 
@@ -389,7 +376,7 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
             break;
         }
         LockProcess(prcss);
-        result = RecursivelyTryReap(prcss, AvlTreeGetRootNode(prcss->children), pid, status);
+        result = RecursivelyTryReap(prcss, prcss->children->root, pid, status);
         UnlockProcess(prcss);
         if (result == 0 && pid != (pid_t) -1) {
             failed_reaps++;

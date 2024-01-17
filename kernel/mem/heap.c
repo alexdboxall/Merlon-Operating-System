@@ -15,7 +15,7 @@
 #include <thread.h>
 
 #define BOOTSTRAP_SIZE (1024 * 16)
-#define MAX_EMERGENCY_BLOCKS 16
+#define MAX_RESERVE_BLOCKS 16
 
 /*
  * For non-pageable requests larger than this, we'll issue a warning to say that
@@ -23,7 +23,7 @@
  */
 #define WARNING_LARGE_REQUEST_SIZE (1024 * 3 + 512)
 
-struct emergency_block {
+struct reserve_block {
     uint8_t* address;
     size_t size;
     bool valid;
@@ -39,7 +39,7 @@ static uint8_t bootstrap_memory_area[BOOTSTRAP_SIZE] __attribute__ ((aligned(ARC
  * Used to give us memory when we are not allowed to fault (i.e. can't allocate
  * virtual memory).
  */
-static struct emergency_block emergency_blocks[MAX_EMERGENCY_BLOCKS] = {
+static struct reserve_block reserve_blocks[MAX_RESERVE_BLOCKS] = {
     {.address = bootstrap_memory_area, .size = BOOTSTRAP_SIZE, .valid = true}
 };
 
@@ -83,12 +83,12 @@ static void UnlockHeap(bool paging) {
     }   
 }
 
-static void* AllocateFromEmergencyBlocks(size_t size) {
+static void* AllocateFromReserveBlocks(size_t size) {
     int smallest = -1;
 
-    for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
-        if (emergency_blocks[i].valid && emergency_blocks[i].size >= size) {
-            if (smallest == -1 || emergency_blocks[i].size < emergency_blocks[smallest].size) {
+    for (int i = 0; i < MAX_RESERVE_BLOCKS; ++i) {
+        if (reserve_blocks[i].valid && reserve_blocks[i].size >= size) {
+            if (smallest == -1 || reserve_blocks[i].size < reserve_blocks[smallest].size) {
                 smallest = i;
             }
         }
@@ -98,13 +98,13 @@ static void* AllocateFromEmergencyBlocks(size_t size) {
         Panic(PANIC_CANNOT_MALLOC_WITHOUT_FAULTING);
     }
 
-    void* address = emergency_blocks[smallest].address;
+    void* address = reserve_blocks[smallest].address;
 
-    emergency_blocks[smallest].address += size;
-    emergency_blocks[smallest].size -= size;
+    reserve_blocks[smallest].address += size;
+    reserve_blocks[smallest].size -= size;
 
-    if (emergency_blocks[smallest].size < ARCH_PAGE_SIZE) {
-        emergency_blocks[smallest].valid = false;
+    if (reserve_blocks[smallest].size < ARCH_PAGE_SIZE) {
+        reserve_blocks[smallest].valid = false;
     }
 
     return address;
@@ -119,36 +119,36 @@ static void AddBlockToBackupHeap(size_t size) {
     LockHeap(false);
 
     int small_index = 0;
-    for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
-        if (emergency_blocks[i].valid) {
-            if (emergency_blocks[i].size < emergency_blocks[small_index].size) {
+    for (int i = 0; i < MAX_RESERVE_BLOCKS; ++i) {
+        if (reserve_blocks[i].valid) {
+            if (reserve_blocks[i].size < reserve_blocks[small_index].size) {
                 small_index = i;
             }
         } else {
-            emergency_blocks[i].valid = true;
-            emergency_blocks[i].size = size;
-            emergency_blocks[i].address = address;
+            reserve_blocks[i].valid = true;
+            reserve_blocks[i].size = size;
+            reserve_blocks[i].address = address;
             return;
         }
     }
 
     LogDeveloperWarning(
         "losing 0x%X bytes due to strangeness with backup heap.\n", 
-        emergency_blocks[small_index].size
+        reserve_blocks[small_index].size
     );
 
-    emergency_blocks[small_index].size = size;
-    emergency_blocks[small_index].address = address;
+    reserve_blocks[small_index].size = size;
+    reserve_blocks[small_index].address = address;
 }
 
-static void RestoreEmergencyPages(void*) {
+static void RefillReservePages(void*) {
     size_t total_size = 0;
     size_t largest_block = 0;
     
     LockHeap(false);
-    for (int i = 0; i < MAX_EMERGENCY_BLOCKS; ++i) {
-        if (emergency_blocks[i].valid) {
-            size_t size = emergency_blocks[i].size;
+    for (int i = 0; i < MAX_RESERVE_BLOCKS; ++i) {
+        if (reserve_blocks[i].valid) {
+            size_t size = reserve_blocks[i].size;
             total_size += size;
             if (size > largest_block) {
                 largest_block = size;
@@ -211,7 +211,7 @@ int DbgGetOutstandingHeapAllocations(void) {
 #define METADATA_TRIALING (sizeof(size_t))
 #define METADATA_TOTAL (METADATA_LEADING + METADATA_TRIALING)
 
-#define MINIMUM_REQUEST_SIZE_INTERNAL (2 * sizeof(size_t))
+#define MIN_REQ_SIZE (2 * sizeof(size_t))
 #define TOTAL_NUM_FREE_LISTS 35
 
 /**
@@ -276,8 +276,8 @@ static int GetInsertionIndex(size_t size_without_metadata) {
 static size_t RoundUpSize(size_t size) {
     assert(size != 0);
 
-    if (size < MINIMUM_REQUEST_SIZE_INTERNAL) {
-        size = MINIMUM_REQUEST_SIZE_INTERNAL;
+    if (size < MIN_REQ_SIZE) {
+        size = MIN_REQ_SIZE;
     }
 
     return (size + ALIGNMENT - 1) & ~(ALIGNMENT - 1);
@@ -351,9 +351,9 @@ static void* GetSystemMemory(size_t size, int flags) {
             Panic(PANIC_CONFLICTING_ALLOCATION_REQUIREMENTS);
         }
         if (IsVirtInitialised()) {
-            DeferUntilIrql(IRQL_STANDARD, RestoreEmergencyPages, NULL);
+            DeferUntilIrql(IRQL_STANDARD, RefillReservePages, NULL);
         }
-        return AllocateFromEmergencyBlocks(size);
+        return AllocateFromReserveBlocks(size);
     }
 
     return (void*) MapVirt(
@@ -374,7 +374,7 @@ static struct block* RequestBlock(size_t total_size, int flags) {
      * this before we round up to the nearest areana size (if we did it after, 
      * it wouldn't be aligned anymore).
      */
-    total_size += MINIMUM_REQUEST_SIZE_INTERNAL * 2;
+    total_size += MIN_REQ_SIZE * 2;
     total_size = (total_size + ARCH_PAGE_SIZE - 1) & ~(ARCH_PAGE_SIZE - 1);
 
     if (!IsVirtInitialised()) {
@@ -391,16 +391,16 @@ static struct block* RequestBlock(size_t total_size, int flags) {
      * Keep in mind that total_size now includes the fencepost metadata (see top
      * of function), so this sometimes needs to be subtracted off.
      */
-    size_t actual_block_offset = MINIMUM_REQUEST_SIZE_INTERNAL / sizeof(size_t);
-    size_t right_block_offset = (total_size - MINIMUM_REQUEST_SIZE_INTERNAL) / sizeof(size_t);
+    size_t actual_block_offset = MIN_REQ_SIZE / sizeof(size_t);
+    size_t right_block_offset = (total_size - MIN_REQ_SIZE) / sizeof(size_t);
 
     struct block* left_fence = block;
     struct block* actual_block = (struct block*) (((size_t*) block) + actual_block_offset);
     struct block* right_fence  = (struct block*) (((size_t*) block) + right_block_offset);
 
-    SetSizeTags(left_fence, MINIMUM_REQUEST_SIZE_INTERNAL);
-    SetSizeTags(actual_block, total_size - 2 * MINIMUM_REQUEST_SIZE_INTERNAL);
-    SetSizeTags(right_fence, MINIMUM_REQUEST_SIZE_INTERNAL);
+    SetSizeTags(left_fence, MIN_REQ_SIZE);
+    SetSizeTags(actual_block, total_size - 2 * MIN_REQ_SIZE);
+    SetSizeTags(right_fence, MIN_REQ_SIZE);
 
     actual_block->prev = NULL;
     actual_block->next = NULL;
@@ -539,7 +539,7 @@ static struct block* AllocateBlock(
 
     assert(block_size >= total_size);
 
-    if (block_size - total_size < MINIMUM_REQUEST_SIZE_INTERNAL + METADATA_TOTAL) {
+    if (block_size - total_size < MIN_REQ_SIZE + METADATA_TOTAL) {
         /*
          * We can just remove from the list altogether if the sizes match up 
          * exactly, or if there would be so little left over that we can't form 

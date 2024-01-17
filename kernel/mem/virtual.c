@@ -1,6 +1,6 @@
 
 #include <virtual.h>
-#include <avl.h>
+#include <tree.h>
 #include <debug.h>
 #include <heap.h>
 #include <common.h>
@@ -77,9 +77,9 @@ static int VirtAvlComparator(void* a, void* b) {
 void CreateVasEx(struct vas* vas, int flags) {
     MAX_IRQL(IRQL_SCHEDULER);
 
-    vas->mappings = AvlTreeCreate();
+    vas->mappings = TreeCreate();
     InitSpinlock(&vas->lock, "vas", IRQL_SCHEDULER);
-    AvlTreeSetComparator(vas->mappings, VirtAvlComparator);
+    TreeSetComparator(vas->mappings, VirtAvlComparator);
     if (!(flags & VAS_NO_ARCH_INIT)) {
         ArchInitVas(vas);
     }
@@ -349,9 +349,9 @@ struct eviction_candidate {
 
 #define PREV_SWAP_LIMIT 24
 
-void FindVirtToEvictFromSubtree(
+void FindVirtToEvictRecursive(
     struct vas* vas, 
-    struct avl_node* node, 
+    struct tree_node* node, 
     int* lowest_rank, 
     struct eviction_candidate* lowest_ranked, 
     int* count, 
@@ -381,7 +381,7 @@ void FindVirtToEvictFromSubtree(
         return;
     }
 
-    struct vas_entry* entry = AvlTreeGetData(node);
+    struct vas_entry* entry = node->data;
     if (!entry->lock && entry->allocated) {
         int rank = GetPageEvictionRank(vas, entry);
 
@@ -414,11 +414,11 @@ void FindVirtToEvictFromSubtree(
         }
     }
 
-    FindVirtToEvictFromSubtree(vas, AvlTreeGetLeft(node), lowest_rank, lowest_ranked, count, prev_swaps);
-    FindVirtToEvictFromSubtree(vas, AvlTreeGetRight(node), lowest_rank, lowest_ranked, count, prev_swaps);
+    FindVirtToEvictRecursive(vas, node->left, lowest_rank, lowest_ranked, count, prev_swaps);
+    FindVirtToEvictRecursive(vas, node->right, lowest_rank, lowest_ranked, count, prev_swaps);
 }
 
-void FindVirtToEvictFromAddressSpace(
+void FindVirtToEvict(
     struct vas* vas, 
     int* lowest_rank, 
     struct eviction_candidate* lowest_ranked, 
@@ -426,9 +426,9 @@ void FindVirtToEvictFromAddressSpace(
     struct vas_entry** prev_swaps
 ) {
     int count = 0;
-    FindVirtToEvictFromSubtree(vas, AvlTreeGetRootNode(vas->mappings), lowest_rank, lowest_ranked, &count, prev_swaps);
+    FindVirtToEvictRecursive(vas, vas->mappings->root, lowest_rank, lowest_ranked, &count, prev_swaps);
     if (include_globals) {
-        FindVirtToEvictFromSubtree(vas, AvlTreeGetRootNode(GetCpu()->global_vas_mappings), lowest_rank, lowest_ranked, &count, prev_swaps);
+        FindVirtToEvictRecursive(vas, GetCpu()->global_vas_mappings->root, lowest_rank, lowest_ranked, &count, prev_swaps);
     }
 }
 
@@ -460,7 +460,7 @@ void EvictVirt(void) {
     lowest_ranked.entry = NULL;
     
     AcquireSpinlock(&GetVas()->lock);
-    FindVirtToEvictFromAddressSpace(GetVas(), &lowest_rank, &lowest_ranked, true, previous_swaps);
+    FindVirtToEvict(GetVas(), &lowest_rank, &lowest_ranked, true, previous_swaps);
     ReleaseSpinlock(&GetVas()->lock);
 
     // TODO: go through other address spaces
@@ -468,7 +468,7 @@ void EvictVirt(void) {
     while (false) {
         struct vas* vas = NULL;
         if (vas != GetVas()) {
-            FindVirtToEvictFromAddressSpace(GetVas(), &lowest_rank, &lowest_ranked, false, previous_swaps);
+            FindVirtToEvict(GetVas(), &lowest_rank, &lowest_ranked, false, previous_swaps);
         }
     }
 
@@ -484,11 +484,11 @@ static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
     
     if (entry->global) { 
         AcquireSpinlock(&GetCpu()->global_mappings_lock);
-        AvlTreeInsert(GetCpu()->global_vas_mappings, entry);
+        TreeInsert(GetCpu()->global_vas_mappings, entry);
         ReleaseSpinlock(&GetCpu()->global_mappings_lock);
 
     } else {        
-        AvlTreeInsert(vas->mappings, entry);
+        TreeInsert(vas->mappings, entry);
     }
 }
 
@@ -496,11 +496,11 @@ static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
     assert(IsSpinlockHeld(&vas->lock));
     if (entry->global) {
         AcquireSpinlock(&GetCpu()->global_mappings_lock);
-        AvlTreeDelete(GetCpu()->global_vas_mappings, entry);
+        TreeDelete(GetCpu()->global_vas_mappings, entry);
         ReleaseSpinlock(&GetCpu()->global_mappings_lock);
 
     } else {
-        AvlTreeDelete(vas->mappings, entry); 
+        TreeDelete(vas->mappings, entry); 
     }
 }
 
@@ -631,7 +631,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
      */
     AcquireSpinlock(&vas->lock);
     for (size_t i = 0; i < pages; ++i) {
-        if (AvlTreeContains(vas->mappings, (void*) &dummy)) {
+        if (TreeContains(vas->mappings, (void*) &dummy)) {
             in_use = true;
             break;
         }
@@ -646,7 +646,7 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
     AcquireSpinlock(&GetCpu()->global_mappings_lock);
     dummy.virtual = virtual;
     for (size_t i = 0; i < pages; ++i) {
-        if (AvlTreeContains(GetCpu()->global_vas_mappings, (void*) &dummy)) {
+        if (TreeContains(GetCpu()->global_vas_mappings, (void*) &dummy)) {
             in_use = true;
             break;
         }
@@ -816,10 +816,10 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
     assert(IsSpinlockHeld(&vas->lock));
 
     struct vas_entry dummy = {.num_pages = 1, .virtual = virtual & ~(ARCH_PAGE_SIZE - 1)};
-    struct vas_entry* res = (struct vas_entry*) AvlTreeGet(vas->mappings, (void*) &dummy);
+    struct vas_entry* res = (struct vas_entry*) TreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
         AcquireSpinlock(&GetCpu()->global_mappings_lock);
-        res = (struct vas_entry*) AvlTreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
+        res = (struct vas_entry*) TreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
         ReleaseSpinlock(&GetCpu()->global_mappings_lock);
     }
     return res;
@@ -1165,29 +1165,29 @@ static bool DereferenceEntry(struct vas* vas, struct vas_entry* entry) {
     return needs_tlb_flush;
 }
 
-static void WipeUsermodePagesRecursive(struct avl_node* node) {
+static void WipeUsermodePagesRecursive(struct tree_node* node) {
     if (node == NULL) {
         return;
     }
 
-    struct vas_entry* entry = AvlTreeGetData(node);
+    struct vas_entry* entry = node->data;
     if (entry->virtual >= ARCH_USER_STACK_LIMIT && entry->virtual < ARCH_PROG_LOADER_BASE) {
         LogWriteSerial("WIPING A USERMODE PAGE ON EXEC: 0x%X\n", entry->virtual);
         DereferenceEntry(GetVas(), entry);
     }
 
     if (entry->virtual >= ARCH_USER_STACK_LIMIT) {
-        WipeUsermodePagesRecursive(AvlTreeGetLeft(node));
+        WipeUsermodePagesRecursive(node->left);
     }
     if (entry->virtual < ARCH_PROG_LOADER_BASE) {
-        WipeUsermodePagesRecursive(AvlTreeGetRight(node));
+        WipeUsermodePagesRecursive(node->right);
     }
 }
 
 int WipeUsermodePages(void) {
     struct vas* vas = GetVas();
     AcquireSpinlock(&vas->lock);
-    WipeUsermodePagesRecursive(AvlTreeGetRootNode(GetVas()->mappings));
+    WipeUsermodePagesRecursive(GetVas()->mappings->root);
     ArchFlushTlb(vas);
     ReleaseSpinlock(&vas->lock); 
     return 0;  
@@ -1225,15 +1225,15 @@ int UnmapVirt(size_t virtual, size_t bytes) {
     return res;
 }
 
-static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
+static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
     if (node == NULL) {
         return;
     }
 
-    CopyVasRecursive(AvlTreeGetLeft(node), new_vas);
-    CopyVasRecursive(AvlTreeGetRight(node), new_vas);
+    CopyVasRecursive(node->left, new_vas);
+    CopyVasRecursive(node->right, new_vas);
 
-    struct vas_entry* entry = AvlTreeGetData(node);
+    struct vas_entry* entry = node->data;
 
     if (entry->lock) {
         /*
@@ -1263,7 +1263,7 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
             new_entry->ref_count = 1;
             new_entry->physical = new_physical;
             new_entry->allocated = true;
-            AvlTreeInsert(new_vas->mappings, entry);        // don't need to insert global - we're copying so it's already in global
+            TreeInsert(new_vas->mappings, entry);        // don't need to insert global - we're copying so it's already in global
             ArchAddMapping(new_vas, entry);
 
         } else {
@@ -1291,7 +1291,7 @@ static void CopyVasRecursive(struct avl_node* node, struct vas* new_vas) {
         entry->ref_count++;
 
         // again, no need to add to global - it's already there!
-        AvlTreeInsert(new_vas->mappings, entry);
+        TreeInsert(new_vas->mappings, entry);
 
         ArchUpdateMapping(GetVas(), entry);
         ArchAddMapping(new_vas, entry);
@@ -1304,7 +1304,7 @@ struct vas* CopyVas(void) {
 
     AcquireSpinlock(&vas->lock);
     // no need to change global - it's already there!
-    CopyVasRecursive(AvlTreeGetRootNode(vas->mappings), new_vas);
+    CopyVasRecursive(vas->mappings->root, new_vas);
     ArchFlushTlb(vas);
     ReleaseSpinlock(&vas->lock);
 
@@ -1331,8 +1331,8 @@ void InitVirt(void) {
     //       someone reads or writes to current_vas;
 
     assert(!virt_initialised);
-    GetCpu()->global_vas_mappings = AvlTreeCreate();
-    AvlTreeSetComparator(GetCpu()->global_vas_mappings, VirtAvlComparator);
+    GetCpu()->global_vas_mappings = TreeCreate();
+    TreeSetComparator(GetCpu()->global_vas_mappings, VirtAvlComparator);
     ArchInitVirt();
 
     kernel_vas = GetVas();

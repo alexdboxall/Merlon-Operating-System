@@ -36,7 +36,7 @@ static size_t allocation_stack_pointer = 0;
 /*
  * Once we get below this number, we will start evicting pages.
  */
-#define NUM_EMERGENCY_PAGES 32
+#define NUM_RESERVE_PAGES 32
 
 /*
  * The number of physical pages available (free) remaining, and total, in the 
@@ -120,7 +120,7 @@ void DeallocPhys(size_t addr) {
     }
     ReleaseSpinlock(&phys_lock);
 
-    if (pages_left > NUM_EMERGENCY_PAGES * 2) {
+    if (pages_left > NUM_RESERVE_PAGES * 2) {
         SetDiskCaches(DISKCACHE_NORMAL);
     }
 }
@@ -151,15 +151,15 @@ static void EvictPagesIfNeeded(void*) {
         return;
     }
 
-    if (pages_left < NUM_EMERGENCY_PAGES) {
+    if (pages_left < NUM_RESERVE_PAGES) {
         SetDiskCaches(DISKCACHE_TOSS);
 
-    } else if (pages_left < NUM_EMERGENCY_PAGES * 3 / 2) {
+    } else if (pages_left < NUM_RESERVE_PAGES * 3 / 2) {
         SetDiskCaches(DISKCACHE_REDUCE);
     }
 
     int timeout = 0;
-    while (pages_left < NUM_EMERGENCY_PAGES && timeout < 5) {
+    while (pages_left < NUM_RESERVE_PAGES && timeout < 5) {
         handling_page_fault++;
         EvictVirt();
         handling_page_fault--;
@@ -175,7 +175,7 @@ size_t AllocPhys(void) {
     if (pages_left == 0) {
         Panic(PANIC_OUT_OF_PHYS);
     }
-    if (pages_left <= NUM_EMERGENCY_PAGES) {
+    if (pages_left <= NUM_RESERVE_PAGES) {
         DeferUntilIrql(IRQL_STANDARD, EvictPagesIfNeeded, NULL);
     }
 
@@ -220,7 +220,7 @@ size_t AllocPhysContiguous(
 
     AcquireSpinlock(&phys_lock);
 
-    if (pages + NUM_EMERGENCY_PAGES >= pages_left) {
+    if (pages + NUM_RESERVE_PAGES >= pages_left) {
         ReleaseSpinlock(&phys_lock);
         return 0;
     }
