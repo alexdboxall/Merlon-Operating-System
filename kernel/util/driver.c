@@ -179,7 +179,7 @@ static int LoadDriver(const char* name) {
     }
     
     struct loaded_driver* drv = AllocHeap(sizeof(struct loaded_driver));
-    drv->filename = strdup_pageable(name);
+    drv->filename = strdup(name);
     drv->relocation_table = NULL;
     drv->relocation_point = 0;      // allow driver to be placed anywhere
     if ((res = ArchLoadDriver(&drv->relocation_point, file, &drv->relocation_table, NULL))) {

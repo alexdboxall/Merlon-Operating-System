@@ -34,7 +34,7 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t user
 
 	struct file* file = NULL;
 	if (flags & VM_FILE) {
-		res = GetFileFromFd(GetFileFromFdDescriptorTable(GetProcess()), fd, &file);
+		res = GetFileFromFd(GetFdTable(GetProcess()), fd, &file);
 		if (file == NULL || res != 0) {
 			return res;
 		}

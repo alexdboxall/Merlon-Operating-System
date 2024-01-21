@@ -1,6 +1,10 @@
 
 #include <common.h>
 #include <log.h>
+#include <spinlock.h>
+#include <irql.h>
+
+static struct spinlock lock;
 
 #define REAL_HW 0
 
@@ -63,6 +67,20 @@ static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 		format = "NULL";
 	}
 
+	static bool first_run = true;
+	if (first_run) {
+		/*
+		 * Even IRQL_HIGH is allowed to write to the log, so we have to raise it
+		 * up to this level.
+		 */
+		InitSpinlock(&lock, "log", IRQL_HIGH);
+		first_run = false;
+	}
+
+	if (!screen) {
+		AcquireSpinlock(&lock);
+	}
+
 	int i = 0;
 
 	while (format[i]) {
@@ -93,6 +111,10 @@ static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 			LogChar(format[i], screen);
 		}
 		i++;
+	}
+
+	if (!screen) {
+		ReleaseSpinlock(&lock);
 	}
 }
 

@@ -10,7 +10,7 @@
 #include <filedes.h>
 
 int SysReadWrite(size_t fd, size_t size, size_t buffer, size_t br_out, size_t write) {
-	struct fd_table* table = GetFileFromFdDescriptorTable(GetProcess());
+	struct fd_table* table = GetFdTable(GetProcess());
 	struct file* file;
 	int res = GetFileFromFd(table, fd, &file);
 

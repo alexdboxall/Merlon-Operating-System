@@ -48,8 +48,8 @@ void x86HandleInterrupt(struct x86_regs* r) {
         }
 
         LogWriteSerial("\n\nPage fault: cr2 0x%X, eip 0x%X, nos-err 0x%X\n", x86GetCr2(), r->eip, type);
-
         HandleVirtFault(x86GetCr2(), type);
+        LogWriteSerial("Finished handling page fault at cr2 0x%X\n", x86GetCr2());
 
     } else if (num == ISR_NMI) {
         Panic(PANIC_NON_MASKABLE_INTERRUPT);

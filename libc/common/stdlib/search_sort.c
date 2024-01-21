@@ -6,6 +6,9 @@
 
 #ifdef COMPILE_KERNEL
 #include <heap.h>
+#include <irql.h>
+#include <assert.h>
+#include <virtual.h>
 #include <log.h>
 #else
 #include <stdlib.h>
@@ -19,18 +22,21 @@ static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size,
     size_t count_1 = mid - low + 1;
     size_t count_2 = high - mid;
 
-    (void) allow_paging;
+    int size_1 = count_1 * size;
+    int size_2 = count_2 * size;
 
 #ifdef COMPILE_KERNEL
-    void* temp_1 = allow_paging ? AllocHeapEx(count_1 * size, HEAP_ALLOW_PAGING) : AllocHeap(count_1 * size);
-    void* temp_2 = allow_paging ? AllocHeapEx(count_2 * size, HEAP_ALLOW_PAGING) : AllocHeap(count_2 * size);
+    LogWriteSerial("Merge Sort wants to allocate: %d and %d\n", size_1, size_2);
+    void* temp_1 = size_1 < 1024 ? AllocHeap(size_1) : MapVirtEasy(size_1, allow_paging);
+    void* temp_2 = size_2 < 1024 ? AllocHeap(size_2) : MapVirtEasy(size_2, allow_paging);
 #else
-    void* temp_1 = malloc(count_1 * size);
-    void* temp_2 = malloc(count_2 * size);
+    (void) allow_paging;
+    void* temp_1 = malloc(size_1);
+    void* temp_2 = malloc(size_2);
 #endif
 
-    memcpy(temp_1, (const void*) (((uint8_t*) array) + low * size), count_1 * size);
-    memcpy(temp_2, (const void*) (((uint8_t*) array) + (mid + 1) * size), count_2 * size);
+    memcpy(temp_1, (const void*) (((uint8_t*) array) + low * size), size_1);
+    memcpy(temp_2, (const void*) (((uint8_t*) array) + (mid + 1) * size), size_2);
 
     size_t index_1 = 0;
     size_t index_2 = 0;
@@ -65,8 +71,21 @@ static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size,
         ++out_index;
     }
 
+#ifdef COMPILE_KERNEL
+    if (size_1 < 1024) {
+        FreeHeap(temp_1);
+    } else {
+        UnmapVirt((size_t) temp_1, size_1);
+    }
+    if (size_2 < 1024) {
+        FreeHeap(temp_2);
+    } else {
+        UnmapVirt((size_t) temp_2, size_2);
+    }
+#else
     free(temp_1);
     free(temp_2);
+#endif
 }
 
 static void MergeSort(void* array, size_t low, size_t high, size_t size, int (*compar)(const void *, const void *), bool allow_paging) {

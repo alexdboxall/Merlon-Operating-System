@@ -148,6 +148,7 @@ struct process* ForkProcess(void) {
 static void ReapProcess(struct process* prcss) {
     // TOOD: there's more cleanup to be done here... ?
     assert(prcss->vas != GetVas());
+    EXACT_IRQL(IRQL_STANDARD);
     
     int res = DestroySemaphore(prcss->killed_children_semaphore, SEM_REQUIRE_FULL);
     (void) res;
@@ -233,7 +234,7 @@ static void RecursivelyMakeChildrenOrphans(struct tree_node* node) {
  * 
  * @param node The subtree to start from. NULL is acceptable, and is the recursion base case.
  */
-static void RecursivelyKillRemainingThreads(struct tree_node* node) {
+/*static*/ void RecursivelyKillRemainingThreads(struct tree_node* node) {
     if (node == NULL) {
         return;
     }
@@ -248,35 +249,44 @@ static void RecursivelyKillRemainingThreads(struct tree_node* node) {
 }
 
 /**
- * Does all of the required operations to kill a process. This is run in its own thread, without an owning
- * process, so that a process doesn't try to delete itself (and therefore delete its stack).
- * 
- * @param arg The process to kill (needs to be cast to struct process*)
+ * Does all of the required operations to kill a process. This is run in its own
+ * thread, without an owning process, so that a process doesn't try to delete 
+ * itself (and therefore delete its stack).
  */
 static void KillProcessHelper(void* arg) {
     struct process* prcss = arg;
 
     assert(GetProcess() == NULL);
     assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
-
+    
+    LogWriteSerial("KillProcessHelper A\n");
     RecursivelyKillRemainingThreads(prcss->threads->root);    
     RecursivelyMakeChildrenOrphans(prcss->children->root);
+    LogWriteSerial("KillProcessHelper B\n");
 
     TreeDestroy(prcss->threads);
     TreeDestroy(prcss->children);
+    LogWriteSerial("KillProcessHelper C\n");
 
     DestroyVas(prcss->vas);
+    LogWriteSerial("KillProcessHelper D\n");
 
     prcss->terminated = true;
 
     if (prcss->parent == 0) {
+        LogWriteSerial("KillProcessHelper E.1\n");
         ReapProcess(prcss);
+        LogWriteSerial("KillProcessHelper E.2\n");
 
     } else {
+        LogWriteSerial("KillProcessHelper F.1\n");
         struct process* parent = GetProcessFromPid(prcss->parent);
+        LogWriteSerial("releasing semaphore 0x%X (prcss 0x%X)\n", parent->killed_children_semaphore, parent);
         ReleaseSemaphore(parent->killed_children_semaphore);
+        LogWriteSerial("KillProcessHelper F.2\n");
     }
 
+    LogWriteSerial("KillProcessHelper G\n");
     TerminateThread(GetThread());
 }
 
@@ -291,6 +301,8 @@ static void KillProcessHelper(void* arg) {
  */
 void KillProcess(int retv) {
     MAX_IRQL(IRQL_STANDARD);   
+
+    LogWriteSerial("Killing process... retv=%d\n", retv);
 
     struct process* prcss = GetProcess();
     prcss->retv = retv;
@@ -330,7 +342,9 @@ struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(voi
  * Returns the file descriptor table of the given process. Returns NULL if 
  * `prcss` is null.
  */
-struct fd_table* GetFileFromFdDescriptorTable(struct process* prcss) {
+struct fd_table* GetFdTable(struct process* prcss) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     if (prcss == NULL) {
         return NULL;
     }

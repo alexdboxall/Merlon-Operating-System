@@ -119,7 +119,7 @@ static struct vnode* CreateDemoFsVnode(ino_t inode, off_t size) {
 static int CheckForDemofsSignature(struct file* raw_device) {
     struct stat st = raw_device->node->stat;
 
-    uint8_t* buffer = AllocHeapEx(st.st_blksize, HEAP_ALLOW_PAGING);
+    uint8_t* buffer = AllocHeap(st.st_blksize);
     struct transfer io = CreateKernelTransfer(buffer, st.st_blksize, 8 * st.st_blksize, TRANSFER_READ);
     int res = ReadFile(raw_device, &io);
     if (res != 0) {

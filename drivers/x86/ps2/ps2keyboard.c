@@ -12,10 +12,21 @@
 #include <machine/interrupt.h>
 #include "ps2controller.h"
 
-static const char LOCKED_DRIVER_RODATA set1_map_lower_norm[] = "  1234567890-=  qwertyuiop[]  asdfghjkl;'` \\zxcvbnm,./ *               789-456+1230.                                           ";
-static const char LOCKED_DRIVER_RODATA set1_map_upper_norm[] = "  !@#$%^&*()_+  QWERTYUIOP{}  ASDFGHJKL:\"~ |ZXCVBNM<>? *               789-456+1230.                                           ";
-static const char LOCKED_DRIVER_RODATA set1_map_lower_caps[] = "  1234567890-=  QWERTYUIOP[]  ASDFGHJKL;'` \\ZXCVBNM,./ *               789-456+1230.                                           ";
-static const char LOCKED_DRIVER_RODATA set1_map_upper_caps[] = "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *               789-456+1230.                                           ";
+static const char LOCKED_DRIVER_RODATA set1_map_lower_norm[] = 
+    "  1234567890-=  qwertyuiop[]  asdfghjkl;'` \\zxcvbnm,./ *       "
+    "        789-456+1230.                                           ";
+
+static const char LOCKED_DRIVER_RODATA set1_map_upper_norm[] = 
+    "  !@#$%^&*()_+  QWERTYUIOP{}  ASDFGHJKL:\"~ |ZXCVBNM<>? *       "
+    "        789-456+1230.                                           ";
+
+static const char LOCKED_DRIVER_RODATA set1_map_lower_caps[] = 
+    "  1234567890-=  QWERTYUIOP[]  ASDFGHJKL;'` \\ZXCVBNM,./ *       "
+    "        789-456+1230.                                           ";
+
+static const char LOCKED_DRIVER_RODATA set1_map_upper_caps[] = 
+    "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *       "
+    "        789-456+1230.                                           ";
 
 /*
 * Special keys that we might want to catch that aren't in the lookup tables.
@@ -149,17 +160,17 @@ static int Ps2KeyboardGetScancodeSet(void) {
     Ps2DeviceWrite(0xF0, false);
     Ps2DeviceWrite(0, false);
 
-    uint8_t scancode_set = Ps2DeviceRead();
+    uint8_t set = Ps2DeviceRead();
     /*
      * Technically we should get 0x43, 0x41 or 0x3F, but Bochs returns 1, 2, or
      * 3 instead. There's probably some crusty USB to PS/2 emulation out there
      * that acts the same, so we'll check for both.
      */
-    if (scancode_set == 0x43 || scancode_set == 1) {
+    if (set == 0x43 || set == 1) {
         return 1;
-    } else if (scancode_set == 0x41 || scancode_set == 2) {
+    } else if (set == 0x41 || set == 2) {
         return 2;
-    } else if (scancode_set == 0x3F || scancode_set == 3) {
+    } else if (set == 0x3F || set == 3) {
         return 3;
     } else {
         return -1;
@@ -192,24 +203,22 @@ void InitPs2Keyboard(void) {
     }
 
     bool translation_on = Ps2ControllerGetConfiguration() & (1 << 6);
-    int scancode_set = Ps2KeyboardGetScancodeSet();
+    int set = Ps2KeyboardGetScancodeSet();
 
-    LogWriteSerial("Keybrd: translation is %s, and scancode set %d\n", translation_on ? "on" : "off", scancode_set);
-
-    if (scancode_set == 3 || scancode_set == -1) {
+    if (set == 3 || set == -1) {
         int res = Ps2KeyboardSetScancodeSet(translation_on ? 2 : 1);
         if (res != 0) {
-            LogDeveloperWarning("PS/2 keyboard: could not switch out of scancode set %d!\n", scancode_set);
+            LogDeveloperWarning("[keybrd]: couldn't switch out of set %d!\n", set);
         }
 
-    } else if (scancode_set == 1 && translation_on) {
+    } else if (set == 1 && translation_on) {
         int res = Ps2KeyboardSetScancodeSet(2);
         if (res != 0) {
             Ps2KeyboardSetScancodeSet(1);
             Ps2KeyboardSetTranslation(false);
         }
 
-    } else if (scancode_set == 2 && !translation_on) {
+    } else if (set == 2 && !translation_on) {
         int res = Ps2KeyboardSetScancodeSet(1);
         if (res != 0) {
             Ps2KeyboardSetScancodeSet(2);

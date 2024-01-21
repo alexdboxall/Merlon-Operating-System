@@ -69,7 +69,7 @@ bool DoesFileExist(const char* filename) {
     return GetFw()->get_file_size(filename, &dummy) == 0;
 }
 
-size_t GetFileFromFdSize(const char* filename) {
+size_t GetFileSize(const char* filename) {
     size_t size;
     int res = GetFw()->get_file_size(filename, &size);
     if (res != 0) {

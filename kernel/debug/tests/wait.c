@@ -28,11 +28,12 @@ static void ZombieProcess(void*) {
 static bool ok = false;
 
 static void InitialProcessThread1(void*) {
-    struct process* child1 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 111);
+    pid_t ppid = GetPid(GetProcess());
+    struct process* child1 = CreateProcessWithEntryPoint(ppid, SecondProcessThread, (void*) (size_t) 111);
     SleepMilli(300);
-    struct process* child2 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 222);
+    struct process* child2 = CreateProcessWithEntryPoint(ppid, SecondProcessThread, (void*) (size_t) 222);
     SleepMilli(300);
-    struct process* child3 = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333);
+    struct process* child3 = CreateProcessWithEntryPoint(ppid, SecondProcessThread, (void*) (size_t) 333);
     int retv;
     LogWriteSerial("ABC1\n");
     WaitProcess(child3->pid, &retv, 0);
@@ -48,11 +49,12 @@ static void InitialProcessThread1(void*) {
 }
 
 static void InitialProcessThread2(void*) {
-    pid_t c1pid = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 111)->pid;
+    pid_t ppid = GetPid(GetProcess());
+    pid_t c1pid = CreateProcessWithEntryPoint(ppid, SecondProcessThread, (void*) (size_t) 111)->pid;
     SleepMilli(500);
-    pid_t c2pid = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 222)->pid;
+    pid_t c2pid = CreateProcessWithEntryPoint(ppid, SecondProcessThread, (void*) (size_t) 222)->pid;
     SleepMilli(500);
-    pid_t c3pid = CreateProcessWithEntryPoint(1, SecondProcessThread, (void*) (size_t) 333)->pid;
+    pid_t c3pid = CreateProcessWithEntryPoint(ppid, SecondProcessThread, (void*) (size_t) 333)->pid;
     
     int retv;
     pid_t pid = WaitProcess(-1, &retv, 0);
@@ -71,7 +73,8 @@ static void InitialProcessThread2(void*) {
 }
 
 static void InitialProcessThread3(void*) {
-    pid_t zombie = CreateProcessWithEntryPoint(1, ZombieProcess, NULL)->pid;
+    pid_t ppid = GetPid(GetProcess());
+    pid_t zombie = CreateProcessWithEntryPoint(ppid, ZombieProcess, NULL)->pid;
     SleepMilli(500);
     
     int retv;
@@ -82,7 +85,8 @@ static void InitialProcessThread3(void*) {
 }
 
 static void InitialProcessThread4(void*) {
-    pid_t zombie = CreateProcessWithEntryPoint(1, ZombieProcess, NULL)->pid;
+    pid_t ppid = GetPid(GetProcess());
+    pid_t zombie = CreateProcessWithEntryPoint(ppid, ZombieProcess, NULL)->pid;
     SleepMilli(500);
     
     int retv;
@@ -95,25 +99,35 @@ static void InitialProcessThread4(void*) {
 static void InitialProcessThread5(void* mode_) {
     size_t mode = (size_t) mode_;
 
+    pid_t ppid = GetPid(GetProcess());
+
+    LogWriteSerial("HOO??\n");
+
     pid_t pids[30];
     for (int i = 0; i < 30; ++i) {
-        pids[i] = CreateProcessWithEntryPoint(1, ZombieProcess, NULL)->pid;
+        LogWriteSerial("CREATING PROCESS %d...\n", i);
+        pids[i] = CreateProcessWithEntryPoint(ppid, ZombieProcess, NULL)->pid;
     }
+
+    LogWriteSerial("HUH??\n");
     
     int retv;
     if (mode == 0) {
         for (int i = 0; i < 30; ++i) {
+            LogWriteSerial("doing wait A.%d...\n", i);
             WaitProcess(-1, &retv, 0);
             assert(retv == 99);
         }
     } else if (mode == 1) {
         for (int i = 0; i < 30; ++i) {
+            LogWriteSerial("doing wait B.%d...\n", i);
             pid_t pid = WaitProcess(pids[i], &retv, 0);
             assert(retv == 99);
             assert(pid == pids[i]);
         }
     } else {
         for (int i = 0; i < 30; ++i) {
+            LogWriteSerial("doing wait C.%d...\n", i);
             pid_t pid = WaitProcess(pids[29 - i], &retv, 0);
             assert(retv == 99);
             assert(pid == pids[29 - i]);
@@ -126,7 +140,7 @@ static void InitialProcessThread5(void* mode_) {
 TFW_CREATE_TEST(BasicWaitTest) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread1, NULL);
-    SleepMilli(7000);
+    SleepMilli(4000);
     assert(ok);
 }
 

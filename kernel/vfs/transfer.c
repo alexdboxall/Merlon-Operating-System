@@ -139,7 +139,7 @@ int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, u
     size_t i = 0;
 
     while (max_length-- > 1) {
-        char c;
+        char c = 0;
         int result = PerformTransfer(&c, &tr, 1);
         if (result != 0) {
             return result;

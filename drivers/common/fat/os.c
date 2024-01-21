@@ -102,7 +102,7 @@ void* ff_memalloc(UINT msize) {
 	 * These are the only two that would be called from a page fault, and therefore it's okay for
 	 * this data to be paged out.
 	 */
-	return AllocHeapEx((size_t) msize, HEAP_ALLOW_PAGING);
+	return AllocHeap((size_t) msize);
 }
 
 void ff_memfree(void* mblock) {
@@ -267,7 +267,7 @@ int FatFsMountCreator(struct file* raw_device, struct file** out) {
 	struct vnode* node = CreateFatFsVnode();
     struct vnode_data* data = AllocHeap(sizeof(struct vnode_data));
     
-    data->fatfs_drive = AllocHeapEx(sizeof(FATFS), HEAP_ALLOW_PAGING);
+    data->fatfs_drive = AllocHeap(sizeof(FATFS));
     data->fatfs_file = NULL;
     data->fatfs_dir = NULL;
     node->data = data;

@@ -473,7 +473,7 @@ void EvictVirt(void) {
     }
 
     if (lowest_ranked.entry != NULL) {
-        previous_swaps[swap_num++ % PREV_SWAP_LIMIT] = lowest_ranked.entry;        
+        previous_swaps[swap_num++ % PREV_SWAP_LIMIT] = lowest_ranked.entry;     
         EvictPage(lowest_ranked.vas, lowest_ranked.entry);
         lowest_ranked.entry->times_swapped++;
     }
@@ -1007,26 +1007,31 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
 
     if (entry->cow && allow_cow) {
         assert(entry->num_pages == 1);
+        LogWriteSerial("--> COW\n");
         BringIntoMemoryFromCow(entry);
         return 0;
     }
 
     if (entry->file && !entry->in_ram) {
+        LogWriteSerial("--> FILE\n");
         BringIntoMemoryFromFile(entry, faulting_virt);
         return 0;
     }
 
     if (entry->swapfile) {
+        LogWriteSerial("--> SWAP\n");
         assert(entry->num_pages == 1);
         BringIntoMemoryFromSwapfile(entry);
         return 0;
     }
 
     if (!entry->in_ram) {
+        LogWriteSerial("--> BSS\n");
         BringInBlankPage(vas, entry, faulting_virt, fault_type);
         return 0;
     }
 
+    LogWriteSerial("--> UH-OH\n");
     return EINVAL;
 }
 

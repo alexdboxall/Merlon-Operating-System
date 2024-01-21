@@ -31,7 +31,7 @@ int SysOpen(size_t filename, size_t flags, size_t mode, size_t fdout, size_t) {
 		return res;
 	}
 
-	struct fd_table* table = GetFileFromFdDescriptorTable(GetProcess());
+	struct fd_table* table = GetFdTable(GetProcess());
 	if ((res = CreateFd(table, file, &fd, flags & O_CLOEXEC))) {
 		CloseFile(file);
 		return res;

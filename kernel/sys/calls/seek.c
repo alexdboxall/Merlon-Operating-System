@@ -12,7 +12,7 @@
 
 int SysSeek(size_t fd, size_t pos_ptr, size_t whence, size_t, size_t) {    
 	struct file* file;
-	int res = GetFileFromFd(GetFileFromFdDescriptorTable(GetProcess()), fd, &file);
+	int res = GetFileFromFd(GetFdTable(GetProcess()), fd, &file);
 
 	if (file == NULL || res != 0) {
 		return res;

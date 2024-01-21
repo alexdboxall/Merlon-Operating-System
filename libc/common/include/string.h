@@ -34,10 +34,6 @@ size_t strlen(const char* str);
 void bzero(void* addr, size_t n);
 char* strdup(const char* str);
 
-#ifdef COMPILE_KERNEL
-char* strdup_pageable(const char* str);
-#endif
-
 #ifndef COMPILE_KERNEL
 int strcoll(const char* s1, const char* s2);
 size_t strxfrm(char* restrict dst, const char* restrict src, size_t n);

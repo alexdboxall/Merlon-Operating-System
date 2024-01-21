@@ -12,7 +12,7 @@ int WaitKey(void);
 int CheckKey(void);
 void ExitBootServices(void);
 bool DoesFileExist(const char* filename);
-size_t GetFileFromFdSize(const char* filename);
+size_t GetFileSize(const char* filename);
 void LoadFile(const char* filename, size_t addr);
 void Fail(const char* why1, const char* why2);
 void Sleep(int milli);

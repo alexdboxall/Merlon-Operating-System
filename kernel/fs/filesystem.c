@@ -36,7 +36,7 @@ int RegisterFilesystem(char* fs_name, fs_mount_creator mount) {
     }
 
     struct filesystem fs;
-    fs.name = strdup_pageable(fs_name);
+    fs.name = strdup(fs_name);
     fs.mount_creator = mount;
 
     int ret = 0;

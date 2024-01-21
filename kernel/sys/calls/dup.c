@@ -9,7 +9,7 @@
 #include <fcntl.h>
 
 int SysDup(size_t dup_num, size_t old_fd, size_t new_fd, size_t flags, size_t) {
-	struct fd_table* table = GetFileFromFdDescriptorTable(GetProcess());
+	struct fd_table* table = GetFdTable(GetProcess());
 
 	if ((flags & ~O_CLOEXEC) != 0) {
 		return EINVAL;

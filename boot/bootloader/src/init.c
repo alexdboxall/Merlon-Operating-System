@@ -107,7 +107,7 @@ void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
         while (true) {;}
     }
     
-    size_t file_size = GetFileFromFdSize(fw->kernel_filename);
+    size_t file_size = GetFileSize(fw->kernel_filename);
     Printf("The kernel file exists, and has a size of %d.%d KiB\n  ", file_size / 1024, (file_size % 1023) * 10 / 1024);
 
     LoadFile(fw->kernel_filename, 0x10000);

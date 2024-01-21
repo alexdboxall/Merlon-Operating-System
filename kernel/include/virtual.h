@@ -75,8 +75,12 @@ void UnlockVirtEx(struct vas* vas, size_t virtual);
 
 int SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
+
 size_t MapVirt(size_t physical, size_t virtual, size_t bytes, int flags, struct file* file, off_t pos);
 size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages, int flags, struct file* file, off_t pos, int* error);
+
+#define MapVirtEasy(bytes, pageable) ((void*) MapVirt(0, 0, bytes, VM_READ | VM_WRITE | (pageable ? 0 : VM_LOCK), NULL, 0))
+
 int UnmapVirt(size_t virtual, size_t bytes);
 int UnmapVirtEx(struct vas* vas, size_t virtual, size_t pages, int flags);
 int WipeUsermodePages(void);

@@ -254,7 +254,7 @@ size_t AllocPhysContiguous(
  * Initialises the physical memory manager for the first time. Must be called 
  * before any other memory management function is called. It determines what 
  * memory is available on the system  and prepares the O(n) bitmap allocator. 
- * This will be slow, but is only needed until ReinitHeap() gets called.
+ * This will be slow, but is only needed until ReinitPhys() gets called.
  */
 void InitPhys(struct kernel_boot_info* boot_info) {
     InitSpinlock(&phys_lock, "phys", IRQL_SCHEDULER);

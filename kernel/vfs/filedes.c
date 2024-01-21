@@ -7,35 +7,28 @@
 #include <fcntl.h>
 #include <log.h>
 #include <heap.h>
+#include <virtual.h>
 #include <irql.h>
 
 struct fd {
-    /*
-     * Set to NULL if this entry isn't in use.
-     */
-    struct file* file;
-
-    /*
-     * The only flag here is FD_CLOEXEC (== O_CLOEXEC for this OS).
-     */
-    int flags;
+    struct file* file;      /* NULL if entry isn't in use */
+    int flags;              /* FD_CLOEXEC ( == O_CLOEXEC for this OS)*/
 };
 
-/*
-* The table of all of the file descriptors in use by a process.
-*/
 struct fd_table {
     struct semaphore* lock;
     struct fd* entries;
 };
 
+#define TABLE_SIZE (sizeof(struct fd) * PROC_MAX_FD)
+
 struct fd_table* CreateFdTable(void) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     struct fd_table* table = AllocHeap(sizeof(struct fd_table));
 
     table->lock = CreateMutex("filedes");
-    table->entries = AllocHeapEx(
-        sizeof(struct fd) * PROC_MAX_FD, HEAP_ALLOW_PAGING
-    );
+    table->entries = MapVirtEasy(TABLE_SIZE, true);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
         table->entries[i].file = NULL;
@@ -45,16 +38,20 @@ struct fd_table* CreateFdTable(void) {
 }
 
 struct fd_table* CopyFdTable(struct fd_table* original) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     struct fd_table* new_table = CreateFdTable();
 
     AcquireMutex(original->lock, -1);
-    memcpy(new_table->entries, original->entries, sizeof(struct fd) * PROC_MAX_FD);
+    memcpy(new_table->entries, original->entries, TABLE_SIZE);
     ReleaseMutex(original->lock);
     
     return new_table;
 }
 
 void DestroyFdTable(struct fd_table* table) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
@@ -63,11 +60,15 @@ void DestroyFdTable(struct fd_table* table) {
         }
     }
 
+    UnmapVirt((size_t) table->entries, TABLE_SIZE);
+
     ReleaseMutex(table->lock);
     DestroyMutex(table->lock);
 }
 
 int CreateFd(struct fd_table* table, struct file* file, int* fd_out, int flags) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     if ((flags & ~O_CLOEXEC) != 0) {
         return EINVAL;
     }
@@ -89,6 +90,8 @@ int CreateFd(struct fd_table* table, struct file* file, int* fd_out, int flags) 
 }
 
 int RemoveFd(struct fd_table* table, struct file* file) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
@@ -104,6 +107,8 @@ int RemoveFd(struct fd_table* table, struct file* file) {
 }
 
 int GetFileFromFd(struct fd_table* table, int fd, struct file** out) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     if (out == NULL || fd < 0 || fd >= PROC_MAX_FD) {
         *out = NULL;
         return out == NULL ? EINVAL : EBADF;
@@ -118,6 +123,8 @@ int GetFileFromFd(struct fd_table* table, int fd, struct file** out) {
 }
 
 int HandleExecFd(struct fd_table* table) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     AcquireMutex(table->lock, -1);
 
     for (int i = 0; i < PROC_MAX_FD; ++i) {
@@ -139,6 +146,8 @@ int HandleExecFd(struct fd_table* table) {
 }
 
 int DupFd(struct fd_table* table, int oldfd, int* newfd) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     AcquireMutex(table->lock, -1);
 
     struct file* original_file;
@@ -163,6 +172,8 @@ int DupFd(struct fd_table* table, int oldfd, int* newfd) {
 }
 
 int DupFd2(struct fd_table* table, int oldfd, int newfd, int flags) {
+    EXACT_IRQL(IRQL_STANDARD);
+
     if (flags & ~O_CLOEXEC) {
         return EINVAL;
     }

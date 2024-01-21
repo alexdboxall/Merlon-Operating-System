@@ -118,7 +118,6 @@ static void InitSerialDebugging(void) {
 }
 
 void InitThread(void*) {
-    ReinitHeap();
     InitRandomDevice();
     InitNullDevice();
     InitConsole();

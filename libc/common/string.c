@@ -180,14 +180,6 @@ char* strchr(const char* s, int c) {
 	return NULL;
 }
 
-#ifdef COMPILE_KERNEL
-char* strdup_pageable(const char* str) {
-	char* copy = (char*) AllocHeapEx(strlen(str) + 1, HEAP_ALLOW_PAGING);
-	strcpy(copy, str);
-	return copy;
-}
-#endif
-
 char* strdup(const char* str) {
 	char* copy = (char*) malloc(strlen(str) + 1);
 	strcpy(copy, str);
