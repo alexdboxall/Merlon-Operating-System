@@ -26,7 +26,6 @@ static void Merge(void* array, size_t low, size_t mid, size_t high, size_t size,
     int size_2 = count_2 * size;
 
 #ifdef COMPILE_KERNEL
-    LogWriteSerial("Merge Sort wants to allocate: %d and %d\n", size_1, size_2);
     void* temp_1 = size_1 < 1024 ? AllocHeap(size_1) : MapVirtEasy(size_1, allow_paging);
     void* temp_2 = size_2 < 1024 ? AllocHeap(size_2) : MapVirtEasy(size_2, allow_paging);
 #else

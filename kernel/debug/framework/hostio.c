@@ -31,7 +31,6 @@ static uint8_t DbgReadByte() {
     while ((inb(0x2F8 + 5) & 1) == 0) {
         ;
     }
- 
     return inb(0x2F8);
 }
 
@@ -52,6 +51,9 @@ void DbgWritePacket(int type, uint8_t* data, int size) {
 
 void DbgReadPacket(int* type, uint8_t* data, int* size) {
     uint8_t v = DbgReadByte();
+    if (v != 0xAA) {
+        LogDeveloperWarning("Huh? Got 0x%X instead of 0xAA...\n", v);
+    }
     assert(v == 0xAA);
 
     *type = DbgReadByte();

@@ -14,9 +14,12 @@ int_common_handler:
     mov ax, 0x10
 	mov ds, ax
     mov es, ax
-    
-    ; Allow nested interrupts
-    sti
+
+    ; Do NOT enable interrupts here - let the Irql stuff work its magic. Unholy
+    ; demons will haunt you if you do (e.g. corrupting `cr2` if a timer 
+    ; interrupt happens to switch one page-faulting thread to another one which
+    ; is just about to page fault (when it switches back to the first, `cr2`
+    ; would have been overwritten with the one for the second). 
 	
     ; Push a pointer to the registers to the kernel handler
     push esp

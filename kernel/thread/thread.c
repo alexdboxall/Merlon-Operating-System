@@ -396,7 +396,6 @@ void Schedule(void) {
      * signal that it needs terminating next time we allow it to run.
      */
     if (GetThread()->needs_termination) {
-        LogWriteSerial("Terminating a thread that was scheduled to die... stack at 0x%X\n", GetThread()->kernel_stack_top - GetThread()->kernel_stack_size);
         TerminateThread(GetThread());
         Panic(PANIC_IMPOSSIBLE_RETURN);
     }

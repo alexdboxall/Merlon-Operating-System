@@ -259,34 +259,25 @@ static void KillProcessHelper(void* arg) {
     assert(GetProcess() == NULL);
     assert(GetVas() != prcss->vas);     // we should be on GetKernelVas()
     
-    LogWriteSerial("KillProcessHelper A\n");
     RecursivelyKillRemainingThreads(prcss->threads->root);    
     RecursivelyMakeChildrenOrphans(prcss->children->root);
-    LogWriteSerial("KillProcessHelper B\n");
 
     TreeDestroy(prcss->threads);
     TreeDestroy(prcss->children);
-    LogWriteSerial("KillProcessHelper C\n");
 
     DestroyVas(prcss->vas);
-    LogWriteSerial("KillProcessHelper D\n");
 
     prcss->terminated = true;
 
     if (prcss->parent == 0) {
-        LogWriteSerial("KillProcessHelper E.1\n");
         ReapProcess(prcss);
-        LogWriteSerial("KillProcessHelper E.2\n");
 
     } else {
-        LogWriteSerial("KillProcessHelper F.1\n");
         struct process* parent = GetProcessFromPid(prcss->parent);
-        LogWriteSerial("releasing semaphore 0x%X (prcss 0x%X)\n", parent->killed_children_semaphore, parent);
+        assert(parent != NULL);
         ReleaseSemaphore(parent->killed_children_semaphore);
-        LogWriteSerial("KillProcessHelper F.2\n");
     }
 
-    LogWriteSerial("KillProcessHelper G\n");
     TerminateThread(GetThread());
 }
 
@@ -301,8 +292,6 @@ static void KillProcessHelper(void* arg) {
  */
 void KillProcess(int retv) {
     MAX_IRQL(IRQL_STANDARD);   
-
-    LogWriteSerial("Killing process... retv=%d\n", retv);
 
     struct process* prcss = GetProcess();
     prcss->retv = retv;

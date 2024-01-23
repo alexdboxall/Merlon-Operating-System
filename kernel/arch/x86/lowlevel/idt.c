@@ -46,7 +46,6 @@ void x86InitIdt(void)
 	 * to be invokable from usermode.
 	 */
 	for (int i = 0; i < 256; ++i) {
-		LogWriteSerial("isrx%d seems to be at 0x%X\n", i, (&isr_vectors)[i]);
 		x86SetIdtEntry(i, (&isr_vectors)[i], i == 96 ? 0xEE : 0x8E);
 	}
 

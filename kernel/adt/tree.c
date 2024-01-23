@@ -21,8 +21,17 @@ static struct tree_node* AvlCreateNode(void* data, struct tree_node* left, struc
 }
 
 static int AvlGetHeight(struct tree_node* tree) {
+    if (tree != NULL && ((size_t) tree) < 0xF000000) {
+        LogWriteSerial("AvlGetHeight: 0x%X\n", tree);
+    }
     if (tree == NULL) {
         return 0;
+    }
+
+    bool bad_left = tree->left != NULL && (((size_t) (tree->left)) < 0xF000000);
+    bool bad_right = tree->right != NULL && (((size_t) (tree->right)) < 0xF000000);
+    if (bad_left || bad_right) {
+        LogWriteSerial("UH OH! AvlGetHeight on tree 0x%X -> l = 0x%X, r = 0x%X\n", tree, tree->left, tree->right);
     }
 
     return 1 + MAX(AvlGetHeight(tree->left), AvlGetHeight(tree->right));

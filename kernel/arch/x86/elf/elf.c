@@ -213,8 +213,6 @@ static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf
 	bool success = true;
 	size_t val = 0;
 
-	LogWriteSerial("About to relocate at 0x%X\n", ref);
-
 	if (type == R_386_32) {
 		val = DO_386_32(symbolValue, *ref);
 

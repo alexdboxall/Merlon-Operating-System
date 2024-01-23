@@ -35,7 +35,7 @@ static void x86AllocatePageTable(struct vas* vas, size_t table_num) {
 	inline_memset((void*) (0xFFC00000 + table_num * ARCH_PAGE_SIZE), 0, ARCH_PAGE_SIZE);
 }
 
-static size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
+/* @@@ static*/ size_t* x86GetPageEntry(struct vas* vas, size_t virtual) {
 	if (vas != GetVas()) {
 		LogDeveloperWarning("NON-LOCAL VAS x86GetPageEntry!!! THIS ISN'T GOING TO WORK AS-IS!\n");
 	}
@@ -54,6 +54,7 @@ static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int fla
 	if (vas != GetVas()) {
 		LogDeveloperWarning("NON-LOCAL VAS x86MapPage!!! THIS ISN'T GOING TO WORK AS-IS!\n");
 	}
+	//LogWriteSerial("x86MapPage in vas 0x%X: 0x%X -> 0x%X (0x%X)\n", vas, virtual, physical, flags);
 	*x86GetPageEntry(vas, virtual) = physical | flags;
 }
 

@@ -25,6 +25,11 @@ static void ZombieProcess(void*) {
     KillProcess(99);
 }
 
+static void ZombieProcessWithDelay(void* arg) {
+    SleepMilli((size_t) arg);
+    KillProcess(23);
+}
+
 static bool ok = false;
 
 static void InitialProcessThread1(void*) {
@@ -137,6 +142,39 @@ static void InitialProcessThread5(void* mode_) {
     ok = true;
 }
 
+static int done_well = 0;
+static struct spinlock done_well_lock;
+ 
+static void InitialProcessThread6(void* j_) {
+    int j = (size_t) j_;
+    pid_t ppid = GetPid(GetProcess());
+    pid_t pids[20];
+    for (int i = 0; i < 10 + j; ++i) {
+        pids[i] = CreateProcessWithEntryPoint(ppid, ZombieProcessWithDelay, (void*) (size_t) (rand() % 850))->pid;
+        if (i % 2 == 0) {
+            SleepMilli(rand() % 850);
+        }
+    }
+    
+    LogWriteSerial("In InitialProcessThread6... j = %d\n", j);
+    int retv;
+    int num_explicit = 5 + j / 3;
+    for (int i = 3; i < 3 + num_explicit; ++i) {
+        LogWriteSerial("About to wait implicit %d...\n", i - 3);
+        WaitProcess(pids[i], &retv, 0);
+        assert(retv == 23);
+    }
+    for (int i = 0; i < 10 + j - num_explicit; ++i) {
+        LogWriteSerial("About to wait explicit %d...\n", i);
+        WaitProcess(-1, &retv, 0);
+        assert(retv == 23);
+    }
+    LogWriteSerial("Finished InitialProcessThread6... j = %d\n", j);
+    AcquireSpinlock(&done_well_lock);
+    ++done_well;
+    ReleaseSpinlock(&done_well_lock);
+}
+
 TFW_CREATE_TEST(BasicWaitTest) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread1, NULL);
@@ -168,24 +206,38 @@ TFW_CREATE_TEST(WaitOnZombieTest2) { TFW_IGNORE_UNUSED
 TFW_CREATE_TEST(WaitOnManyTest1) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread5, (void*) (size_t) 0);
-    SleepMilli(6000);
+    SleepMilli(8000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitOnManyTest2) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread5, (void*) (size_t) 1);
-    SleepMilli(6000);
+    SleepMilli(8000);
     assert(ok);
 }
 
 TFW_CREATE_TEST(WaitOnManyTest3) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     CreateProcessWithEntryPoint(0, InitialProcessThread5, (void*) (size_t) 2);
-    SleepMilli(6000);
+    SleepMilli(8000);
     assert(ok);
 }
 
+TFW_CREATE_TEST(WaitStress) { TFW_IGNORE_UNUSED
+    EXACT_IRQL(IRQL_STANDARD);
+    InitSpinlock(&done_well_lock, "dwl", IRQL_SCHEDULER);
+    done_well = 0;
+    int m = ((size_t) context) + 15;
+    for (int i = 0; i < m; ++i) {
+        CreateProcessWithEntryPoint(0, InitialProcessThread6, (void*) (size_t) (i % 10));
+        if (i > 7) {
+            SleepMilli(rand() % 150 + 50);
+        }
+    }
+    SleepMilli(6000);
+    assert(done_well == m);
+}
 
 void RegisterTfwWaitTests(void) {
     RegisterTfwTest("WaitProcess works (explict ids)", TFW_SP_ALL_CLEAR, BasicWaitTest, PANIC_UNIT_TEST_OK, 0);
@@ -195,6 +247,8 @@ void RegisterTfwWaitTests(void) {
     RegisterTfwTest("WaitProcess works when waiting on many (general)", TFW_SP_ALL_CLEAR, WaitOnManyTest1, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("WaitProcess works when waiting on many (explicit, in order)", TFW_SP_ALL_CLEAR, WaitOnManyTest2, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("WaitProcess works when waiting on many (explicit, reversed)", TFW_SP_ALL_CLEAR, WaitOnManyTest3, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("WaitProcess stress test (1)", TFW_SP_ALL_CLEAR, WaitStress, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("WaitProcess stress test (2)", TFW_SP_ALL_CLEAR, WaitStress, PANIC_UNIT_TEST_OK, 33);
     // todo: stress tests
 }
 

@@ -27,7 +27,6 @@
 
 /*
  * Next steps:
- * - syscall for waitpid
  * - fork
  * - dynamic libraries (e.g. c.lib)
  * - C standard library
@@ -146,13 +145,13 @@ void KernelMain(struct kernel_boot_info* boot_info) {
     InitSerialDebugging();
     LogWriteSerial("KernelMain: kernel is initialising...\n");
 
-    InitCpuTable(); LogWriteSerial("A\n");
-    InitTfw(); LogWriteSerial("B\n");
-    InitPhys(boot_info); LogWriteSerial("C\n");
-    InitIrql(); LogWriteSerial("D\n");
-    InitVfs(); LogWriteSerial("E\n");
-    InitTimer(); LogWriteSerial("F\n");
-    InitScheduler(); LogWriteSerial("G\n");
+    InitCpuTable();
+    InitTfw();
+    InitPhys(boot_info);
+    InitIrql();
+    InitVfs();
+    InitTimer();
+    InitScheduler();    
     InitDiskUtil();
     InitHeap();
     InitBootstrapCpu();

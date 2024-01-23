@@ -137,22 +137,11 @@ void AddSymbol(const char* symbol, size_t address) {
          */
         FreeHeap(entry);
     } else {
-        LogWriteSerial("adding symbol %s -> 0x%X\n", symbol, address);
         TreeInsert(symbol_table, entry);
     }
     ReleaseMutex(symbol_table_lock);
 }
 
-/*
- * Do not name a (global) function pointer you receive from this the same as the
- * actual function - this may cause issues with duplicate symbols.
- * 
- * e.g. don't do this at global scope:
- * 
- * void (*MyFunc)(void) = GetSymbolAddress("MyFunc");
- * 
- * Instead, do void (*_MyFunc)(void) or something.
- */
 size_t GetSymbolAddress(const char* symbol) {
     EXACT_IRQL(IRQL_STANDARD);   
 

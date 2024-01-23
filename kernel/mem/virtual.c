@@ -276,7 +276,7 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
 
     assert(!entry->lock);
     assert(!entry->cow);
-    assert(!entry->in_ram);
+    assert(entry->in_ram);
 
     AcquireSpinlock(&vas->lock);
 
@@ -382,7 +382,7 @@ void FindVirtToEvictRecursive(
     }
 
     struct vas_entry* entry = node->data;
-    if (!entry->lock && entry->allocated) {
+    if (!entry->lock && entry->allocated && entry->in_ram) {
         int rank = GetPageEvictionRank(vas, entry);
 
         /*
@@ -658,6 +658,11 @@ static bool IsRangeInUse(struct vas* vas, size_t virtual, size_t pages) {
 }
 
 static size_t AllocVirtRange(struct vas* vas, size_t pages, int flags) {
+    // TODO: !!!! @@@@ WE NEED LOCKS, NOW! EVEN FOR THE HIDEOUS VERSION
+    //                 IT IS RACEY (I.E. MAY RETURN THE SAME RANGE
+    //                 TWICE, CAUSING ALL SORTS OF A MESS AS BOTH USERS OF IT
+    //                 TRY TO GIVE IT DIFFERENT MAPPINGS
+
     /*
      * TODO: make this deallocatable, and not x86 specific (with that memory address)
      */
@@ -669,6 +674,7 @@ static size_t AllocVirtRange(struct vas* vas, size_t pages, int flags) {
         static size_t hideous_allocator = 0x20000000U;
         size_t retv = hideous_allocator;
         hideous_allocator += pages * ARCH_PAGE_SIZE;
+        LogWriteSerial("hideously (A) 0x%X\n", retv);
         return retv;
 
     } else {
@@ -678,6 +684,7 @@ static size_t AllocVirtRange(struct vas* vas, size_t pages, int flags) {
         static size_t hideous_allocator = ARCH_KRNL_SBRK_BASE;
         size_t retv = hideous_allocator;
         hideous_allocator += pages * ARCH_PAGE_SIZE;
+        LogWriteSerial("hideous 0x%X\n", retv);
         return retv;
     }
 }
@@ -779,7 +786,7 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
      * 
      * May want to increase this value furher in the future (e.g. maybe to 4 or 8)?
      */
-    bool multi_page_mapping = (((flags & VM_LOCK) == 0) || ((flags & VM_MAP_HARDWARE) != 0)) && pages >= 3;
+    bool multi_page_mapping = false;//(((flags & VM_LOCK) == 0) || ((flags & VM_MAP_HARDWARE) != 0)) && pages >= 3;
 
     for (size_t i = 0; i < (multi_page_mapping ? 1 : pages); ++i) {
         if (flags & VM_FILE) {
@@ -867,6 +874,7 @@ static size_t SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, s
      * Split off anything before this page.
      */
     if (entry_page < target_page) {
+        LogWriteSerial("Made a split! (A)\n");
         size_t num_beforehand = target_page - entry_page;
 
         struct vas_entry* pre_entry = AllocHeap(sizeof(struct vas_entry));
@@ -894,7 +902,9 @@ static size_t SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, s
      * There's now no pages beforehand. Now we need to check if there are any other pages
      * after this.
      */
-    if (entry->num_pages > num_to_leave) {        
+    if (entry->num_pages > num_to_leave) {   
+        LogWriteSerial("Made a split! (B)\n");
+     
         struct vas_entry* post_entry = AllocHeap(sizeof(struct vas_entry));
         *post_entry = *entry;
 
@@ -1031,7 +1041,13 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
         return 0;
     }
 
-    LogWriteSerial("--> UH-OH\n");
+    LogWriteSerial("--> UH-OH\n entry says: virt = 0x%X, file=%d, inram=%d, alloc=%d, prgs=%d", 
+        entry->virtual, entry->file, entry->in_ram, entry->allocated, entry->load_in_progress
+    );
+
+    extern size_t* x86GetPageEntry(struct vas* vas, size_t virtual);
+    LogWriteSerial("\nx86 has 0x%X\n", *x86GetPageEntry(vas, entry->virtual));
+    
     return EINVAL;
 }
 
@@ -1371,6 +1387,8 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     AcquireSpinlock(&vas->lock);
     ++handling_page_fault;
 
+    LogWriteSerial("PF at 0x%X on thread 0x%X\n", faulting_virt, GetThread());
+
     struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
 
     if (entry == NULL) {
@@ -1378,6 +1396,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     }
 
     if (entry->load_in_progress) {
+        LogWriteSerial("Telling a page to retry as loading is already in progress...\n");
         --handling_page_fault;
         ReleaseSpinlock(&vas->lock);
         Schedule();

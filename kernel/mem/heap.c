@@ -85,6 +85,10 @@ static void* AllocateFromReserveBlocks(size_t size) {
  * This function needs to be called with the heap lock held.
  */
 static void AddBlockToBackupHeap(size_t size) {
+    UnlockHeap();
+    void* address = MapVirtEasy(size, false);
+    LockHeap();
+    
     int small_index = 0;
     for (int i = 0; i < MAX_RESERVE_BLOCKS; ++i) {
         if (reserve_blocks[i].valid) {
@@ -92,16 +96,16 @@ static void AddBlockToBackupHeap(size_t size) {
                 small_index = i;
             }
         } else {
-            UnlockHeap();
-            void* address = (void*) MapVirt(0, 0, size, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
-            LockHeap();
-
             reserve_blocks[i].valid = true;
             reserve_blocks[i].size = size;
             reserve_blocks[i].address = address;
             return;
         }
     }
+    
+    UnlockHeap();
+    UnmapVirt((size_t) address, size);
+    LockHeap();
 }
 
 static void RefillReservePages(void*) {
