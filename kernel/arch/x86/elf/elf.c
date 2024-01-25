@@ -49,76 +49,94 @@ static size_t ElfGetSizeOfImageIncludingBss(void* data) {
     return (total_size + ARCH_PAGE_SIZE - 1) & (~(ARCH_PAGE_SIZE - 1));
 }
 
+static int ElfLoadProgramHeader(
+	void* data, struct Elf32_Phdr* prog_header, bool driver, 
+	size_t relocation_point, struct file* file
+) {
+	size_t address = prog_header->p_vaddr;
+	size_t offset = prog_header->p_offset;
+	size_t size = prog_header->p_filesz;
+	uint32_t flags = prog_header->p_flags;
+	size_t num_zero_bytes = prog_header->p_memsz - size;
+
+	size_t addr = address + relocation_point;
+	size_t remainder = size & (ARCH_PAGE_SIZE - 1);
+
+	int page_flags = 0;
+	if (flags & PF_X) page_flags |= VM_EXEC;
+	if (flags & PF_W) page_flags |= VM_WRITE;
+	if (flags & PF_R) page_flags |= VM_READ;
+
+	/*
+	 * We don't actually want to write to the executable file, so we 
+	 * must just copy to the page as normal instead of using a 
+	 * file-backed page. We also can't have the program loader loaded
+	 * with VM_RELOCATABLE, as we don't store a relocation table in
+	 * kernel mode that we could use to redo the relocations.
+	 */
+	if ((flags & PF_W) || !driver) {
+		// TODO: in the future, we should have all of the non-writable segments
+		// sharing the same vas_entry -> this means it would need to be global
+		// (even though in the user area) -> probably need to unmap and then remap
+		// the pages (and seperate this case from the driver case).
+		size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
+
+		for (size_t i = 0; i < pages; ++i) {
+			SetVirtPermissions(
+				addr + i * ARCH_PAGE_SIZE, 
+				page_flags | (driver ? 0 : VM_WRITE), 
+				VM_READ | VM_WRITE | VM_EXEC
+			);
+		}
+
+		memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
+
+		if (!driver && (flags & PF_W) == 0) {
+			for (size_t i = 0; i < pages; ++i) {
+				SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, 0, VM_WRITE);
+			}
+		}
+
+	} else {
+		size_t pages = (size - remainder) / ARCH_PAGE_SIZE;
+
+		if (addr & (ARCH_PAGE_SIZE - 1)) {
+			return EINVAL;
+		}
+		if (pages > 0) {
+			UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
+			size_t v = MapVirt(
+				relocation_point, addr, pages * ARCH_PAGE_SIZE, 
+				VM_RELOCATABLE | VM_FILE | page_flags, file, offset
+			);
+			if (v != addr) {
+				return ENOMEM;
+			}
+		}
+
+		if (remainder > 0) {
+			SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, VM_READ | VM_EXEC);
+			memcpy(
+				(void*) AddVoidPtr(addr, pages * ARCH_PAGE_SIZE), 
+				(const void*) AddVoidPtr(data, offset + pages * ARCH_PAGE_SIZE), 
+				remainder
+			);
+			SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, 0, VM_WRITE);
+		}
+	}
+	return 0;
+}
+
 static int ElfLoadProgramHeaders(void* data, size_t relocation_point, struct file* file, bool driver) {
     struct Elf32_Ehdr* elf_header = (struct Elf32_Ehdr*) data;
 	struct Elf32_Phdr* prog_headers = (struct Elf32_Phdr*) AddVoidPtr(data, elf_header->e_phoff);
 
     for (int i = 0; i < elf_header->e_phnum; ++i) {
         struct Elf32_Phdr* prog_header = prog_headers + i;
-
-        size_t address = prog_header->p_vaddr;
-		size_t offset = prog_header->p_offset;
-		size_t size = prog_header->p_filesz;
 		size_t type = prog_header->p_type;
-		uint32_t flags = prog_header->p_flags;
-		size_t num_zero_bytes = prog_header->p_memsz - size;
 
 		if (type == PHT_LOAD) {
-			size_t addr = address + relocation_point;
-			size_t remainder = size & (ARCH_PAGE_SIZE - 1);
-
-			int page_flags = 0;
-			if (flags & PF_X) page_flags |= VM_EXEC;
-			if (flags & PF_W) page_flags |= VM_WRITE;
-			if (flags & PF_R) page_flags |= VM_READ;
-
-			/*
-			 * We don't actually want to write to the executable file, so we 
-			 * must just copy to the page as normal instead of using a 
-			 * file-backed page. We also can't have the program loader loaded
-			 * with VM_RELOCATABLE, as we don't store a relocation table in
-			 * kernel mode that we could use to redo the relocations.
-			 */
-			if ((flags & PF_W) || !driver) {
-
-				// TOOD: in the future, we should have all of the non-writable segments
-				// sharing the same vas_entry -> this means it would need to be global
-				// (even though in the user area) -> probably need to unmap and then remap
-				// the pages (and seperate this case from the driver case).
-				size_t pages = (size + num_zero_bytes + (ARCH_PAGE_SIZE - 1)) / ARCH_PAGE_SIZE;
-
-				for (size_t i = 0; i < pages; ++i) {
-					SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, page_flags | (driver ? 0 : VM_WRITE), VM_READ | VM_WRITE | VM_EXEC);
-				}
-
-				memcpy((void*) addr, (const void*) AddVoidPtr(data, offset), size);
-
-				if (!driver && (flags & PF_W) == 0) {
-					for (size_t i = 0; i < pages; ++i) {
-						SetVirtPermissions(addr + i * ARCH_PAGE_SIZE, 0, VM_WRITE);
-					}
-				}
-
-			} else {
-				size_t pages = (size - remainder) / ARCH_PAGE_SIZE;
-
-				if (addr & (ARCH_PAGE_SIZE - 1)) {
-					return EINVAL;
-				}
-				if (pages > 0) {
-					UnmapVirt(addr, pages * ARCH_PAGE_SIZE);
-					size_t v = MapVirt(relocation_point, addr, pages * ARCH_PAGE_SIZE, VM_RELOCATABLE | VM_FILE | page_flags, file, offset);
-					if (v != addr) {
-						return ENOMEM;
-					}
-				}
-
-				if (remainder > 0) {
-					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, page_flags | VM_WRITE, VM_READ | VM_EXEC);
-					memcpy((void*) AddVoidPtr(addr, pages * ARCH_PAGE_SIZE), (const void*) AddVoidPtr(data, offset + pages * ARCH_PAGE_SIZE), remainder);
-					SetVirtPermissions(addr + pages * ARCH_PAGE_SIZE, 0, VM_WRITE);
-				}
-			}
+			ElfLoadProgramHeader(data, prog_header, driver, relocation_point, file);
 		}
     }
 	
@@ -185,8 +203,10 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 	}
 }
 
-static bool ElfPerformRelocation(void* data, size_t relocation_point, struct Elf32_Shdr* section, struct Elf32_Rel* relocation_table, struct rel_table* table)
-{
+static bool ElfPerformRelocation(
+	void* data, size_t relocation_point, struct Elf32_Shdr* section, 
+	struct Elf32_Rel* relocation_table, struct rel_table* table
+) {
 	size_t addr = (size_t) relocation_point + relocation_table->r_offset;
 	size_t* ref = (size_t*) addr;
 

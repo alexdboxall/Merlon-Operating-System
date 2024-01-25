@@ -1247,20 +1247,29 @@ int UnmapVirt(size_t virtual, size_t bytes) {
 }
 
 static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
+    LogWriteSerial("[CopyVasRecursive]: node 0x%X\n", node);
+
     if (node == NULL) {
         return;
     }
+
+    LogWriteSerial("[CopyVasRecursive]: node->left 0x%X\n", node->left);
+    LogWriteSerial("[CopyVasRecursive]: node->right 0x%X\n", node->right);
 
     CopyVasRecursive(node->left, new_vas);
     CopyVasRecursive(node->right, new_vas);
 
     struct vas_entry* entry = node->data;
+    LogWriteSerial("[CopyVasRecursive]: entry is at 0x%X\n", entry);
+    LogWriteSerial("[CopyVasRecursive]: entry with virt addr 0x%X\n", entry->virtual);
 
     if (entry->lock) {
         /*
         * Got to add the new entry right now. We know it must be in memory as it
         * is locked.
         */
+        LogWriteSerial("[CopyVasRecursive]: locked entry...\n");
+
         assert(entry->in_ram);
         assert(!entry->share_on_fork);
 
@@ -1288,8 +1297,7 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
             ArchAddMapping(new_vas, entry);
 
         } else {
-            LogWriteSerial("fork() on a hardware-mapped page is not implemented yet");
-            PanicEx(PANIC_NOT_IMPLEMENTED, "CopyVasRecursive");
+            PanicEx(PANIC_UNKNOWN, "can't fork with a hardware-mapped page");
         }
         
     } else {
@@ -1306,6 +1314,8 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
         * to it. The final process to release memory will ultimately 'win' and have its changes
         * perserved to disk (the others will get overwritten).
         */
+        LogWriteSerial("[CopyVasRecursive]: normal entry...\n");
+
         if (!entry->share_on_fork) {
             entry->cow = true;
         }
@@ -1313,22 +1323,29 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
 
         // again, no need to add to global - it's already there!
         TreeInsert(new_vas->mappings, entry);
+        LogWriteSerial("[CopyVasRecursive]: inserted into tree...\n");
 
         ArchUpdateMapping(GetVas(), entry);
+        LogWriteSerial("[CopyVasRecursive]: updated arch...\n");
+
         ArchAddMapping(new_vas, entry);
+        LogWriteSerial("[CopyVasRecursive]: added to arch...\n");
     }
 }
 
 struct vas* CopyVas(void) {
     struct vas* vas = GetVas();
     struct vas* new_vas = CreateVas();
-
+    LogWriteSerial("[CopyVas]: created new...\n");
     AcquireSpinlock(&vas->lock);
+    LogWriteSerial("[CopyVas]: locked...\n");
     // no need to change global - it's already there!
     CopyVasRecursive(vas->mappings->root, new_vas);
+    LogWriteSerial("[CopyVas]: recursion done...\n");
     ArchFlushTlb(vas);
+    LogWriteSerial("[CopyVas]: tlb flushed...\n");
     ReleaseSpinlock(&vas->lock);
-
+    LogWriteSerial("[CopyVas]: done!\n");
     return new_vas;
 }
 

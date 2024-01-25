@@ -4,14 +4,8 @@ OUTPUT_FORMAT("elf32-i386")
 SECTIONS
 {
 	. = 1M;
-
-	_kernel_start = .;
-	.multiboot.data : {
-		*(.multiboot.data)
-	}
-	
-	.multiboot.text : {
-		*(.multiboot.text)
+	.lowram.text : {
+		*(.lowram.text)
 	}
 	
 	. += 0xC0000000;

@@ -86,6 +86,30 @@ void InitProcess(void) {
     TreeSetComparator(process_table, ProcessTableComparator);
 }
 
+struct process* CreateProcessEx(pid_t parent_pid) {
+    EXACT_IRQL(IRQL_STANDARD);   
+
+    struct process* prcss = AllocHeap(sizeof(struct process));
+
+    prcss->lock = CreateMutex("prcss");
+    prcss->vas = CreateVas();
+    prcss->parent = parent_pid;
+    prcss->children = TreeCreate();
+    prcss->threads = TreeCreate();
+    prcss->killed_children_semaphore = CreateSemaphore("killed children", SEM_BIG_NUMBER, SEM_BIG_NUMBER);
+    prcss->retv = 0;
+    prcss->terminated = false;
+    prcss->pid = InsertIntoProcessTable(prcss);
+    prcss->fd_table = CreateFdTable();
+
+    if (parent_pid != 0) {
+        struct process* parent = GetProcessFromPid(parent_pid);
+        TreeInsert(parent->children, (void*) prcss);
+    }
+
+    return prcss;
+}
+
 struct process* CreateProcess(pid_t parent_pid) {
     EXACT_IRQL(IRQL_STANDARD);   
 
@@ -122,10 +146,14 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
 struct process* ForkProcess(void) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
 
+    LogWriteSerial("About to lock the process...\n");
     LockProcess(GetProcess());
-
-    struct process* new_process = CreateProcess(GetProcess()->pid);
+    LogWriteSerial("Process locked...\n");
+    LogWriteSerial("our pid is %d\n", GetProcess()->pid);
+    struct process* new_process = CreateProcessEx(GetProcess()->pid);
+    LogWriteSerial("created a new process with pid %d\n", new_process->pid);
     DestroyVas(new_process->vas);
+    LogWriteSerial("destroyed the old VAS...\n");
 
     // TODO: there are probably more things to copy over in the future (e.g. list of open file descriptors, etc.)
     //       the open files, etc.
@@ -134,10 +162,11 @@ struct process* ForkProcess(void) {
     // TODO: file descriptor table...
 
     new_process->vas = CopyVas();
-    //TODO: need to grab the first thread (I don't think we've ordered threads by thread id yet in the AVL)
-    //      so will need to fix that first.
-    //CopyThreadToNewProcess(new_process, )
+    LogWriteSerial("given it a new vas...\n");
+    CopyThreadOnFork(new_process, GetThread());
+    LogWriteSerial("copying the thread across...\n");
     UnlockProcess(GetProcess());
+    LogWriteSerial("unlocked the process...\n");
 
     return new_process;
 }

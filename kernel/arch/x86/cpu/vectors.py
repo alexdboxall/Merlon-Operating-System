@@ -7,7 +7,7 @@ for i in range(256):
     output += '    dd isrx{}\n'.format(i)
 
 output += '\nsection .text\n'
-output += 'extern int_common_handler\n'
+output += 'extern InterruptCommonHandler\n'
 
 for i in range(256):
     output += 'isrx{}:\n'.format(i)
@@ -18,9 +18,6 @@ for i in range(256):
         output += '    push byte {}\n'.format(i)
         output += '    jmp short thunk{}\n\n'.format(i // 32)
     else:
-        # todo: oops we haven't saved AX yet, so it gets trashed!!
-        #output += '    mov al, {}\n'.format(i)
-        #output += '    jmp short thunk{}\n\n'.format(i // 32)
         output += '    push byte 0\n'
         if i < 128:
             output += '    push byte {}\n'.format(i)
@@ -30,7 +27,6 @@ for i in range(256):
 
     if i % 32 == 15:
         output += 'thunk{}:\n'.format(i // 32)
-        output += '    jmp int_common_handler\n\n'
-
+        output += '    jmp InterruptCommonHandler\n\n'
 
 open('vectors.s', 'w').write(output)

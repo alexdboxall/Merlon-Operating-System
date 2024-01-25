@@ -39,6 +39,9 @@ struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_c
  *         can't be acquired. ETIMEDOUT if timeout_ms isn't 0, and we timed-out.
  */
 int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
+    if (GetIrql() != 0) {
+        LogWriteSerial("[AcquireSemaphore]: irql %d, sem->name = %s\n", GetIrql(), sem->name);
+    }
     EXACT_IRQL(IRQL_STANDARD);
     assert(sem != NULL);
 

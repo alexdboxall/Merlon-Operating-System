@@ -5,22 +5,11 @@
 #include <string.h>
 #include <log.h>
 #include <tree.h>
+#include <stdlib.h>
 #include <heap.h>
 #include <physical.h>
 
 #ifndef NDEBUG
-
-/*
-typedef void (*tree_deletion_handler)(void*);
-typedef int (*tree_comparator)(void*, void*);
-
-void* TreeGet(struct tree* tree, void* data);
-struct tree_node* TreeGetRootNode(struct tree* tree);
-struct tree_node* TreeGetLeft(struct tree_node* node);
-struct tree_node* TreeGetRight(struct tree_node* node);
-void* TreeGetData(struct tree_node* node);
-tree_deletion_handler TreeSetDeletionHandler(struct tree* tree, tree_deletion_handler handler);
-tree_comparator TreeSetComparator(struct tree* tree, tree_comparator comparator);*/
 
 TFW_CREATE_TEST(AVLTreeBasic) { TFW_IGNORE_UNUSED
     int heap_allocations = DbgGetOutstandingHeapAllocations();
@@ -53,9 +42,59 @@ TFW_CREATE_TEST(AVLTreeBasic) { TFW_IGNORE_UNUSED
     assert(DbgGetOutstandingHeapAllocations() == heap_allocations);
 }
 
+TFW_CREATE_TEST(AVLTreeStressInsert1) { TFW_IGNORE_UNUSED
+    struct tree* tree = TreeCreate();
+    for (int i = 10; i < 1000; i += 10) {
+        TreeInsert(tree, (void*) i);
+    }
+    for (int i = 13; i < 1000; i += 10) {
+        TreeInsert(tree, (void*) i);
+    }
+    for (int i = 18; i < 1000; i += 10) {
+        TreeInsert(tree, (void*) i);
+    }
+    for (int i = 15; i < 1000; i += 10) {
+        TreeInsert(tree, (void*) i);
+    }
+
+    for (int i = 10; i < 1000; i += 10) {
+        assert(TreeContains(tree, (void*) i));
+    }
+    for (int i = 13; i < 1000; i += 10) {
+        assert(TreeContains(tree, (void*) i));
+    }
+    for (int i = 18; i < 1000; i += 10) {
+        assert(TreeContains(tree, (void*) i));
+    }
+    for (int i = 15; i < 1000; i += 10) {
+        assert(TreeContains(tree, (void*) i));
+    }
+
+    for (int i = 11; i < 1000; i += 10) {
+        assert(!TreeContains(tree, (void*) i));
+    }
+    for (int i = 12; i < 1000; i += 10) {
+        assert(!TreeContains(tree, (void*) i));
+    }
+    for (int i = 14; i < 1000; i += 10) {
+        assert(!TreeContains(tree, (void*) i));
+    }
+}
+
+/*TFW_CREATE_TEST(AVLTreeStressInsert2) { TFW_IGNORE_UNUSED
+    for (int i = 0; i < 20; ++i) {
+        struct tree* tree = TreeCreate();
+        for (int i = 0; i < 3000; ++i) {
+            TreeInsert(tree, (void*) (rand()));
+        }
+        TreeDestroy(tree);
+    }
+}*/
 
 void RegisterTfwAVLTreeTests(void) {
     RegisterTfwTest("AVL trees (basic tests)", TFW_SP_AFTER_HEAP, AVLTreeBasic, PANIC_UNIT_TEST_OK, 0);
+    RegisterTfwTest("AVL trees (stress insert 1)", TFW_SP_AFTER_HEAP, AVLTreeStressInsert1, PANIC_UNIT_TEST_OK, 0);
+    //RegisterTfwTest("AVL trees (stress insert 2)", TFW_SP_AFTER_HEAP, AVLTreeStressInsert2, PANIC_UNIT_TEST_OK, 0);
 }
 
 #endif

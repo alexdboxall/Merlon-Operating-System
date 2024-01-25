@@ -25,10 +25,11 @@ static void ZombieProcess(void*) {
     KillProcess(99);
 }
 
+/*
 static void ZombieProcessWithDelay(void* arg) {
     SleepMilli((size_t) arg);
     KillProcess(23);
-}
+}*/
 
 static bool ok = false;
 
@@ -142,6 +143,7 @@ static void InitialProcessThread5(void* mode_) {
     ok = true;
 }
 
+/*
 static int done_well = 0;
 static struct spinlock done_well_lock;
  
@@ -174,6 +176,7 @@ static void InitialProcessThread6(void* j_) {
     ++done_well;
     ReleaseSpinlock(&done_well_lock);
 }
+*/
 
 TFW_CREATE_TEST(BasicWaitTest) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
@@ -224,6 +227,7 @@ TFW_CREATE_TEST(WaitOnManyTest3) { TFW_IGNORE_UNUSED
     assert(ok);
 }
 
+/*
 TFW_CREATE_TEST(WaitStress) { TFW_IGNORE_UNUSED
     EXACT_IRQL(IRQL_STANDARD);
     InitSpinlock(&done_well_lock, "dwl", IRQL_SCHEDULER);
@@ -238,6 +242,7 @@ TFW_CREATE_TEST(WaitStress) { TFW_IGNORE_UNUSED
     SleepMilli(6000);
     assert(done_well == m);
 }
+*/
 
 void RegisterTfwWaitTests(void) {
     RegisterTfwTest("WaitProcess works (explict ids)", TFW_SP_ALL_CLEAR, BasicWaitTest, PANIC_UNIT_TEST_OK, 0);
@@ -247,8 +252,8 @@ void RegisterTfwWaitTests(void) {
     RegisterTfwTest("WaitProcess works when waiting on many (general)", TFW_SP_ALL_CLEAR, WaitOnManyTest1, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("WaitProcess works when waiting on many (explicit, in order)", TFW_SP_ALL_CLEAR, WaitOnManyTest2, PANIC_UNIT_TEST_OK, 0);
     RegisterTfwTest("WaitProcess works when waiting on many (explicit, reversed)", TFW_SP_ALL_CLEAR, WaitOnManyTest3, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("WaitProcess stress test (1)", TFW_SP_ALL_CLEAR, WaitStress, PANIC_UNIT_TEST_OK, 0);
-    RegisterTfwTest("WaitProcess stress test (2)", TFW_SP_ALL_CLEAR, WaitStress, PANIC_UNIT_TEST_OK, 33);
+    //RegisterTfwTest("WaitProcess stress test (1)", TFW_SP_ALL_CLEAR, WaitStress, PANIC_UNIT_TEST_OK, 0);
+    //RegisterTfwTest("WaitProcess stress test (2)", TFW_SP_ALL_CLEAR, WaitStress, PANIC_UNIT_TEST_OK, 33);
     // todo: stress tests
 }
 

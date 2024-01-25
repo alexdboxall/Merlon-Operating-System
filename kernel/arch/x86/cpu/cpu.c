@@ -49,7 +49,8 @@ static void x86Shutdown(void) {
     }
 
     /*
-     * Some emulators have ways of doing a shutdown if we don't have ACPI support yet.
+     * Some emulators have ways of doing a shutdown if we don't have ACPI 
+     * support yet.
      */
     outw(0xB004, 0x2000);       // Bochs and old QEMU
     outw(0x0604, 0x2000);       // New QEMU

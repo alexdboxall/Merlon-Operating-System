@@ -1,6 +1,8 @@
 
 
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include <stdbool.h>
 
 int main(void) {
@@ -21,7 +23,16 @@ int main(void) {
         printf("drv0:/>");
         fflush(stdout);
         fgets(line, 299, stdin);
-        printf("Command not found: %s\n", line);
+        if (!strcmp(line, "fork\n")) {
+            printf("About to fork()...\n");
+            pid_t ret = fork();
+            printf("Fork returned %d!\n", ret);
+            while (true) {
+                ;
+            }
+        } else {
+            printf("Command not found: %s\n", line);
+        }
     }
 
     return 0;

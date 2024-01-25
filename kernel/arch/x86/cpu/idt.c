@@ -19,9 +19,7 @@ extern void x86LoadIdt(size_t addr);
 extern size_t isr_vectors;
 
 /*
-* Fill in an entry in the IDT. There are a number of 'types' of interrupt, determining
-* whether interrupts are disabled automatically before calling the handler, whether
-* it is a 32-bit or 16-bit entry, and whether user mode can invoke the interrupt manually.
+* Fill in an entry in the IDT.
 */
 static void x86SetIdtEntry(int num, size_t isr_addr, uint8_t type)
 {

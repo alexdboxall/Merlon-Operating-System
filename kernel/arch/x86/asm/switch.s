@@ -1,3 +1,11 @@
+
+;
+; x86/asm/switch.s - Thread Switching
+;
+; Provides functions to prepare a threads's stack, and for context switching
+; between different threads.
+;
+
 global ArchPrepareStack
 global ArchSwitchThread
 

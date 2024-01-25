@@ -17,21 +17,9 @@
 * probably means you need to use the reference/dereference functions.
 */
 
-/*
-* Maximum length of a component of a filepath (e.g. an file/directory's individual name).
-*/
 #define MAX_COMPONENT_LENGTH	128
-
-/*
-* Maximum total length of a path.
-*/
 #define MAX_PATH_LENGTH			2000
-
-/*
-* Maximum number of symbolic links to derefrence in a path before returning ELOOP.
-*/
 #define MAX_LOOP				5
-
 
 /*
 * A structure for mounted devices and filesystems.
@@ -98,18 +86,18 @@ static int DoesMountPointExist(const char* name) {
 *
 * This also handles duplicated and trailing forward slashes.
 */
-static int GetPathComponent(const char* path, int* ptr, char* output_buffer, int max_output_length, char delimiter) {
+static int GetPathComponent(const char* path, int* ptr, char* out, int max_len, char delimiter) {
 	int i = 0;
 
-	output_buffer[0] = 0;
+	out[0] = 0;
 
 	while (path[*ptr] && path[*ptr] != delimiter) {
-		if (i >= max_output_length - 1) {
+		if (i >= max_len - 1) {
 			return ENAMETOOLONG;
 		}
 
-		output_buffer[i++] = path[*ptr];
-		output_buffer[i] = 0;
+		out[i++] = path[*ptr];
+		out[i] = 0;
 		(*ptr)++;
 	}
 
@@ -127,19 +115,19 @@ static int GetPathComponent(const char* path, int* ptr, char* output_buffer, int
 	/*
 	* Ensure that there are no colons or backslashes in the filename itself.
 	*/
-	return CheckValidComponentName(output_buffer);
+	return CheckValidComponentName(out);
 }
 
-static int GetFinalPathComponent(const char* path, char* output_buffer, int max_output_length) {
+static int GetFinalPathComponent(const char* path, char* out, int max_len) {
 	int path_ptr = 0;
 
-	int status = GetPathComponent(path, &path_ptr, output_buffer, max_output_length, ':');
+	int status = GetPathComponent(path, &path_ptr, out, max_len, ':');
 	if (status) {
 		return status;
 	}
 
 	while (path_ptr < (int) strlen(path)) {
-		status = GetPathComponent(path, &path_ptr, output_buffer, max_output_length, '/');
+		status = GetPathComponent(path, &path_ptr, out, max_len, '/');
 		if (status) {
 			return status;
 		}
@@ -422,14 +410,7 @@ int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
 		return status;
 	}
 
-    /*
-	* Grab the vnode from the path.
-	*/
 	struct vnode* node;
-
-    /*
-    * Check if there is an existing file here.
-    */
     status = GetVnodeFromPath(path, &node, false);
 
     if (flags & O_CREAT) {

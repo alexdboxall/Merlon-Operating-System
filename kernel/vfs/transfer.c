@@ -72,22 +72,23 @@ static int CopyOutOfKernel(const void* kernel_addr, void* user_addr, size_t size
     return 0;
 }
 
-int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uint64_t len) { 
-    assert(trusted_buffer != NULL);
-    assert(untrusted_buffer != NULL && untrusted_buffer->address != NULL);
-    assert(untrusted_buffer->direction == TRANSFER_READ || untrusted_buffer->direction == TRANSFER_WRITE);
+int PerformTransfer(void* trusted, struct transfer* untrusted, uint64_t len) { 
+    int direction = untrusted->direction;
+    assert(trusted != NULL);
+    assert(untrusted != NULL && untrusted->address != NULL);
+    assert(direction == TRANSFER_READ || direction == TRANSFER_WRITE);
 
-    size_t amount_to_copy = MIN(len, untrusted_buffer->length_remaining);
-    if (amount_to_copy == 0) {
+    size_t amount = MIN(len, untrusted->length_remaining);
+    if (amount == 0) {
         return 0;
     }
 
-    if (untrusted_buffer->type == TRANSFER_INTRA_KERNEL) {
-        if (untrusted_buffer->direction == TRANSFER_READ) {
-            memmove(untrusted_buffer->address, trusted_buffer, amount_to_copy);
+    if (untrusted->type == TRANSFER_INTRA_KERNEL) {
+        if (direction == TRANSFER_READ) {
+            memmove(untrusted->address, trusted, amount);
         
         } else {
-            memmove(trusted_buffer, untrusted_buffer->address, amount_to_copy);
+            memmove(trusted, untrusted->address, amount);
         } 
 
     } else {
@@ -96,11 +97,11 @@ int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uin
         /*
         * This is from the kernel's perspective of the operations.
         */
-        if (untrusted_buffer->direction == TRANSFER_READ) {
-            result = CopyOutOfKernel((const void*) trusted_buffer, untrusted_buffer->address, amount_to_copy);
+        if (direction == TRANSFER_READ) {
+            result = CopyOutOfKernel((const void*) trusted, untrusted->address, amount);
             
         } else {
-            result = CopyIntoKernel(trusted_buffer, (const void*) untrusted_buffer->address, amount_to_copy);
+            result = CopyIntoKernel(trusted, (const void*) untrusted->address, amount);
         }
 
         if (result != 0) {
@@ -108,15 +109,15 @@ int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uin
         }
     }
 
-    untrusted_buffer->length_remaining -= amount_to_copy;
-    untrusted_buffer->offset += amount_to_copy;
-    untrusted_buffer->address = ((uint8_t*) untrusted_buffer->address) + amount_to_copy;
+    untrusted->length_remaining -= amount;
+    untrusted->offset += amount;
+    untrusted->address = ((uint8_t*) untrusted->address) + amount;
 
     return 0;
 }  
 
-int WriteStringToUsermode(const char* trusted_string, char* untrusted_buffer, uint64_t max_length) {
-    struct transfer tr = CreateTransferWritingToUser(untrusted_buffer, max_length, 0);
+int WriteStringToUsermode(const char* trusted_string, char* untrusted, uint64_t max_length) {
+    struct transfer tr = CreateTransferWritingToUser(untrusted, max_length, 0);
     int result;
 
     /*
@@ -134,8 +135,8 @@ int WriteStringToUsermode(const char* trusted_string, char* untrusted_buffer, ui
     return PerformTransfer(&zero, &tr, 1);
 }
 
-int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, uint64_t max_length) {
-    struct transfer tr = CreateTransferReadingFromUser(untrusted_string, max_length, 0);
+int ReadStringFromUsermode(char* trusted, const char* untrusted, uint64_t max_length) {
+    struct transfer tr = CreateTransferReadingFromUser(untrusted, max_length, 0);
     size_t i = 0;
 
     while (max_length-- > 1) {
@@ -144,13 +145,13 @@ int ReadStringFromUsermode(char* trusted_buffer, const char* untrusted_string, u
         if (result != 0) {
             return result;
         }
-        trusted_buffer[i++] = c;
+        trusted[i++] = c;
         if (c == 0) {
             break;
         }
     }
     
-    trusted_buffer[i] = 0;
+    trusted[i] = 0;
     return 0;
 }
 
@@ -172,7 +173,9 @@ int ReadWordFromUsermode(size_t* location, size_t* output) {
     return res;
 }
 
-static struct transfer CreateTransfer(void* addr, uint64_t length, uint64_t offset, int direction, int type) {
+static struct transfer CreateTransfer(
+    void* addr, uint64_t length, uint64_t offset, int direction, int type
+) {
     return (struct transfer) {
         .address = addr, .direction = direction, .length_remaining = length,
         .offset = offset, .type = type, .blockable = true

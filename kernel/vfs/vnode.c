@@ -11,8 +11,8 @@
 #include <sys/stat.h>
 
 /*
-* Allocate and initialise a vnode. The reference count is initialised to 1.
-*/
+ * Allocate and initialise a vnode. The reference count is initialised to 1.
+ */
 struct vnode* CreateVnode(struct vnode_operations ops, struct stat st) {
     struct vnode* node = AllocHeap(sizeof(struct vnode));
     *node = (struct vnode) {
@@ -23,14 +23,14 @@ struct vnode* CreateVnode(struct vnode_operations ops, struct stat st) {
 }
 
 /*
-* Cleanup and free an abstract file node.
-*/ 
+ * Cleanup and free an abstract file node.
+ */ 
 static void DestroyVnode(struct vnode* node) {
     /*
-    * The lock can't be held during this process, otherwise the lock will
-    * get freed before it is released (which is bad, as we must release it
-    * to get interrupts back on).
-    */
+     * The lock can't be held during this process, otherwise the lock will
+     * get freed before it is released (which is bad, as we must release it
+     * to get interrupts back on).
+     */
     assert(node != NULL);
     assert(node->reference_count == 0);
     if (node->stat.st_nlink == 0) {
@@ -40,8 +40,8 @@ static void DestroyVnode(struct vnode* node) {
 }
 
 /*
-* Ensures that a vnode is valid.
-*/
+ * Ensures that a vnode is valid.
+ */
 static void CheckVnode(struct vnode* node) {
     assert(node != NULL);
 
@@ -55,8 +55,9 @@ static void CheckVnode(struct vnode* node) {
 }
 
 /*
-* Increments a vnode's reference counter. Used whenever a vnode is 'given' to someone.
-*/
+ * Increments a vnode's reference counter. Used whenever a vnode is 'given' to 
+ * someone.
+ */
 void ReferenceVnode(struct vnode* node) {
     assert(node != NULL);
 
@@ -66,9 +67,9 @@ void ReferenceVnode(struct vnode* node) {
 }
 
 /*
-* Decrements a vnode's reference counter, destorying it if it reaches zero. 
-* It should be called to free a vnode 'given' to use when it is no longer needed.
-*/
+ * Decrements a vnode's reference counter, destroying it if it reaches zero. It
+ * should be called to free a vnode 'given' to use when it is no longer needed.
+ */
 void DereferenceVnode(struct vnode* node) {
     CheckVnode(node);
     AcquireSpinlock(&node->reference_count_lock);
@@ -80,8 +81,8 @@ void DereferenceVnode(struct vnode* node) {
         VnodeOpClose(node);
 
         /*
-        * Must release the lock before we delete it so we can put interrupts back on
-        */
+         * Must release the lock first so the IRQL gets reset properly.
+         */
         ReleaseSpinlock(&node->reference_count_lock);
 
         DestroyVnode(node);
@@ -90,7 +91,6 @@ void DereferenceVnode(struct vnode* node) {
 
     ReleaseSpinlock(&node->reference_count_lock);
 }
-
 
 int VnodeOpCheckOpen(struct vnode* node, const char* name, int flags) {
     CheckVnode(node);

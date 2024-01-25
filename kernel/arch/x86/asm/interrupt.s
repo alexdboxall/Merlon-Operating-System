@@ -1,16 +1,20 @@
 
-; Our common interrupt handler
+;
+; x86/asm/interrupt.s - Interrupt Handling
+;
+; Provides the common handler function for all of the different interrupts the
+; CPU will receive. The specific handlers are generated in x86/cpu/vectors.py.
+;
+
 extern x86HandleInterrupt
-global int_common_handler
-int_common_handler:
-    ; Save the registers and segments
+global InterruptCommonHandler
+InterruptCommonHandler:
     pushad
 	push ds
     push es
     push fs
     push gs
 	
-    ; Ensure we have kernel segments and not user segments
     mov ax, 0x10
 	mov ds, ax
     mov es, ax
@@ -21,12 +25,10 @@ int_common_handler:
     ; is just about to page fault (when it switches back to the first, `cr2`
     ; would have been overwritten with the one for the second). 
 	
-    ; Push a pointer to the registers to the kernel handler
     push esp
 	cld
     call x86HandleInterrupt
 
-    ; Restore registers
     add esp, 4
     pop gs
     pop fs
@@ -38,5 +40,4 @@ int_common_handler:
     ; anywhere, as the registers have already been restored)
     add esp, 8
 
-    ; Return from the interrupt - also restores the stack and the flags
     iretd

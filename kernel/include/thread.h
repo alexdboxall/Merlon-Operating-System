@@ -78,10 +78,8 @@ struct thread {
 bool HasBeenSignalled();
 
 void Schedule(void);
-void LockSchedulerX(void);
-void UnlockSchedulerX(void);
-#define LockScheduler() /*LogWriteSerial("LOCKING SCHEDULER: %s, %s, %d\n", __FILE__, __func__, __LINE__);*/ LockSchedulerX()
-#define UnlockScheduler() /*LogWriteSerial("UNLOCKING SCHEDULER: %s, %s, %d\n", __FILE__, __func__, __LINE__);*/ UnlockSchedulerX()
+void LockScheduler(void);
+void UnlockScheduler(void);
 
 void InitScheduler(void);
 void StartMultitasking(void);
@@ -92,6 +90,7 @@ struct thread* GetThread(void);
 void TerminateThread(struct thread* thr);
 void TerminateThreadLockHeld(struct thread* thr);
 
+void CopyThreadOnFork(struct process* prcss, struct thread* old);
 struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb);
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);
 

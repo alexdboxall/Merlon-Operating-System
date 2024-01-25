@@ -12,10 +12,7 @@
 #include <threadlist.h>
 
 static struct spinlock timer_lock;
-static struct heap_adt* sleep_queue;
-static struct thread_list sleep_overflow_list;
-
-#define SLEEP_QUEUE_LENGTH 32
+static struct thread_list sleep_list;
 
 static uint64_t system_time = 0;
 static int sleep_wakeups_posted = 0;
@@ -55,39 +52,22 @@ uint64_t GetSystemTimer(void) {
 
 void InitTimer(void) {
     InitSpinlock(&timer_lock, "timer", IRQL_TIMER);
-    ThreadListInit(&sleep_overflow_list, NEXT_INDEX_SLEEP);
-    sleep_queue = HeapAdtCreate(SLEEP_QUEUE_LENGTH, false, sizeof(struct thread*));
+    ThreadListInit(&sleep_list, NEXT_INDEX_SLEEP);
 }
 
 void QueueForSleep(struct thread* thr) {
     AssertSchedulerLockHeld();
-
     thr->timed_out = false;
-
-    if (HeapAdtGetUsedSize(sleep_queue) == SLEEP_QUEUE_LENGTH) {
-        ThreadListInsert(&sleep_overflow_list, thr);
-    } else {
-        HeapAdtInsert(sleep_queue, (void*) &thr, thr->sleep_expiry);
-    }
+    ThreadListInsert(&sleep_list, thr);
 }
 
 bool TryDequeueForSleep(struct thread* thr) {
     AssertSchedulerLockHeld();
     
-    while (HeapAdtGetUsedSize(sleep_queue) > 0) {
-        struct heap_adt_result res = HeapAdtPeek(sleep_queue);
-        struct thread* top_thread = *((struct thread**) res.data);
-        HeapAdtPop(sleep_queue);
-        if (top_thread == thr) {
-            return true;
-        }
-        ThreadListInsert(&sleep_overflow_list, top_thread);
-    }
-
-    struct thread* iter = sleep_overflow_list.head;
+    struct thread* iter = sleep_list.head;
     while (iter) {
         if (iter == thr) {
-            ThreadListDelete(&sleep_overflow_list, iter);
+            ThreadListDelete(&sleep_list, iter);
             return true;
 
         } else {
@@ -112,41 +92,13 @@ void HandleSleepWakeups(void* sys_time_ptr) {
 
     uint64_t system_time = *((uint64_t*) sys_time_ptr);
 
-    /*
-    * Wake up any sleeping tasks that need it.
-    */
-    while (HeapAdtGetUsedSize(sleep_queue) > 0) {
-        struct heap_adt_result res = HeapAdtPeek(sleep_queue);
-        
-        /*
-        * Check if it needs waking.
-        */
-        if (res.priority <= system_time) {
-            struct thread* thr = *((struct thread**) res.data);
-            thr->timed_out = true;
-            HeapAdtPop(sleep_queue);
-            UnblockThread(thr);
-
-        } else {
-            /*
-            * If this one doesn't need waking, none of the others will either.
-            */
-            break;
-        }
-    }
-
-    /*
-    * Check for any tasks that are asleep but on the overflow list. This is 
-    * slow, but will only happen if we have more than 32 sleeping tasks, so it 
-    * should normally not take any time.
-    */
-    struct thread* iter = sleep_overflow_list.head;
+    struct thread* iter = sleep_list.head;
     while (iter) {
         if (iter->sleep_expiry <= system_time) {
-            ThreadListDelete(&sleep_overflow_list, iter);
+            ThreadListDelete(&sleep_list, iter);
             iter->timed_out = true;
             UnblockThread(iter);
-            iter = sleep_overflow_list.head;     // restart, as list changed
+            iter = sleep_list.head;     // restart, as list changed
 
         } else {
             iter = iter->next[NEXT_INDEX_SLEEP];

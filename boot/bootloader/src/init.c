@@ -115,6 +115,7 @@ void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
 
     size_t entry_point = LoadProgramHeaders(0x10000);
     Printf("The kernel's executable has been fully loaded to address 0x%X.\n  ", fw->kernel_load_point);
+    Printf("The kernel entry point is at 0x%X\n  ", entry_point);
 
     ShowRamTable();
 

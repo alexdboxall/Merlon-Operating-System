@@ -21,6 +21,7 @@
 
 static struct thread_list ready_list;
 static struct spinlock scheduler_lock;
+static struct spinlock scheduler_recur_lock;
 static struct spinlock innermost_lock;
 
 /*
@@ -167,6 +168,26 @@ static int GetNextThreadId(void) {
     return result;
 }
 
+void CopyThreadOnFork(struct process* prcss, struct thread* old) {
+    assert(old->waiting_on_semaphore == NULL);
+    assert(!old->needs_termination);
+    assert(old->state == THREAD_STATE_RUNNING);
+    assert(prcss != NULL);
+    assert(old != NULL);
+
+    struct thread* thr = AllocHeap(sizeof(struct thread));
+    *thr = *old;
+    thr->state = THREAD_STATE_READY;
+    thr->time_used = 0;
+    thr->name = strdup(old->name);
+    thr->vas = prcss->vas;
+    thr->process = prcss;
+    
+    LockScheduler();
+    ThreadListInsert(&ready_list, thr);
+    UnlockScheduler();
+}
+
 struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb) {
     struct thread* thr = AllocHeap(sizeof(struct thread));
     thr->argument = argument;
@@ -176,7 +197,6 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->name = strdup(name);
     thr->priority = priority;
     thr->needs_termination = false;
-    thr->time_used = false;
     thr->waiting_on_semaphore = NULL;
     thr->schedule_policy = policy;
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
@@ -292,12 +312,31 @@ static void UpdatePriority(bool yielded) {
     }
 }
 
-void LockSchedulerX(void) {
-    AcquireSpinlock(&scheduler_lock);
+static int scheduler_lock_count = 0;
+
+void LockScheduler(void) {
+    AcquireSpinlock(&scheduler_recur_lock);
+    if (scheduler_lock_count == 0) {
+        AcquireSpinlock(&scheduler_lock);
+        scheduler_lock.prev_irql = scheduler_recur_lock.prev_irql;
+        scheduler_recur_lock.prev_irql = scheduler_lock.irql;
+    }
+    AssertSchedulerLockHeld();
+    ++scheduler_lock_count;
+    ReleaseSpinlock(&scheduler_recur_lock);
 }
 
-void UnlockSchedulerX(void) {
-    ReleaseSpinlock(&scheduler_lock);
+void UnlockScheduler(void) {
+    AcquireSpinlock(&scheduler_recur_lock);
+    assert(scheduler_lock_count > 0);
+    --scheduler_lock_count;
+    AssertSchedulerLockHeld();
+    if (scheduler_lock_count == 0) {
+        scheduler_recur_lock.prev_irql = scheduler_lock.prev_irql;
+        scheduler_lock.prev_irql = GetIrql();
+        ReleaseSpinlock(&scheduler_lock);
+    }
+    ReleaseSpinlock(&scheduler_recur_lock);
 }
 
 void AssertSchedulerLockHeld(void) {
@@ -334,6 +373,9 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
 }
 
 static void ScheduleWithLockHeld(void) {
+    if (GetIrql() != IRQL_SCHEDULER) {
+        LogWriteSerial("ScheduleWithLockHeld with irql = %d\n", GetIrql());
+    }
     EXACT_IRQL(IRQL_SCHEDULER);
     AssertSchedulerLockHeld();
 
@@ -404,6 +446,7 @@ void Schedule(void) {
 void InitScheduler() {
     ThreadListInit(&ready_list, NEXT_INDEX_READY);
     InitSpinlock(&scheduler_lock, "scheduler", IRQL_SCHEDULER);
+    InitSpinlock(&scheduler_recur_lock, "scheduler2", IRQL_SCHEDULER);
     InitSpinlock(&innermost_lock, "inner scheduler", IRQL_HIGH);
 }
 
