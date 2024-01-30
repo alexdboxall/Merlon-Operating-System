@@ -1253,12 +1253,6 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
         return;
     }
 
-    LogWriteSerial("[CopyVasRecursive]: node->left 0x%X\n", node->left);
-    LogWriteSerial("[CopyVasRecursive]: node->right 0x%X\n", node->right);
-
-    CopyVasRecursive(node->left, new_vas);
-    CopyVasRecursive(node->right, new_vas);
-
     struct vas_entry* entry = node->data;
     LogWriteSerial("[CopyVasRecursive]: entry is at 0x%X\n", entry);
     LogWriteSerial("[CopyVasRecursive]: entry with virt addr 0x%X\n", entry->virtual);
@@ -1331,6 +1325,12 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
         ArchAddMapping(new_vas, entry);
         LogWriteSerial("[CopyVasRecursive]: added to arch...\n");
     }
+
+    LogWriteSerial("[CopyVasRecursive]: node->left 0x%X\n", node->left);
+    LogWriteSerial("[CopyVasRecursive]: node->right 0x%X\n", node->right);
+
+    CopyVasRecursive(node->left, new_vas);
+    CopyVasRecursive(node->right, new_vas);
 }
 
 struct vas* CopyVas(void) {

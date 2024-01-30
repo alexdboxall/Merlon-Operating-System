@@ -6,6 +6,8 @@
 #include <log.h>
 #include <common.h>
 #include <video.h>
+#include <message.h>
+#include <thread.h>
 #include <machine/portio.h>
 
 #define SCREEN_WIDTH 80
@@ -14,11 +16,13 @@
 struct vga_data {
     int cursor_x;
     int cursor_y;
+    uint16_t colour;
 };
 
 static struct vga_data data = {
     .cursor_x = 0,
     .cursor_y = 0,
+    .colour = 0x0700
 };
 
 static void VgaSetCursor(void) {
@@ -35,7 +39,7 @@ static void ClearLine(int y) {
     */
     uint16_t* mem = ((uint16_t*) (0xC00B8000)) + 80 * y;
     for (int i = 0; i < 80; ++i) {
-        *mem++ = 0x0700;
+        *mem++ = data.colour;
     }    
 }
 
@@ -61,7 +65,7 @@ static void VgaNewline(void) {
 static void VgaRenderCharacter(char c) {
     uint16_t* vgamem = (uint16_t*) (0xC00B8000);
     vgamem += data.cursor_y * 80 + data.cursor_x;
-    *vgamem = 0x0700 | c;
+    *vgamem = data.colour | c;
 }
 
 void DrvConsolePutchar(char c) {
@@ -96,12 +100,6 @@ void DrvConsolePutchar(char c) {
     VgaSetCursor();
 }
 
-void DrvConsolePuts(char* s) {
-    for (int i = 0; s[i]; ++i) {
-        DrvConsolePutchar(s[i]);
-    }
-}
-
 static void EnableCursor(void) {
     outb(0x3D4, 0x09);
     outb(0x3D5, 15);
@@ -111,14 +109,46 @@ static void EnableCursor(void) {
     outb(0x3D5, 13);
 }
 
-void InitVga(void) {
+static void ClearScreen(void) {
+    data.cursor_x = 0;
+    data.cursor_y = 0;
     for (int i = 0; i < SCREEN_HEIGHT; ++i) {
         ClearLine(i);
     }
+}
+
+static void MessageLoop(void*) {
+    // TODO:
+    // high priority makes keyboard input better
+    // but it means that we get switched to every single time there's a putchar
+    // (i.e. in between printfs...). we should keep high priority, but make it
+    // so the PTTY / rest of the code batch-sends putchar (i.e. locks scheduler
+    // until all bytes of the printf sent).
+    SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+
+    struct msgbox* mbox = CreateMessageBox("vga", sizeof(struct video_msg));
+    InitVideoConsole(mbox);
+
+    while (true) {
+        struct video_msg msg;
+        ReceiveMessage(mbox, &msg);
+
+        switch (msg.type) {
+        case VIDMSG_CLEAR_SCREEN:
+            ClearScreen();
+            break;
+        case VIDMSG_PUTCHAR: 
+            data.colour = (((uint16_t) msg.putchar.fg) << 8) | msg.putchar.bg;
+            DrvConsolePutchar(msg.putchar.c);
+            break;
+        default:
+            break;
+        }
+    }  
+}
+
+void InitVga(void) {
+    ClearScreen();
     EnableCursor();
-    
-    struct video_driver driver;
-    driver.putchar = DrvConsolePutchar;
-    driver.puts = DrvConsolePuts;
-    InitVideoConsole(driver);
+    CreateThread(MessageLoop, NULL, GetVas(), "vga");
 }

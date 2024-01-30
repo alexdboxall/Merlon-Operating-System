@@ -2,9 +2,10 @@
 
 #include <common.h>
 
-export void LogWriteSerial(const char* format, ...);
-export void LogDeveloperWarning(const char* format, ...);
+void LogWriteSerial(const char* format, ...);
+void LogDeveloperWarning(const char* format, ...);
+
+#define Log(format, ...) LogWriteSerial("[%s]: " format "\n", __func__, ## __VA_ARGS__)
 
 void DbgScreenPrintf(const char* format, ...);
-void DbgScreenPuts(char* str);
 void DbgScreenPutchar(char c);

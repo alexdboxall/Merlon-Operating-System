@@ -30,6 +30,10 @@ int main(void) {
             while (true) {
                 ;
             }
+        } else if (!strcmp(line, "clear\n")) {
+            printf("\x1B[0m");
+            fflush(stdout);
+        
         } else {
             printf("Command not found: %s\n", line);
         }

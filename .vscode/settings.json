@@ -152,7 +152,9 @@
         "type_traits": "c",
         "variant": "c",
         "utility": "c",
-        "compare": "c"
+        "compare": "c",
+        "message.h": "c",
+        "source_location": "c"
     },
     "files.exclude": {
         "**/.git": true,

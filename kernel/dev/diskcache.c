@@ -20,8 +20,8 @@ static struct semaphore* cache_list_lock = NULL;
 
 struct cache_entry {
     size_t cache_addr;
-    size_t size;
-    uint64_t disk_offset;
+    size_t num_blocks;
+    uint64_t block_num;
 };
  
 struct cache_data {
@@ -31,6 +31,20 @@ struct cache_data {
     struct semaphore* lock;
 };
 
+int Comparator(void* a_, void* b_) {
+    struct cache_entry* a = a_;
+    struct cache_entry* b = b_;
+
+    if (a->block_num >= b->block_num && a->block_num < b->block_num + b->num_blocks) {
+        return 0;
+    }
+    if (b->block_num >= a->block_num && b->block_num < a->block_num + a->num_blocks) {
+        return 0;
+    }
+
+    return COMPARE_SIGN(a->block_num, b->block_num);
+}
+
 /*static*/ bool IsCacheCreationAllowed(void) { 
     AcquireMutex(cache_list_lock, -1);
     bool retv = current_mode == DISKCACHE_NORMAL;
@@ -38,13 +52,81 @@ struct cache_data {
     return retv;
 }
 
+static struct cache_entry* IsInCache(struct tree* cache, size_t block) {
+    struct cache_entry target = (struct cache_entry) {
+        .num_blocks = 1, .block_num = block
+    };
+    return TreeGet(cache, &target);
+}
+
+static struct cache_entry* CreateCacheEntry(size_t block_num, size_t blksize, size_t blkcnt) {
+    struct cache_entry* entry = AllocHeap(sizeof(struct cache_entry));
+    *entry = (struct cache_entry) {
+        .block_num = block_num,
+        .cache_addr = MapVirt(0, 0, blksize * blkcnt, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
+        .num_blocks = blkcnt
+    };
+    return entry;
+}
+
 static int Read(struct vnode* node, struct transfer* io) {   
     struct cache_data* data = node->data;
+    size_t block_size = node->stat.st_blksize;
+
+    assert(((size_t) io->address) % block_size == 0);
+    assert(io->length_remaining % block_size == 0);
+
+    uint64_t start_block = ((size_t) io->address) / block_size;
+    uint64_t num_blocks = io->length_remaining / block_size;
     
-    // TODO: look in the cache for it! remembering that the transfer size
-    //       can be large, and so it may reside in multiple caches, and may
-    //       have uncached sections in between!
-    
+    for (size_t i = 0; i < num_blocks; ++i) {
+        size_t current_block = start_block + i;
+        struct cache_entry* entry = IsInCache(data->cache, current_block);
+
+        if (entry == NULL) {
+            size_t in_a_row = 1;
+            while (IsInCache(data->cache, current_block + in_a_row) == NULL) {
+                ++in_a_row;
+            }
+
+            struct cache_entry* new_entry = CreateCacheEntry(current_block, block_size, in_a_row);
+            struct transfer io2 = CreateKernelTransfer(
+                (void*) new_entry->cache_addr, 
+                in_a_row * block_size, 
+                current_block * block_size, 
+                TRANSFER_READ
+            );
+
+            int res = VnodeOpRead(node, &io2);
+            if (res != 0) {
+                return res;
+            }            
+
+            res = PerformTransfer((void*) new_entry->cache_addr, io, in_a_row * block_size);
+            if (res != 0) {
+                return res;
+            }
+            
+            if (IsCacheCreationAllowed()) {
+                TreeInsert(data->cache, new_entry);
+            } else {
+                UnmapVirt(new_entry->cache_addr, in_a_row * block_size);
+                FreeHeap(new_entry);
+            }
+            i += in_a_row - 1;
+
+        } else {
+            size_t blocks_into_entry = entry->block_num - current_block;
+            int res = PerformTransfer(
+                (void*) (entry->cache_addr + blocks_into_entry * block_size), 
+                io, block_size
+            );
+            if (res != 0) {
+                return res;
+            }
+        }
+    }
+
     return VnodeOpRead(data->underlying_disk->node, io);
 }
 
@@ -96,7 +178,10 @@ static const struct vnode_operations dev_ops = {
 
 void RemoveCacheEntryHandler(void* entry_) {
     struct cache_entry* entry = entry_;
-    UnmapVirt(entry->cache_addr, entry->size);
+    (void) entry;
+    LogDeveloperWarning("TODO: we need the block size here...\n");
+    LogDeveloperWarning("Not freeing the disk cache...\n");
+    //UnmapVirt(entry->cache_addr, entry->num_blocks);
 }
 
 struct file* CreateDiskCache(struct file* underlying_disk)
@@ -105,6 +190,12 @@ struct file* CreateDiskCache(struct file* underlying_disk)
         return underlying_disk;
     }
 
+    (void) dev_ops;
+
+    /* @@@ TODO: fix diskcache! */
+    return underlying_disk;
+
+#if 0
     // TODO: the disk cache needs a way of synchronising underlying_disk->stat
     // either: allocate it dynamically and just point to the other one, or after
     // each operation on the disk cache, we copy across the stats
@@ -115,6 +206,7 @@ struct file* CreateDiskCache(struct file* underlying_disk)
     data->cache = TreeCreate();
     data->lock = CreateMutex("vcache");
     data->block_size = MAX(ARCH_PAGE_SIZE, underlying_disk->node->stat.st_blksize);
+    TreeSetComparator(data->cache, Comparator); 
     TreeSetDeletionHandler(data->cache, RemoveCacheEntryHandler);
     node->data = data;
 
@@ -128,6 +220,7 @@ struct file* CreateDiskCache(struct file* underlying_disk)
     ReleaseMutex(cache_list_lock);
 
     return cache;
+#endif
 }
 
 static void ReduceCacheAmounts(bool toss) {

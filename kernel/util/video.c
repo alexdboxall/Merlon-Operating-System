@@ -1,37 +1,19 @@
-#include <heap.h>
-#include <assert.h>
-#include <string.h>
-#include <irql.h>
+
 #include <video.h>
-#include <virtual.h>
-#include <errno.h>
-#include <log.h>
+#include <message.h>
 
-static struct video_driver video_driver = {
-    .putchar = NULL,
-    .puts = NULL
-};
-
-void DeferPuts(void* v) {
-    video_driver.puts((char*) v);
-}
-
-void DeferPutchar(void* v) {
-    video_driver.putchar((char) (size_t) v);
-}
+struct msgbox* video_mbox;
 
 void DbgScreenPutchar(char c) {
-    if (video_driver.putchar != NULL) {
-        DeferUntilIrql(IRQL_STANDARD, DeferPutchar, (void*) (size_t) c);
+    if (video_mbox != NULL) {
+        struct video_msg msg = (struct video_msg) {
+            .type = VIDMSG_PUTCHAR,
+            .putchar = {.fg = 0x7, .bg = 0x0, .c = c},
+        };
+        SendMessage(video_mbox, &msg);
     }    
 }
 
-void DbgScreenPuts(char* s) {
-    if (video_driver.puts != NULL) {
-        DeferUntilIrql(IRQL_STANDARD, DeferPuts, s);
-    }
-}
-
-void InitVideoConsole(struct video_driver driver) {
-    video_driver = driver;
+void InitVideoConsole(struct msgbox* mbox) {
+    video_mbox = mbox;
 }

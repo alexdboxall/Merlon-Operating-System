@@ -17,8 +17,6 @@
 #include <transfer.h>
 #include <linkedlist.h>
 
-// TODO: this should use linked lists instead of a fixed array
-
 struct msgbox {
     char* name;
     int payload_size;

@@ -387,10 +387,16 @@ void InitVesa(void) {
     data->cursor_x = 0;
     data->cursor_y = 0;
 
-    struct video_driver driver;
+    /*struct video_driver driver;
     driver.putchar = DrvConsolePutchar;
     driver.puts = DrvConsolePuts;
-    InitVideoConsole(driver);
+    InitVideoConsole(driver);*/
+
+    LogWriteSerial("TODO: FIX VESA SO IT USES MSGBOX!\n");
+
+    while (true) {
+        ;
+    }
 
     SetGraphicalPanicHandler(PanicHandler);
     CreateThread(ShowRAMUsage, NULL, GetVas(), "ram usage");
