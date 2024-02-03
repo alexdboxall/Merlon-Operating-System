@@ -29,6 +29,19 @@ struct semaphore* CreateSemaphore(const char* name, int max_count, int initial_c
     return sem;
 }
 
+int FillSemaphore(struct semaphore* sem) {
+    int res = 0;
+    LockScheduler();
+    if (sem->current_count <= sem->max_count) {
+        res = sem->max_count - sem->current_count;
+        sem->current_count = sem->max_count;
+    } else {
+        res = -1;
+    }
+    UnlockScheduler();
+    return res;
+}
+
 /**
  * Acquires (i.e. does the waits or P operation on) a semaphore. The timeout is
  * given in milliseconds. If 0, we return without blocking - if the lock can't
@@ -84,15 +97,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     return thr->timed_out ? (timeout_ms == 0 ? EAGAIN : ETIMEDOUT) : 0;
 }
 
-/**
- * Releases (i.e., does the signal, or V operation on) a semaphore.
- */
-void ReleaseSemaphore(struct semaphore* sem) {
-    MAX_IRQL(IRQL_HIGH);
-
-    LockScheduler();
-    assert(sem->current_count > 0);
-    
+static void DecrementSemaphore(struct semaphore* sem) {
     if (sem->waiting_list.head == NULL) {
         if (sem->current_count == 0) {
             Panic(PANIC_NEGATIVE_SEMAPHORE);
@@ -104,18 +109,18 @@ void ReleaseSemaphore(struct semaphore* sem) {
 
         if (top->state == THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT) {
             /*
-             * If it's in this state, it means it's either on the ready queue, 
-             * after just having finisherd a sleep, OR it's on the sleep queue.
-             * 
-             * If it's on the sleep queue, we need to remove it from there.
-             * Otherwise, we do nothing, as it's already on the ready queue.
-             */
+            * If it's in this state, it means it's either on the ready queue, 
+            * after just having finisherd a sleep, OR it's on the sleep queue.
+            * 
+            * If it's on the sleep queue, we need to remove it from there.
+            * Otherwise, we do nothing, as it's already on the ready queue.
+            */
             bool on_sleep_queue = TryDequeueForSleep(top);
             if (on_sleep_queue) {
                 /*
-                 * Change the state to prevent UnblockThread from seeing it's in
-                 * the timeout state and calling CancelSemaphoreOfThread.
-                 */
+                * Change the state to prevent UnblockThread from seeing it's in
+                * the timeout state and calling CancelSemaphoreOfThread.
+                */
                 top->state = THREAD_STATE_READY;
                 UnblockThread(top);
             }
@@ -124,6 +129,31 @@ void ReleaseSemaphore(struct semaphore* sem) {
             UnblockThread(top);
         }
     }
+}
+
+int ReleaseSemaphoreEx(struct semaphore* sem, int count) {
+    if (count < 0) {
+        return 0;
+    }
+    
+    assert(sem->current_count > 0);
+    int decrements = 0;
+    do {
+        ++decrements;
+        DecrementSemaphore(sem);
+    } while (--count && sem->current_count > 0);
+
+    return decrements;
+}
+
+/**
+ * Releases (i.e., does the signal, or V operation on) a semaphore.
+ */
+void ReleaseSemaphore(struct semaphore* sem) {
+    MAX_IRQL(IRQL_HIGH);
+
+    LockScheduler();
+    ReleaseSemaphoreEx(sem, 1);
     UnlockScheduler();
 }
 

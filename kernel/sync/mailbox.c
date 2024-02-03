@@ -140,16 +140,24 @@ int MailboxAccess(struct mailbox* mbox, struct transfer* tr) {
     if (tr->length_remaining == 0) {
         return (write ? MailboxWaitAddable : MailboxWaitGettable)(mbox, 0);
     }
+    LogWriteSerial("MBA_INNER\n");
 
     bool done_any = false;
     while (tr->length_remaining > 0) {
+        bool can_block = tr->blockable && !done_any;
         uint8_t c;
         int res;
         if (write) {
             PerformTransfer(&c, tr, 1);
-            res = MailboxAdd(mbox, tr->blockable && !done_any ? -1 : 0, c);
+            res = MailboxAdd(mbox, can_block ? -1 : 0, c);
+            if (res != 0) {
+                /*
+                 * Move back a character so it can be retried next time.
+                 */
+                RevertTransfer(tr, 1);
+            }
         } else {
-            res = MailboxGet(mbox, tr->blockable && !done_any ? -1 : 0, &c);   
+            res = MailboxGet(mbox, can_block ? -1 : 0, &c);   
         }
         if (res != 0) {
             return done_any ? 0 : res;

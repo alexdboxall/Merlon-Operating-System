@@ -41,9 +41,9 @@
 #define ENOBUFS         29          // No buffer space
 #define EBUSY			30			// Busy
 #define ENOEXEC			31			// Not an executable file
-#define EUNRECOVERABLE	32			// Non returning operation has failed past point of no return
+#define ENOTRECOVERABLE	32			// Non returning operation has failed past point of no return
 #define EINTR			33			// Interrupted by signal
-
+#define ECANCELED		34			// Operation cancelled
 #ifndef COMPILE_KERNEL
 
 int* __thread_local_errno_();

@@ -35,8 +35,8 @@ static void VgaSetCursor(void) {
 
 static void ClearLine(int y) {
     /*
-    * Ensure the foreground colour is to grey so we can see the cursor.
-    */
+     * Set the foreground colour of the whole screen, so we can see the cursor.
+     */
     uint16_t* mem = ((uint16_t*) (0xC00B8000)) + 80 * y;
     for (int i = 0; i < 80; ++i) {
         *mem++ = data.colour;
@@ -44,9 +44,9 @@ static void ClearLine(int y) {
 }
 
 /*
-* Moves the cursor position to a newline, handling the case where
-* it reaches the bottom of the terminal
-*/
+ * Moves the cursor position to a newline, handling the case where
+ * it reaches the bottom of the terminal
+ */
 static void VgaNewline(void) {
     data.cursor_x = 0;
 
@@ -75,10 +75,10 @@ void DrvConsolePutchar(char c) {
         data.cursor_x = 0;
     } else if (c == '\b') {
         /*
-        * Needs to be able to backspace past the beginning of the line (i.e. 
-        * when you write a line of the terminal that goes across multiple lines,
-        * then you delete it).
-        */
+         * Needs to be able to backspace past the beginning of the line (i.e. 
+         * when you write a line of the terminal that goes across multiple lines,
+         * then you delete it).
+         */
         if (data.cursor_x > 0) {
             data.cursor_x--;
         } else {
@@ -124,7 +124,7 @@ static void MessageLoop(void*) {
     // (i.e. in between printfs...). we should keep high priority, but make it
     // so the PTTY / rest of the code batch-sends putchar (i.e. locks scheduler
     // until all bytes of the printf sent).
-    SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+    //SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
     struct msgbox* mbox = CreateMessageBox("vga", sizeof(struct video_msg));
     InitVideoConsole(mbox);
@@ -135,10 +135,11 @@ static void MessageLoop(void*) {
 
         switch (msg.type) {
         case VIDMSG_CLEAR_SCREEN:
+            data.colour = (msg.clear.fg << 8) | (msg.clear.bg << 12);
             ClearScreen();
             break;
         case VIDMSG_PUTCHAR: 
-            data.colour = (((uint16_t) msg.putchar.fg) << 8) | msg.putchar.bg;
+            data.colour = (msg.putchar.fg << 8) | (msg.putchar.bg << 12);
             DrvConsolePutchar(msg.putchar.c);
             break;
         default:

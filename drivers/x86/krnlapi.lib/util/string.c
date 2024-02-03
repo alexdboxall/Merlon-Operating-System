@@ -5,7 +5,14 @@
 
 void* xmemcpy(void* restrict dst, const void* restrict src, size_t n)
 {
-    return __builtin_memcpy(dst, src, n);
+    uint8_t* a = (uint8_t*) dst;
+	const uint8_t* b = (const uint8_t*) src;
+
+	for (size_t i = 0; i < n; ++i) {
+		a[i] = b[i];
+	}
+
+	return dst;
 }
 
 int xstrcmp(const char* s1, const char* s2)

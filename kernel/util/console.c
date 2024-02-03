@@ -18,19 +18,31 @@ static uint8_t console_fg = 0x7;
 static uint8_t console_bg = 0x0;
 
 static void Putchar(char c) {
-	struct video_msg msg = (struct video_msg) {
+	SendVideoMessage((struct video_msg) {
 		.type = VIDMSG_PUTCHAR,
 		.putchar = {.fg = console_fg, .bg = console_bg, .c = c},
-	};
-	SendMessage(video_mbox, &msg);
+	});
 }
 
 static void ProcessAnsiEscapeCode(char* code) {
-	if (!strcmp(code, "[0m")) {		/* Clear screen */
-		struct video_msg msg = (struct video_msg) {
-			.type = VIDMSG_CLEAR_SCREEN
-		};
-		SendMessage(video_mbox, &msg);
+	if (!strcmp(code, "[2J")) {				/* Clear screen */
+		SendVideoMessage((struct video_msg) {
+			.type = VIDMSG_CLEAR_SCREEN,
+			.clear = {.bg = console_bg, .fg = console_fg}
+		});
+
+	} else if (!strcmp(code, "[0m")) {		/* Reset attributes */
+		console_bg = 0x0;
+		console_fg = 0x7;
+
+	} else if (!strcmp(code, "[90m")) {		/* Black foreground */
+		console_fg = 0x0;
+
+	} else if (!strcmp(code, "[107m")) {	/* White background */
+		console_bg = 0xF;
+
+	} else if (!strcmp(code, "[1;1H")) {	/* Move cursor */
+		// TODO: move cursor to top left
 
 	} else {
 		/*
@@ -48,25 +60,30 @@ static void ConsoleDriverThread(void*) {
 	char ansi_code[16];
 	int ansi_code_len = 0;
 
+	const int TRANSFER_SIZE = 128;
+
     while (true) {
-        char c;
-        struct transfer tr = CreateKernelTransfer(&c, 1, 0, TRANSFER_READ);
+        char buffer[TRANSFER_SIZE];
+        struct transfer tr = CreateKernelTransfer(buffer, TRANSFER_SIZE, 0, TRANSFER_READ);
 		ReadFile(open_console_master, &tr);
 
-		if (escape) {
-			ansi_code[ansi_code_len++] = c;
-			if ((c >= 0x40 && c != '[') || ansi_code_len >= 14) {
-				ansi_code[ansi_code_len] = 0;
-				ProcessAnsiEscapeCode(ansi_code);
-				escape = false;
-			}
+		for (size_t i = 0; i < TRANSFER_SIZE - tr.length_remaining; ++i) {
+			char c = buffer[i];
+			if (escape) {
+				ansi_code[ansi_code_len++] = c;
+				if ((c >= 0x40 && c != '[') || ansi_code_len >= 14) {
+					ansi_code[ansi_code_len] = 0;
+					ProcessAnsiEscapeCode(ansi_code);
+					escape = false;
+				}
 
-		} else {
-			if (c == '\x1B') {
-				escape = true;
-				ansi_code_len = 0;
 			} else {
-				Putchar(c);
+				if (c == '\x1B') {
+					escape = true;
+					ansi_code_len = 0;
+				} else {
+					Putchar(c);
+				}
 			}
 		}
     }

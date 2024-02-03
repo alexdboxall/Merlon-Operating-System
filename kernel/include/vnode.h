@@ -52,6 +52,11 @@ struct vnode_operations {
     int (*check_open)(struct vnode* node, const char* name, int flags);
     int (*read)(struct vnode* node, struct transfer* io);
     int (*write)(struct vnode* node, struct transfer* io);
+
+    /*
+     * a warning - that the `buffer` here needs to be copied across from 
+     * usermode!! it gives you a *RAW USERMODE POINTER*. 
+     */
     int (*ioctl)(struct vnode* node, int command, void* buffer);
     int (*close)(struct vnode* node);                       // release the fileystem specific data
     int (*truncate)(struct vnode* node, off_t offset);

@@ -30,6 +30,7 @@ struct transfer {
 
 
 int PerformTransfer(void* trusted_buffer, struct transfer* untrusted_buffer, uint64_t len);
+int RevertTransfer(struct transfer* untrusted, uint64_t len);
 
 /*
 * max_length of 0 means unbounded

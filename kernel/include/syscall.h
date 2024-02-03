@@ -21,3 +21,4 @@ int SysWaitpid(size_t, size_t, size_t, size_t, size_t);
 int SysFork(size_t, size_t, size_t, size_t, size_t);
 int SysGetPid(size_t, size_t, size_t, size_t, size_t);
 int SysGetTid(size_t, size_t, size_t, size_t, size_t);
+int SysIoctl(size_t, size_t, size_t, size_t, size_t);

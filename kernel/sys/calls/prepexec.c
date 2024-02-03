@@ -12,7 +12,7 @@ int SysPrepExec(size_t, size_t, size_t, size_t, size_t) {
 		return EINVAL;
 	}
 	if (WipeUsermodePages()) {
-		return EUNRECOVERABLE;
+		return ENOTRECOVERABLE;
 	}
 	// TODO: we need to reset the allocator that gives us AllocVirtRange
 	// (we can just completely nuke it and make it seem like it was a clean boot).

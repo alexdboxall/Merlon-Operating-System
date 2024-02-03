@@ -1,10 +1,13 @@
 
 #include <common.h>
 #include <log.h>
+#include <thread.h>
+#include <semaphore.h>
 #include <spinlock.h>
 #include <irql.h>
 
 static struct spinlock lock;
+static struct semaphore* mutex;
 
 #define REAL_HW 0
 
@@ -74,11 +77,14 @@ static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 		 * up to this level.
 		 */
 		InitSpinlock(&lock, "log", IRQL_HIGH);
+		mutex = CreateMutex("logmtx");
 		first_run = false;
 	}
 
 	if (!screen) {
 		AcquireSpinlock(&lock);
+	} else {
+		PreventScheduler();
 	}
 
 	int i = 0;
@@ -115,6 +121,8 @@ static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 
 	if (!screen) {
 		ReleaseSpinlock(&lock);
+	} else {
+		UnpreventScheduler();
 	}
 }
 

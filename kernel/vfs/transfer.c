@@ -72,6 +72,23 @@ static int CopyOutOfKernel(const void* kernel_addr, void* user_addr, size_t size
     return 0;
 }
 
+/*
+ * Performing a transfer doesn't trash the buffer, so we can revert by 
+ * just adjusting the values. Useful if the kernel is doing a `read` transfer
+ * as part of a larger operation which fails, in which case the transfer can be
+ * reverted so the larger operation can be retried correctly.
+ */
+int RevertTransfer(struct transfer* untrusted, uint64_t amount) {
+    untrusted->length_remaining += amount;
+    untrusted->offset -= amount;
+    untrusted->address = ((uint8_t*) untrusted->address) - amount;
+    return 0;
+}
+
+/*
+ * Does not trash the buffer we copy out from - this is required for
+ * RevertTransfer to work.
+ */
 int PerformTransfer(void* trusted, struct transfer* untrusted, uint64_t len) { 
     int direction = untrusted->direction;
     assert(trusted != NULL);

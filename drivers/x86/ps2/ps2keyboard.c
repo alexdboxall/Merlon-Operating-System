@@ -6,6 +6,7 @@
 #include <irq.h>
 #include <irql.h>
 #include <assert.h>
+#include <ctype.h>
 #include <errno.h>
 #include <machine/pic.h>
 #include <machine/portio.h>
@@ -42,6 +43,8 @@ static const char LOCKED_DRIVER_RODATA set1_map_upper_caps[] =
 #define KEYCODE_ESCAPE          '\x1B'
 #define KEYCODE_LEFT_ARROW      128
 #define KEYCODE_RIGHT_ARROW     129
+#define KEYCODE_UP_ARROW        130
+#define KEYCODE_DOWN_ARROW      131
 
 /*
 * The scancodes for those special keys.
@@ -55,6 +58,11 @@ static const char LOCKED_DRIVER_RODATA set1_map_upper_caps[] =
 #define SET1_CTRL           0x1D
 #define SET1_EXTENSION      0xE0
 #define SET1_CAPS_LOCK      0x3A
+
+#define SET1_EXT_UP_ARROW       0x48
+#define SET1_EXT_DOWN_ARROW     0x50
+#define SET1_EXT_LEFT_ARROW     0x4B
+#define SET1_EXT_RIGHT_ARROW    0x4D
 
 /*
 * Doesn't need locking (I hope...) as it is only accessed in the keyboard
@@ -74,76 +82,122 @@ static void LOCKED_DRIVER_CODE Ps2KeyboardSetLEDs(void) {
     Ps2DeviceWrite(data, false);
 }
 
+static bool extended = false;
 static void LOCKED_DRIVER_CODE Ps2KeyboardTranslateSet1(uint8_t scancode) {
-    MAX_IRQL(IRQL_PAGE_FAULT);
+    EXACT_IRQL(IRQL_STANDARD);
 
     if (scancode & 0x80) {
         release_mode = true;
         scancode &= 0x7F;
     }
 
-    uint8_t received_character = 0;
-    switch (scancode) {
-    case SET1_ENTER:
-        received_character = KEYCODE_ENTER;
-        break;
-
-    case SET1_BACKSPACE:
-        received_character = KEYCODE_BACKSPACE;
-        break;
-
-    case SET1_TAB:
-        received_character = KEYCODE_TAB;
-        break;
-
-    case SET1_ESCAPE:
-        received_character = KEYCODE_ESCAPE;
-        break;
-
-    case SET1_SHIFT:
-        shift_held = !release_mode;
-        break;
-
-    case SET1_SHIFT_R:
-        shift_r_held = !release_mode;
-        break;
-
-    case SET1_CTRL:
-        control_held = !release_mode;
-        break;
-
-    case SET1_CAPS_LOCK:
-        if (!release_mode) {
-            caps_lock_on = !caps_lock_on;
-            Ps2KeyboardSetLEDs();
+    uint8_t c = 0;
+    if (extended) {
+        switch (scancode) {
+        case SET1_EXT_UP_ARROW:
+            c = KEYCODE_UP_ARROW;
+            break;
+        case SET1_EXT_DOWN_ARROW:
+            c = KEYCODE_DOWN_ARROW;
+            break;
+        case SET1_EXT_LEFT_ARROW:
+            c = KEYCODE_LEFT_ARROW;
+            break;
+        case SET1_EXT_RIGHT_ARROW:
+            c = KEYCODE_RIGHT_ARROW;
+            break;
         }
-        break;
 
-    default:
-        if (scancode < strlen(set1_map_lower_norm)) {
-            bool shift = shift_held ^ shift_r_held;
+    } else {
+        switch (scancode) {
+        case SET1_ENTER:
+            c = KEYCODE_ENTER;
+            break;
 
-            if (caps_lock_on) {
-                if (shift) {
-                    received_character = set1_map_upper_caps[scancode];
+        case SET1_BACKSPACE:
+            c = KEYCODE_BACKSPACE;
+            break;
+
+        case SET1_TAB:
+            c = KEYCODE_TAB;
+            break;
+
+        case SET1_ESCAPE:
+            c = KEYCODE_ESCAPE;
+            break;
+
+        case SET1_SHIFT:
+            shift_held = !release_mode;
+            break;
+
+        case SET1_SHIFT_R:
+            shift_r_held = !release_mode;
+            break;
+
+        case SET1_CTRL:
+            control_held = !release_mode;
+            break;
+
+        case SET1_CAPS_LOCK:
+            if (!release_mode) {
+                caps_lock_on = !caps_lock_on;
+                Ps2KeyboardSetLEDs();
+            }
+            break;
+
+        default:
+            if (scancode < strlen(set1_map_lower_norm)) {
+                bool shift = shift_held ^ shift_r_held;
+
+                if (caps_lock_on) {
+                    if (shift) {
+                        c = set1_map_upper_caps[scancode];
+                    } else {
+                        c = set1_map_lower_caps[scancode];
+                    }
                 } else {
-                    received_character = set1_map_lower_caps[scancode];
-                }
-            } else {
-                if (shift) {
-                    received_character = set1_map_upper_norm[scancode];
-                } else {
-                    received_character = set1_map_lower_norm[scancode];
+                    if (shift) {
+                        c = set1_map_upper_norm[scancode];
+                    } else {
+                        c = set1_map_lower_norm[scancode];
+                    }
                 }
             }
         }
     }
 
-    bool send_it = received_character != 0 && !release_mode;
+    bool send_it = c != 0 && !release_mode;
     release_mode = false;
     if (send_it) {
-        SendKeystrokeConsole(received_character);
+        if (control_held) {
+            if (islower(c) || (c >= '@' && c <= '_' && !isupper(c))) {
+                SendKeystrokeConsole(c - (islower(c) ? (32 + '@') : '@'));
+            }
+        } else if (c == KEYCODE_UP_ARROW) {
+            SendKeystrokeConsole('\x1B');
+            SendKeystrokeConsole('[');
+            SendKeystrokeConsole('A');
+
+        } else if (c == KEYCODE_DOWN_ARROW) {
+            SendKeystrokeConsole('\x1B');
+            SendKeystrokeConsole('[');
+            SendKeystrokeConsole('B');
+
+        } else if (c == KEYCODE_RIGHT_ARROW) {
+            SendKeystrokeConsole('\x1B');
+            SendKeystrokeConsole('[');
+            SendKeystrokeConsole('C');
+
+        } else if (c == KEYCODE_LEFT_ARROW) {
+            SendKeystrokeConsole('\x1B');
+            SendKeystrokeConsole('[');
+            SendKeystrokeConsole('D');
+        
+        } else {
+            SendKeystrokeConsole(c);
+        }
     }
+    extended = false;
 }
 
 void LOCKED_DRIVER_CODE HandleCharacter(void* scancode) {
@@ -152,7 +206,11 @@ void LOCKED_DRIVER_CODE HandleCharacter(void* scancode) {
 
 static int LOCKED_DRIVER_CODE Ps2KeyboardIrqHandler(struct x86_regs*) {
 	uint8_t scancode = inb(0x60);
-    DeferUntilIrql(IRQL_STANDARD, HandleCharacter, (void*) (size_t) scancode);
+    if (scancode == 0xE0) {
+        extended = true;
+    } else {
+        DeferUntilIrql(IRQL_STANDARD, HandleCharacter, (void*) (size_t) scancode);
+    }
     return 0;
 }
 

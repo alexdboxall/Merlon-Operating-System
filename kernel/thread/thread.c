@@ -313,6 +313,19 @@ static void UpdatePriority(bool yielded) {
 }
 
 static int scheduler_lock_count = 0;
+static int scheduler_prevent = 0;
+
+void PreventScheduler(void) {
+    AcquireSpinlock(&scheduler_recur_lock);
+    ++scheduler_prevent;
+    ReleaseSpinlock(&scheduler_recur_lock);
+}
+
+void UnpreventScheduler(void) {
+    AcquireSpinlock(&scheduler_recur_lock);
+    --scheduler_prevent;
+    ReleaseSpinlock(&scheduler_recur_lock);
+}
 
 void LockScheduler(void) {
     AcquireSpinlock(&scheduler_recur_lock);
@@ -423,7 +436,7 @@ static void ScheduleWithLockHeld(void) {
 }
 
 void Schedule(void) {
-    if (GetIrql() > IRQL_PAGE_FAULT) {
+    if (GetIrql() > IRQL_PAGE_FAULT || scheduler_prevent > 0) {
         PostponeScheduleUntilStandardIrql();
         return;
     }

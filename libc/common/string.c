@@ -254,10 +254,12 @@ char* strerror(int err) {
 		return "Resource busy or locked";
 	case ENOEXEC:
 		return "Invalid executable file";
-	case EUNRECOVERABLE:
-		return "Non returning operation has failed past point of no return";
+	case ENOTRECOVERABLE:
+		return "Operation has failed past point of no return";
 	case EINTR:
 		return "Interrupted by signal";
+	case ECANCELED:
+		return "Operation cancelled";
 	default:
 		return "Unknown error";
 	}

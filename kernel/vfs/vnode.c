@@ -9,6 +9,7 @@
 #include <irql.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 
 /*
  * Allocate and initialise a vnode. The reference count is initialised to 1.
@@ -119,8 +120,12 @@ int VnodeOpWrite(struct vnode* node, struct transfer* io) {
 int VnodeOpIoctl(struct vnode* node, int command, void* buffer) {
     CheckVnode(node);
     if (node->ops.ioctl == NULL) {
+        if (command == TCGETS || command == TCSETS || command == TCSETSW || command == TCSETSF) {
+            return ENOTTY;
+        }
         return EINVAL;
     }
+    LogWriteSerial("VnodeOpIoctl: cmd = %d\n", command);
     return node->ops.ioctl(node, command, buffer);
 }
 

@@ -10,6 +10,12 @@ struct video_msg {
     uint8_t type;
     union {
         struct {
+            uint8_t fg;
+            uint8_t bg;
+
+        } clear;
+
+        struct {
             char c;
             uint8_t fg;
             uint8_t bg;
@@ -19,6 +25,9 @@ struct video_msg {
 };
 
 struct msgbox;
-extern struct msgbox* video_mbox;
 
 void InitVideoConsole(struct msgbox* mbox);
+
+void SendVideoMessage(struct video_msg msg);
+void HoldVideoMessages(void);
+void ReleaseVideoMessages(void);

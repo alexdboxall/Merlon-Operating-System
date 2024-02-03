@@ -40,6 +40,8 @@ int SysMapVirt(size_t flags, size_t bytes, size_t fd, size_t offset, size_t user
 		}
 	}
 
+	LogWriteSerial("SysMapVirt has flags 0x%X for addr 0x%X\n", flags | VM_USER | VM_LOCAL, target_virtual);
+	
 	int error;
 	size_t output_virtual = MapVirtEx(
 		GetVas(), 0, target_virtual, BytesToPages(bytes), 

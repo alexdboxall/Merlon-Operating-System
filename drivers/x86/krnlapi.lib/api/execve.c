@@ -16,6 +16,7 @@
 #include <elf.h>
 #include <machine/config.h>
 #include <sys/wait.h>
+#include <sys/ioctl.h>
 #include <sys/mman.h>
 
 struct dyn_data {
@@ -82,7 +83,7 @@ static int load_program_headers(void* data, int fd) {
             /*
              * TODO: in the future, use file mapping for non-writable sections
              */
-            void* ret = mmap((void*) address, size + num_zero_bytes, prot | VM_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
+            void* ret = mmap((void*) address, size + num_zero_bytes, prot | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
             if (ret == MAP_FAILED) {
                 errno = ENOMEM;
                 return -1;    
@@ -131,6 +132,7 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "isatty")) return (size_t) isatty;
     if (!xstrcmp(name, "waitpid")) return (size_t) waitpid;
     if (!xstrcmp(name, "fork")) return (size_t) fork;
+    if (!xstrcmp(name, "ioctl")) return (size_t) ioctl;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
     return (size_t) loltest;
 }
@@ -211,7 +213,7 @@ int execve(const char* pathname, char* const argv[], char* const envp[]) {
 
     size_t entry_point;
     int res = _system_call(SYSCALL_PREPEXEC, 0, 0, 0, 0, 0);
-    if (res == EUNRECOVERABLE) {
+    if (res == ENOTRECOVERABLE) {
         goto unrecoverable_fail;
     } else if (res != 0) {
         errno = res;
@@ -237,6 +239,11 @@ int execve(const char* pathname, char* const argv[], char* const envp[]) {
     while (argv[argc] != NULL) {
         ++argc;
     }
+
+    /*
+     * Needed, otherwise it will use fd = 0, which is meant to be for stdin.
+     */
+    close(fd);
 
     execve_core(entry_point, argc, argv, envp, ARCH_USER_STACK_LIMIT);
 

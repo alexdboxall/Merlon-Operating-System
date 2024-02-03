@@ -81,6 +81,7 @@ int CreateFd(struct fd_table* table, struct file* file, int* fd_out, int flags) 
             table->entries[i].flags = flags;
             ReleaseMutex(table->lock);
             *fd_out = i;
+            LogWriteSerial("Creating fd... file = [0x%X, 0x%X], fd = %d\n", file, file->node, i);
             return 0;
         }
     }
@@ -97,6 +98,7 @@ int RemoveFd(struct fd_table* table, struct file* file) {
     for (int i = 0; i < PROC_MAX_FD; ++i) {
         if (table->entries[i].file == file) {
             table->entries[i].file = NULL;
+            LogWriteSerial("Removing fd... file = [0x%X, 0x%X], fd = %d\n", file, file->node, i);
             ReleaseMutex(table->lock);
             return 0;
         }

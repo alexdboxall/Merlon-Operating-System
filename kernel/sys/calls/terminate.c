@@ -18,5 +18,5 @@ int SysTerminate(size_t status, size_t, size_t, size_t, size_t) {
 	(void) status;
 	
 	TerminateThread(GetThread());
-	return EUNRECOVERABLE;
+	return ENOTRECOVERABLE;
 }

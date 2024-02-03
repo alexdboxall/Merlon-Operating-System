@@ -80,6 +80,8 @@ bool HasBeenSignalled();
 void Schedule(void);
 void LockScheduler(void);
 void UnlockScheduler(void);
+void PreventScheduler(void);
+void UnpreventScheduler(void);
 
 void InitScheduler(void);
 void StartMultitasking(void);

@@ -1,9 +1,10 @@
 
-
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+
+extern int EditorMain(int argc, char** argv);
 
 int main(void) {
     /*
@@ -31,8 +32,11 @@ int main(void) {
                 ;
             }
         } else if (!strcmp(line, "clear\n")) {
-            printf("\x1B[0m");
+            printf("\x1B[2J");
             fflush(stdout);
+
+        } else if (!strcmp(line, "ed\n")) {
+            EditorMain(1, NULL);
         
         } else {
             printf("Command not found: %s\n", line);

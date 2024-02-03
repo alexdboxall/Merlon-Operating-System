@@ -24,13 +24,12 @@
 #include <termios.h>
 #include <mailbox.h>
 #include <virtual.h> 
-#include <sys/ioctl.h>
 
-#define INTERNAL_BUFFER_SIZE 256    // used to communicate with master and sub   
-                                    // used for displaying, so larger buffer
-                                    // means text prints faster
-#define LINE_BUFFER_SIZE 300        // maximum length of a typed line
-#define FLUSHED_BUFFER_SIZE 300     // used to store any leftover after pressing '\n'
+#define INTERNAL_BUFFER_SIZE 256     // used to communicate with master and sub   
+                                     // used for displaying, so larger buffer
+                                     // means text prints faster
+#define LINE_BUFFER_SIZE 4//300      // maximum length of a typed line
+#define FLUSHED_BUFFER_SIZE 4//500   // used to store any leftover after pressing '\n'
 
 struct master_data {
     struct vnode* subordinate;
@@ -90,8 +89,8 @@ static void LineProcessor(void* sub_) {
     struct master_data* master_internal = internal->master->data;
 
     while (true) {
-        bool echo = internal->termios.c_lflag & ECHO;
-        bool canon = internal->termios.c_lflag & ICANON;
+        bool echo = false;//internal->termios.c_lflag & ECHO;
+        bool canon = false;//internal->termios.c_lflag & ICANON;
 
         uint8_t c;
         MailboxGet(master_internal->keybrd_buffer, -1, &c);
@@ -168,47 +167,15 @@ static int MasterClose(struct vnode* node) {
     return 0;
 }
 
-static int SubordinateIoctl(struct vnode* node, int cmd, void* arg) {
-    LogWriteSerial("SubordinateIoctl! cmd = %d\n", cmd);
-
-    struct sub_data* internal = (struct sub_data*) node->data;
-
-    if (cmd == TCSETS || cmd == TCSETSW || cmd == TCSETSF) {
-        if (cmd != TCSETS) {
-            return ENOSYS;
-        }
-        
-        struct termios new_term;
-        struct transfer tr = CreateTransferReadingFromUser(arg, sizeof(struct termios), 0);
-        int res = PerformTransfer(&new_term, &tr, sizeof(struct termios));
-        if (res != 0) {
-            return res;
-        }
-
-        // TODO: VALIDATE THE CONTENTS OF NEW_TERM
-
-        internal->termios = new_term;
-        return 0;
-
-    } else if (cmd == TCGETS) {
-        struct transfer tr = CreateTransferWritingToUser(arg, sizeof(struct termios), 0);
-        return PerformTransfer(&internal->termios, &tr, sizeof(struct termios));
-    
-    } else {
-        return EINVAL;
-    }
-}
-
 static const struct vnode_operations master_operations = {
     .read           = MasterRead,
     .write          = MasterWrite,
-    .close          = MasterClose,
+    .close          = MasterClose
 };
 
 static const struct vnode_operations subordinate_operations = {
     .read           = SubordinateRead,
     .write          = SubordinateWrite,
-    .ioctl          = SubordinateIoctl,
 };
 
 void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
