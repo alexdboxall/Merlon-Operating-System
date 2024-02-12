@@ -143,13 +143,14 @@ void UnblockThread(struct thread* thr) {
 }
 
 void UnblockThreadGiftingTimeslice(struct thread* thr) {
-    UnblockThread(thr);
     AssertSchedulerLockHeld();
     uint64_t sys_time = GetSystemTime();
     uint64_t current_expiry = GetThread()->timeslice_expiry;
     if (current_expiry >= sys_time) {
         thr->gifted_timeslice += current_expiry - sys_time;
     }
+    UnblockThread(thr);
+    GetThread()->timeslice_expiry = sys_time;
     PostponeScheduleUntilStandardIrql();
 }
 
