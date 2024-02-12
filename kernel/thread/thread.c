@@ -142,6 +142,17 @@ void UnblockThread(struct thread* thr) {
     }
 }
 
+void UnblockThreadGiftingTimeslice(struct thread* thr) {
+    UnblockThread(thr);
+    AssertSchedulerLockHeld();
+    uint64_t sys_time = GetSystemTime();
+    uint64_t current_expiry = GetThread()->timeslice_expiry;
+    if (current_expiry >= sys_time) {
+        thr->gifted_timeslice += current_expiry - sys_time;
+    }
+    PostponeScheduleUntilStandardIrql();
+}
+
 void UpdateThreadTimeUsed(void) {
     static uint64_t prev_time = 0;
 
@@ -194,6 +205,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->initial_address = entry_point;
     thr->state = THREAD_STATE_READY;
     thr->time_used = 0;
+    thr->gifted_timeslice = 0;
     thr->name = strdup(name);
     thr->priority = priority;
     thr->needs_termination = false;
@@ -234,7 +246,8 @@ bool HasBeenSignalled(void) {
 
 static void UpdateTimesliceExpiry(void) {
     struct thread* thr = GetThread();
-    thr->timeslice_expiry = GetSystemTimer() + (thr->priority == 255 ? 0 : (20 + thr->priority / 4) * 1000000ULL);
+    thr->timeslice_expiry = GetSystemTimer() + thr->gifted_timeslice + (thr->priority == 255 ? 0 : (20 + thr->priority / 4) * 1000000ULL);
+    thr->gifted_timeslice = 0;
 }
 
 void ThreadExecuteInUsermode(void* arg) {
