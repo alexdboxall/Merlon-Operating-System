@@ -122,11 +122,11 @@ static void DecrementSemaphore(struct semaphore* sem) {
                 * the timeout state and calling CancelSemaphoreOfThread.
                 */
                 top->state = THREAD_STATE_READY;
-                UnblockThread(top);
+                UnblockThreadGiftingTimeslice(top);
             }
 
         } else {
-            UnblockThread(top);
+            UnblockThreadGiftingTimeslice(top);
         }
     }
 }

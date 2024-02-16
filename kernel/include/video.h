@@ -5,6 +5,9 @@
 
 #define VIDMSG_CLEAR_SCREEN     0
 #define VIDMSG_PUTCHAR          1
+#define VIDMSG_PUTCHARS         2
+
+#define VID_MAX_PUTCHARS_LEN    26
 
 struct video_msg {
     uint8_t type;
@@ -21,6 +24,12 @@ struct video_msg {
             uint8_t bg;
 
         } putchar;
+
+        struct {
+            char cs[VIDMSG_PUTCHARS_LEN];
+            uint8_t fg;
+            uint8_t bg;
+        } putchars;
     };
 };
 

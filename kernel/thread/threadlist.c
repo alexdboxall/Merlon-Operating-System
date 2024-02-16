@@ -20,6 +20,22 @@ void ThreadListInit(struct thread_list* list, int index) {
     list->index = index;
 }
 
+void ThreadListInsertAtFront(struct thread_list* list, struct thread* thread) {
+#ifndef NDEBUG
+    if (ThreadListContains(list, thread)) {
+        assert(!ThreadListContains(list, thread));
+    }
+#endif
+
+    if (list->head == NULL) {
+        assert(list->tail == NULL);
+        list->tail = thread;
+    }
+    
+    thread->next[list->index] = list->head;
+    list->head = thread;
+}
+
 void ThreadListInsert(struct thread_list* list, struct thread* thread) {
 #ifndef NDEBUG
     if (ThreadListContains(list, thread)) {

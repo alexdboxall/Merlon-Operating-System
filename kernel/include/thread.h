@@ -71,6 +71,7 @@ struct thread {
      * the next time it is switched in.
      */
     uint64_t timeslice_expiry;
+    uint64_t gifted_timeslice;
 
     uint64_t sleep_expiry;
 };
@@ -98,6 +99,7 @@ struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct va
 
 void BlockThread(int reason);
 void UnblockThread(struct thread* thr);
+void UnblockThreadGiftingTimeslice(struct thread* thr);
 int SetThreadPriority(struct thread* thread, int policy, int priority);
 
 void SleepUntil(uint64_t system_time_ns);
