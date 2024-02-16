@@ -97,7 +97,6 @@ void DrvConsolePutchar(char c) {
             VgaNewline();
         }
     }
-    VgaSetCursor();
 }
 
 static void EnableCursor(void) {
@@ -141,6 +140,14 @@ static void MessageLoop(void*) {
         case VIDMSG_PUTCHAR: 
             data.colour = (msg.putchar.fg << 8) | (msg.putchar.bg << 12);
             DrvConsolePutchar(msg.putchar.c);
+            VgaSetCursor();
+            break;
+        case VIDMSG_PUTCHARS: {
+            data.colour = (msg.putchars.fg << 8) | (msg.putchar.bg << 12);
+            for (int i = 0; msg.putchars.cs[i]; ++i) {
+                DrvConsolePutchar(msg.putchars.cs[i]);
+            }
+            VgaSetCursor();
             break;
         default:
             break;
