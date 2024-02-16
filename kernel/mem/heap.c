@@ -604,3 +604,18 @@ void InitHeap(void) {
     InitSpinlock(&heap_spinlock, "heapspin", IRQL_SCHEDULER); 
     MarkTfwStartPoint(TFW_SP_AFTER_HEAP);
 }
+
+void* ReallocHeap(void* ptr, size_t new_size) {
+    size_t old_size = GetSize(SubVoidPtr(ptr, METADATA_LEADING));
+    if (new_size <= old_size) {
+        return ptr;
+    }
+
+    void* new_ptr = AllocHeap(new_size);
+    if (new_ptr == NULL) {
+        return NULL;
+    }
+    memcpy(new_ptr, ptr, old_size);
+    FreeHeap(ptr);
+    return new_ptr;
+}

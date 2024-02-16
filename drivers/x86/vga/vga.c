@@ -8,6 +8,7 @@
 #include <video.h>
 #include <message.h>
 #include <thread.h>
+#include <panic.h>
 #include <machine/portio.h>
 
 #define SCREEN_WIDTH 80
@@ -19,13 +20,13 @@ struct vga_data {
     uint16_t colour;
 };
 
-static struct vga_data data = {
+static LOCKED_DRIVER_DATA struct vga_data data = {
     .cursor_x = 0,
     .cursor_y = 0,
     .colour = 0x0700
 };
 
-static void VgaSetCursor(void) {
+static void LOCKED_DRIVER_CODE VgaSetCursor(void) {
     int pos = data.cursor_y * 80 + data.cursor_x;
     outb(0x3D4, 0x0E);
     outb(0x3D5, pos >> 8);
@@ -33,7 +34,7 @@ static void VgaSetCursor(void) {
     outb(0x3D5, pos & 0xFF);
 }
 
-static void ClearLine(int y) {
+static void LOCKED_DRIVER_CODE ClearLine(int y) {
     /*
      * Set the foreground colour of the whole screen, so we can see the cursor.
      */
@@ -47,7 +48,7 @@ static void ClearLine(int y) {
  * Moves the cursor position to a newline, handling the case where
  * it reaches the bottom of the terminal
  */
-static void VgaNewline(void) {
+static void LOCKED_DRIVER_CODE VgaNewline(void) {
     data.cursor_x = 0;
 
     assert(data.cursor_y < SCREEN_HEIGHT);
@@ -62,13 +63,13 @@ static void VgaNewline(void) {
     }
 }
 
-static void VgaRenderCharacter(char c) {
+static void LOCKED_DRIVER_CODE VgaRenderCharacter(char c) {
     uint16_t* vgamem = (uint16_t*) (0xC00B8000);
     vgamem += data.cursor_y * 80 + data.cursor_x;
     *vgamem = data.colour | c;
 }
 
-void DrvConsolePutchar(char c) {
+void LOCKED_DRIVER_CODE DrvConsolePutchar(char c) {
     if (c == '\n') {
         VgaNewline();
     } else if (c == '\r') {
@@ -76,8 +77,8 @@ void DrvConsolePutchar(char c) {
     } else if (c == '\b') {
         /*
          * Needs to be able to backspace past the beginning of the line (i.e. 
-         * when you write a line of the terminal that goes across multiple lines,
-         * then you delete it).
+         * when you write a line of the terminal that goes across multiple 
+         * lines, then you delete it).
          */
         if (data.cursor_x > 0) {
             data.cursor_x--;
@@ -100,6 +101,17 @@ void DrvConsolePutchar(char c) {
     VgaSetCursor();
 }
 
+static void LOCKED_DRIVER_CODE PanicHandler(int, const char* msg) {
+    const char* str = "\n\nPANIC               \n";
+    data.colour = 0x1F00;
+    for (int i = 0; str[i]; ++i) {
+        DrvConsolePutchar(str[i]);
+    }
+    for (int i = 0; msg[i]; ++i) {
+        DrvConsolePutchar(msg[i]);
+    }
+}
+
 static void EnableCursor(void) {
     outb(0x3D4, 0x09);
     outb(0x3D5, 15);
@@ -118,13 +130,7 @@ static void ClearScreen(void) {
 }
 
 static void MessageLoop(void*) {
-    // TODO:
-    // high priority makes keyboard input better
-    // but it means that we get switched to every single time there's a putchar
-    // (i.e. in between printfs...). we should keep high priority, but make it
-    // so the PTTY / rest of the code batch-sends putchar (i.e. locks scheduler
-    // until all bytes of the printf sent).
-    //SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
+    SetGraphicalPanicHandler(PanicHandler);
 
     struct msgbox* mbox = CreateMessageBox("vga", sizeof(struct video_msg));
     InitVideoConsole(mbox);

@@ -13,7 +13,13 @@ SECTIONS
 	.text ALIGN(4096) : AT (ADDR (.text) - 0xC0000000)
 	{
 		*(.text .text.*)
-		*(.ctors)
+	
+		. = ALIGN(8);
+		
+		start_ctors = .;
+        *(SORT(.ctors*))  	/* Note the "SORT" */
+        end_ctors = .;
+
 		*(.dtors)
 	}
 	

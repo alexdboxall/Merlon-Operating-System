@@ -65,7 +65,7 @@ static void LogInt(uint32_t i, int base, bool screen)
 	LogStr(str, screen);
 }
 
-static void LogWriteSerialVa(const char* format, va_list list, bool screen) {
+void LogWriteSerialVa(const char* format, va_list list, bool screen) {
 	if (format == NULL) {
 		format = "NULL";
 	}

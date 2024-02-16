@@ -98,6 +98,8 @@ size_t ArchPrepareStack(size_t addr);
 
 void ArchSwitchToUsermode(size_t entry_point, size_t user_stack, void* arg);
 
+void ArchCallGlobalConstructors(void);
+
 void ArchInitDev(bool fs);
 
 

@@ -157,7 +157,8 @@
         "source_location": "c",
         "termios.h": "c",
         "limits.h": "c",
-        "ioctl.h": "c"
+        "ioctl.h": "c",
+        "objc.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

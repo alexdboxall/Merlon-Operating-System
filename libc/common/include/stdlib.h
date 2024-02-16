@@ -21,6 +21,7 @@
 
 int rand(void);
 void srand(unsigned int seed);
+int atoi(const char *str);
 
 #ifdef COMPILE_KERNEL
 void qsort_pageable(void* base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
@@ -54,8 +55,6 @@ long long int llabs(long long int j);
 div_t div(int numer, int denom);
 ldiv_t ldiv(long int numer, long int denom);
 lldiv_t lldiv(long long int numer, long long int denom);
-
-int atoi(const char *str);
 
 #define INCLUDED_STDLIB
 void _exit(int status);

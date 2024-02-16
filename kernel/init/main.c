@@ -132,6 +132,9 @@ void InitThread(void*) {
     InitUserspace();
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 
+    extern int ObjcTest(void);
+    ObjcTest();
+
     while (true) {
         /*
          * We crash in strange and rare conditions if this thread's stack gets 
