@@ -143,7 +143,6 @@ ssize_t _file_write(FILE* stream, void* buffer, size_t size) {
     return write(stream->fd, buffer, size);
 }
 
-
 ssize_t _mem_read(FILE* stream, void* buffer, size_t size) {
     if ((stream->flags & O_ACCMODE) == O_WRONLY) {
         errno = EINVAL;

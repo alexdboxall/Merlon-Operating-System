@@ -8,6 +8,7 @@
 #include <log.h>
 #include <message.h>
 #include <video.h>
+#include <stdlib.h>
 
 static struct file* open_console_master;
 static struct file* open_console_sub;
@@ -17,32 +18,73 @@ static bool console_initialised = false;
 static uint8_t console_fg = 0x7;
 static uint8_t console_bg = 0x0;
 
+static int console_buffer_ptr = 0;
+static char console_buffer[VID_MAX_PUTCHARS_LEN];
+
+static void Flush(void) {
+	if (console_buffer_ptr > 0) {
+		struct video_msg msg = (struct video_msg) {
+			.type = VIDMSG_PUTCHARS,
+			.putchars = {.fg = console_fg, .bg = console_bg},
+		};
+		strncpy(msg.putchars.cs, console_buffer, VID_MAX_PUTCHARS_LEN);
+		SendVideoMessage(msg);
+		console_buffer_ptr = 0;
+		memset(console_buffer, 0, VID_MAX_PUTCHARS_LEN);
+	}
+}
+
 static void Putchar(char c) {
-	SendVideoMessage((struct video_msg) {
-		.type = VIDMSG_PUTCHAR,
-		.putchar = {.fg = console_fg, .bg = console_bg, .c = c},
-	});
+	console_buffer[console_buffer_ptr++] = c;	
+	if (console_buffer_ptr >= VID_MAX_PUTCHARS_LEN) {
+		Flush();
+	}
 }
 
 static void ProcessAnsiEscapeCode(char* code) {
 	if (!strcmp(code, "[2J")) {				/* Clear screen */
+		/*
+		 * We can wipe anything leftover in buffers to save time, as it is 
+		 * about to be overwritten anyway.
+		 */
+		console_buffer_ptr = 0;
+		memset(console_buffer, 0, VID_MAX_PUTCHARS_LEN);
+
 		SendVideoMessage((struct video_msg) {
 			.type = VIDMSG_CLEAR_SCREEN,
 			.clear = {.bg = console_bg, .fg = console_fg}
 		});
 
 	} else if (!strcmp(code, "[0m")) {		/* Reset attributes */
+		Flush();
 		console_bg = 0x0;
 		console_fg = 0x7;
 
 	} else if (!strcmp(code, "[90m")) {		/* Black foreground */
+		Flush();
 		console_fg = 0x0;
 
 	} else if (!strcmp(code, "[107m")) {	/* White background */
+		Flush();
 		console_bg = 0xF;
 
 	} else if (!strcmp(code, "[1;1H")) {	/* Move cursor */
 		// TODO: move cursor to top left
+
+	} else if (strlen(code) >= 4 && code[0] == '[' && code[strlen(code) - 1] == 'H') { 	/* Move cursor*/
+		int index = 1;
+		int y = atoi(code + index);
+		while (code[index] && code[index] != ';') {
+			++index;
+		}
+		if (code[index] == ';' && code[index + 1] != 0) {
+			int x = atoi(code + index + 1);
+			Flush();
+			SendVideoMessage((struct video_msg) {
+				.type = VIDMSG_SET_CURSOR,
+				.setcursor = {.x = x - 1, .y = y - 1},
+			});
+		}
 
 	} else {
 		/*
@@ -60,7 +102,7 @@ static void ConsoleDriverThread(void*) {
 	char ansi_code[16];
 	int ansi_code_len = 0;
 
-	const int TRANSFER_SIZE = 128;
+	const int TRANSFER_SIZE = 256;
 
     while (true) {
         char buffer[TRANSFER_SIZE];
@@ -86,6 +128,8 @@ static void ConsoleDriverThread(void*) {
 				}
 			}
 		}
+
+		Flush();
     }
 }
 
@@ -99,6 +143,9 @@ void InitConsole(void) {
 	AddVfsMount(console_sub, "con");
     CreateThread(ConsoleDriverThread, NULL, GetVas(), "con");
 	console_initialised = true;
+
+	console_buffer_ptr = 0;
+	memset(console_buffer, 0, VID_MAX_PUTCHARS_LEN);
 }
 
 void SendKeystrokeConsole(char c) {

@@ -149,10 +149,16 @@ static void MessageLoop(void*) {
             VgaSetCursor();
             break;
         case VIDMSG_PUTCHARS: {
-            data.colour = (msg.putchars.fg << 8) | (msg.putchar.bg << 12);
-            for (int i = 0; msg.putchars.cs[i] && i < VID_MAX_PUTCHARS_LEN; ++i) {
+            data.colour = (msg.putchars.fg << 8) | (msg.putchars.bg << 12);
+            for (int i = 0; i < VID_MAX_PUTCHARS_LEN && msg.putchars.cs[i]; ++i) {
                 DrvConsolePutchar(msg.putchars.cs[i]);
             }
+            VgaSetCursor();
+            break;
+        }
+        case VIDMSG_SET_CURSOR:
+            data.cursor_x = msg.setcursor.x;
+            data.cursor_y = msg.setcursor.y;
             VgaSetCursor();
             break;
         default:

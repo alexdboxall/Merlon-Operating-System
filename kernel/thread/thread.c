@@ -145,7 +145,7 @@ void UnblockThread(struct thread* thr) {
 void UnblockThreadGiftingTimeslice(struct thread* thr) {
     AssertSchedulerLockHeld();
     
-    uint64_t sys_time = GetSystemTime();
+    uint64_t sys_time = GetSystemTimer();
     uint64_t current_expiry = GetThread()->timeslice_expiry;
     if (current_expiry >= sys_time) {
         thr->gifted_timeslice += current_expiry - sys_time;
@@ -463,6 +463,8 @@ void Schedule(void) {
         PostponeScheduleUntilStandardIrql();
         return;
     }
+
+    //LogWriteSerial("Sch.\n");
 
     LockScheduler();
     ScheduleWithLockHeld();

@@ -26,7 +26,7 @@
 #include <virtual.h> 
 #include <sys/ioctl.h>
 
-#define INTERNAL_BUFFER_SIZE 256    // used to communicate with master and sub   
+#define INTERNAL_BUFFER_SIZE 1024   // used to communicate with master and sub   
                                     // used for displaying, so larger buffer
                                     // means text prints faster
 #define LINE_BUFFER_SIZE 300        // maximum length of a typed line
@@ -52,12 +52,10 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct sub_data* internal = node->data;
     struct master_data* master_internal = internal->master->data;
 
-    //HoldVideoMessages();
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
         MailboxAdd(master_internal->flushed_buffer, -1, internal->line_buffer[i]);
     }
     internal->line_buffer_pos = 0;
-    //ReleaseVideoMessages();
 }
 
 static void RemoveFromSubordinateLineBuffer(struct vnode* node) {
@@ -154,7 +152,6 @@ static int SubordinateWrite(struct vnode* node, struct transfer* tr) {
     while (tr->length_remaining > 0 && (res == 0 || res == EINTR)) {
         res = MailboxAccess(master_internal->display_buffer, tr);
     }
-    LogWriteSerial("SubordinateWrite: we have length %d to go, res = %d\n", tr->length_remaining, res);
     return res;
 }
 

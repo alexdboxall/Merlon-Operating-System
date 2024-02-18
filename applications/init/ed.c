@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdarg.h>
 #include <string.h>
 #include <termios.h>
 #include <ctype.h>
@@ -32,22 +33,117 @@ int cursor_line = 0;
 int scroll = 0;
 bool dirty = false;
 int num_lines = 0;
+int scroll_mode = 2;    // 0 = smooth, 1 = half-pages, 2 = full pages
+
+uint8_t* double_buffer_chars;
+uint8_t* double_buffer_cols;
+uint8_t* prev_chars;
+uint8_t* prev_cols;
+char* scrprintf_buffer;
+int double_buffer_cur_x = 0;
+int double_buffer_cur_y = 0;
+uint8_t double_buffer_header = false;
+
+static void ScrPutchar(char c) {
+    //putchar(c);
+    int index = double_buffer_cur_y * REAL_SCREEN_WIDTH + double_buffer_cur_x;
+    if (c != '\n') {
+        double_buffer_chars[index] = c;
+        double_buffer_cols[index] = double_buffer_header;
+    }
+    if (c == '\n' || double_buffer_cur_x >= REAL_SCREEN_WIDTH) {
+        double_buffer_cur_x = 0;
+        double_buffer_cur_y++;
+    } else {
+        ++double_buffer_cur_x;
+    }
+}
+
+static void AnsiSetCursor(int x, int y) {
+    printf("\x1B[%d;%dH", y + 1, x + 1);
+}
+
+static void ScrFlush(void) {
+    AnsiSetCursor(0, 0);
+
+    bool col = false;
+    bool cursor_in_place = false;
+    for (int i = 0; i < SCREEN_HEIGHT * REAL_SCREEN_WIDTH; ++i) {
+        bool same = double_buffer_chars[i] == prev_chars[i] && 
+                    double_buffer_cols[i] == prev_cols[i];
+
+        if (!same) {
+            if (!cursor_in_place) {
+                AnsiSetCursor(i % REAL_SCREEN_WIDTH, i / REAL_SCREEN_WIDTH);
+            }
+
+            if (double_buffer_cols[i] != col) {
+                if (double_buffer_cols[i]) {
+                    printf("\x1B[107m\x1B[90m");
+                } else {
+                    printf("\x1B[0m");
+                }
+                col = double_buffer_cols[i];
+            }
+            
+            if (double_buffer_chars[i]) {
+                putchar(double_buffer_chars[i]);
+            } else {
+                putchar(' ');
+            }
+            cursor_in_place = true;
+        } else {
+            cursor_in_place = false;
+        }
+    }
+    if (col) {
+        printf("\x1B[0m");
+    }
+    fflush(stdout);
+
+    memcpy(prev_chars, double_buffer_chars, SCREEN_HEIGHT * REAL_SCREEN_WIDTH);
+    memcpy(prev_cols, double_buffer_cols, SCREEN_HEIGHT * REAL_SCREEN_WIDTH);
+}
+
+static void TruelyWipeScreen() {
+    printf("\x1B[2J\x1B[1;1H");
+    double_buffer_cur_x = 0;
+    double_buffer_cur_y = 0;
+    memset(double_buffer_chars, 0, REAL_SCREEN_WIDTH * SCREEN_HEIGHT);
+    memset(double_buffer_cols, 0, REAL_SCREEN_WIDTH * SCREEN_HEIGHT);
+    memset(prev_chars, 0, REAL_SCREEN_WIDTH * SCREEN_HEIGHT);
+    memset(prev_cols, 0, REAL_SCREEN_WIDTH * SCREEN_HEIGHT);
+}
+
+static void AnsiClear(void) {
+    double_buffer_cur_x = 0;
+    double_buffer_cur_y = 0;
+    memset(double_buffer_chars, 0, REAL_SCREEN_WIDTH * SCREEN_HEIGHT);
+    memset(double_buffer_cols, 0, REAL_SCREEN_WIDTH * SCREEN_HEIGHT);
+}
+
+static void AnsiReset(void) {
+    double_buffer_header = false;
+}
+
+static void AnsiHeader(void) {
+    double_buffer_header = true;
+}
+
+static void ScrPrintf(const char* format, ...) {
+    va_list list;
+	va_start(list, format);
+    vsprintf(scrprintf_buffer, format, list);
+	va_end(list);
+
+    for (int i = 0; scrprintf_buffer[i]; ++i) {
+        ScrPutchar(scrprintf_buffer[i]);
+    }
+}
 
 char line_num_format[16];
 char line_num_blank[16];
 bool line_num_enable = false;
-
-static void AnsiReset(void) {
-    printf("\x1B[0m");
-}
-
-static void AnsiClear(void) {
-    printf("\x1B[2J\x1B[1;1H");
-}
-
-static void AnsiHeader(void) {
-    printf("\x1B[107m\x1B[90m");
-}
 
 static struct line* CreateLine(int default_size) {
     struct line* l = malloc(sizeof(struct line));
@@ -171,8 +267,15 @@ static int GetWrappedHeightOfLine(struct line* l) {
 }
 
 static void Init(void) {
+    double_buffer_chars = calloc(REAL_SCREEN_WIDTH * SCREEN_HEIGHT, 1);
+    double_buffer_cols = calloc(REAL_SCREEN_WIDTH * SCREEN_HEIGHT, 1);
+    prev_chars = calloc(REAL_SCREEN_WIDTH * SCREEN_HEIGHT, 1);
+    prev_cols = calloc(REAL_SCREEN_WIDTH * SCREEN_HEIGHT, 1);
+    scrprintf_buffer = malloc(REAL_SCREEN_WIDTH * SCREEN_HEIGHT + 512);
+
+    TruelyWipeScreen();
+
     dirty = false;
-    scroll = 0;
     scroll = 0;
     cursor_line = 0;
     cursor_pos = 0;
@@ -261,7 +364,7 @@ static bool Putchar(char c, int x, int y, int clr) {
     if (on_cursor) {
         AnsiHeader();
     }
-    putchar(c);
+    ScrPutchar(c);
     if (on_cursor) {
         AnsiReset();
     }
@@ -279,7 +382,7 @@ static void DrawDocumentBody(void) {
     while (y < SCREEN_HEIGHT - 2) {
         if (l != NULL) {
             bool disp_cur = false;
-            if (line_num_enable) printf(line_num_format, line + 1);
+            if (line_num_enable) ScrPrintf(line_num_format, line + 1);
 
             /*
              * May need to start partway through the line if this is a long line
@@ -297,8 +400,8 @@ static void DrawDocumentBody(void) {
                     x = 0;
                     ++y;
                     if (y >= SCREEN_HEIGHT - 2) break;
-                    putchar('\n');
-                    if (line_num_enable) printf(line_num_blank, "");
+                    ScrPutchar('\n');
+                    if (line_num_enable) ScrPrintf(line_num_blank, "");
                 }
             }
             if (cursor_pos == l->len && line == cursor_line) {
@@ -307,14 +410,14 @@ static void DrawDocumentBody(void) {
             }
             ++y;
             x = 0;
-            putchar('\n');
+            ScrPutchar('\n');
             ++line;
             l = l->next;
         } else {
             if (line < num_lines) {
-                if (line_num_enable) printf(line_num_format, line);
+                if (line_num_enable) ScrPrintf(line_num_format, line);
             }
-            putchar('\n');
+            ScrPutchar('\n');
             x = 0;
             ++line;
             ++y;
@@ -328,7 +431,7 @@ static void DrawScreen(void) {
     AnsiHeader();
     char format_str[32];
     sprintf(format_str, "%%c%%-%ds\n", REAL_SCREEN_WIDTH - 2);
-    printf(format_str, dirty ? '*' : ' ', filepath == NULL ? "" : filepath);
+    ScrPrintf(format_str, dirty ? '*' : ' ', filepath == NULL ? "" : filepath);
     AnsiReset();
     
     DrawDocumentBody();
@@ -336,9 +439,11 @@ static void DrawScreen(void) {
     AnsiHeader();
     sprintf(format_str, "%%-%ds", REAL_SCREEN_WIDTH - 2);
     char out[128];
-    sprintf(out, "line %d / %d, col %d.", cursor_line + 1, num_lines, cursor_pos + 1);
-    printf(format_str, out);
-    fflush(stdout);
+    sprintf(out, "line %d / %d, col %d. %c",
+        cursor_line + 1, num_lines, cursor_pos + 1, 
+        scroll_mode == 0 ? 'S' : scroll_mode == 1 ? 'H' : 'F');
+    ScrPrintf(format_str, out);
+    ScrFlush();
     AnsiReset();
 }
 
@@ -434,38 +539,40 @@ static void InsertNewline(void) {
 }
 
 static void SaveFailed(int err) {
+    TruelyWipeScreen();
     AnsiClear();
     AnsiReset();
-    printf("File could not be saved due to the following error:\n\n    %s\n\nPress any key to continue...", strerror(err));
-    fflush(stdout);
+    ScrPrintf("File could not be saved due to the following error:\n\n    %s\n\nPress any key to continue...", strerror(err));
+    ScrFlush();
     getchar();
     return;
 }
 
 int GetSingleLineInput(struct line* save_line, const char* prompt) {
+    TruelyWipeScreen();
     int save_cur = save_line->len;
 
     while (true) {
         AnsiClear();
         AnsiHeader();
-        printf("%s", prompt);
+        ScrPrintf("%s", prompt);
         for (int i = 0; i < REAL_SCREEN_WIDTH - 1 - (int) strlen(prompt); ++i) {
             if (i == save_cur) {
                 AnsiReset();
             }
             if (i >= save_line->len) {
-                putchar(' ');
+                ScrPutchar(' ');
             } else {
-                putchar(save_line->str[i]);
+                ScrPutchar(save_line->str[i]);
             }
             if (i == save_cur) {
                 AnsiHeader();
             }
         }
         AnsiReset();
-        putchar('\n');
+        ScrPutchar('\n');
         DrawDocumentBody();
-        fflush(stdout);
+        ScrFlush();
 
         char c = getchar();
 
@@ -607,10 +714,11 @@ int OpenFile(void) {
     // TODO: destroy the line at the end...
 
     if (res != 0) {
+        TruelyWipeScreen();
         AnsiClear();
         AnsiReset();
-        printf("File could not be opened due to the following error:\n\n    %s\n\nPress any key to continue...", strerror(res));
-        fflush(stdout);
+        ScrPrintf("File could not be opened due to the following error:\n\n    %s\n\nPress any key to continue...", strerror(res));
+        ScrFlush();
         getchar();
     }
 
@@ -665,9 +773,16 @@ int SaveFile(void) {
 }
 
 int EditorMain(int argc, char** argv) {
+    char stdoutbf[2048];
+    
+    /*
+     * We need to call setvbuf, but the shell has already used stdout (this is
+     * only an issue as we aren't using fork/exec yet) - so reopen stdout.
+     */
+    stdout = fopen("con:", "w");
+    setvbuf(stdout, stdoutbf, _IOFBF, 2047);
+    
     Init();
-    char stdoutbf[1024];
-    setvbuf(stdout, stdoutbf, _IOFBF, 1023);
 
     if (argc > 2) {
         fprintf(stderr, "Too many arguments!\n");
@@ -692,13 +807,36 @@ int EditorMain(int argc, char** argv) {
     bool needs_update = true;
     while (true) {
         if (needs_update) {
-            scroll = GetCursorLineWrapped() - (SCREEN_HEIGHT / 2);
-            if (scroll + SCREEN_HEIGHT >= GetTotalWrappedHeight() + 3) {
-                scroll = GetTotalWrappedHeight() - SCREEN_HEIGHT + 3;
+            int div = 2;
+            int off = 3;
+            int mask = 0;
+
+            if (scroll_mode == 2) {
+                div = 5;
+                off = 15;
+                mask = 15;
+            } else if (scroll_mode == 1) {
+                div = 3;
+                off = 7;
+                mask = 7;
             }
+
+            scroll = GetCursorLineWrapped() - (SCREEN_HEIGHT / div);
+            if (scroll + SCREEN_HEIGHT >= GetTotalWrappedHeight() + off) {
+                scroll = GetTotalWrappedHeight() - SCREEN_HEIGHT + off;
+
+            } else {
+                /*
+                * To reduce screen drawing cost, only scroll after moving down
+                * 4 lines past the scroll point.
+                */
+                scroll &= ~mask;
+            }
+
             if (scroll < 0) {
                 scroll = 0;
             }
+            
             DrawScreen();
         }
 
@@ -740,19 +878,22 @@ int EditorMain(int argc, char** argv) {
             GoToLine();
         } else if (c == '\x13') /* CTRL+S*/ {
             SaveFile();
+        } else if (c == '\x14') /* CTRL+T*/ {
+            scroll_mode = (scroll_mode + 1) % 3;
         } else if (c == '\x06') /* CTRL+F*/ {
             Search();
         } else if (c == '\x0E' || c == '\x0F') /* CTRL+N, CTRL+O*/ {
+            TruelyWipeScreen();
             AnsiClear();
             AnsiReset();
             bool do_action = false;
             if (dirty) {
-                printf("File isn't saved! Press one of the following:\n\n"
+                ScrPrintf("File isn't saved! Press one of the following:\n\n"
                        " To save your file, press ENTER\n"
                        " To clear without saving, press CTRL+@\n"
                        " To cancel, press any other key\n\n"
                 );
-                fflush(stdout);
+                ScrFlush();
                 char c = getchar();
                 if (c == '\n') {
                     do_action = SaveFile() == 0;

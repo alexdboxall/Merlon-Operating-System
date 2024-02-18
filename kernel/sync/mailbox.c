@@ -78,6 +78,40 @@ int MailboxWaitAddable(struct mailbox* mbox, int timeout) {
     return 0;
 }
 
+int MailboxAddMany(struct mailbox* mbox, int timeout, uint8_t* c, uint64_t max, uint64_t* added) {
+    *added = 0;
+
+    if (max <= 0 || added == NULL) {
+        return EINVAL;
+    }
+    
+    int res = MailboxWaitAddableInternal(mbox, timeout);
+    if (res != 0) {
+        return res;
+    }
+
+    uint64_t acquisitions = 1;
+    while (acquisitions < max && AcquireSemaphore(mbox->empty_sem, 0) == 0) {
+        ++acquisitions;
+    }
+
+    AcquireMutex(mbox->inner_mtx, -1);
+    for (uint64_t i = 0; i < acquisitions; ++i) {
+        mbox->data[mbox->end_pos] = c[i];
+        mbox->end_pos = (mbox->end_pos + 1) % mbox->total_size;
+        mbox->used_size++;
+    }
+    ReleaseMutex(mbox->inner_mtx);
+    ReleaseMutex(mbox->add_mtx);
+    
+    LockScheduler();
+    ReleaseSemaphoreEx(mbox->full_sem, acquisitions);
+    UnlockScheduler();
+
+    *added = acquisitions;
+    return 0;
+}
+
 int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c) {
     int res = MailboxWaitAddableInternal(mbox, timeout);
     if (res != 0) {
@@ -135,38 +169,82 @@ int MailboxGet(struct mailbox* mbox, int timeout, uint8_t* c) {
     return 0;
 }
 
-int MailboxAccess(struct mailbox* mbox, struct transfer* tr) {  
+int MailboxGetMany(struct mailbox* mbox, int timeout, uint8_t* c, uint64_t max, uint64_t* added) {
+    *added = 0;
+    
+    if (max <= 0 || added == NULL) {
+        return EINVAL;
+    }
+    
+    int res = MailboxWaitGettableInternal(mbox, timeout);
+    if (res != 0) {
+        return res;
+    }
+
+    int acquisitions = 1;
+    while (acquisitions < max && AcquireSemaphore(mbox->full_sem, 0) == 0) {
+        ++acquisitions;
+    }
+
+    AcquireMutex(mbox->inner_mtx, -1);
+    for (int i = 0; i < acquisitions; ++i) {
+        c[i] = mbox->data[mbox->start_pos];
+        mbox->start_pos = (mbox->start_pos + 1) % mbox->total_size;
+        mbox->used_size--;
+    }
+    ReleaseMutex(mbox->inner_mtx);
+    ReleaseMutex(mbox->get_mtx);
+    
+    LockScheduler();
+    ReleaseSemaphoreEx(mbox->empty_sem, acquisitions);
+    UnlockScheduler();
+
+    *added = acquisitions;
+    return 0;
+}
+
+int MailboxAccess(struct mailbox* mbox, struct transfer* tr) {
+    const int CHUNK_SIZE = 256;
+
     bool write = tr->direction == TRANSFER_WRITE;
     if (tr->length_remaining == 0) {
         return (write ? MailboxWaitAddable : MailboxWaitGettable)(mbox, 0);
     }
-    LogWriteSerial("MBA_INNER\n");
 
     bool done_any = false;
     while (tr->length_remaining > 0) {
         bool can_block = tr->blockable && !done_any;
-        uint8_t c;
+        uint8_t c[CHUNK_SIZE];
+        uint64_t added;
         int res;
+        uint64_t len = MIN(tr->length_remaining, CHUNK_SIZE);
         if (write) {
-            PerformTransfer(&c, tr, 1);
-            res = MailboxAdd(mbox, can_block ? -1 : 0, c);
-            if (res != 0) {
-                /*
-                 * Move back a character so it can be retried next time.
-                 */
-                RevertTransfer(tr, 1);
+            uint64_t old_remaining = tr->length_remaining;
+            PerformTransfer(c, tr, len);
+            uint64_t transferred = old_remaining - tr->length_remaining;
+            res = MailboxAddMany(mbox, can_block ? -1 : 0, c, transferred, &added);
+            if (transferred != added ) {
+                if (added > transferred) {
+                    LogWriteSerial("add = %d, transf = %d\n", (int) added, (int) transferred);
+                    PanicEx(PANIC_UNKNOWN, "reverting more than we took??");
+                }
+                RevertTransfer(tr, transferred - added);
+                SleepMilli(10); // give time to fill for hopefully faster transfer
             }
         } else {
-            res = MailboxGet(mbox, can_block ? -1 : 0, &c);   
+            res = MailboxGetMany(mbox, can_block ? -1 : 0, c, len, &added);
+            if (added != len) {
+                SleepMilli(10); // give time to fill for hopefully faster transfer
+            }
         }
         if (res != 0) {
             return done_any ? 0 : res;
         }
         if (!write) {
-            PerformTransfer(&c, tr, 1);
+            PerformTransfer(c, tr, added);
         }
         done_any = true;
     }
-
     return 0;
 }
+
