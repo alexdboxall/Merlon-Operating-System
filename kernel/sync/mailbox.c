@@ -229,12 +229,12 @@ int MailboxAccess(struct mailbox* mbox, struct transfer* tr) {
                     PanicEx(PANIC_UNKNOWN, "reverting more than we took??");
                 }
                 RevertTransfer(tr, transferred - added);
-                SleepMilli(10); // give time to fill for hopefully faster transfer
+                //SleepMilli(10); // give time to fill for hopefully faster transfer
             }
         } else {
             res = MailboxGetMany(mbox, can_block ? -1 : 0, c, len, &added);
             if (added != len) {
-                SleepMilli(10); // give time to fill for hopefully faster transfer
+                //SleepMilli(10); // give time to fill for hopefully faster transfer
             }
         }
         if (res != 0) {

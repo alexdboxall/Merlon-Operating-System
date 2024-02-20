@@ -97,7 +97,7 @@ int AcquireSemaphore(struct semaphore* sem, int timeout_ms) {
     return thr->timed_out ? (timeout_ms == 0 ? EAGAIN : ETIMEDOUT) : 0;
 }
 
-static void DecrementSemaphore(struct semaphore* sem) {
+static void DecrementSemaphore(struct semaphore* sem, bool first) {
     if (sem->waiting_list.head == NULL) {
         if (sem->current_count == 0) {
             Panic(PANIC_NEGATIVE_SEMAPHORE);
@@ -122,11 +122,19 @@ static void DecrementSemaphore(struct semaphore* sem) {
                 * the timeout state and calling CancelSemaphoreOfThread.
                 */
                 top->state = THREAD_STATE_READY;
-                UnblockThreadGiftingTimeslice(top);
+                if (first) {
+                    UnblockThreadGiftingTimeslice(top);
+                } else {
+                    UnblockThread(top);
+                }
             }
 
         } else {
-            UnblockThreadGiftingTimeslice(top);
+            if (first) {
+                UnblockThreadGiftingTimeslice(top);
+            } else {
+                UnblockThread(top);
+            }
         }
     }
 }
@@ -140,7 +148,7 @@ int ReleaseSemaphoreEx(struct semaphore* sem, int count) {
     int decrements = 0;
     do {
         ++decrements;
-        DecrementSemaphore(sem);
+        DecrementSemaphore(sem, decrements == 0);
     } while (--count && sem->current_count > 0);
 
     return decrements;

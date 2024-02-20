@@ -26,7 +26,7 @@
 #include <virtual.h> 
 #include <sys/ioctl.h>
 
-#define INTERNAL_BUFFER_SIZE 1024   // used to communicate with master and sub   
+#define INTERNAL_BUFFER_SIZE 4096   // used to communicate with master and sub   
                                     // used for displaying, so larger buffer
                                     // means text prints faster
 #define LINE_BUFFER_SIZE 300        // maximum length of a typed line

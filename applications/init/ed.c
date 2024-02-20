@@ -42,14 +42,29 @@ uint8_t* prev_cols;
 char* scrprintf_buffer;
 int double_buffer_cur_x = 0;
 int double_buffer_cur_y = 0;
-uint8_t double_buffer_header = false;
+bool double_buffer_header = false;
+int programmers_newline = 0;
+int prog_col = 0;
+int prog_col_len = 0;
 
 static void ScrPutchar(char c) {
-    //putchar(c);
     int index = double_buffer_cur_y * REAL_SCREEN_WIDTH + double_buffer_cur_x;
     if (c != '\n') {
         double_buffer_chars[index] = c;
-        double_buffer_cols[index] = double_buffer_header;
+        if ((programmers_newline == 2 || programmers_newline == 3) && !double_buffer_header) {
+            if (isdigit(c)) {
+                double_buffer_cols[index] = 2;
+            } else if (c == '\'' || c == '"') {
+                double_buffer_cols[index] = 5;
+            } else if (ispunct(c)) {
+                double_buffer_cols[index] = 4;
+            } else {
+                double_buffer_cols[index] = 0;
+            }
+
+        } else {
+            double_buffer_cols[index] = double_buffer_header;
+        }
     }
     if (c == '\n' || double_buffer_cur_x >= REAL_SCREEN_WIDTH) {
         double_buffer_cur_x = 0;
@@ -66,7 +81,7 @@ static void AnsiSetCursor(int x, int y) {
 static void ScrFlush(void) {
     AnsiSetCursor(0, 0);
 
-    bool col = false;
+    uint8_t col = false;
     bool cursor_in_place = false;
     for (int i = 0; i < SCREEN_HEIGHT * REAL_SCREEN_WIDTH; ++i) {
         bool same = double_buffer_chars[i] == prev_chars[i] && 
@@ -78,10 +93,15 @@ static void ScrFlush(void) {
             }
 
             if (double_buffer_cols[i] != col) {
-                if (double_buffer_cols[i]) {
-                    printf("\x1B[107m\x1B[90m");
-                } else {
-                    printf("\x1B[0m");
+                switch (double_buffer_cols[i]) {    
+                case 0: printf("\x1B[0m"); break;               // normal
+                case 1: printf("\x1B[107m\x1B[30m"); break;     // header
+                case 2: printf("\x1B[40m\x1B[92m"); break;      // l. green
+                case 3: printf("\x1B[40m\x1B[32m"); break;      // d. green
+                case 4: printf("\x1B[40m\x1B[95m"); break;      // pink
+                case 5: printf("\x1B[40m\x1B[31m"); break;      // red
+                case 6: printf("\x1B[40m\x1B[93m"); break;      // yellow
+                case 7: printf("\x1B[40m\x1B[34m"); break;      // blue
                 }
                 col = double_buffer_cols[i];
             }
@@ -439,9 +459,13 @@ static void DrawScreen(void) {
     AnsiHeader();
     sprintf(format_str, "%%-%ds", REAL_SCREEN_WIDTH - 2);
     char out[128];
-    sprintf(out, "line %d / %d, col %d. %c",
+    sprintf(out, "line %d / %d, col %d. %c%c%c%c",
         cursor_line + 1, num_lines, cursor_pos + 1, 
-        scroll_mode == 0 ? 'S' : scroll_mode == 1 ? 'H' : 'F');
+        scroll_mode == 0 ? 'S' : scroll_mode == 1 ? 'H' : 'F',
+        programmers_newline != 0 ? '*' : ' ',
+        (programmers_newline == 2 || programmers_newline == 4) ? '}' : ' ',
+        (programmers_newline == 3 || programmers_newline == 4) ? ':' : ' '
+        );
     ScrPrintf(format_str, out);
     ScrFlush();
     AnsiReset();
@@ -523,11 +547,37 @@ static void InsertNewline(void) {
     struct line* current = GetLine(cursor_line);
     int chars_remaining = current->len - cursor_pos;
     struct line* newline = CreateLine(chars_remaining + 20);
-    strcpy(newline->str, current->str + cursor_pos);
-    newline->len = chars_remaining;
+
+    int num_spaces = 0;
+    if (programmers_newline) {
+        for (int i = 0; current->str[i]; ++i) {
+            if (current->str[i] == ' ') {
+                ++num_spaces;
+            } else {
+                break;
+            }
+        }
+
+        if (programmers_newline == 2 || programmers_newline == 4) {
+            if (current->str[current->len - 1] == '{') {
+                num_spaces += 4;
+            }
+        }
+        if (programmers_newline == 3 || programmers_newline == 4) {
+            if (current->str[current->len - 1] == ':') {
+                num_spaces += 4;
+            }
+        }
+    }
+    for (int i = 0; i < num_spaces; ++i) {
+        newline->str[i] = ' ';
+    }
+    strcpy(newline->str + num_spaces, current->str + cursor_pos);
+    newline->len = chars_remaining + num_spaces;
+
     memset(current->str + cursor_pos, 0, current->allocation_size - cursor_pos);
     current->len = cursor_pos;
-    cursor_pos = 0;
+    cursor_pos = num_spaces;
     ++cursor_line;
     ++num_lines;
     newline->next = current->next;
@@ -880,6 +930,8 @@ int EditorMain(int argc, char** argv) {
             SaveFile();
         } else if (c == '\x14') /* CTRL+T*/ {
             scroll_mode = (scroll_mode + 1) % 3;
+        } else if (c == '\x15') /* CTRL+U*/ {
+            programmers_newline = (programmers_newline + 1) % 5;
         } else if (c == '\x06') /* CTRL+F*/ {
             Search();
         } else if (c == '\x0E' || c == '\x0F') /* CTRL+N, CTRL+O*/ {

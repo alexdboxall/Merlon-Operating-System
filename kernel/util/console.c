@@ -42,11 +42,12 @@ static void Putchar(char c) {
 }
 
 static void ProcessAnsiEscapeCode(char* code) {
-	if (!strcmp(code, "[2J")) {				/* Clear screen */
-		/*
-		 * We can wipe anything leftover in buffers to save time, as it is 
-		 * about to be overwritten anyway.
-		 */
+	if (code[0] != '[') {
+		return;
+	}
+
+	if (!strcmp(code, "[2J")) {				
+		/* Clear screen */
 		console_buffer_ptr = 0;
 		memset(console_buffer, 0, VID_MAX_PUTCHARS_LEN);
 
@@ -55,23 +56,29 @@ static void ProcessAnsiEscapeCode(char* code) {
 			.clear = {.bg = console_bg, .fg = console_fg}
 		});
 
-	} else if (!strcmp(code, "[0m")) {		/* Reset attributes */
+	} else if (!strcmp(code, "[0m")) {		
+		/* Reset attributes */
 		Flush();
 		console_bg = 0x0;
 		console_fg = 0x7;
 
-	} else if (!strcmp(code, "[90m")) {		/* Black foreground */
-		Flush();
-		console_fg = 0x0;
+	} else if (strlen(code) >= 4 && code[strlen(code) - 1] == 'm') {
+		/* Set fg/bg colours */
+		Flush(); 
+		uint8_t map[8] = {0, 4, 2, 6, 1, 5, 3, 7};
+		int col = atoi(code + 1);
+		if (col >= 30 && col <= 37) {
+			console_fg = map[col - 30];
+		} else if (col >= 40 && col <= 47) {
+			console_bg = map[col - 40];
+		} else if (col >= 90 && col <= 97) {
+			console_fg = map[col - 90] + 8;
+		} else if (col >= 100 && col <= 107) {
+			console_bg = map[col - 100] + 8;
+		}
 
-	} else if (!strcmp(code, "[107m")) {	/* White background */
-		Flush();
-		console_bg = 0xF;
-
-	} else if (!strcmp(code, "[1;1H")) {	/* Move cursor */
-		// TODO: move cursor to top left
-
-	} else if (strlen(code) >= 4 && code[0] == '[' && code[strlen(code) - 1] == 'H') { 	/* Move cursor*/
+	} else if (strlen(code) >= 4 && code[strlen(code) - 1] == 'H') { 	
+		/* Move cursor*/
 		int index = 1;
 		int y = atoi(code + index);
 		while (code[index] && code[index] != ';') {
