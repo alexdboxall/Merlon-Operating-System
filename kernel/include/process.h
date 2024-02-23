@@ -4,6 +4,7 @@
 #include <sys/types.h>
 
 struct fd_table;
+struct vnode;
 
 struct process {
     pid_t pid;
@@ -16,6 +17,7 @@ struct process {
     struct fd_table* fd_table;
     int retv;
     bool terminated;
+    struct vnode* cwd;
 };
 
 void InitProcess(void);

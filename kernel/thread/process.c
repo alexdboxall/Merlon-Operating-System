@@ -16,6 +16,7 @@
 #include <filedes.h>
 #include <spinlock.h>
 #include <heap.h>
+#include <vfs.h>
 #include <process.h>
 #include <log.h>
 #include <linkedlist.h>
@@ -105,6 +106,13 @@ struct process* CreateProcessEx(pid_t parent_pid) {
     if (parent_pid != 0) {
         struct process* parent = GetProcessFromPid(parent_pid);
         TreeInsert(parent->children, (void*) prcss);
+        prcss->cwd = parent->cwd;
+        if (prcss->cwd != NULL) {
+            ReferenceVnode(prcss->cwd);
+        }
+
+    } else {
+        prcss->cwd = NULL;
     }
 
     return prcss;
@@ -130,7 +138,13 @@ struct process* CreateProcess(pid_t parent_pid) {
         struct process* parent = GetProcessFromPid(parent_pid);
         LockProcess(parent);
         TreeInsert(parent->children, (void*) prcss);
+        prcss->cwd = parent->cwd;
+        if (prcss->cwd != NULL) {
+            ReferenceVnode(prcss->cwd);
+        }
         UnlockProcess(parent);
+    } else {
+        prcss->cwd = NULL;
     }
 
     return prcss;
@@ -188,6 +202,9 @@ static void ReapProcess(struct process* prcss) {
     if (prcss->parent != 0) {
         struct process* parent = GetProcessFromPid(prcss->parent);
         TreeDelete(parent->children, prcss);
+    }
+    if (prcss->cwd != NULL) {
+        DereferenceVnode(prcss->cwd);   
     }
     FreeHeap(prcss);
 }

@@ -16,6 +16,7 @@
 #include <elf.h>
 #include <machine/config.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
@@ -133,6 +134,11 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "waitpid")) return (size_t) waitpid;
     if (!xstrcmp(name, "fork")) return (size_t) fork;
     if (!xstrcmp(name, "ioctl")) return (size_t) ioctl;
+    if (!xstrcmp(name, "stat")) return (size_t) stat;
+    if (!xstrcmp(name, "fstat")) return (size_t) fstat;
+    if (!xstrcmp(name, "lstat")) return (size_t) lstat;
+    if (!xstrcmp(name, "chdir")) return (size_t) chdir;
+    if (!xstrcmp(name, "fchdir")) return (size_t) fchdir;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
     return (size_t) loltest;
 }

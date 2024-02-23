@@ -51,12 +51,10 @@ static void FlushSubordinateLineBuffer(struct vnode* node) {
     struct sub_data* internal = node->data;
     struct master_data* master_internal = internal->master->data;
 
-    //HoldVideoMessages();
     for (int i = 0; i < internal->line_buffer_pos; ++i) {
         MailboxAdd(master_internal->flushed_buffer, -1, internal->line_buffer[i]);
     }
     internal->line_buffer_pos = 0;
-    //ReleaseVideoMessages();
 }
 
 static void RemoveFromSubordinateLineBuffer(struct vnode* node) {

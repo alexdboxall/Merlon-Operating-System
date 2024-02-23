@@ -19,6 +19,8 @@ enum system_call_numbers {
     SYSCALL_GETPID,
     SYSCALL_GETTID,
     SYSCALL_IOCTL,
+    SYSCALL_STAT,
+    SYSCALL_CHDIR,
     
     _SYSCALL_NUM_ENTRIES
 };

@@ -60,3 +60,7 @@ struct stat {
     blkcnt_t st_blocks;     /* Number of blocks allocated for file */
     blksize_t st_blksize;   /* Block size for file system I/O */
 };
+
+int stat(const char* restrict path, struct stat* restrict buf);
+int fstat(int fd, struct stat* buf);
+int lstat(const char* restrict path, struct stat* restrict buf);

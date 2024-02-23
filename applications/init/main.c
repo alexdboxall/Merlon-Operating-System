@@ -12,7 +12,7 @@ int main(void) {
     if (child == 0) {
         execve("sys:/shell.exe", ...);
         return -1;
-    }
+    }c
     
     while (true) {
         wait(0);

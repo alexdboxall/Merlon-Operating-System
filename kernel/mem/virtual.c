@@ -465,13 +465,6 @@ void EvictVirt(void) {
 
     // TODO: go through other address spaces
 
-    while (false) {
-        struct vas* vas = NULL;
-        if (vas != GetVas()) {
-            FindVirtToEvict(GetVas(), &lowest_rank, &lowest_ranked, false, previous_swaps);
-        }
-    }
-
     if (lowest_ranked.entry != NULL) {
         previous_swaps[swap_num++ % PREV_SWAP_LIMIT] = lowest_ranked.entry;     
         EvictPage(lowest_ranked.vas, lowest_ranked.entry);
@@ -786,7 +779,7 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
      * 
      * May want to increase this value furher in the future (e.g. maybe to 4 or 8)?
      */
-    bool multi_page_mapping = false;//(((flags & VM_LOCK) == 0) || ((flags & VM_MAP_HARDWARE) != 0)) && pages >= 3;
+    bool multi_page_mapping = (((flags & VM_LOCK) == 0) || ((flags & VM_MAP_HARDWARE) != 0)) && pages >= 3;
 
     for (size_t i = 0; i < (multi_page_mapping ? 1 : pages); ++i) {
         if (flags & VM_FILE) {

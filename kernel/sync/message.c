@@ -62,29 +62,6 @@ int SendMessage(struct msgbox* mbox, void* payload) {
     return 0;
 }
 
-int TransferMessages(struct msgbox* dest, struct msgbox* buffer) {
-    AcquireSpinlock(&dest->lock);
-
-    int res = FillSemaphore(buffer->sem);
-    (void) res;
-    assert(res == count);
-    
-    AcquireSpinlock(&buffer->lock);
-
-    int count = 0;
-    while (ListSize(buffer->data) > 0) {
-        void* data = ListGetDataFromNode(ListGetFirstNode(buffer->data));
-        ListDeleteIndex(buffer->data, 0);
-        ListInsertEnd(dest->data, data);
-        ++count;
-    }
-
-    ReleaseSpinlock(&buffer->lock);
-    ReleaseSpinlock(&dest->lock);
-    ReleaseSemaphoreEx(dest->sem, count);
-    return 0;
-}
-
 int ReceiveMessage(struct msgbox* mbox, void* payload) {
     int res = AcquireSemaphore(mbox->sem, -1);  // TODO: make this an EINTR-able acquire
     if (res != 0) {

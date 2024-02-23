@@ -44,4 +44,6 @@ size_t strspn(const char* s1, const char* s2);
 char* strstr(const char* haystack, const char* needle);
 char* strtok(char* restrict s, const char* restrict delim);
 char* strerror(int err);
+int strcasecmp(const char* s1, const char* s2);
+int strncasecmp(const char* s1, const char* s2, size_t n);
 #endif

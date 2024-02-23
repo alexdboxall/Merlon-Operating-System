@@ -22,3 +22,5 @@ int SysFork(size_t, size_t, size_t, size_t, size_t);
 int SysGetPid(size_t, size_t, size_t, size_t, size_t);
 int SysGetTid(size_t, size_t, size_t, size_t, size_t);
 int SysIoctl(size_t, size_t, size_t, size_t, size_t);
+int SysStat(size_t, size_t, size_t, size_t, size_t);
+int SysChdir(size_t, size_t, size_t, size_t, size_t);

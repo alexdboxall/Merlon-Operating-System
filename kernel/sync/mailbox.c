@@ -181,13 +181,13 @@ int MailboxGetMany(struct mailbox* mbox, int timeout, uint8_t* c, uint64_t max, 
         return res;
     }
 
-    int acquisitions = 1;
+    uint64_t acquisitions = 1;
     while (acquisitions < max && AcquireSemaphore(mbox->full_sem, 0) == 0) {
         ++acquisitions;
     }
 
     AcquireMutex(mbox->inner_mtx, -1);
-    for (int i = 0; i < acquisitions; ++i) {
+    for (uint64_t i = 0; i < acquisitions; ++i) {
         c[i] = mbox->data[mbox->start_pos];
         mbox->start_pos = (mbox->start_pos + 1) % mbox->total_size;
         mbox->used_size--;

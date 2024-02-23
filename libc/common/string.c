@@ -1,17 +1,20 @@
 
-/*
- * memcpy and memset call the GCC's 'builtin' version of the function.
- * These may be optimised for the target platform, which increases efficiency
- * without resorting to writing custom versions for each architecture.
- *
- * If they are not supported by your compiler or platform, or simply end up
- * calling themselves, use the commented-out implementations instead.
- */
-
 #include <string.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <ctype.h>
+
+
+/*
+ * memcpy and memset call the GCC's 'builtin' version of the function.
+ * These may be optimised for the target platform, which increases efficiency
+ * without resorting to writing custom versions for each architecture.
+ * If they are not supported by your compiler or platform, or simply end up
+ * calling themselves, use please comment out these definitions.
+ */
+#define USE_BUILTIN_MEMCPY
+#define USE_BUILTIN_MEMSET
 
 #ifdef COMPILE_KERNEL
 #include <heap.h>
@@ -58,43 +61,35 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 	}
 }
 
-#pragma GCC push_options
-#pragma GCC optimize ("Os")
 void* memset(void* addr, int c, size_t n)
 {
-    /*
-    * Use the compiler's platform-specific optimised version.
-    * If that doesn't work for your system or compiler, use the below implementation.
-    */
+#ifdef USE_BUILTIN_MEMSET
     return __builtin_memset(addr, c, n);
-
-	/*uint8_t* ptr = (uint8_t*) addr;
+#else
+	uint8_t* ptr = (uint8_t*) addr;
 	for (size_t i = 0; i < n; ++i) {
 		ptr[i] = c;
 	}
 
-	return addr;*/
+	return addr;
+#endif
 }
 
 void* memcpy(void* restrict dst, const void* restrict src, size_t n)
 {
-    /*
-    * Use the compiler's platform-specific optimised version.
-    * If that doesn't work for your system, use the below implementation.
-    */
+#ifdef USE_BUILTIN_MEMCPY
     return __builtin_memcpy(dst, src, n);
-
-	/*uint8_t* a = (uint8_t*) dst;
+#else
+	uint8_t* a = (uint8_t*) dst;
 	const uint8_t* b = (const uint8_t*) src;
 
 	for (size_t i = 0; i < n; ++i) {
 		a[i] = b[i];
 	}
 
-	return dst;*/
+	return dst;
+#endif
 }
-
-#pragma GCC pop_options
 
 void* memmove(void* dst, const void* src, size_t n) {
 	uint8_t* a = (uint8_t*) dst;
@@ -187,6 +182,28 @@ char* strdup(const char* str) {
 }
 
 #ifndef COMPILE_KERNEL
+
+int strcasecmp(const char* s1, const char* s2) {
+	while ((*s1) && (tolower(*s1) == tolower(*s2))) {
+		++s1;
+		++s2;
+	}
+
+	return tolower(*(uint8_t*) s1) - tolower(*(uint8_t*) s2);
+}
+
+int strncasecmp(const char* s1, const char* s2, size_t n) {
+	while (n && *s1 && (tolower(*s1) == tolower(*s2))) {
+		++s1;
+		++s2;
+		--n;
+	}
+	if (n == 0) {
+		return 0;
+	} else {
+		return tolower(*(unsigned char*) s1) - tolower(*(unsigned char*) s2);
+	}
+}
 
 char* strerror(int err) {
 	switch (err) {

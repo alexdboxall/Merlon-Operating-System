@@ -15,3 +15,5 @@ int ReadFile(struct file* file, struct transfer* io);
 int WriteFile(struct file* file, struct transfer* io);
 int CloseFile(struct file* file);
 int RemoveFileOrDirectory(const char* path, bool rmdir);
+
+int SetWorkingDirectory(struct vnode* node);

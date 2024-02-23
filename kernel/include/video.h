@@ -43,7 +43,4 @@ struct video_msg {
 struct msgbox;
 
 void InitVideoConsole(struct msgbox* mbox);
-
 void SendVideoMessage(struct video_msg msg);
-void HoldVideoMessages(void);
-void ReleaseVideoMessages(void);

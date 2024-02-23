@@ -8,8 +8,10 @@
 #include <errno.h>
 #include <dirent.h>
 #include <heap.h>
+#include <process.h>
 #include <tree.h>
 #include <fcntl.h>
+#include <thread.h>
 #include <stackadt.h>
 
 /*
@@ -240,7 +242,7 @@ static void CleanupVnodeStack(struct stack_adt* stack) {
 }
 
 /*
-* Given an absolute filepath, returns the vnode representing
+* Given an absolute or relative filepath, returns the vnode representing
 * the file, directory or device. 
 *
 * Should be used carefully, as the reference count is incremented.
@@ -259,21 +261,39 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	int path_ptr = 0;
 	char component_buffer[MAX_COMPONENT_LENGTH];
 
-	int err = GetPathComponent(path, &path_ptr, component_buffer, MAX_COMPONENT_LENGTH, ':');
-	if (err != 0) {
-		return err;
+	bool relative = true;
+	for (int i = 0; path[i]; ++i) {
+		if (path[i] == ':') {
+			relative = false;
+			break;
+		}
 	}
 
-	struct file* current_file = GetMountFromName(component_buffer);
+	int err;
+	struct vnode* current_vnode = NULL;
+	if (relative) {
+		struct process* prcss = GetProcess();
+		if (prcss == NULL) {
+			return ENODEV;
+		}
+		current_vnode = prcss->cwd;
 
-	/*
-	* No root device found, so we can't continue.
-	*/
-	if (current_file == NULL || current_file->node == NULL) {
+	} else {
+		err = GetPathComponent(path, &path_ptr, component_buffer, MAX_COMPONENT_LENGTH, ':');
+		if (err != 0) {
+			return err;
+		}
+
+		struct file* current_file = GetMountFromName(component_buffer);
+		if (current_file == NULL) {
+			return ENODEV;
+		}
+		current_vnode = current_file->node;
+	}
+	
+	if (current_vnode == NULL) {
 		return ENODEV;
 	}
-
-	struct vnode* current_vnode = current_file->node;
 
 	/*
 	* This will be dereferenced either as we go through the loop, or
@@ -513,5 +533,26 @@ int CloseFile(struct file* file) {
 
     DereferenceVnode(file->node);
 	DereferenceFile(file);
+	return 0;
+}
+
+/*
+ * Sets the current working directory of the current process. The node should 
+ * be open, and may be safely closed after a call to this function, as the 
+ * kernel maintains a references to the working directory.
+ */
+int SetWorkingDirectory(struct vnode* node) {
+	struct process* prcss = GetProcess();
+	if (prcss == NULL || node == NULL) {
+		return EINVAL;
+	}
+	LockScheduler();
+	struct vnode* deref = prcss->cwd;
+	prcss->cwd = node;
+	ReferenceVnode(node);
+	UnlockScheduler();
+	if (deref != NULL) {
+		DereferenceVnode(deref);
+	}
 	return 0;
 }

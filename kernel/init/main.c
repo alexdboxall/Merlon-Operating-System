@@ -132,8 +132,10 @@ void InitThread(void*) {
     InitUserspace();
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);
 
-    extern int ObjcTest(void);
-    ObjcTest();
+    ArchCallGlobalConstructors();
+
+    //extern int ObjcTest(void);
+    //ObjcTest();
 
     while (true) {
         /*
