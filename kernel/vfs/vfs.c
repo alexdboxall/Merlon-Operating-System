@@ -11,6 +11,7 @@
 #include <process.h>
 #include <tree.h>
 #include <fcntl.h>
+#include <linkedlist.h>
 #include <thread.h>
 #include <stackadt.h>
 
@@ -35,18 +36,77 @@ struct mounted_file {
 };
 
 static struct spinlock vfs_lock;
-static struct tree* mount_points = NULL;
+static struct linked_list* mount_points = NULL;
 
-int MountedDeviceComparator(void* a_, void* b_) {
-    struct mounted_file* a = a_;
-    struct mounted_file* b = b_;
-    return strcmp(a->name, b->name);
+struct mounted_file* GetMountPointFromName(const char* name) {
+	struct linked_list_node* iter = ListGetFirstNode(mount_points);
+	while (iter != NULL) {
+		struct mounted_file* data = ListGetDataFromNode(iter);
+		if (!strcmp(name, data->name)) {
+			return data;
+		}
+		iter = ListGetNextNode(iter);
+	}
+	return NULL;
+}
+
+int RootsRead(struct vnode*, struct transfer* io) {
+	if (io->offset % sizeof(struct dirent) != 0) {
+		return EINVAL;
+	}
+
+	int index = io->offset / sizeof(struct dirent);
+	if (index == 0) {
+		struct dirent dir;
+		dir.d_ino = 0;
+		strcpy(dir.d_name, "..");
+		dir.d_namlen = 2;
+		dir.d_type = DT_DIR;
+		return PerformTransfer(&dir, io, sizeof(struct dirent));
+	}
+
+	struct mounted_file* root = ListGetDataAtIndex(mount_points, index - 1);
+	if (root == NULL) {
+		return ENOENT;
+	}
+
+	struct dirent dir;
+	dir.d_type = IFTODT(root->node->node->stat.st_mode);
+	dir.d_ino = root->node->node->stat.st_ino;
+	dir.d_namlen = strlen(root->name);
+	strncpy(dir.d_name, root->name, sizeof(dir.d_name));
+	dir.d_name[sizeof(dir.d_name) - 1] = 0;
+	return PerformTransfer(&dir, io, sizeof(struct dirent));
+}
+
+int RootsFollow(struct vnode* node, struct vnode** output, const char* name) {
+	if (!strcmp(name, "..")) {
+		*output = node;
+		return 0;
+	}
+	struct mounted_file* root = GetMountPointFromName(name);
+	if (root == NULL) {
+		return ENOSYS;
+	}
+	*output = root->node->node;
+    return 0;
+}
+
+void InitRootsFilesystem(void) {
+	struct vnode_operations dev_ops = {
+		.read           = RootsRead,
+		.follow         = RootsFollow,
+	};
+
+	AddVfsMount(CreateVnode(dev_ops, (struct stat) {
+        .st_mode = S_IFDIR | S_IRWXU | S_IRWXG | S_IRWXO,
+        .st_nlink = 1,
+    }), "*");
 }
 
 void InitVfs(void) {
     InitSpinlock(&vfs_lock, "vfs", IRQL_SCHEDULER);
-    mount_points = TreeCreate();
-    TreeSetComparator(mount_points, MountedDeviceComparator);
+    mount_points = ListCreate();
 }
 
 static int CheckValidComponentName(const char* name)
@@ -72,12 +132,9 @@ static int DoesMountPointExist(const char* name) {
     assert(name != NULL);
     assert(IsSpinlockHeld(&vfs_lock));
 
-    struct mounted_file target;
-    target.name = (char*) name;
-    if (TreeContains(mount_points, &target)) {
+    if (GetMountPointFromName(name) != NULL) {
         return EEXIST;
     }
-
     return 0;
 }
 
@@ -149,10 +206,12 @@ static struct file* GetMountFromName(const char* name) {
 		return NULL;
 	}
 
-	struct mounted_file target;
-    target.name = (char*) name;
-    struct mounted_file* mount = TreeGet(mount_points, (void*) &target);
-    return mount->node;
+    struct mounted_file* mount = GetMountPointFromName(name);
+	if (mount == NULL) {
+		return NULL;
+	} else {
+    	return mount->node;
+	}
 }
 
 int AddVfsMount(struct vnode* node, const char* name) {
@@ -182,7 +241,7 @@ int AddVfsMount(struct vnode* node, const char* name) {
 	mount->name = strdup(name);
     mount->node = CreateFile(node, 0, 0, true, true);
 
-    TreeInsert(mount_points, (void*) mount);
+	ListInsertEnd(mount_points, (void*) mount);
 
 	LogWriteSerial("MOUNTED TO THE VFS: %s\n", name);
 
@@ -206,10 +265,7 @@ int RemoveVfsMount(const char* name) {
 	/*
 	* Scan through the mount table for the device
 	*/ 
-	struct mounted_file target;
-    target.name = (char*) name;
-
-    struct mounted_file* actual = TreeGet(mount_points, &target);
+    struct mounted_file* actual = GetMountPointFromName(name);
     if (actual == NULL) {
         ReleaseSpinlock(&vfs_lock);
         return ENODEV;
@@ -225,7 +281,7 @@ int RemoveVfsMount(const char* name) {
     DereferenceVnode(actual->node->node);
     DereferenceFile(actual->node);
 
-    TreeDelete(mount_points, actual);
+	ListDeleteData(mount_points, actual);
     FreeHeap(actual->name);
 
     ReleaseSpinlock(&vfs_lock);
@@ -329,22 +385,12 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 			*/
 			continue;
 
-		} else if (!strcmp(component, "..")) {
-			if (StackAdtSize(previous_components) == 0) {
-				/*
-				* We have reached the root. Going 'further back' than the root 
-				* on Linux just keeps us at the root, so don't do anything here.
-				*/
-			
-			} else {
-				/*
-				* Pop the previous component and use it.
-				*/
-				current_vnode = StackAdtPop(previous_components);
-			}
-
-			continue;
-		}
+		} 
+		/* 
+		 * No need for ".." here, the filesystem itself handles that. This is
+		 * needed for relative directories to work - as only the filesytem
+		 * itself can get to the parent from merely a vnode.
+		 */
 
 		/*
 		* Use a seperate pointer so that both inputs don't point to the same
@@ -545,6 +591,9 @@ int SetWorkingDirectory(struct vnode* node) {
 	struct process* prcss = GetProcess();
 	if (prcss == NULL || node == NULL) {
 		return EINVAL;
+	}
+	if (!S_ISDIR(node->stat.st_mode)) {
+		return ENOTDIR;
 	}
 	LockScheduler();
 	struct vnode* deref = prcss->cwd;

@@ -128,6 +128,7 @@ void InitThread(void*) {
     InitSwapfile();
     InitSymbolTable();
     ArchInitDev(true);
+    InitRootsFilesystem();
     InitProgramLoader();
     InitUserspace();
     MarkTfwStartPoint(TFW_SP_ALL_CLEAR);

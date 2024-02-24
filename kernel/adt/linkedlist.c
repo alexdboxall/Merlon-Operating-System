@@ -158,3 +158,19 @@ void* ListGetDataFromNode(struct linked_list_node* node) {
     }
     return node->data;
 }
+
+void* ListGetDataAtIndex(struct linked_list* list, int index) {
+    struct linked_list_node* iter = list->head;
+    while (index > 0) {
+        --index;
+        if (iter == NULL) {
+            return NULL;
+        }
+        iter = iter->next;
+    }
+    if (iter == NULL) {
+        return NULL;
+    } else {
+        return iter->data;
+    }
+}

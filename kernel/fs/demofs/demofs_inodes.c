@@ -284,7 +284,7 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
     inode |= (ino_t) buffer[offset * 32 + MAX_NAME_LENGTH + 6] << 16;
 
     dir.d_ino = inode;
-    dir.d_type = INODE_IS_DIR(inode) ? DT_DIR : DT_REG;
+    dir.d_type = (buffer[offset * 32 + MAX_NAME_LENGTH + 7] & 1) ? DT_DIR : DT_REG;
 
     /* Perform the transfer to the correct location */
     return PerformTransfer(&dir, io, sizeof(struct dirent));

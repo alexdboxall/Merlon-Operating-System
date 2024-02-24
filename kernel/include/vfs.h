@@ -7,6 +7,8 @@
 #include <transfer.h>
 
 void InitVfs(void);
+void InitRootsFilesystem(void);
+
 int AddVfsMount(struct vnode* node, const char* name);
 int RemoveVfsMount(const char* name);
 

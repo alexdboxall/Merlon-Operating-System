@@ -104,6 +104,12 @@ void demofs_format(struct demofs_data* fs)
 
     memset(buffer, 0, SECTOR_SIZE);
     buffer[0] = 0xFF;
+    strncpy((char*) buffer + 32, "..", MAX_NAME_LENGTH);
+    buffer[32 + MAX_NAME_LENGTH + 4] = (fs->root_directory_inode >> 0) & 0xFF;
+    buffer[32 + MAX_NAME_LENGTH + 5] = (fs->root_directory_inode >> 8) & 0xFF;
+    buffer[32 + MAX_NAME_LENGTH + 6] = (fs->root_directory_inode >> 16) & 0xFF;
+    buffer[32 + MAX_NAME_LENGTH + 7] = 1;
+
     demofs_write_sector(buffer, fs->root_directory_inode);
 
     lock_release(&fs->lock);
@@ -151,6 +157,12 @@ int demofs_mkdir(int parent, const char* name)
 
             memset(buffer, 0, SECTOR_SIZE);
             buffer[0] = 0xFF;
+            strncpy((char*) buffer + 32, "..", MAX_NAME_LENGTH);
+            buffer[32 + MAX_NAME_LENGTH + 4] = (parent >> 0) & 0xFF;
+            buffer[32 + MAX_NAME_LENGTH + 5] = (parent >> 8) & 0xFF;
+            buffer[32 + MAX_NAME_LENGTH + 6] = (parent >> 16) & 0xFF;
+            buffer[32 + MAX_NAME_LENGTH + 7] = 1;
+
             int ret_inode = next_inode;
             demofs_write_sector(buffer, next_inode++);
 

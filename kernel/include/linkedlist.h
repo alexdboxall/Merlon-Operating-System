@@ -13,6 +13,7 @@ int ListGetIndex(struct linked_list* list, void* data);
 void* ListGetData(struct linked_list* list, int index);
 bool ListDeleteIndex(struct linked_list* list, int index);
 bool ListDeleteData(struct linked_list* list, void* data);
+void* ListGetDataAtIndex(struct linked_list* list, int index);
 int ListSize(struct linked_list* list);
 void ListDestroy(struct linked_list* list);
 

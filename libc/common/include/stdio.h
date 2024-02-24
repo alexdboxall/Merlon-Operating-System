@@ -18,6 +18,8 @@
 #define BUFSIZ 512
 
 struct FILE;
+struct DIR;
+typedef struct DIR DIR;
 typedef struct FILE FILE;
 
 extern FILE* stdin;
@@ -75,5 +77,10 @@ int sprintf(char* str, const char* format, ...);
 int snprintf(char* str, size_t size, const char* format, ...);
 
 int remove(const char* path);
+
+struct dirent;
+DIR* opendir(const char* name);
+struct dirent* readdir(DIR *dirp);
+int closedir(DIR* dirp);
 
 #endif

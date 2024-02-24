@@ -125,6 +125,16 @@ static FILE* fopen_existing_stream(const char* filename, const char* mode, FILE*
         return NULL;
     }
 
+    struct stat st;
+    int res = fstat(fd, &st);
+    if (res == -1) {
+        return NULL;
+    }
+    if (S_ISDIR(st.st_mode)) {
+        errno = EISDIR;
+        return NULL;
+    }
+
     if ((flags & O_ACCMODE) != O_RDONLY && isatty(fd)) {
         stream->buffer_mode = _IOLBF;
     } else {
@@ -192,6 +202,10 @@ FILE* fmemopen(void* buffer, size_t size, const char* mode) {
     }
 
     FILE* stream = malloc(sizeof(FILE));
+    if (stream == NULL) {
+        errno = ENOMEM;
+        return NULL;
+    }
 
     /*
     * fopen_existing_stream does not touch the lock. We don't need to set the
