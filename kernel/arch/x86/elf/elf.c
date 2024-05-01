@@ -410,8 +410,8 @@ void ArchLoadSymbols(struct file* file, size_t adjust) {
     const char* string_table = (const char*) (mem + string_table_offset);
 
     /*
-    * Register all of the visible symbols we find.
-    */
+     * Register all of the visible symbols we find.
+     */
     for (size_t i = 0; i < symbol_table_length / sizeof(struct Elf32_Sym); ++i) {
         struct Elf32_Sym symbol = symbol_table[i];
 

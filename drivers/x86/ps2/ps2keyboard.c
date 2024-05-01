@@ -82,7 +82,7 @@ static void LOCKED_DRIVER_CODE Ps2KeyboardSetLEDs(void) {
     Ps2DeviceWrite(data, false);
 }
 
-static bool extended = false;
+static bool LOCKED_DRIVER_DATA extended = false;
 static void LOCKED_DRIVER_CODE Ps2KeyboardTranslateSet1(uint8_t scancode) {
     EXACT_IRQL(IRQL_STANDARD);
 

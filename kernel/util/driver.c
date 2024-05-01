@@ -174,6 +174,7 @@ static int LoadDriver(const char* name) {
     if ((res = ArchLoadDriver(&drv->relocation_point, file, &drv->relocation_table, NULL))) {
         return res;
     }
+    LogWriteSerial("LOADED THE DRIVER ((%s)) TO 0x%X\n", name, drv->relocation_point);
 
     assert(drv->relocation_table != NULL);
 
