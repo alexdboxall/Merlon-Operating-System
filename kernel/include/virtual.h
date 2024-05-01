@@ -34,7 +34,7 @@ struct vas_entry {
     uint8_t file            : 1;        /* Whether or not the page is file-mapped. */
     uint8_t cow             : 1;        /* */
     uint8_t swapfile        : 1;        /* Whether or not the page has been moved to a swapfile. Will not occur if 'file' is set (will back to that file instead)*/
-    uint8_t lock            : 1;           
+    uint8_t                 : 1;           
     uint8_t read            : 1;
     uint8_t write           : 1;
 
@@ -51,6 +51,7 @@ struct vas_entry {
     uint8_t share_on_fork   : 1;
     uint8_t                 : 2;
 
+    int lock;
     int num_pages;                      /* only used for non-allocated or hardware mapped to reduce the number of AVL entries */
 
     off_t file_offset;
@@ -73,6 +74,7 @@ void UnlockVirt(size_t virtual);
 bool LockVirtEx(struct vas* vas, size_t virtual);
 void UnlockVirtEx(struct vas* vas, size_t virtual);
 
+int SetVirtPermissionsEx(struct vas* vas, size_t virtual, int set, int clear);
 int SetVirtPermissions(size_t virtual, int set, int clear);
 int GetVirtPermissions(size_t virtual);
 

@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <errno.h>
@@ -52,6 +53,7 @@ int main(void) {
             while (true) {
                 ;
             }
+        
         } else if (!strcmp(line, "clear\n")) {
             printf("\x1B[2J");
             fflush(stdout);

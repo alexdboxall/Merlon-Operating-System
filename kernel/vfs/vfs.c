@@ -39,6 +39,9 @@ static struct spinlock vfs_lock;
 static struct linked_list* mount_points = NULL;
 
 struct mounted_file* GetMountPointFromName(const char* name) {
+	if (mount_points == NULL) {
+		return NULL;
+	}
 	struct linked_list_node* iter = ListGetFirstNode(mount_points);
 	while (iter != NULL) {
 		struct mounted_file* data = ListGetDataFromNode(iter);
@@ -86,7 +89,7 @@ int RootsFollow(struct vnode* node, struct vnode** output, const char* name) {
 	}
 	struct mounted_file* root = GetMountPointFromName(name);
 	if (root == NULL) {
-		return ENOSYS;
+		return ENOENT;
 	}
 	*output = root->node->node;
     return 0;
@@ -193,25 +196,6 @@ static int GetFinalPathComponent(const char* path, char* out, int max_len) {
 	}
 
 	return 0;
-}
-
-/*
-* Takes in a device name, without the colon, and returns its vnode.
-* If no such device is mounted, it returns NULL.
-*/
-static struct file* GetMountFromName(const char* name) {
-	assert(name != NULL);
-
-	if (mount_points == NULL) {
-		return NULL;
-	}
-
-    struct mounted_file* mount = GetMountPointFromName(name);
-	if (mount == NULL) {
-		return NULL;
-	} else {
-    	return mount->node;
-	}
 }
 
 int AddVfsMount(struct vnode* node, const char* name) {
@@ -340,7 +324,8 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 			return err;
 		}
 
-		struct file* current_file = GetMountFromName(component_buffer);
+		struct mounted_file* mount = GetMountPointFromName(component_buffer);
+		struct file* current_file = mount == NULL ? NULL : mount->node;
 		if (current_file == NULL) {
 			return ENODEV;
 		}

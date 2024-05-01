@@ -482,12 +482,16 @@ ACPI_STATUS AcpiOsRemoveInterruptHandler(UINT32 InterruptNumber, ACPI_OSD_HANDLE
 
 void AcpiOsVprintf(const char* format, va_list list)
 {
-    LogWriteSerial("AcpiOsVprintf: %s\n", format);
+    if (format != NULL) {
+        LogWriteSerial("AcpiOsVprintf: ...\n");
+    }
 }
 
 void AcpiOsPrintf(const char* format, ...)
 {
-    LogWriteSerial("AcpiOsPrintf: %s\n", format);
+    if (format != NULL) {
+        LogWriteSerial("AcpiOsPrintf: %s\n", format);
+    }
 }
 
 void AcpicaSleep(void) {

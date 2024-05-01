@@ -23,4 +23,3 @@ int chdir(const char* path) {
     close(fd);
     return res;
 }
-       

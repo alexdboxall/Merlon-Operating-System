@@ -486,6 +486,9 @@ static void InsertIntoAvl(struct vas* vas, struct vas_entry* entry) {
 }
 
 static void DeleteFromAvl(struct vas* vas, struct vas_entry* entry) {
+    // TODO: this probably needs to check a flag/counter to mark if someone used
+    // GetVirtEntry and still has it acquired..., and if so, postpone the release
+
     assert(IsSpinlockHeld(&vas->lock));
     if (entry->global) {
         AcquireSpinlock(&GetCpu()->global_mappings_lock);
@@ -601,7 +604,11 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
              * Need to zero out the page - this must happen on first load in, and as we have to load in
              * locked pages now, we must do it now.
              */
+            SetVirtPermissionsEx(vas, entry->virtual, VM_WRITE, 0);
             memset((void*) entry->virtual, 0, entry->num_pages * ARCH_PAGE_SIZE);
+            if (!entry->write) {
+                SetVirtPermissionsEx(vas, entry->virtual, 0, VM_WRITE);
+            }
         } else {
             LogDeveloperWarning("yuck. PAGE HAS NOT BEEN ZEROED!\n");
         }
@@ -819,6 +826,14 @@ static struct vas_entry* GetVirtEntry(struct vas* vas, size_t virtual) {
     struct vas_entry* res = (struct vas_entry*) TreeGet(vas->mappings, (void*) &dummy);
     if (res == NULL) {
         AcquireSpinlock(&GetCpu()->global_mappings_lock);
+       
+        // TODO: possible mark the page as in use - but will need to add a lot of release calls around the place
+            /*
+            * Actually, I think the better idea is to make page locks use a counter instead
+            * of a flag, an have this increment that counter while the global lock is held
+            * Then any callers of GetVirtEntry must remember to UnlockVirt(Ex) afterwards
+            */
+
         res = (struct vas_entry*) TreeGet(GetCpu()->global_vas_mappings, (void*) &dummy);
         ReleaseSpinlock(&GetCpu()->global_mappings_lock);
     }
@@ -1082,29 +1097,17 @@ void UnlockVirt(size_t virtual) {
     ReleaseSpinlock(&vas->lock);
 }
 
-/*
- * Setting a bit overrides clearing it (i.e. it acts as though it clears first, 
- * and then sets).
- */
-int SetVirtPermissions(size_t virtual, int set, int clear) {
-    /*
-     * Only allow these flags to be set / cleared.
-     */
+int SetVirtPermissionsEx(struct vas* vas, size_t virtual, int set, int clear) {
     if ((set | clear) & ~(VM_READ | VM_WRITE | VM_EXEC | VM_USER)) {
         return EINVAL;
     }
     
-    struct vas* vas = GetVas();
-    AcquireSpinlock(&vas->lock);
-
     struct vas_entry* entry = GetVirtEntry(vas, virtual);
     if (entry == NULL) {
-        ReleaseSpinlock(&vas->lock);
         return ENOMEM;
     }
 
     if (entry->file && !entry->file_node->can_write && (set & VM_WRITE) && !entry->relocatable) {
-        ReleaseSpinlock(&vas->lock);
         return EACCES;
     }
         
@@ -1117,9 +1120,19 @@ int SetVirtPermissions(size_t virtual, int set, int clear) {
 
     ArchUpdateMapping(vas, entry);
     ArchFlushTlb(vas);
-
-    ReleaseSpinlock(&vas->lock);
     return 0;
+}
+
+/*
+ * Setting a bit overrides clearing it (i.e. it acts as though it clears first, 
+ * and then sets).
+ */
+int SetVirtPermissions(size_t virtual, int set, int clear) {
+    struct vas* vas = GetVas();
+    AcquireSpinlock(&vas->lock);
+    int retv = SetVirtPermissionsEx(vas, virtual, set, clear);
+    ReleaseSpinlock(&vas->lock);
+    return retv;
 }
 
 int GetVirtPermissions(size_t virtual) {
@@ -1405,6 +1418,32 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
         UnhandledFault();
     }
 
+    /*
+     * TODO: 
+     * I've learnt we can fault on reading entry here... The reason? I think it's 
+     * because GetVirtEntry() can return something in the global page structure, but
+     * between there and here, someone else modifies it...? Maybe we need to look
+     * individual entries... and have e.g. GetVirtEntry and ReleaseVirtEntry
+     * 
+     * It looks like the previous page fault ended up calling `UnhandledFault()` - 
+     * it looks like the app stuffed up, but in terminating the app we've somehow 
+     * taken down the system, due to the above issue.
+     * 
+     * page fault: cr2 0x20ADB000, eip 0x1080208F, nos-err 0x4
+        PF at 0x20ADB000 on thread 0xC405CCC4
+        --> BSS
+        Removing fd... file = [0xC405A0EC, 0xC42898EC], fd = 4
+
+
+        Page fault: cr2 0x8, eip 0x108006D0, nos-err 0x4        
+        PF at 0x8 on thread 0xC405CCC4
+        unhandled fault...                      <---- user app screws up
+
+
+        Page fault: cr2 0x5, eip 0xC010560D, nos-err 0x0        <---- this isn't good - this address is the 
+                                                                      `entry->load_in_progress` line
+        PANIC 12 page fault while IRQL >= IRQL_SCHEDULER. is some clown holding a spinlock while executing pageable code? or calling AllocHeapEx wrong with a lock held?
+     */
     if (entry->load_in_progress) {
         LogWriteSerial("Telling a page to retry as loading is already in progress...\n");
         --handling_page_fault;

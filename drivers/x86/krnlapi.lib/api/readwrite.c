@@ -2,7 +2,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-ssize_t common_read_write(int fd, size_t buf, size_t count, int write) {
+static ssize_t common_read_write(int fd, size_t buf, size_t count, int write) {
     size_t br;
     int res = _system_call(SYSCALL_READWRITE, fd, count, buf, (size_t)&br, write);
     if (res == 0) {

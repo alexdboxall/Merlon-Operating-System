@@ -70,7 +70,9 @@ void InitUserspace(void) {
         "Copyright Alex Boxall 2022-2024\n\n"
         "%d / %d KB used (%d%% free)\n\n", 
         total - free, total, 100 * (free) / total
+    
     );
+
     CreateUsermodeProcess(NULL, "sys:/init.exe");
 }
 
@@ -116,6 +118,14 @@ static void InitSerialDebugging(void) {
     outb(PORT + 4, 0x0F);
 }
 
+void Eater(void*) {
+    SleepMilli(10000);
+    while (true) {
+        LogWriteSerial("ALLOCING SOME MEMORY TO WASTE IT!\n");
+        MapVirt(0, 0, 4096, VM_READ | VM_WRITE | VM_LOCK, NULL, 0);
+    }
+}
+
 void InitThread(void*) {
     InitRandomDevice();
     InitNullDevice();
@@ -137,6 +147,8 @@ void InitThread(void*) {
 
     //extern int ObjcTest(void);
     //ObjcTest();
+
+    CreateThread(Eater, NULL, GetVas(), "eater");
 
     while (true) {
         /*

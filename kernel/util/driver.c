@@ -253,6 +253,8 @@ static void ApplyRelocationsToPage(struct rel_table* table, size_t virtual) {
     struct rel target;
     target.address = virtual;
 
+    LogWriteSerial("ApplyRelocationsToPage.\n");
+
     struct rel* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct rel), BinarySearchComparator);
     if (entry == NULL) {
         PanicEx(PANIC_ASSERTION_FAILURE, "relocation table doesn't contain lookup - bsearch or qsort is probably bugged");
@@ -300,6 +302,11 @@ static void ApplyRelocationsToPage(struct rel_table* table, size_t virtual) {
 	}
 
     size_t final_address = table->entries[table->used_entries - 1].address;
+
+    /*
+     * WTF is this loop doing? Why is it locking the same virtual address every time, but
+     * going entry-by-entry?
+     */
 
     while (entry->address / ARCH_PAGE_SIZE == virtual / ARCH_PAGE_SIZE
         || (entry->address - sizeof(size_t) + 1) == virtual / ARCH_PAGE_SIZE) {

@@ -52,7 +52,6 @@ uint32_t HsvToRgb(int H, int S, int V) {
 	return (r << 16) | (g << 8) | b;
 }
 
-
 uint32_t ConvertToColourDepth(uint32_t colour, int bits) {
     if (bits > 16) return colour;
 
