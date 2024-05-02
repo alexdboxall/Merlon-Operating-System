@@ -965,6 +965,7 @@ int EditorMain(int argc, char** argv) {
                     struct termios raw;
                     tcgetattr(STDIN_FILENO, &raw);
                     raw.c_lflag |= (ECHO | ICANON);
+                    tcsetattr(STDIN_FILENO, TCSANOW, &raw);
                     return 0;
                 } else {
                     OpenFile();
