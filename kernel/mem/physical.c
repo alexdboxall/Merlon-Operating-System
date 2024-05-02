@@ -165,6 +165,7 @@ static void EvictPagesIfNeeded(void*) {
         handling_page_fault--;
         ++timeout;
     }
+    LogWriteSerial("Done EvictPagesIfNeeded\n");
 }
 
 size_t AllocPhys(void) {

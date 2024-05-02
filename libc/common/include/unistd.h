@@ -37,4 +37,6 @@ pid_t gettid(void);
 int chdir(const char* path);
 int fchdir(int fd);
 
+char* getcwd(char* buf, size_t size);
+
 #endif

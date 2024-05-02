@@ -221,6 +221,20 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
     int entry_number = io->offset / sizeof(struct dirent);
 
     /*
+     * Hack the current directory (".") into it.
+     */
+    if (entry_number == 0) {
+        strcpy(dir.d_name, ".");
+        dir.d_namlen = 1;
+        dir.d_ino = directory & 0x7FFFFFFF;
+        dir.d_type = DT_DIR;
+        return PerformTransfer(&dir, io, sizeof(struct dirent));
+
+    } else {
+        --entry_number;
+    }
+
+    /*
     * Each directory inode contains 31 files, and a pointer to the next directory entry.
     * Add 1 to the offset to skip past the header.
     */

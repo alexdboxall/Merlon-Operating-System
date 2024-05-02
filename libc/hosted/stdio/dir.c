@@ -65,14 +65,15 @@ retry:
         return NULL;
     }
 
-    errno = old_errno;
     if (errno == 0 && br == sizeof(struct dirent)) {
+        errno = old_errno;
         return &ent;
     } else {
         /* 
          * For other errors / incomplete reads, we will keep the old errno (i.e. 
          * indicate there is no error here) - this means we are at EOF.
          */
+        errno = old_errno;
         return NULL;
     }
 }

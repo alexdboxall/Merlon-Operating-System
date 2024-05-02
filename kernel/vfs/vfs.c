@@ -54,21 +54,23 @@ struct mounted_file* GetMountPointFromName(const char* name) {
 }
 
 int RootsRead(struct vnode*, struct transfer* io) {
+	LogWriteSerial("RootsRead. offset = %d\n", io->offset);
+	LogWriteSerial("io->addr 0x%X. dir 0x%X. len 0x%X. type 0x%X.\n", io->address, io->direction, io->length_remaining, io->type);
 	if (io->offset % sizeof(struct dirent) != 0) {
 		return EINVAL;
 	}
 
 	int index = io->offset / sizeof(struct dirent);
-	if (index == 0) {
+	if (index == 0 || index == 1) {
 		struct dirent dir;
 		dir.d_ino = 0;
-		strcpy(dir.d_name, "..");
-		dir.d_namlen = 2;
+		strcpy(dir.d_name, index == 0 ? "." : "..");
+		dir.d_namlen = strlen(dir.d_name);
 		dir.d_type = DT_DIR;
 		return PerformTransfer(&dir, io, sizeof(struct dirent));
 	}
 
-	struct mounted_file* root = ListGetDataAtIndex(mount_points, index - 1);
+	struct mounted_file* root = ListGetDataAtIndex(mount_points, index - 2);
 	if (root == NULL) {
 		return ENOENT;
 	}
@@ -330,6 +332,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 			return ENODEV;
 		}
 		current_vnode = current_file->node;
+		LogWriteSerial("Got mount point: %s, 0x%X, 0x%X, 0x%X\n", component_buffer, mount, current_file, current_vnode);
 	}
 	
 	if (current_vnode == NULL) {
@@ -389,7 +392,8 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 			CleanupVnodeStack(previous_components);
 			return status;
 		}	
-		
+		LogWriteSerial("followed...\n");
+
 		/*
 		* We have a component that can be backtracked to, so add it to the stack.
 		* 
@@ -448,7 +452,9 @@ int RemoveFileOrDirectory(const char* path, bool rmdir) {
 }
 
 int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
-    EXACT_IRQL(IRQL_STANDARD);   
+    EXACT_IRQL(IRQL_STANDARD);  
+
+	LogWriteSerial("OPEN FILE: %s\n", path); 
 
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
 		return EINVAL;

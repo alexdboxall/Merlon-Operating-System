@@ -110,6 +110,8 @@ static void PerformDeferredAccess(void* data) {
     bool write = access->direction == TRANSFER_WRITE;
     size_t target_address = access->address;
     if (!write) {
+        LogWriteSerial("RELOADING A PAGE!\n");
+        
         /*
          * If we're reading, the page is not yet allocated or in memory (this is
          * so we don't have other threads trying to use the partially-filled 
@@ -153,6 +155,8 @@ static void PerformDeferredAccess(void* data) {
         UnmapVirt(access->address, ARCH_PAGE_SIZE);
 
     } else {
+        LogWriteSerial("RELOADING A PAGE! (B)\n");
+
         /*
          * Now we can actually lock the page and allocate the actual mapping.
          */
@@ -198,6 +202,7 @@ static void PerformDeferredAccess(void* data) {
          * small parts of data segments, etc.).
          */
         bool needs_relocations = entry->relocatable && !entry->first_load;
+        LogWriteSerial("needs_relocations = %d\n", needs_relocations);
 
         ArchUpdateMapping(vas, entry);
         ArchFlushTlb(vas);
@@ -272,7 +277,7 @@ static void DeferDiskRead(
 void EvictPage(struct vas* vas, struct vas_entry* entry) {
     EXACT_IRQL(IRQL_STANDARD);   
 
-    LogWriteSerial("Evicting page...\n");
+    LogWriteSerial("-------> EVICTING 0x%X\n", entry->virtual);
 
     assert(!entry->lock);
     assert(!entry->cow);
@@ -305,7 +310,9 @@ void EvictPage(struct vas* vas, struct vas_entry* entry) {
         ArchFlushTlb(vas);
     }
 
+    LogWriteSerial("Evicted page... A\n");
     ReleaseSpinlock(&vas->lock);
+    LogWriteSerial("Evicted page... B\n");
 }
 
 /*
@@ -347,7 +354,7 @@ struct eviction_candidate {
     struct vas_entry* entry;
 };
 
-#define PREV_SWAP_LIMIT 24
+#define PREV_SWAP_LIMIT 64
 
 void FindVirtToEvictRecursive(
     struct vas* vas, 
@@ -381,6 +388,9 @@ void FindVirtToEvictRecursive(
         return;
     }
 
+    // TODO: we really need a better page swapper that doesn't just pick the
+    //       first page it sees.
+    
     struct vas_entry* entry = node->data;
     if (!entry->lock && entry->allocated && entry->in_ram) {
         int rank = GetPageEvictionRank(vas, entry);

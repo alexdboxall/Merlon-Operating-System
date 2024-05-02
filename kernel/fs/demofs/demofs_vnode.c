@@ -111,7 +111,7 @@ static struct vnode* CreateDemoFsVnode(ino_t inode, off_t size) {
         .st_mode = (INODE_IS_DIR(inode) ? S_IFDIR : S_IFREG) | S_IRWXU | S_IRWXG | S_IRWXO,
         .st_nlink = 1,
         .st_size = size,
-        .st_ino = inode,
+        .st_ino = inode & 0x7FFFFFFF,
         .st_blksize = 512,      // the 'efficient' size
     });
 }

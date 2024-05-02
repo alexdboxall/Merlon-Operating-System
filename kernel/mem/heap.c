@@ -339,7 +339,6 @@ static struct block* RequestBlock(size_t total_size) {
     MarkAllocated(right_fence);
     MarkFree(actual_block);
 
-
     return actual_block;
 }
 

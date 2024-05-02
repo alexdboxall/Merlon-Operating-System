@@ -39,8 +39,10 @@ int main(void) {
     chdir("drv0:/");
     
     char line[300];
+    char cwd_buffer[300];
     while (true) {
-        printf("drv0:/>");
+        getcwd(cwd_buffer, 299);
+        printf("%s>", cwd_buffer);
         fflush(stdout);
         fgets(line, 299, stdin);
 

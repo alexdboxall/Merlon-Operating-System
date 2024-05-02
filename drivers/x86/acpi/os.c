@@ -483,7 +483,7 @@ ACPI_STATUS AcpiOsRemoveInterruptHandler(UINT32 InterruptNumber, ACPI_OSD_HANDLE
 void AcpiOsVprintf(const char* format, va_list list)
 {
     if (format != NULL) {
-        LogWriteSerial("AcpiOsVprintf: ...\n");
+        LogWriteSerial("AcpiOsVprintf: %s\n", format);
     }
 }
 
@@ -716,6 +716,11 @@ void AcpicaThread(void*) {
         LogDeveloperWarning("FAILURE AcpiLoadTables");
         return;
     }
+
+    // For some PCs, may need to add this to get power button to work, 
+    // according to https://forum.osdev.org/viewtopic.php?f=1&t=33640
+    // The handler itself (`acpi_ec_handler`) can just return AE_OK.
+    // status = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT, ACPI_ADR_SPACE_EC, &acpi_ec_handler, NULL, NULL)
 
 	a = AcpiEnableSubsystem(ACPI_FULL_INITIALIZATION);
     if (ACPI_FAILURE(a)) {
