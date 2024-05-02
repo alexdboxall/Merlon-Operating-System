@@ -317,6 +317,7 @@ static void Init(void) {
     //raw.c_cc[VSTOP] = _POSIX_VDISABLE;
     //raw.c_cc[VSUSP] = _POSIX_VDISABLE;
     //raw.c_cc[VDISCARD] = _POSIX_VDISABLE;
+    fflush(stdin);
     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }
 
@@ -965,6 +966,7 @@ int EditorMain(int argc, char** argv) {
                     struct termios raw;
                     tcgetattr(STDIN_FILENO, &raw);
                     raw.c_lflag |= (ECHO | ICANON);
+                    fflush(stdin);
                     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
                     return 0;
                 } else {

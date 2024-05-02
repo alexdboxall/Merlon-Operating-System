@@ -235,11 +235,11 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
     }
 
     /*
-    * Each directory inode contains 31 files, and a pointer to the next directory entry.
+    * Each directory inode contains 15 files, and a pointer to the next directory entry.
     * Add 1 to the offset to skip past the header.
     */
-    int indirections = entry_number / 31;
-    int offset = entry_number % 31 + 1;
+    int indirections = entry_number / 15;
+    int offset = entry_number % 15 + 1;
 
     /*
     * Get the correct inode 
@@ -252,15 +252,14 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
             return status;
         }
 
-        /*
-        * Check for end of directory.
-        */
-        if (buffer[0] == 0xFF) {
-            return 0;
-        }
-
-        if (buffer[0] != 0xFE) {
-            return EIO;
+        if (i == indirections - 1) {
+            if (buffer[0] != 0xFF) {
+                return EIO;
+            }
+        } else {
+            if (buffer[0] != 0xFE) {
+                return EIO;
+            }
         }
 
         /*
@@ -297,7 +296,8 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
     inode |= (ino_t) buffer[offset * 32 + MAX_NAME_LENGTH + 5] << 8;
     inode |= (ino_t) buffer[offset * 32 + MAX_NAME_LENGTH + 6] << 16;
 
-    dir.d_ino = inode;
+    LogWriteSerial("entry no = %d. offset = %d. indirs = %d. name = %s\n", entry_number, offset, indirections, name);
+    dir.d_ino = inode & 0x7FFFFFFF;
     dir.d_type = (buffer[offset * 32 + MAX_NAME_LENGTH + 7] & 1) ? DT_DIR : DT_REG;
 
     /* Perform the transfer to the correct location */
