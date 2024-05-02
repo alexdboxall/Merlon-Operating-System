@@ -9,19 +9,7 @@
 #include <sys/stat.h>
 
 extern int EditorMain(int argc, char** argv);
-
-static const char* GetDirectoryEntryTypeString(int dirent) {
-    switch (dirent) {
-        case DT_BLK : return "<BLK>";
-        case DT_CHR : return "<CHR>";
-        case DT_DIR : return "<DIR>";
-        case DT_FIFO: return "<FIFO>";
-        case DT_LNK : return "<LNK>";
-        case DT_REG : return "";
-        case DT_SOCK: return "<SOCK>";
-        default     : return "<\?\?\?>";  /* Avoid trigraph */
-    }
-}
+extern int LsMain(int argc, char** argv);
 
 int main(void) {
     /*
@@ -64,22 +52,7 @@ int main(void) {
             EditorMain(1, NULL);
 
         } else if (!strcmp(line, "ls\n") || !strcmp(line, "dir\n")) {
-            DIR *d;
-            struct dirent *dir;
-            d = opendir(".");
-            if (d) {
-                while ((dir = readdir(d)) != NULL) {
-                    printf(
-                        "%8s %s\n",
-                        GetDirectoryEntryTypeString(dir->d_type),
-                        dir->d_name
-                    );
-                }
-                closedir(d);
-                printf("\n");
-            } else {
-                printf("%s\n\n", strerror(errno));
-            }
+            LsMain(1, NULL);
 
         } else if (line[0] == 'c' && line[1] == 'd' && line[2] == ' ') {
             line[strlen(line) - 1] = 0;

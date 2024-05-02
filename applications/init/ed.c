@@ -934,7 +934,7 @@ int EditorMain(int argc, char** argv) {
             programmers_newline = (programmers_newline + 1) % 5;
         } else if (c == '\x06') /* CTRL+F*/ {
             Search();
-        } else if (c == '\x0E' || c == '\x0F') /* CTRL+N, CTRL+O*/ {
+        } else if (c == '\x0E' || c == '\x0F' || c == '\x18') /* CTRL+N, CTRL+O, CTRL+X*/ {
             TruelyWipeScreen();
             AnsiClear();
             AnsiReset();
@@ -942,7 +942,7 @@ int EditorMain(int argc, char** argv) {
             if (dirty) {
                 ScrPrintf("File isn't saved! Press one of the following:\n\n"
                        " To save your file, press ENTER\n"
-                       " To clear without saving, press CTRL+@\n"
+                       " To act without saving, press CTRL+@\n"
                        " To cancel, press any other key\n\n"
                 );
                 ScrFlush();
@@ -958,6 +958,14 @@ int EditorMain(int argc, char** argv) {
             if (do_action) {
                 if (c == '\x0E') {
                     ClearFile();
+                } else if (c == '\x18') {
+                    TruelyWipeScreen();
+                    AnsiClear();
+                    AnsiReset();
+                    struct termios raw;
+                    tcgetattr(STDIN_FILENO, &raw);
+                    raw.c_lflag |= (ECHO | ICANON);
+                    return 0;
                 } else {
                     OpenFile();
                 }
