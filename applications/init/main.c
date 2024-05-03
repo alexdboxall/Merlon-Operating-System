@@ -51,8 +51,8 @@ int main(void) {
         } else if (!strcmp(line, "ed\n")) {
             EditorMain(1, NULL);
 
-        } else if (!strcmp(line, "pwd")) {
-            printf("%s\n", cwd_buffer);
+        } else if (!strcmp(line, "pwd\n")) {
+            printf("%s\n\n", cwd_buffer);
 
         } else if (!strcmp(line, "ls\n") || !strcmp(line, "dir\n")) {
             LsMain(1, NULL);

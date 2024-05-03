@@ -459,6 +459,7 @@ int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
 			}
 			
 			char name[MAX_COMPONENT_LENGTH + 1];
+			LogDeveloperWarning("GetFinalPathComponent probably needs to be fixed");
 			status = GetFinalPathComponent(path, name, MAX_COMPONENT_LENGTH);
 			LogWriteSerial("--> CREATING A FILE, WITH NAME %s\n", name);
 			if (status) {
