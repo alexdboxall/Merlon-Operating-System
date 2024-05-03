@@ -136,12 +136,11 @@ char* getcwd(char* buf, size_t size) {
     }
 
     int res = AddDeviceRoot(buf, &buf_ptr, current_ino);
-    if (res != 0) {
-        errno = res;
-        return NULL;
-    }
-
     memmove(buf, buf + buf_ptr, size - buf_ptr);
+    if (res != 0) {
+        buf[0] = '?';
+        buf[1] = '!';
+    }
     buf[size - buf_ptr] = 0;
     return buf;
 }

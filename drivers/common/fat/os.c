@@ -138,14 +138,6 @@ struct vnode_data {
 	int disk_num;
 };
 
-static int CheckOpen(struct vnode*, const char* name, int) {
-    if (strlen(name) >= FF_LFN_BUF) {
-        return ENAMETOOLONG;
-	}
-
-    return 0;
-}
-
 static int Ioctl(struct vnode*, int, void*) {
     return EINVAL;
 }
@@ -243,7 +235,6 @@ static int Follow(struct vnode*, struct vnode**, const char*) {
 }
 
 static const struct vnode_operations dev_ops = {
-    .check_open     = CheckOpen,
     .ioctl          = Ioctl,
     .read           = Read,
     .write          = Write,

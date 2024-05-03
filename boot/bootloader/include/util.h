@@ -19,3 +19,4 @@ void Sleep(int milli);
 void SetCursor(int x, int y);
 void Puts(const char* str, uint8_t col);
 void Printf(const char* format, ...);
+void DiagnosticPrintf(const char* format, ...);

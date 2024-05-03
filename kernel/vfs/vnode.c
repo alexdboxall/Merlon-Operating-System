@@ -93,12 +93,12 @@ void DereferenceVnode(struct vnode* node) {
     ReleaseSpinlock(&node->reference_count_lock);
 }
 
-int VnodeOpCheckOpen(struct vnode* node, const char* name, int flags) {
+int VnodeOpCheckOpen(struct vnode* node, int flags) {
     CheckVnode(node);
     if (node->ops.check_open == NULL) {
         return 0;
     }
-    return node->ops.check_open(node, name, flags);
+    return node->ops.check_open(node, flags);
 }
 
 int VnodeOpRead(struct vnode* node, struct transfer* io) {

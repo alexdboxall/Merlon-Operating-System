@@ -19,11 +19,7 @@ struct vnode_data {
     bool directory;
 };
 
-static int CheckOpen(struct vnode*, const char* name, int flags) {
-    if (strlen(name) >= MAX_NAME_LENGTH) {
-        return ENAMETOOLONG;
-    }
-
+static int CheckOpen(struct vnode*, int flags) {
     if ((flags & O_ACCMODE) == O_WRONLY || (flags & O_ACCMODE) == O_RDWR) {
         return EROFS;
     }

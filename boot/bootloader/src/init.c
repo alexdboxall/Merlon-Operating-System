@@ -67,7 +67,7 @@ static size_t LoadProgramHeaders(size_t base) {
 
 			uint32_t additionalNullBytes = (progHeaders + i)->p_memsz - (progHeaders + i)->p_filesz;
 
-            Printf("Loading here: 0x%X \n  ", addr & 0xFFFFFFF);
+            DiagnosticPrintf("Loading here: 0x%X \n  ", addr & 0xFFFFFFF);
 			xmemcpy(addr & 0xFFFFFFF, filePos, size);
 			xmemset((addr & 0xFFFFFFF) + size, 0, additionalNullBytes);
 		}
@@ -77,12 +77,12 @@ static size_t LoadProgramHeaders(size_t base) {
 }
 
 static void ShowRamTable(void) {
-    Printf("The RAM table has %d entries:\n  ", GetFw()->num_ram_table_entries);
+    DiagnosticPrintf("The RAM table has %d entries:\n  ", GetFw()->num_ram_table_entries);
     for (size_t i = 0; i < GetFw()->num_ram_table_entries; ++i) {
         struct boot_memory_entry ram = GetFw()->ram_table[i];
         int type = BOOTRAM_GET_TYPE(ram.info);
 
-        Printf("    [%s]: 0x%X -> 0x%X (len: 0x%X)\n  ", 
+        DiagnosticPrintf("    [%s]: 0x%X -> 0x%X (len: 0x%X)\n  ", 
             type == BOOTRAM_TYPE_AVAILABLE ? "AVAIL" :
             (type == BOOTRAM_TYPE_RECLAIMABLE ? "ACPI " : "RESV "),
             (size_t) ram.address,
@@ -94,13 +94,14 @@ static void ShowRamTable(void) {
 
 struct kernel_boot_info kboot_info;
 
+
 void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
     firmware = fw;
 
     bool show_boot_options = DisplayBootScreen();
     
     SetCursor(2, 3);
-    Printf("The kernel file is: %s\n  ", fw->kernel_filename);
+    DiagnosticPrintf("The kernel file is: %s\n  ", fw->kernel_filename);
 
     if (!DoesFileExist(fw->kernel_filename)) {
         Printf("The kernel file doesn't exist!\n  ");
@@ -108,14 +109,14 @@ void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
     }
     
     size_t file_size = GetFileSize(fw->kernel_filename);
-    Printf("The kernel file exists, and has a size of %d.%d KiB\n  ", file_size / 1024, (file_size % 1023) * 10 / 1024);
+    DiagnosticPrintf("The kernel file exists, and has a size of %d.%d KiB\n  ", file_size / 1024, (file_size % 1023) * 10 / 1024);
 
     LoadFile(fw->kernel_filename, 0x10000);
-    Printf("The kernel image has been loaded into RAM.\n  ");
+    DiagnosticPrintf("The kernel image has been loaded into RAM.\n  ");
 
     size_t entry_point = LoadProgramHeaders(0x10000);
-    Printf("The kernel's executable has been fully loaded to address 0x%X.\n  ", fw->kernel_load_point);
-    Printf("The kernel entry point is at 0x%X\n  ", entry_point);
+    DiagnosticPrintf("The kernel's executable has been fully loaded to address 0x%X.\n  ", fw->kernel_load_point);
+    DiagnosticPrintf("The kernel entry point is at 0x%X\n  ", entry_point);
 
     ShowRamTable();
 

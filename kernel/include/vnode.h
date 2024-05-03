@@ -49,7 +49,7 @@ struct vnode;
 #define VNODE_WAIT_ERROR            (1 << 2)
 
 struct vnode_operations {
-    int (*check_open)(struct vnode* node, const char* name, int flags);
+    int (*check_open)(struct vnode* node, int flags);
     int (*read)(struct vnode* node, struct transfer* io);
     int (*write)(struct vnode* node, struct transfer* io);
 
@@ -107,7 +107,7 @@ void DereferenceVnode(struct vnode* node);
 /* 
 * Wrapper functions to check the vnode is valid, and then call the driver.
 */
-int VnodeOpCheckOpen(struct vnode* node, const char* name, int flags);
+int VnodeOpCheckOpen(struct vnode* node, int flags);
 int VnodeOpRead(struct vnode* node, struct transfer* io);
 int VnodeOpWrite(struct vnode* node, struct transfer* io);
 int VnodeOpIoctl(struct vnode* node, int command, void* buffer);

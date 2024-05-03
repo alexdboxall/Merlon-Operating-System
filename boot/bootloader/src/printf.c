@@ -82,3 +82,14 @@ void Printf(const char* format, ...)
 	Vprintf(format, list);
 	va_end(list);
 }
+
+void DiagnosticPrintf(const char* format, ...)
+{
+#if 0
+	va_list list;
+	va_start(list, format);
+	Vprintf(format, list);
+	va_end(list);
+#endif
+	(void) format;
+}

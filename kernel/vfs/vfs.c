@@ -114,6 +114,15 @@ void InitVfs(void) {
     mount_points = ListCreate();
 }
 
+static bool IsRelative(const char* path) {
+	for (int i = 0; path[i]; ++i) {
+		if (path[i] == ':') {
+			return false;
+		}
+	}
+	return true;
+}
+
 static int CheckValidComponentName(const char* name)
 {
 	assert(name != NULL);
@@ -152,6 +161,7 @@ static int DoesMountPointExist(const char* name) {
 */
 static int GetPathComponent(const char* path, int* ptr, char* out, int max_len, char delimiter) {
 	int i = 0;
+	LogWriteSerial(" GetPathComponent --> %s --> ", path);
 
 	out[0] = 0;
 
@@ -176,6 +186,8 @@ static int GetPathComponent(const char* path, int* ptr, char* out, int max_len, 
 		} while (path[*ptr] == '/');
 	}
 
+	LogWriteSerial("%s\n ", out);
+
 	/*
 	* Ensure that there are no colons or backslashes in the filename itself.
 	*/
@@ -184,15 +196,21 @@ static int GetPathComponent(const char* path, int* ptr, char* out, int max_len, 
 
 static int GetFinalPathComponent(const char* path, char* out, int max_len) {
 	int path_ptr = 0;
+	int status;
 
-	int status = GetPathComponent(path, &path_ptr, out, max_len, ':');
-	if (status) {
-		return status;
+	// @@@ TODO: 
+	if (!IsRelative(path)) {
+		status = GetPathComponent(path, &path_ptr, out, max_len, ':');
+		if (status) {
+			LogWriteSerial("BAD C: %d\n", status);
+			return status;
+		}
 	}
 
 	while (path_ptr < (int) strlen(path)) {
 		status = GetPathComponent(path, &path_ptr, out, max_len, '/');
 		if (status) {
+			LogWriteSerial("BAD D: %d\n", status);
 			return status;
 		}
 	}
@@ -274,15 +292,6 @@ int RemoveVfsMount(const char* name) {
     return 0;
 }
 
-static void CleanupVnodeStack(struct stack_adt* stack) {
-	while (StackAdtSize(stack) > 0) {
-		struct vnode* node = StackAdtPop(stack);
-		DereferenceVnode(node);
-	}
-
-	StackAdtDestroy(stack);
-}
-
 /*
 * Given an absolute or relative filepath, returns the vnode representing
 * the file, directory or device. 
@@ -292,6 +301,8 @@ static void CleanupVnodeStack(struct stack_adt* stack) {
 static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_parent) {
 	assert(path != NULL);
 	assert(out != NULL);
+
+	LogWriteSerial("GetVnodeFromPath: %s\n", path);
 
 	if (strlen(path) == 0) {
 		return EINVAL;
@@ -303,13 +314,7 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	int path_ptr = 0;
 	char component_buffer[MAX_COMPONENT_LENGTH];
 
-	bool relative = true;
-	for (int i = 0; path[i]; ++i) {
-		if (path[i] == ':') {
-			relative = false;
-			break;
-		}
-	}
+	bool relative = IsRelative(path);
 
 	int err;
 	struct vnode* current_vnode = NULL;
@@ -319,6 +324,9 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 			return ENODEV;
 		}
 		current_vnode = prcss->cwd;
+		if (current_vnode == NULL) {
+			LogWriteSerial("*** *!* *!* *!* *** No cwd...\n");
+		}
 
 	} else {
 		err = GetPathComponent(path, &path_ptr, component_buffer, MAX_COMPONENT_LENGTH, ':');
@@ -349,31 +357,25 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 	char component[MAX_COMPONENT_LENGTH + 1];
 
 	/*
-	* To go back to a parent directory, we need to keep track of the previous component.
-	* As we can go back through many parents, we must keep track of all of them, hence we
-	* use a stack to store each vnode we encounter. We will not dereference the vnodes
-	* on the stack until the end using cleanup_vnode_stack.
-	*/
-	struct stack_adt* previous_components = StackAdtCreate();
-	
-	/*
 	* Iterate over the rest of the path.
 	*/
 	while (path_ptr < (int) strlen(path)) {
+		LogWriteSerial(" ==> path %s\n", path);
 		int status = GetPathComponent(path, &path_ptr, component, MAX_COMPONENT_LENGTH, '/');
 		if (status != 0) {
 			DereferenceVnode(current_vnode);
-			CleanupVnodeStack(previous_components);
 			return status;
 		}
+
+		LogWriteSerial("PATH ITER: %s [of %s]\n", component, path);
 
 		if (!strcmp(component, ".")) {
 			/*
 			* This doesn't change where we point to.
 			*/
 			continue;
-
 		} 
+
 		/* 
 		 * No need for ".." here, the filesystem itself handles that. This is
 		 * needed for relative directories to work - as only the filesytem
@@ -389,44 +391,25 @@ static int GetVnodeFromPath(const char* path, struct vnode** out, bool want_pare
 		status = VnodeOpFollow(current_vnode, &next_vnode, component);
 		if (status != 0) {
 			DereferenceVnode(current_vnode);
-			CleanupVnodeStack(previous_components);
 			return status;
 		}	
-		LogWriteSerial("followed...\n");
-
-		/*
-		* We have a component that can be backtracked to, so add it to the stack.
-		* 
-		* Also note that vnode_follow adds a reference count, so current_vnode
-		* needs to be dereferenced. Conveniently, all components that need to be
-		* put on the stack also need dereferencing, and vice versa. 
-		*
-		* The final vnode we find will not be added to the stack and dereferenced
-		* as we won't get here.
-		*/
-		StackAdtPush(previous_components, current_vnode);
 		current_vnode = next_vnode;
 	}
 
-	int status = 0;
-
 	if (want_parent) {
-		/*
-		* Operations that require us to get the parent don't work if we are already
-		* at the root.
-		*/
-		if (StackAdtSize(previous_components) == 0) {
-			status = EINVAL;
-
-		} else {
-			*out = StackAdtPop(previous_components);
+		struct vnode* parent;
+		int status = VnodeOpFollow(current_vnode, &parent, "..");
+		DereferenceVnode(current_vnode);
+		if (status != 0) {
+			return status;
 		}
+		*out = parent;
+
 	} else {
 		*out = current_vnode;
 	}
 
-	CleanupVnodeStack(previous_components);
-	return status;
+	return 0;
 }
 
 int RemoveFileOrDirectory(const char* path, bool rmdir) {
@@ -457,16 +440,11 @@ int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
 	LogWriteSerial("OPEN FILE: %s\n", path); 
 
  	if (path == NULL || out == NULL || strlen(path) <= 0) {
+		LogWriteSerial("BAD A %d\n", 0);
 		return EINVAL;
 	}
 
     int status;
-    char name[MAX_COMPONENT_LENGTH + 1];
-	status = GetFinalPathComponent(path, name, MAX_COMPONENT_LENGTH);
-	if (status) {
-		return status;
-	}
-
 	struct vnode* node;
     status = GetVnodeFromPath(path, &node, false);
 
@@ -480,6 +458,14 @@ int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
 				return status;
 			}
 			
+			char name[MAX_COMPONENT_LENGTH + 1];
+			status = GetFinalPathComponent(path, name, MAX_COMPONENT_LENGTH);
+			LogWriteSerial("--> CREATING A FILE, WITH NAME %s\n", name);
+			if (status) {
+				LogWriteSerial("BAD B %d\n", status);
+				return status;
+			}
+
 			struct vnode* child;
 			status = VnodeOpCreate(node, &child, name, flags, mode);
 			DereferenceVnode(node);
@@ -500,10 +486,10 @@ int OpenFile(const char* path, int flags, mode_t mode, struct file** out) {
 		}
 
     } else if (status != 0) {
-        return status;
+		return status;
     }
 
-	status = VnodeOpCheckOpen(node, name, flags & (O_ACCMODE | O_NONBLOCK));
+	status = VnodeOpCheckOpen(node, flags & (O_ACCMODE | O_NONBLOCK));
     if (status) {
 		DereferenceVnode(node);
 		return status;
