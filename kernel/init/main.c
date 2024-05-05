@@ -30,7 +30,6 @@
  * - fork
  * - dynamic libraries (e.g. c.lib)
  * - C standard library
- * - getcwd / chdir
  * - complete-enough CLI OS
  *          terminal that supports pipes, redirection and background processes
  *          cd, ls/dir, type, mkdir, rm, more, rename, copy, tree, mkfifo, 

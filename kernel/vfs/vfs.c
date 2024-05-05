@@ -67,9 +67,7 @@ struct mounted_file* GetMountPointFromName(const char* name) {
 	return NULL;
 }
 
-int RootsRead(struct vnode*, struct transfer* io) {
-	LogWriteSerial("RootsRead. offset = %d\n", io->offset);
-	LogWriteSerial("io->addr 0x%X. dir 0x%X. len 0x%X. type 0x%X.\n", io->address, io->direction, io->length_remaining, io->type);
+int RootsRead(struct vnode* node, struct transfer* io) {
 	if (io->offset % sizeof(struct dirent) != 0) {
 		return EINVAL;
 	}
@@ -78,7 +76,7 @@ int RootsRead(struct vnode*, struct transfer* io) {
 	if (index == 0 || index == 1) {
 		struct dirent dir;
 		dir.d_ino = 0;
-		dir.d_disk = 0;
+		dir.d_disk = node->stat.st_dev;
 		strcpy(dir.d_name, index == 0 ? "." : "..");
 		dir.d_namlen = strlen(dir.d_name);
 		dir.d_type = DT_DIR;

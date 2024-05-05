@@ -50,9 +50,6 @@ static bool AddDeviceRoot(char* buf, size_t* buf_ptr, size_t disk) {
     int res = EIO;
     struct dirent* entry;
     while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_name[0] == '.') {
-            continue;
-        }
         if (entry->d_disk == disk) {
             char format[260];
             strcpy(format, entry->d_name);
