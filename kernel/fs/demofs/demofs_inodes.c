@@ -227,6 +227,7 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
         strcpy(dir.d_name, ".");
         dir.d_namlen = 1;
         dir.d_ino = directory & 0x7FFFFFFF;
+        dir.d_disk = (size_t) fs->disk->node->stat.st_dev;
         dir.d_type = DT_DIR;
         return PerformTransfer(&dir, io, sizeof(struct dirent));
 
@@ -298,6 +299,7 @@ int demofs_read_directory_entry(struct demofs* fs, ino_t directory, struct trans
 
     LogWriteSerial("entry no = %d. offset = %d. indirs = %d. name = %s\n", entry_number, offset, indirections, name);
     dir.d_ino = inode & 0x7FFFFFFF;
+    dir.d_disk = (size_t) fs->disk->node->stat.st_dev;
     dir.d_type = (buffer[offset * 32 + MAX_NAME_LENGTH + 7] & 1) ? DT_DIR : DT_REG;
 
     /* Perform the transfer to the correct location */

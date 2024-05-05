@@ -38,6 +38,20 @@ struct mounted_file {
 static struct spinlock vfs_lock;
 static struct linked_list* mount_points = NULL;
 
+int NextDevId(void) {
+	static bool init = false;
+	static struct spinlock devid_lock;
+	static int id = 1;
+
+	if (!init) {
+		InitSpinlock(&devid_lock, "devid", IRQL_SCHEDULER);
+	}	
+	AcquireSpinlock(&devid_lock);
+	int res = id++;
+	ReleaseSpinlock(&devid_lock);
+	return res;
+}
+
 struct mounted_file* GetMountPointFromName(const char* name) {
 	if (mount_points == NULL) {
 		return NULL;
@@ -64,6 +78,7 @@ int RootsRead(struct vnode*, struct transfer* io) {
 	if (index == 0 || index == 1) {
 		struct dirent dir;
 		dir.d_ino = 0;
+		dir.d_disk = 0;
 		strcpy(dir.d_name, index == 0 ? "." : "..");
 		dir.d_namlen = strlen(dir.d_name);
 		dir.d_type = DT_DIR;
@@ -78,6 +93,7 @@ int RootsRead(struct vnode*, struct transfer* io) {
 	struct dirent dir;
 	dir.d_type = IFTODT(root->node->node->stat.st_mode);
 	dir.d_ino = root->node->node->stat.st_ino;
+	dir.d_disk = (size_t) root->node->node->stat.st_dev;
 	dir.d_namlen = strlen(root->name);
 	strncpy(dir.d_name, root->name, sizeof(dir.d_name));
 	dir.d_name[sizeof(dir.d_name) - 1] = 0;
@@ -106,6 +122,7 @@ void InitRootsFilesystem(void) {
 	AddVfsMount(CreateVnode(dev_ops, (struct stat) {
         .st_mode = S_IFDIR | S_IRWXU | S_IRWXG | S_IRWXO,
         .st_nlink = 1,
+		.st_dev = NextDevId()
     }), "*");
 }
 

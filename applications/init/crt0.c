@@ -15,9 +15,7 @@ void _start(int argc, char** argv, char** envp) {
     setvbuf(stderr, NULL, _IONBF, 1);
 
     errno = 0;
-
-    // TODO: exit() instead of _exit
-    _exit(main(argc, argv, envp));
+    exit(main(argc, argv, envp));
 
     while (1) {
         sched_yield();

@@ -59,6 +59,7 @@ struct vnode* CreatePipe(void)
     struct vnode* node = CreateVnode(dev_ops, (struct stat) {
         .st_mode = S_IFIFO | S_IRWXU | S_IRWXG | S_IRWXO,
         .st_nlink = 1,
+        .st_dev = NextDevId()
     });
 
     struct pipe* pipe = AllocHeap(sizeof(struct pipe));

@@ -212,6 +212,7 @@ void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
     struct stat st = (struct stat) {
         .st_mode =  S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO,
         .st_nlink = 1,
+        .st_dev = NextDevId()
     };
     struct vnode* m = CreateVnode(master_operations, st);
     struct vnode* s = CreateVnode(subordinate_operations, st);

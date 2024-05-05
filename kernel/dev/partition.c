@@ -113,7 +113,8 @@ struct file* CreatePartition(
         .st_blksize = sector_size,
         .st_blocks = length / sector_size,
         .st_nlink = 1,
-        .st_size = length
+        .st_size = length,
+        .st_dev = NextDevId()
     });
 
     node->data = data;
@@ -127,6 +128,8 @@ struct file* TryCreateMbrPartition(
     struct file* disk, uint8_t* mem, int index, int sector_size
 ) {
     int offset = 0x1BE + index * 16;
+
+    LogWriteSerial("Trying partition %d, offset 0x%X\n", index, offset);
 
     uint8_t active = mem[offset + 0];
     if (active & 0x7F) {
@@ -150,6 +153,8 @@ struct file* TryCreateMbrPartition(
     total_sectors |= mem[offset + 13];
     total_sectors <<= 8;
     total_sectors |= mem[offset + 12];
+
+    LogWriteSerial("Start sector = 0x%X, total sectors = 0x%X, disk 0x%X\n", start_sector, total_sectors, disk);
 
     if (start_sector == 0 && total_sectors == 0) {
         return NULL;

@@ -31,5 +31,6 @@ void InitNullDevice(void)
     AddVfsMount(CreateVnode(dev_ops, (struct stat) {
         .st_mode = S_IFCHR | S_IRWXU | S_IRWXG | S_IRWXO,
         .st_nlink = 1,
+        .st_dev = NextDevId()
     }), "null");
 }

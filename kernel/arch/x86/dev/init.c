@@ -24,7 +24,7 @@ static void LoadSlowDriversInBackground(void*) {
 void ArchInitDev(bool fs) {
     if (!fs) {
         InitIde();
-        //InitFloppy();
+        InitFloppy();
         
     } else {
         ((void(*)()) (Loadx86Driver("sys:/vga.sys", "InitVga")))();

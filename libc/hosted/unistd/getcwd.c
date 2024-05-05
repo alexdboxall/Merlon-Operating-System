@@ -42,7 +42,7 @@ static ino_t GetIno(const char* path) {
     return 0;
 }
 
-static bool AddDeviceRoot(char* buf, size_t* buf_ptr, ino_t current_ino) {
+static bool AddDeviceRoot(char* buf, size_t* buf_ptr, size_t disk) {
     DIR* dir = opendir("*:/");
     if (dir == NULL) {
         return false;
@@ -53,24 +53,18 @@ static bool AddDeviceRoot(char* buf, size_t* buf_ptr, ino_t current_ino) {
         if (entry->d_name[0] == '.') {
             continue;
         }
-        struct stat st;
-        char format[260];
-        strcpy(format, entry->d_name);
-        strcat(format, ":/");
-        int sr = stat(format, &st);
-        if (sr == 0) {
-            if (entry->d_ino == current_ino) {
-                format[strlen(format) - 1] = 0;
-                if (*buf_ptr >= strlen(format)) {
-                    res = 0;
-                    *buf_ptr -= strlen(format);
-                    (void) buf;
-                    memcpy(buf + *buf_ptr, format, strlen(format));
-                } else {
-                    res = ERANGE;
-                }
-                break;
+        if (entry->d_disk == disk) {
+            char format[260];
+            strcpy(format, entry->d_name);
+            strcat(format, ":");
+            if (*buf_ptr >= strlen(format)) {
+                res = 0;
+                *buf_ptr -= strlen(format);
+                memcpy(buf + *buf_ptr, format, strlen(format));
+            } else {
+                res = ERANGE;
             }
+            break;
         }
     }
     closedir(dir);
@@ -107,6 +101,22 @@ char* getcwd(char* buf, size_t size) {
     size_t buf_ptr = size - 1;
     buf[buf_ptr] = 0;
 
+    size_t disk = 0;
+
+    DIR* dir = opendir(".");
+    if (dir == NULL) {
+        errno = EIO;
+        return NULL;
+    }
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (!strcmp(entry->d_name, ".")) {
+            disk = entry->d_disk;
+            break;
+        }
+    }
+    closedir(dir);
+
     while (true) {
         ino_t new_ino = GetIno(dot_ptr);
         if (new_ino == current_ino) {
@@ -135,12 +145,12 @@ char* getcwd(char* buf, size_t size) {
         }
     }
 
-    int res = AddDeviceRoot(buf, &buf_ptr, current_ino);
-    memmove(buf, buf + buf_ptr, size - buf_ptr);
+    int res = AddDeviceRoot(buf, &buf_ptr, disk);
     if (res != 0) {
-        buf[0] = '?';
-        buf[1] = '!';
+        errno = res;
+        return NULL;
     }
+    memmove(buf, buf + buf_ptr, size - buf_ptr);
     buf[size - buf_ptr] = 0;
     return buf;
 }

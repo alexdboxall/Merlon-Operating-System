@@ -243,6 +243,7 @@ void InitIde(void) {
             .st_blksize = ide->sector_size,
             .st_blocks = ide->total_num_sectors,
             .st_size = ide->total_num_sectors * ide->sector_size,
+            .st_dev = NextDevId()
         });
         node->data = ide;
 

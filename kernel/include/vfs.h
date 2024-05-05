@@ -19,3 +19,5 @@ int CloseFile(struct file* file);
 int RemoveFileOrDirectory(const char* path, bool rmdir);
 
 int SetWorkingDirectory(struct vnode* node);
+
+int NextDevId(void);

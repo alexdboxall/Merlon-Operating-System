@@ -188,6 +188,8 @@ protected_mode_main:
 	mov	es, ax
 	mov esp, 0x10000
 	
+	mov [0xB8002], word 0x3579
+
 	mov cx, [0x500]
 	mov [num_ram_entries], cx
 

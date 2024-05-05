@@ -27,4 +27,5 @@ struct dirent {
     char d_name[256];
     uint8_t d_namlen;
     uint8_t d_type;
+    size_t d_disk;
 };

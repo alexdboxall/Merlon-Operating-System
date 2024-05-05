@@ -109,6 +109,7 @@ static struct vnode* CreateDemoFsVnode(ino_t inode, off_t size) {
         .st_size = size,
         .st_ino = inode & 0x7FFFFFFF,
         .st_blksize = 512,      // the 'efficient' size
+        .st_dev = NextDevId()
     });
 }
 
@@ -141,6 +142,7 @@ int DemofsMountCreator(struct file* raw_device, struct file** out) {
     }
     
 	struct vnode* node = CreateDemoFsVnode(9 | (1 << 31), 0);
+    node->stat.st_dev = raw_device->node->stat.st_dev;
     struct vnode_data* data = AllocHeap(sizeof(struct vnode_data));
     
     data->fs.disk = raw_device;

@@ -118,6 +118,7 @@ char* GenerateNewRawDiskName(int type) {
     ReleaseSpinlock(&lock);
 
     AppendNumberToString(name, disk_num);
+    LogWriteSerial("GENERATING DISK NAME: %s\n", name);
     return strdup(name);
 }
 
@@ -134,7 +135,7 @@ static char* GetPartitionNameString(int index) {
 /**
  * Given a disk, this function detects, creates and mounts partitions on that 
  * disk. For each detected partition, the filesystem is also detected, and that 
- * is mounted if it exists. If the disk has no partitions, a 'whole disk 
+ * is mounted if it exists. If the disk has no partitions,= a 'whole disk 
  * partition' will be created, the filesystem will still be detected.
  */
 void CreateDiskPartitions(struct file* disk) {
@@ -143,12 +144,15 @@ void CreateDiskPartitions(struct file* disk) {
     struct file** partitions = GetPartitionsForDisk(disk);
 
     if (partitions == NULL || partitions[0] == NULL) {
+        LogWriteSerial("CreateDiskPartitions A\n");
         struct stat st = disk->node->stat;
         struct vnode* whole_disk = CreatePartition(
             disk, 0, st.st_size, 0, st.st_blksize, 0, false)->node;
         VnodeOpCreate(disk->node, &whole_disk, GetPartitionNameString(0), 0, 0);
         return;
     }
+    
+    LogWriteSerial("CreateDiskPartitions B\n");
 
     for (int i = 0; partitions[i]; ++i) {
         struct vnode* partition = partitions[i]->node;

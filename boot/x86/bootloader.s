@@ -4,9 +4,28 @@ bits 16
 
 jmp short start
 nop
+db "MSWIN4.1"
+dw 512
+db 1
+dw 1
+db 2
+dw 224
+dw 2880
+db 0xF0
+dw 9
+dw 18
+dw 2
 
 kernel_kilobytes dw 0x0
 boot_drive_number db 0
+db 0
+dd 0
+db 0
+db 0
+db 0x29
+dd 0xAAAAAAAA
+db "DUMMYBPB   "
+db "FAT12   "
 
 start:
 	; This bootloader is at 0x7C00, but we don't know which combination of segment
@@ -16,13 +35,13 @@ start:
 	cld
 	jmp 0:set_cs
 
+
+
 set_cs:
 	; Zero out the other segments. This allows for correct access of data.
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
-	mov fs, ax
-	mov gs, ax
 
 	; Set the stack to 0x0000:0x0000, so it will wrap around to
 	; 0x0000:0xFFFE and so on.
@@ -36,6 +55,11 @@ set_cs:
 	; Clear the screen by calling the BIOS.
 	mov ax, 0x3
 	int 0x10
+
+	mov ax, 0xB800
+	mov fs, ax
+	xor bx, bx
+	mov [fs:bx], word 0x3579
 	
 	; Load the rest of the bootloader, and the DemoFS table.
 	xor eax, eax
@@ -85,60 +109,7 @@ next_sector:
 	call generate_memory_map
 
 
-    ; Get video mode information
-	xor bp, bp
-.retry_modes:
-    mov ax, 0x100 
-    mov es, ax
-    mov ax, 0x4F01
-    mov cl, [preferred_modes_table + bp]
-	mov ch, 0x01
-	;mov cx, 0x117 ;0x105 ;0x105
-    xor di, di
-	push cx
-	push bp
-	push es
-    int 0x10
-	pop es
-	pop bp
-	pop cx
-	inc bp
-	test ah, ah
-	jnz short .retry_modes
-	test [es:0], byte 0x80
-	jz short .retry_modes
 
-.found_good_mode:
-    ; Set video mode
-    mov bx, cx; 0x4105 ;0x4105 ;cx
-    mov ax, 0x4F02
-    ;int 0x10
-
-.no_vesa:
-	jmp $
-
-preferred_modes_table:
-	;db 0x18		; FOR TESTING (depth = 24/32)
-	;db 0x16		; FOR TESTING (depth = 15)
-	;db 0x17		; FOR TESTING (depth = 16)
-	db 0x05		; FOR REAL H/W (depth = 8)
-
-	db 0x07
-
-	db 0x1A
-	db 0x19
-	db 0x17
-	db 0x16
-	db 0x15
-	db 0x14
-	db 0x13
-	db 0x05
-	db 0x03
-	db 0x12
-	db 0x11
-	db 0x10
-	db 0x01
-	
 ; The number of entries will be stored at 0x500, the map will be put at 0x504
 ; From here:
 ;		https://wiki.osdev.org/Detecting_Memory_(x86)
@@ -292,7 +263,6 @@ gdtr:
 	dw gdt_end - gdt_start - 1
 	dd gdt_start
 
-	
 times 0x1BE - ($-$$) db 0
 
 ; Partition table

@@ -19,6 +19,7 @@
 #include <thread.h>
 #include <errno.h>
 #include <diskutil.h>
+#include <machine/virtual.h>
 
 #define CYLINDER_SIZE (512 * 18 * 2)
 
@@ -103,9 +104,11 @@ static int FloppyIrqWait(bool allow_intr) {
     while (!floppy_got_irq) {
         SleepMilli(10);
         if (++timeout > 200) {
+            LogWriteSerial("[floppy]: ETIMEDOUT\n");
             return ETIMEDOUT;
         }
         if (allow_intr && HasBeenSignalled()) {
+             LogWriteSerial("[floppy]: EINTR\n");
             return EINTR;
         }
     }
@@ -235,6 +238,8 @@ static void FloppyDmaInit(void) {
     * it should be unused as this is where the temporary copy of the kernel was
     * stored during boot.
     */
+
+    // TODO: use AllocPhysContiguous
     uint32_t addr = (uint32_t) 0x10000;
 
     /*
@@ -299,7 +304,12 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
         FloppyWriteCommand(flp, 0x1B);
         FloppyWriteCommand(flp, 0xFF);
 
+        LogWriteSerial("[floppy]: sent IO commands\n");
+
         FloppyIrqWait(false);
+        LogWriteSerial("[floppy]: irq wait done\n");
+
+        LogWriteSerial("[floppy]: floppy data went to 0x%X\n", 0x10000);
 
         /*
         * Read back some status information, some of which is very mysterious.
@@ -342,6 +352,9 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
         (void) rse;
 
         FloppyMotor(flp, false);
+        // TODO: when AllocPhysContiguous is used, we should use MapVirt and use that instead
+        memcpy(flp->cylinder_buffer, (void*) x86KernelMemoryToPhysical(0x10000), CYLINDER_SIZE);
+        LogWriteSerial("[floppy]: successful I/O\n");
         return 0;
     }
 
@@ -352,7 +365,10 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
 static int FloppyIo(struct floppy_data* flp, struct transfer* io) {
     EXACT_IRQL(IRQL_STANDARD);
 
+    LogWriteSerial("FloppyIo\n");
+
     if (io->direction == TRANSFER_WRITE) {
+        LogWriteSerial("[floppy]: EROFS\n");
         return EROFS;
     }
 
@@ -360,12 +376,15 @@ static int FloppyIo(struct floppy_data* flp, struct transfer* io) {
     int count = io->length_remaining / 512;
 
     if (io->offset % 512 != 0) {
+        LogWriteSerial("[floppy]: bad offset\n");
         return EINVAL;
     }
     if (io->length_remaining % 512 != 0) {
+        LogWriteSerial("[floppy]: bad length\n");
         return EINVAL;
     }
     if (count <= 0 || count > 0xFF || lba < 0 || lba >= 2880) {
+        LogWriteSerial("[floppy]: bad length / lba\n");
         return EINVAL;
     }
 
@@ -393,9 +412,11 @@ next_sector:;
 
             if (error != 0) {
                 ReleaseMutex(floppy_lock);
+                LogWriteSerial("[floppy]: cylinder error\n");
                 return error;
             }
 
+            LogWriteSerial("[floppy]: doing memcpy into cylinder buffer\n");
             memcpy(flp->cylinder_zero, flp->cylinder_buffer, 0x4800);
 
             /* 
@@ -405,6 +426,7 @@ next_sector:;
             flp->stored_cylinder = cylinder;
         }
     
+        LogWriteSerial("[floppy]: will transfer from cylinder == 0\n");
         PerformTransfer(flp->cylinder_zero + (512 * (sector - 1 + head * 18)), io, 512);
 
     } else {
@@ -413,10 +435,13 @@ next_sector:;
 
             if (error != 0) {
                 ReleaseMutex(floppy_lock);
+                LogWriteSerial("[floppy]: cylinder error\n");
                 return error;
             }
         }
 
+
+        LogWriteSerial("[floppy]: will transfer from cylinder != 0\n");
         PerformTransfer(flp->cylinder_buffer + (512 * (sector - 1 + head * 18)), io, 512);
         flp->stored_cylinder = cylinder;
     }
@@ -434,6 +459,7 @@ next_sector:;
     }
 
     ReleaseMutex(floppy_lock);
+    LogWriteSerial("[floppy]: done\n");
     return 0;
 }
 
@@ -466,17 +492,22 @@ static const struct vnode_operations dev_ops = {
 
 void InitFloppy(void) {
     floppy_lock = CreateMutex("floppy");
+        LogWriteSerial("FLOPPY: -3\n");
 
     CreateThread(FloppyMotorControlThread, NULL, GetVas(), "flpmotor");
 
     for (int i = 0; i < 1; ++i) {
+                LogWriteSerial("FLOPPY: -2\n");
+
         struct vnode* node = CreateVnode(dev_ops, (struct stat) {
             .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
             .st_nlink = 1,
             .st_blksize = 512,
             .st_blocks = 2880,
-            .st_size = 512 * 2880
+            .st_size = 512 * 2880,
+            .st_dev = NextDevId()
         });
+        LogWriteSerial("FLOPPY: -1\n");
 
         struct floppy_data* flp = AllocHeap(sizeof(struct floppy_data));
         *flp = (struct floppy_data) {
@@ -487,12 +518,20 @@ void InitFloppy(void) {
         };
         node->data = flp;
 
+        LogWriteSerial("FLOPPY: A\n");
+
         RegisterIrqHandler(PIC_IRQ_BASE + 6, FloppyIrqHandler);
         FloppyReset(flp);
+        LogWriteSerial("FLOPPY: B\n");
 
         InitDiskPartitionHelper(&flp->partitions);
+        LogWriteSerial("FLOPPY: C\n");
 
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
+                LogWriteSerial("FLOPPY: D\n");
+
         CreateDiskPartitions(CreateFile(node, 0, 0, true, true));
+                LogWriteSerial("FLOPPY: E\n");
+
     }
 }

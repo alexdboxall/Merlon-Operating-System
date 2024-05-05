@@ -28,9 +28,10 @@ int LsMain(int, char**) {
     if (d) {
         while ((dir = readdir(d)) != NULL) {
             printf(
-                "%8s %s\n",
+                "%8s %s 0x%X\n",
                 GetDirectoryEntryTypeString(dir->d_type),
-                dir->d_name
+                dir->d_name,
+                dir->d_disk
             );
         }
         closedir(d);
