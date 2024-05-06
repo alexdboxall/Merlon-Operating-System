@@ -28,6 +28,16 @@
 */
 
 
+int ArchGetCurrentCpuIndex(void);
+
+/*
+* Only to be called in very specific places, e.g. turning interrupts
+* on for the first time, the panic handler.
+*/
+void ArchEnableInterrupts(void);
+void ArchDisableInterrupts(void);
+
+
 #include <machine/config.h>
 
 #if ARCH_USER_STACK_BASE < ARCH_USER_AREA_BASE
@@ -48,12 +58,6 @@ struct rel_table;
 
 struct arch_driver_t;
 
-/*
-* Only to be called in very specific places, e.g. turning interrupts
-* on for the first time, the panic handler.
-*/
-void ArchEnableInterrupts(void);
-void ArchDisableInterrupts(void);
 
 /*
 * Do nothing until (maybe) the next interrupt. If this is not supported by the
@@ -119,7 +123,6 @@ void ArchInitVas(struct vas* vas);
  */
 void ArchInitVirt(void);
 
-int ArchGetCurrentCpuIndex(void);
 void ArchSendEoi(int irq_num);
 /*
  * Sets the CPUs interrupt state (and mask devices) based on an IRQL. This function

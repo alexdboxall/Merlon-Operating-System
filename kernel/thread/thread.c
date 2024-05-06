@@ -246,10 +246,6 @@ struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct va
     );
 }
 
-struct thread* GetThread(void) {
-    return GetCpu()->current_thread;
-}
-
 bool HasBeenSignalled(void) {
     return GetThread()->signal_intr;
 }
@@ -552,4 +548,10 @@ void AssignThreadToCpu(void) {
 
 void UnassignThreadToCpu(void) {
     // NO-OP UNTIL SMP IMPLEMENTED
+}
+
+
+#undef GetThread
+struct thread* GetThread(void) {
+    return GetCpu()->current_thread;
 }

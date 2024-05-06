@@ -1,11 +1,14 @@
 #pragma once
 
+#include <stddef.h>
+#include <sys/types.h>
+
 /*
  * SIG_DFL must be 0, as we memset() the default signal structure to zero.
  */
-#define SIG_DFL         0
-#define SIG_IGN         1
-#define SIG_ERR         -1
+#define SIG_DFL         ((void (*)(int)) (size_t) 0)
+#define SIG_IGN         ((void (*)(int)) (size_t) 1)
+#define SIG_ERR         ((void (*)(int)) (size_t) -1)
 
 #define SIGABRT         0
 #define SIGALRM         1
@@ -45,3 +48,7 @@
 #define _SIG_ABT        5
 
 #endif
+
+void (*signal(int sig, void (*func)(int)))(int);
+int raise(int sig);
+int kill(pid_t pid, int sig);

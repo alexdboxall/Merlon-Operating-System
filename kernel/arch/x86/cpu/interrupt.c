@@ -105,3 +105,20 @@ void x86MakeReadyForIrqs(void) {
     ready_for_irqs = true;
     RaiseIrql(GetIrql());
 }
+
+#undef ArchDisableInterrupts
+void ArchDisableInterrupts(void) {
+    asm volatile("cli");
+}
+
+#undef ArchEnableInterrupts
+void ArchEnableInterrupts(void) {
+    asm volatile("sti");
+}
+
+#undef ArchGetCurrentCpuIndex
+int ArchGetCurrentCpuIndex(void) {
+    unsigned long val;
+    asm volatile ("mov %%dr3, %0" : "=r"(val));
+    return val;
+}

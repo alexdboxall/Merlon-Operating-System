@@ -8,26 +8,10 @@
 
 global ArchGetCurrentCpuIndex
 global ArchReadTimestamp
-global ArchEnableInterrupts
-global ArchDisableInterrupts
 global ArchStallProcessor
-
-ArchGetCurrentCpuIndex:
-    ; Needs to be something that can't be modified by user code (e.g. a debug 
-	; register).
-	mov eax, dr3
-	ret
 
 ArchReadTimestamp:
 	rdtsc
-	ret
-	
-ArchEnableInterrupts:
-	sti
-	ret
-	
-ArchDisableInterrupts:
-	cli
 	ret
 	
 ArchStallProcessor:

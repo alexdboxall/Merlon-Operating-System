@@ -14,6 +14,7 @@
 #include <sched.h>
 #include <virtual.h>
 #include <elf.h>
+#include <signal.h>
 #include <machine/config.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -139,6 +140,9 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "lstat")) return (size_t) lstat;
     if (!xstrcmp(name, "chdir")) return (size_t) chdir;
     if (!xstrcmp(name, "fchdir")) return (size_t) fchdir;
+    if (!xstrcmp(name, "signal")) return (size_t) signal;
+    if (!xstrcmp(name, "kill")) return (size_t) kill;
+    if (!xstrcmp(name, "raise")) return (size_t) raise;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
     return (size_t) loltest;
 }

@@ -22,16 +22,18 @@ struct deferment {
  * ignored (this is needed to bootstrap the physical memory manager, et al.).
  */
 void DeferUntilIrql(int irql, void(*handler)(void*), void* context) {
-    if (irql == GetIrql() || (irql == IRQL_STANDARD_HIGH_PRIORITY 
-                              && GetIrql() == IRQL_STANDARD)) {
+    struct cpu* cpu = GetCpu();
+    int current = cpu->irql;
+    if (irql == current || (irql == IRQL_STANDARD_HIGH_PRIORITY 
+                              && current == IRQL_STANDARD)) {
         handler(context);
 
-    } else if (irql > GetIrql()) {
+    } else if (irql > current) {
         PanicEx(PANIC_INVALID_IRQL, "invalid irql on DeferUntilIrql");
 
-    } else if (GetCpu()->init_irql_done) {
+    } else if (cpu->init_irql_done) {
         struct deferment defer = {.context = context, .handler = handler};
-        HeapAdtInsert(GetCpu()->deferred_functions, (void*) &defer, irql);
+        HeapAdtInsert(cpu->deferred_functions, (void*) &defer, irql);
     }
 }
 

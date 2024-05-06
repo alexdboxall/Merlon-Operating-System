@@ -28,6 +28,9 @@ void InitCpuTable(void);
 void InitBootstrapCpu(void);
 void InitOtherCpu(void);
 
-struct cpu* GetCpu(void);
+extern struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
+
+#define GetCpu(...) (cpu_table + ArchGetCurrentCpuIndex())
+
 int GetCpuCount(void);
 struct cpu* GetCpuAtIndex(int index);

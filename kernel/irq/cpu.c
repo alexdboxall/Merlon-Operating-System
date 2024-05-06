@@ -7,7 +7,7 @@
 #include <debug.h>
 #include <irql.h>
 
-static struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
+struct cpu cpu_table[ARCH_MAX_CPU_ALLOWED];
 static int num_cpus_running = 1;
 
 static void InitCpuTableEntry(int index) {
@@ -78,6 +78,7 @@ struct cpu* GetCpuAtIndex(int index) {
     return cpu_table + index;
 }
 
+#undef GetCpu
 struct cpu* GetCpu(void) {
     return cpu_table + ArchGetCurrentCpuIndex();
 }

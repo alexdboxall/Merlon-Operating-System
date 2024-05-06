@@ -56,3 +56,14 @@ typedef struct {
 } platform_vas_data_t;
 
 typedef struct x86_regs platform_irq_context_t;
+
+#define ArchDisableInterrupts(...) asm volatile ("cli")
+#define ArchEnableInterrupts(...) asm volatile ("sti")
+
+static inline unsigned long ReadDr3(void) {
+    unsigned long val; 
+    asm volatile ("mov %%dr3, %0" : "=r"(val)); 
+    return val;
+}
+
+#define ArchGetCurrentCpuIndex(...) ReadDr3()

@@ -89,7 +89,9 @@ void StartMultitasking(void);
 
 void AssertSchedulerLockHeld(void);
 
-struct thread* GetThread(void);
+#include <cpu.h>
+#define GetThread(...) (GetCpu()->current_thread)
+
 void TerminateThread(struct thread* thr);
 void TerminateThreadLockHeld(struct thread* thr);
 
