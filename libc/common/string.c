@@ -12,11 +12,13 @@
 
 #ifdef COMPILE_KERNEL
 #include <heap.h>
+#include <common.h>
 #else
 #include <stdlib.h>
+#define export
 #endif
 
-void* memchr(const void* s, int c, size_t n) {
+export void* memchr(const void* s, int c, size_t n) {
 	const uint8_t* ptr = (const uint8_t*) s;
 
 	while (n--) {
@@ -55,7 +57,7 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 	}
 }
 
-void* memmove(void* dst, const void* src, size_t n) {
+export void* memmove(void* dst, const void* src, size_t n) {
 	uint8_t* a = (uint8_t*) dst;
 	const uint8_t* b = (const uint8_t*) src;
 
@@ -75,7 +77,7 @@ void* memmove(void* dst, const void* src, size_t n) {
 	return dst;
 }
 
-char* strcat(char* restrict dst, const char* restrict src) {
+export char* strcat(char* restrict dst, const char* restrict src) {
 	char* ret = dst;
 
 	while (*dst) {
@@ -89,7 +91,7 @@ char* strcat(char* restrict dst, const char* restrict src) {
 	return ret;
 }
 
-char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
+export char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
 	char* ret = dst;
 
 	while (n--) {
@@ -103,7 +105,7 @@ char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
 	return ret;
 }
 
-char* strchr(const char* s, int c) {
+export char* strchr(const char* s, int c) {
 	do {
 		if (*s == (char) c) {
 			return (char*) s;
@@ -112,7 +114,7 @@ char* strchr(const char* s, int c) {
 	return NULL;
 }
 
-char* strdup(const char* str) {
+export char* strdup(const char* str) {
 	char* copy = (char*) malloc(strlen(str) + 1);
 	strcpy(copy, str);
 	return copy;

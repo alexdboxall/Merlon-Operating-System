@@ -76,7 +76,7 @@ hideous 0xC4030000
 Adding mapping at 0xC4030000 to vas 0xC013C080 - num is 1. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC40301FE, eip 0xC01024DA, nos-err 0x0
+Page fault: cr2 0xC40301FE, eip 0xC01024F1, nos-err 0x0
 PF at 0xC40301FE on thread 0xC01154DC
 --> FILE
 RELOADING A PAGE!
@@ -95,47 +95,41 @@ Trying partition 2, offset 0x1DE
 Trying partition 3, offset 0x1EE
 Start sector = 0x0, total sectors = 0x0, disk 0xC011615C
 CreateDiskPartitions B
-FLOPPY: -3
 hideous 0xC4032000
 Adding mapping at 0xC4032000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC5000.
 Adding mapping at 0xC4033000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC6000.
 Adding mapping at 0xC4034000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC4000.
 Adding mapping at 0xC4035000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC3000.
-FLOPPY: -2
-FLOPPY: -1
 hideous 0xC4036000
-Adding mapping at 0xC4036000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC2000.
-Adding mapping at 0xC4037000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC1000.
-Adding mapping at 0xC4038000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC0000.
-Adding mapping at 0xC4039000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBF000.
-Adding mapping at 0xC403A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBE000.
+Adding mapping at 0xC4036000 to vas 0xC013C080 - num is 5. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x1C6000.
 hideous 0xC403B000
-Adding mapping at 0xC403B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBD000.
-Adding mapping at 0xC403C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBC000.
-Adding mapping at 0xC403D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBB000.
-Adding mapping at 0xC403E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBA000.
-Adding mapping at 0xC403F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB9000.
-FLOPPY: A
+Adding mapping at 0xC403B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC2000.
+Adding mapping at 0xC403C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC1000.
+Adding mapping at 0xC403D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FC0000.
+Adding mapping at 0xC403E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBF000.
+Adding mapping at 0xC403F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBE000.
+hideous 0xC4040000
+Adding mapping at 0xC4040000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBD000.
+Adding mapping at 0xC4041000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBC000.
+Adding mapping at 0xC4042000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBB000.
+Adding mapping at 0xC4043000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FBA000.
+Adding mapping at 0xC4044000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB9000.
 FloppyCalibrate
-FLOPPY: B
-FLOPPY: C
 GENERATING DISK NAME: raw-fd0
 MOUNTED TO THE VFS: raw-fd0
-FLOPPY: D
-hideous 0xC4040000
-Adding mapping at 0xC4040000 to vas 0xC013C080 - num is 1. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+hideous 0xC4045000
+Adding mapping at 0xC4045000 to vas 0xC013C080 - num is 1. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC40401FE, eip 0xC01024DA, nos-err 0x0
-PF at 0xC40401FE on thread 0xC01154DC
+Page fault: cr2 0xC40451FE, eip 0xC01024F1, nos-err 0x0
+PF at 0xC40451FE on thread 0xC01154DC
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4041000
-Adding mapping at 0xC4041000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB8000.
+hideous 0xC4046000
+Adding mapping at 0xC4046000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB8000.
 FloppyIo
 [floppy]: sent IO commands
 [floppy]: irq wait done
-[floppy]: floppy data went to 0x10000
 [floppy]: successful I/O
 [floppy]: doing memcpy into cylinder buffer
 [floppy]: will transfer from cylinder == 0
@@ -151,7 +145,7 @@ FloppyIo
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Trying partition 0, offset 0x1BE
-Start sector = 0x0, total sectors = 0x4000, disk 0xC401122C
+Start sector = 0x0, total sectors = 0x4000, disk 0xC40111AC
 MountFilesystemForDisk...
 FloppyIo
 [floppy]: will transfer from cylinder == 0
@@ -159,7 +153,7 @@ FloppyIo
 [floppy]: done
 MOUNTED TO THE VFS: drv1
 Trying partition 1, offset 0x1CE
-Start sector = 0x4000, total sectors = 0x186A0, disk 0xC401122C
+Start sector = 0x4000, total sectors = 0x186A0, disk 0xC40111AC
 MountFilesystemForDisk...
 FloppyIo
 [floppy]: bad length / lba
@@ -167,9 +161,8 @@ FloppyIo
 [floppy]: bad length / lba
 Trying partition 2, offset 0x1DE
 Trying partition 3, offset 0x1EE
-Start sector = 0x0, total sectors = 0x0, disk 0xC401122C
+Start sector = 0x0, total sectors = 0x0, disk 0xC40111AC
 CreateDiskPartitions B
-FLOPPY: E
 OPEN FILE: drv0:/System
 GetVnodeFromPath: drv0:/System
  GetPathComponent --> drv0:/System --> drv0
@@ -189,81 +182,24 @@ MOUNTED TO THE VFS: swap
 OPEN FILE: swap:/
 GetVnodeFromPath: swap:/
  GetPathComponent --> swap:/ --> swap
- Got mount point: swap, 0xC40114A4, 0xC4010924, 0xC4011A0C
-hideous 0xC4042000
-Adding mapping at 0xC4042000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB7000.
-Adding mapping at 0xC4043000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB8000.
-Adding mapping at 0xC4044000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB6000.
+ Got mount point: swap, 0xC401149C, 0xC40108DC, 0xC4011A0C
+hideous 0xC4047000
+Adding mapping at 0xC4047000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB7000.
+Adding mapping at 0xC4048000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB8000.
+Adding mapping at 0xC4049000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB6000.
 OPEN FILE: sys:/kernel.exe
 GetVnodeFromPath: sys:/kernel.exe
  GetPathComponent --> sys:/kernel.exe --> sys
- Got mount point: sys, 0xC40111FC, 0xC40109A4, 0xC4010A24
+ Got mount point: sys, 0xC401117C, 0xC401095C, 0xC40109DC
  ==> path sys:/kernel.exe
  GetPathComponent --> sys:/kernel.exe --> kernel.exe
  PATH ITER: kernel.exe [of sys:/kernel.exe]
-hideous 0xC4045000
-Adding mapping at 0xC4045000 to vas 0xC013C080 - num is 28. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+hideous 0xC404A000
+Adding mapping at 0xC404A000 to vas 0xC013C080 - num is 28. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4045000, eip 0xC010C7AE, nos-err 0x0
-PF at 0xC4045000 on thread 0xC01154DC
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4061000
-Adding mapping at 0xC4061000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC405FE18, eip 0xC010C809, nos-err 0x0
-PF at 0xC405FE18 on thread 0xC01154DC
---> FILE
-Made a split! (A)
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4062000
-Adding mapping at 0xC4062000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC4060110, eip 0xC010C81B, nos-err 0x0
-PF at 0xC4060110 on thread 0xC01154DC
---> FILE
-RELOADING A PAGE!
-hideous 0xC4063000
-Adding mapping at 0xC4063000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC4058C18, eip 0xC010C8A6, nos-err 0x0
-PF at 0xC4058C18 on thread 0xC01154DC
---> FILE
-Made a split! (A)
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4064000
-Adding mapping at 0xC4064000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC405CC5B, eip 0xC0108138, nos-err 0x0
-PF at 0xC405CC5B on thread 0xC01154DC
---> FILE
-Made a split! (A)
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4065000
-Adding mapping at 0xC4065000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC4059001, eip 0xC010C8AD, nos-err 0x0
-PF at 0xC4059001 on thread 0xC01154DC
+Page fault: cr2 0xC404A000, eip 0xC010C7E9, nos-err 0x0
+PF at 0xC404A000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
@@ -271,73 +207,130 @@ hideous 0xC4066000
 Adding mapping at 0xC4066000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+
+
+Page fault: cr2 0xC4064E18, eip 0xC010C844, nos-err 0x0
+PF at 0xC4064E18 on thread 0xC01154DC
+--> FILE
+Made a split! (A)
+Made a split! (B)
+RELOADING A PAGE!
 hideous 0xC4067000
 Adding mapping at 0xC4067000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
-Adding mapping at 0xC4068000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAE000.
-Adding mapping at 0xC4069000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAD000.
-Adding mapping at 0xC406A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAC000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
 
 
-Page fault: cr2 0xC405D000, eip 0xC0108138, nos-err 0x0
-PF at 0xC405D000 on thread 0xC01154DC
+Page fault: cr2 0xC4065110, eip 0xC010C856, nos-err 0x0
+PF at 0xC4065110 on thread 0xC01154DC
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4068000
+Adding mapping at 0xC4068000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC405DC18, eip 0xC010C8E1, nos-err 0x0
+PF at 0xC405DC18 on thread 0xC01154DC
+--> FILE
+Made a split! (A)
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC4069000
+Adding mapping at 0xC4069000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC4061C5B, eip 0xC010814B, nos-err 0x0
+PF at 0xC4061C5B on thread 0xC01154DC
+--> FILE
+Made a split! (A)
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC406A000
+Adding mapping at 0xC406A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC405E001, eip 0xC010C8E8, nos-err 0x0
+PF at 0xC405E001 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC406B000
-Adding mapping at 0xC406B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAB000.
+Adding mapping at 0xC406B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+hideous 0xC406C000
+Adding mapping at 0xC406C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB5000.
+Adding mapping at 0xC406D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAE000.
+Adding mapping at 0xC406E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAD000.
+Adding mapping at 0xC406F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAC000.
 
 
-Page fault: cr2 0xC405A001, eip 0xC010C8AD, nos-err 0x0
-PF at 0xC405A001 on thread 0xC01154DC
+Page fault: cr2 0xC4062000, eip 0xC010814B, nos-err 0x0
+PF at 0xC4062000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC406C000
-Adding mapping at 0xC406C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAB000.
+hideous 0xC4070000
+Adding mapping at 0xC4070000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAB000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-hideous 0xC406D000
-Adding mapping at 0xC406D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAB000.
-Adding mapping at 0xC406E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA8000.
-Adding mapping at 0xC406F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA7000.
-Adding mapping at 0xC4070000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA6000.
 
 
-Page fault: cr2 0xC405E000, eip 0xC0108138, nos-err 0x0
-PF at 0xC405E000 on thread 0xC01154DC
+Page fault: cr2 0xC405F001, eip 0xC010C8E8, nos-err 0x0
+PF at 0xC405F001 on thread 0xC01154DC
 --> FILE
+Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4071000
-Adding mapping at 0xC4071000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA5000.
+Adding mapping at 0xC4071000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAB000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 hideous 0xC4072000
-Adding mapping at 0xC4072000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA5000.
-Adding mapping at 0xC4073000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA3000.
-Adding mapping at 0xC4074000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA2000.
-Adding mapping at 0xC4075000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA1000.
+Adding mapping at 0xC4072000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAB000.
+Adding mapping at 0xC4073000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA8000.
+Adding mapping at 0xC4074000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA7000.
+Adding mapping at 0xC4075000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA6000.
 
 
-Page fault: cr2 0xC405B001, eip 0xC010C8AD, nos-err 0x0
-PF at 0xC405B001 on thread 0xC01154DC
+Page fault: cr2 0xC4063000, eip 0xC010814B, nos-err 0x0
+PF at 0xC4063000 on thread 0xC01154DC
 --> FILE
 RELOADING A PAGE!
 hideous 0xC4076000
-Adding mapping at 0xC4076000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA0000.
+Adding mapping at 0xC4076000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA5000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 hideous 0xC4077000
-Adding mapping at 0xC4077000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA0000.
-Adding mapping at 0xC4078000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9E000.
-Adding mapping at 0xC4079000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9D000.
-Adding mapping at 0xC407A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9C000.
+Adding mapping at 0xC4077000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA5000.
+Adding mapping at 0xC4078000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA3000.
+Adding mapping at 0xC4079000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA2000.
+Adding mapping at 0xC407A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA1000.
+
+
+Page fault: cr2 0xC4060001, eip 0xC010C8E8, nos-err 0x0
+PF at 0xC4060001 on thread 0xC01154DC
+--> FILE
+RELOADING A PAGE!
 hideous 0xC407B000
-Adding mapping at 0xC407B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9B000.
-Adding mapping at 0xC407C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9A000.
-Adding mapping at 0xC407D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F99000.
-Adding mapping at 0xC407E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F98000.
+Adding mapping at 0xC407B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA0000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+hideous 0xC407C000
+Adding mapping at 0xC407C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA0000.
+Adding mapping at 0xC407D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9E000.
+Adding mapping at 0xC407E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9D000.
+Adding mapping at 0xC407F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9C000.
+hideous 0xC4080000
+Adding mapping at 0xC4080000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9B000.
+Adding mapping at 0xC4081000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9A000.
+Adding mapping at 0xC4082000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F99000.
+Adding mapping at 0xC4083000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F98000.
 Made a split! (B)
 Made a split! (B)
 Made a split! (B)
@@ -359,30 +352,16 @@ Requiring driver: sys:/vga.sys
 OPEN FILE: sys:/vga.sys
 GetVnodeFromPath: sys:/vga.sys
  GetPathComponent --> sys:/vga.sys --> sys
- Got mount point: sys, 0xC40111FC, 0xC40109A4, 0xC4010A24
+ Got mount point: sys, 0xC401117C, 0xC401095C, 0xC40109DC
  ==> path sys:/vga.sys
  GetPathComponent --> sys:/vga.sys --> vga.sys
  PATH ITER: vga.sys [of sys:/vga.sys]
-hideous 0xC407F000
-Adding mapping at 0xC407F000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
-
-
-Page fault: cr2 0xC407F000, eip 0xC010C19F, nos-err 0x0
-PF at 0xC407F000 on thread 0xC01154DC
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
 hideous 0xC4084000
-Adding mapping at 0xC4084000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB2000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-hideous 0xC4085000
-Adding mapping at 0xC4085000 to vas 0xC013C080 - num is 4. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
-Made a split! (B)
+Adding mapping at 0xC4084000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC4080000, eip 0xC010119C, nos-err 0x0
-PF at 0xC4080000 on thread 0xC01154DC
+Page fault: cr2 0xC4084000, eip 0xC010C1B8, nos-err 0x0
+PF at 0xC4084000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
@@ -390,127 +369,127 @@ hideous 0xC4089000
 Adding mapping at 0xC4089000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB2000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-
-
-Page fault: cr2 0xC4085000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4085000 on thread 0xC01154DC
---> BSS
-Made a split! (B)
-Made a split! (B)
-
-
-Page fault: cr2 0xC4081000, eip 0xC010119C, nos-err 0x0
-PF at 0xC4081000 on thread 0xC01154DC
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
 hideous 0xC408A000
-Adding mapping at 0xC408A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAA000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
+Adding mapping at 0xC408A000 to vas 0xC013C080 - num is 4. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
+Made a split! (B)
 
 
-Page fault: cr2 0xC4086000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4086000 on thread 0xC01154DC
---> BSS
-
-
-Page fault: cr2 0xC4082000, eip 0xC010119C, nos-err 0x0
-PF at 0xC4082000 on thread 0xC01154DC
+Page fault: cr2 0xC4085000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC4085000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC408B000
-Adding mapping at 0xC408B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9F000.
+hideous 0xC408E000
+Adding mapping at 0xC408E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB2000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4087000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4087000 on thread 0xC01154DC
+Page fault: cr2 0xC408A000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC408A000 on thread 0xC01154DC
+--> BSS
+Made a split! (B)
+Made a split! (B)
+
+
+Page fault: cr2 0xC4086000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC4086000 on thread 0xC01154DC
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC408F000
+Adding mapping at 0xC408F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAA000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC408B000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC408B000 on thread 0xC01154DC
 --> BSS
 
 
-Page fault: cr2 0xC4083000, eip 0xC010119C, nos-err 0x0
-PF at 0xC4083000 on thread 0xC01154DC
+Page fault: cr2 0xC4087000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC4087000 on thread 0xC01154DC
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC4090000
+Adding mapping at 0xC4090000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F9F000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC408C000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC408C000 on thread 0xC01154DC
+--> BSS
+
+
+Page fault: cr2 0xC4088000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC4088000 on thread 0xC01154DC
 --> FILE
 RELOADING A PAGE!
-hideous 0xC408C000
-Adding mapping at 0xC408C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAF000.
+hideous 0xC4091000
+Adding mapping at 0xC4091000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FAF000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4088000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4088000 on thread 0xC01154DC
---> BSS
-hideous 0xC408D000
-Adding mapping at 0xC408D000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC408D000, eip 0xC0108335, nos-err 0x2
+Page fault: cr2 0xC408D000, eip 0xC01011AF, nos-err 0x2
 PF at 0xC408D000 on thread 0xC01154DC
 --> BSS
-LOADED THE DRIVER ((sys:/vga.sys)) TO 0xC4085000
-hideous 0xC408E000
-Adding mapping at 0xC408E000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+hideous 0xC4092000
+Adding mapping at 0xC4092000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC408E000, eip 0xC010C7AE, nos-err 0x0
-PF at 0xC408E000 on thread 0xC01154DC
+Page fault: cr2 0xC4092000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4092000 on thread 0xC01154DC
+--> BSS
+LOADED THE DRIVER ((sys:/vga.sys)) TO 0xC408A000
+hideous 0xC4093000
+Adding mapping at 0xC4093000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+
+
+Page fault: cr2 0xC4093000, eip 0xC010C7E9, nos-err 0x0
+PF at 0xC4093000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4093000
-Adding mapping at 0xC4093000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB1000.
+hideous 0xC4098000
+Adding mapping at 0xC4098000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB1000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC40924EC, eip 0xC010C809, nos-err 0x0
-PF at 0xC40924EC on thread 0xC01154DC
+Page fault: cr2 0xC40974EC, eip 0xC010C844, nos-err 0x0
+PF at 0xC40974EC on thread 0xC01154DC
 --> FILE
 Made a split! (A)
 RELOADING A PAGE!
-hideous 0xC4094000
-Adding mapping at 0xC4094000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB1000.
+hideous 0xC4099000
+Adding mapping at 0xC4099000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB1000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 Made a split! (B)
-hideous 0xC4095000
-Adding mapping at 0xC4095000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB0000.
-Adding mapping at 0xC4096000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA9000.
-Adding mapping at 0xC4097000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB1000.
-Adding mapping at 0xC4098000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA4000.
+hideous 0xC409A000
+Adding mapping at 0xC409A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB0000.
+Adding mapping at 0xC409B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA9000.
+Adding mapping at 0xC409C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB1000.
+Adding mapping at 0xC409D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FA4000.
 Requiring driver: sys:/ps2.sys
 OPEN FILE: sys:/ps2.sys
 GetVnodeFromPath: sys:/ps2.sys
  GetPathComponent --> sys:/ps2.sys --> sys
- Got mount point: sys, 0xC40111FC, 0xC40109A4, 0xC4010A24
+ Got mount point: sys, 0xC401117C, 0xC401095C, 0xC40109DC
  ==> path sys:/ps2.sys
  GetPathComponent --> sys:/ps2.sys --> ps2.sys
  PATH ITER: ps2.sys [of sys:/ps2.sys]
-hideous 0xC4099000
-Adding mapping at 0xC4099000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
-
-
-Page fault: cr2 0xC4099000, eip 0xC010C19F, nos-err 0x0
-PF at 0xC4099000 on thread 0xC01154DC
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
 hideous 0xC409E000
-Adding mapping at 0xC409E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB3000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-hideous 0xC409F000
-Adding mapping at 0xC409F000 to vas 0xC013C080 - num is 4. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
-Made a split! (B)
+Adding mapping at 0xC409E000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC409A000, eip 0xC010119C, nos-err 0x0
-PF at 0xC409A000 on thread 0xC01154DC
+Page fault: cr2 0xC409E000, eip 0xC010C1B8, nos-err 0x0
+PF at 0xC409E000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
@@ -518,110 +497,124 @@ hideous 0xC40A3000
 Adding mapping at 0xC40A3000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB3000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-
-
-Page fault: cr2 0xC409F000, eip 0xC010119C, nos-err 0x2
-PF at 0xC409F000 on thread 0xC01154DC
---> BSS
-Made a split! (B)
-Made a split! (B)
-
-
-Page fault: cr2 0xC409B000, eip 0xC010119C, nos-err 0x0
-PF at 0xC409B000 on thread 0xC01154DC
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
 hideous 0xC40A4000
-Adding mapping at 0xC40A4000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F95000.
+Adding mapping at 0xC40A4000 to vas 0xC013C080 - num is 4. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
+Made a split! (B)
+
+
+Page fault: cr2 0xC409F000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC409F000 on thread 0xC01154DC
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC40A8000
+Adding mapping at 0xC40A8000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3FB3000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC40A0000, eip 0xC010119C, nos-err 0x2
+Page fault: cr2 0xC40A4000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC40A4000 on thread 0xC01154DC
+--> BSS
+Made a split! (B)
+Made a split! (B)
+
+
+Page fault: cr2 0xC40A0000, eip 0xC01011AD, nos-err 0x0
 PF at 0xC40A0000 on thread 0xC01154DC
---> BSS
-
-
-Page fault: cr2 0xC409C000, eip 0xC010119C, nos-err 0x0
-PF at 0xC409C000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC40A5000
-Adding mapping at 0xC40A5000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F93000.
+hideous 0xC40A9000
+Adding mapping at 0xC40A9000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F95000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC40A1000, eip 0xC010119C, nos-err 0x2
+Page fault: cr2 0xC40A5000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC40A5000 on thread 0xC01154DC
+--> BSS
+
+
+Page fault: cr2 0xC40A1000, eip 0xC01011AD, nos-err 0x0
 PF at 0xC40A1000 on thread 0xC01154DC
---> BSS
-
-
-Page fault: cr2 0xC409D000, eip 0xC010119C, nos-err 0x0
-PF at 0xC409D000 on thread 0xC01154DC
---> FILE
-RELOADING A PAGE!
-hideous 0xC40A6000
-Adding mapping at 0xC40A6000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F91000.
-hideous 0xC40A7000
-Adding mapping at 0xC40A7000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F90000.
-Adding mapping at 0xC40A8000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8F000.
-Adding mapping at 0xC40A9000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8E000.
-Adding mapping at 0xC40AA000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8D000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC40A2000, eip 0xC010119C, nos-err 0x2
-PF at 0xC40A2000 on thread 0xC01154DC
---> BSS
-hideous 0xC40AB000
-Adding mapping at 0xC40AB000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC40AB000, eip 0xC0108335, nos-err 0x2
-PF at 0xC40AB000 on thread 0xC01154DC
---> BSS
-LOADED THE DRIVER ((sys:/ps2.sys)) TO 0xC409F000
-hideous 0xC40AC000
-Adding mapping at 0xC40AC000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
-
-
-Page fault: cr2 0xC40AC000, eip 0xC010C7AE, nos-err 0x0
-PF at 0xC40AC000 on thread 0xC01154DC
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC40B1000
-Adding mapping at 0xC40B1000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8C000.
+hideous 0xC40AA000
+Adding mapping at 0xC40AA000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F93000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC40B0938, eip 0xC010C809, nos-err 0x0
-PF at 0xC40B0938 on thread 0xC01154DC
+Page fault: cr2 0xC40A6000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC40A6000 on thread 0xC01154DC
+--> BSS
+
+
+Page fault: cr2 0xC40A2000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40A2000 on thread 0xC01154DC
+--> FILE
+RELOADING A PAGE!
+hideous 0xC40AB000
+Adding mapping at 0xC40AB000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F91000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC40A7000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC40A7000 on thread 0xC01154DC
+--> BSS
+hideous 0xC40AC000
+Adding mapping at 0xC40AC000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC40AC000, eip 0xC0108348, nos-err 0x2
+PF at 0xC40AC000 on thread 0xC01154DC
+--> BSS
+hideous 0xC40AD000
+Adding mapping at 0xC40AD000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8E000.
+Adding mapping at 0xC40AE000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8D000.
+Adding mapping at 0xC40AF000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8C000.
+Adding mapping at 0xC40B0000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8B000.
+LOADED THE DRIVER ((sys:/ps2.sys)) TO 0xC40A4000
+hideous 0xC40B1000
+Adding mapping at 0xC40B1000 to vas 0xC013C080 - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+
+
+Page fault: cr2 0xC40B1000, eip 0xC010C7E9, nos-err 0x0
+PF at 0xC40B1000 on thread 0xC01154DC
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC40B6000
+Adding mapping at 0xC40B6000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F90000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC40B5938, eip 0xC010C844, nos-err 0x0
+PF at 0xC40B5938 on thread 0xC01154DC
 --> FILE
 Made a split! (A)
 RELOADING A PAGE!
-hideous 0xC40B2000
-Adding mapping at 0xC40B2000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8C000.
+hideous 0xC40B7000
+Adding mapping at 0xC40B7000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F90000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 Made a split! (B)
 we have a second PS/2 port
-hideous 0xC40B3000
-Adding mapping at 0xC40B3000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F94000.
-Adding mapping at 0xC40B4000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F92000.
-Adding mapping at 0xC40B5000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8C000.
-Adding mapping at 0xC40B6000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F96000.
+hideous 0xC40B8000
+Adding mapping at 0xC40B8000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F94000.
+Adding mapping at 0xC40B9000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F92000.
+Adding mapping at 0xC40BA000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F90000.
+Adding mapping at 0xC40BB000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F96000.
 MOUNTED TO THE VFS: *
 OPEN FILE: sys:/krnlapi.lib
 GetVnodeFromPath: sys:/krnlapi.lib
  GetPathComponent --> sys:/krnlapi.lib --> sys
- Got mount point: sys, 0xC40111FC, 0xC40109A4, 0xC4010A24
+ Got mount point: sys, 0xC401117C, 0xC401095C, 0xC40109DC
  ==> path sys:/krnlapi.lib
  GetPathComponent --> sys:/krnlapi.lib --> krnlapi.lib
  PATH ITER: krnlapi.lib [of sys:/krnlapi.lib]
@@ -632,53 +625,53 @@ Copyright Alex Boxall 2022-2024
 
 1376 / 64664 KB used (97% free)
 
-hideous 0xC40B7000
-Adding mapping at 0xC40B7000 to vas 0xC013C080 - num is 1. flags = 0x17, rwxgu'lfia = 11011'1011. p 0x3F97000.
-hideous 0xC40B8000
-Adding mapping at 0xC40B8000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-Adding mapping at 0xC40B9000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+hideous 0xC40BC000
+Adding mapping at 0xC40BC000 to vas 0xC013C080 - num is 1. flags = 0x17, rwxgu'lfia = 11011'1011. p 0x3F97000.
+hideous 0xC40BD000
+Adding mapping at 0xC40BD000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Adding mapping at 0xC40BE000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC40B8000, eip 0xC0108C3B, nos-err 0x2
-PF at 0xC40B8000 on thread 0xC01154DC
+Page fault: cr2 0xC40BD000, eip 0xC0108C4E, nos-err 0x2
+PF at 0xC40BD000 on thread 0xC01154DC
 --> BSS
 
 
-Page fault: cr2 0xC40B9000, eip 0xC0108C3B, nos-err 0x2
-PF at 0xC40B9000 on thread 0xC01154DC
+Page fault: cr2 0xC40BE000, eip 0xC0108C4E, nos-err 0x2
+PF at 0xC40BE000 on thread 0xC01154DC
 --> BSS
-hideous 0xC40BA000
-Adding mapping at 0xC40BA000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F88000.
-Adding mapping at 0xC40BB000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F87000.
-Adding mapping at 0xC40BC000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F86000.
-Adding mapping at 0xC40BD000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F85000.
-found ctor at 0xC010E218
-deref gives 0xC010AB76
+hideous 0xC40BF000
+Adding mapping at 0xC40BF000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F88000.
+Adding mapping at 0xC40C0000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F87000.
+Adding mapping at 0xC40C1000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F86000.
+Adding mapping at 0xC40C2000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F85000.
+found ctor at 0xC010E258
+deref gives 0xC010AB8A
 Global constructors work.
 All global constructors have run.
 Requiring driver: sys:/acpi.sys
 OPEN FILE: sys:/acpi.sys
 GetVnodeFromPath: sys:/acpi.sys
  GetPathComponent --> sys:/acpi.sys --> sys
- Got mount point: sys, 0xC40111FC, 0xC40109A4, 0xC4010A24
+ Got mount point: sys, 0xC401117C, 0xC401095C, 0xC40109DC
  ==> path sys:/acpi.sys
  GetPathComponent --> sys:/acpi.sys --> acpi.sys
  PATH ITER: acpi.sys [of sys:/acpi.sys]
-hideous 0xC40BE000
-Adding mapping at 0xC40BE000 to vas 0xC013C080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+hideous 0xC40C3000
+Adding mapping at 0xC40C3000 to vas 0xC013C080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC40BE000, eip 0xC010C19F, nos-err 0x0
-PF at 0xC40BE000 on thread 0xC407B38C
+Page fault: cr2 0xC40C3000, eip 0xC010C1B8, nos-err 0x0
+PF at 0xC40C3000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4109000
-Adding mapping at 0xC4109000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F84000.
+hideous 0xC410E000
+Adding mapping at 0xC410E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F84000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-hideous 0xC410A000
-Adding mapping at 0xC410A000 to vas 0xC013C080 - num is 51. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
+hideous 0xC410F000
+Adding mapping at 0xC410F000 to vas 0xC013C080 - num is 51. flags = 0x1, rwxgu'lfia = 10010'0000. p 0x0.
 Made a split! (B)
 Made a split! (B)
 Made a split! (B)
@@ -713,368 +706,379 @@ Made a split! (B)
 Made a split! (B)
 Made a split! (B)
 Made a split! (B)
-Adding mapping at 0xC410A000 to vas 0xC013C080 - num is 34. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0.
+Adding mapping at 0xC410F000 to vas 0xC013C080 - num is 34. flags = 0x429, rwxgu'lfia = 10110'0100. p 0x0.
 Made a split! (B)
 
 
-Page fault: cr2 0xC40E1000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E1000 on thread 0xC407B38C
+Page fault: cr2 0xC40E6000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40E6000 on thread 0xC4080464
 --> FILE
 Made a split! (A)
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC413D000
-Adding mapping at 0xC413D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F84000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC412C000, eip 0xC010119C, nos-err 0x2
-PF at 0xC412C000 on thread 0xC407B38C
---> BSS
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-Made a split! (B)
-
-
-Page fault: cr2 0xC40E2000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E2000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC413E000
-Adding mapping at 0xC413E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F81000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC412D000, eip 0xC010119C, nos-err 0x2
-PF at 0xC412D000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC40E3000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E3000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC413F000
-Adding mapping at 0xC413F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7F000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC412E000, eip 0xC010119C, nos-err 0x2
-PF at 0xC412E000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC40E4000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E4000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4140000
-Adding mapping at 0xC4140000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7D000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC412F000, eip 0xC010119C, nos-err 0x2
-PF at 0xC412F000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC40E5000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E5000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4141000
-Adding mapping at 0xC4141000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7B000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC4130000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4130000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC40E6000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E6000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
 hideous 0xC4142000
-Adding mapping at 0xC4142000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F79000.
+Adding mapping at 0xC4142000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F84000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4131000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4131000 on thread 0xC407B38C
+Page fault: cr2 0xC4131000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4131000 on thread 0xC4080464
 --> BSS
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
+Made a split! (B)
 
 
-Page fault: cr2 0xC40E7000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E7000 on thread 0xC407B38C
+Page fault: cr2 0xC40E7000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40E7000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4143000
-Adding mapping at 0xC4143000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F77000.
+Adding mapping at 0xC4143000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F81000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4132000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4132000 on thread 0xC407B38C
+Page fault: cr2 0xC4132000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4132000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40E8000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E8000 on thread 0xC407B38C
+Page fault: cr2 0xC40E8000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40E8000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4144000
-Adding mapping at 0xC4144000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F75000.
+Adding mapping at 0xC4144000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7F000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4133000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4133000 on thread 0xC407B38C
+Page fault: cr2 0xC4133000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4133000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40E9000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40E9000 on thread 0xC407B38C
+Page fault: cr2 0xC40E9000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40E9000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4145000
-Adding mapping at 0xC4145000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F73000.
+Adding mapping at 0xC4145000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7D000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4134000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4134000 on thread 0xC407B38C
+Page fault: cr2 0xC4134000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4134000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40EA000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40EA000 on thread 0xC407B38C
+Page fault: cr2 0xC40EA000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40EA000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4146000
-Adding mapping at 0xC4146000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F71000.
+Adding mapping at 0xC4146000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7B000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4135000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4135000 on thread 0xC407B38C
+Page fault: cr2 0xC4135000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4135000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40EB000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40EB000 on thread 0xC407B38C
+Page fault: cr2 0xC40EB000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40EB000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4147000
-Adding mapping at 0xC4147000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6F000.
+Adding mapping at 0xC4147000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F79000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4136000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4136000 on thread 0xC407B38C
+Page fault: cr2 0xC4136000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4136000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40EC000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40EC000 on thread 0xC407B38C
+Page fault: cr2 0xC40EC000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40EC000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4148000
-Adding mapping at 0xC4148000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6D000.
+Adding mapping at 0xC4148000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F77000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4137000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4137000 on thread 0xC407B38C
+Page fault: cr2 0xC4137000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4137000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40ED000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40ED000 on thread 0xC407B38C
+Page fault: cr2 0xC40ED000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40ED000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4149000
-Adding mapping at 0xC4149000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6B000.
+Adding mapping at 0xC4149000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F75000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4138000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4138000 on thread 0xC407B38C
+Page fault: cr2 0xC4138000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4138000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40EE000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40EE000 on thread 0xC407B38C
+Page fault: cr2 0xC40EE000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40EE000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC414A000
-Adding mapping at 0xC414A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F69000.
+Adding mapping at 0xC414A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F73000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4139000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4139000 on thread 0xC407B38C
+Page fault: cr2 0xC4139000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4139000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40EF000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40EF000 on thread 0xC407B38C
+Page fault: cr2 0xC40EF000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40EF000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC414B000
-Adding mapping at 0xC414B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F67000.
+Adding mapping at 0xC414B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F71000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC413A000, eip 0xC010119C, nos-err 0x2
-PF at 0xC413A000 on thread 0xC407B38C
+Page fault: cr2 0xC413A000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC413A000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC40F0000, eip 0xC010119C, nos-err 0x0
-PF at 0xC40F0000 on thread 0xC407B38C
+Page fault: cr2 0xC40F0000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40F0000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC414C000
-Adding mapping at 0xC414C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F65000.
+Adding mapping at 0xC414C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6F000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC413B000, eip 0xC010119C, nos-err 0x2
-PF at 0xC413B000 on thread 0xC407B38C
+Page fault: cr2 0xC413B000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC413B000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC410828C, eip 0xC010C439, nos-err 0x0
-PF at 0xC410828C on thread 0xC407B38C
+Page fault: cr2 0xC40F1000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40F1000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC414D000
+Adding mapping at 0xC414D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6D000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC413C000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC413C000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC40F2000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40F2000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC414E000
+Adding mapping at 0xC414E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6B000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC413D000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC413D000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC40F3000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40F3000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC414F000
+Adding mapping at 0xC414F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F69000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC413E000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC413E000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC40F4000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40F4000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC4150000
+Adding mapping at 0xC4150000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F67000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC413F000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC413F000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC40F5000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC40F5000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC4151000
+Adding mapping at 0xC4151000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F65000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC4140000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4140000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC410D28C, eip 0xC010C454, nos-err 0x0
+PF at 0xC410D28C on thread 0xC4080464
 --> FILE
 Made a split! (A)
 RELOADING A PAGE!
-hideous 0xC414D000
-Adding mapping at 0xC414D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F63000.
+hideous 0xC4152000
+Adding mapping at 0xC4152000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F63000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-hideous 0xC414E000
-Adding mapping at 0xC414E000 to vas 0xC013C080 - num is 7. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+hideous 0xC4153000
+Adding mapping at 0xC4153000 to vas 0xC013C080 - num is 7. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 Made a split! (B)
 
 
-Page fault: cr2 0xC410A192, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC410A192 on thread 0xC407B38C
+Page fault: cr2 0xC410F192, eip 0xC010C638, nos-err 0x0
+PF at 0xC410F192 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4155000
-Adding mapping at 0xC4155000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F63000.
+hideous 0xC415A000
+Adding mapping at 0xC415A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F63000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC414E000, eip 0xC0108335, nos-err 0x2
-PF at 0xC414E000 on thread 0xC407B38C
+Page fault: cr2 0xC4153000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4153000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC410B0C7, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC410B0C7 on thread 0xC407B38C
+Page fault: cr2 0xC41100C7, eip 0xC010C638, nos-err 0x0
+PF at 0xC41100C7 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4156000
-Adding mapping at 0xC4156000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F60000.
+hideous 0xC415B000
+Adding mapping at 0xC415B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F60000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-hideous 0xC4157000
-Adding mapping at 0xC4157000 to vas 0xC407C40C - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
-
-
-Page fault: cr2 0xC4157018, eip 0xC010C196, nos-err 0x0
-PF at 0xC4157018 on thread 0xC407C114
---> FILE
 Made a split! (B)
+
+
+Page fault: cr2 0xC411107C, eip 0xC010C638, nos-err 0x0
+PF at 0xC411107C on thread 0xC4080464
+--> FILE
 RELOADING A PAGE!
 hideous 0xC415C000
-Adding mapping at 0xC415C000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F60000.
+Adding mapping at 0xC415C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F60000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-Adding mapping at 0xBFC00000 to vas 0xC407C40C - num is 20. flags = 0x145, rwxgu'lfia = 10001'0000. p 0x0.
-Made a split! (B)
-Made a split! (B)
-
-
-Page fault: cr2 0xC4158000, eip 0xC010119C, nos-err 0x0
-PF at 0xC4158000 on thread 0xC407C114
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
 hideous 0xC415D000
-Adding mapping at 0xC415D000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F5D000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
+Adding mapping at 0xC415D000 to vas 0xC40814CC - num is 5. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xBFC00000, eip 0xC010119C, nos-err 0x2
-PF at 0xBFC00000 on thread 0xC407C114
---> BSS
-
-
-Page fault: cr2 0xC4159000, eip 0xC010119C, nos-err 0x0
-PF at 0xC4159000 on thread 0xC407C114
+Page fault: cr2 0xC415D018, eip 0xC010C1AF, nos-err 0x0
+PF at 0xC415D018 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC415E000
-Adding mapping at 0xC415E000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F5B000.
+hideous 0xC4162000
+Adding mapping at 0xC4162000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F60000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Adding mapping at 0xBFC00000 to vas 0xC40814CC - num is 20. flags = 0x145, rwxgu'lfia = 10001'0000. p 0x0.
+Made a split! (B)
+Made a split! (B)
+
+
+Page fault: cr2 0xC415E000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC415E000 on thread 0xC40811D4
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC4163000
+Adding mapping at 0xC4163000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F5C000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xBFC01000, eip 0xC010119C, nos-err 0x2
-PF at 0xBFC01000 on thread 0xC407C114
+Page fault: cr2 0xBFC00000, eip 0xC01011AF, nos-err 0x2
+PF at 0xBFC00000 on thread 0xC40811D4
+--> BSS
+
+
+Page fault: cr2 0xC415F000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC415F000 on thread 0xC40811D4
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC4164000
+Adding mapping at 0xC4164000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F5A000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xBFC01000, eip 0xC01011AF, nos-err 0x2
+PF at 0xBFC01000 on thread 0xC40811D4
 --> BSS
 Made a split! (B)
 Made a split! (B)
@@ -1095,311 +1099,311 @@ Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC415A000, eip 0xC010119C, nos-err 0x0
-PF at 0xC415A000 on thread 0xC407C114
+Page fault: cr2 0xC4160000, eip 0xC01011AD, nos-err 0x0
+PF at 0xC4160000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC415F000
-Adding mapping at 0xC415F000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F59000.
+hideous 0xC4165000
+Adding mapping at 0xC4165000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F58000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xBFC02000, eip 0xC010119C, nos-err 0x2
-PF at 0xBFC02000 on thread 0xC407C114
+Page fault: cr2 0xBFC02000, eip 0xC01011AF, nos-err 0x2
+PF at 0xBFC02000 on thread 0xC40811D4
 --> BSS
 
 
-Page fault: cr2 0xC415B070, eip 0xC010C439, nos-err 0x0
-PF at 0xC415B070 on thread 0xC407C114
+Page fault: cr2 0xC4161070, eip 0xC010C454, nos-err 0x0
+PF at 0xC4161070 on thread 0xC40811D4
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4160000
-Adding mapping at 0xC4160000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F57000.
+hideous 0xC4166000
+Adding mapping at 0xC4166000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F56000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-Adding mapping at 0xFC00000 to vas 0xC407C40C - num is 1024. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0xFC00000 to vas 0xC40814CC - num is 1024. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
 Page fault: cr2 0xFFFFFFC, eip 0xBFC00EE0, nos-err 0x6
-PF at 0xFFFFFFC on thread 0xC407C114
+PF at 0xFFFFFFC on thread 0xC40811D4
 --> BSS
 Made a split! (A)
 
 
 Page fault: cr2 0xBFC13044, eip 0xBFC00D9C, nos-err 0x4
-PF at 0xBFC13044 on thread 0xC407C114
+PF at 0xBFC13044 on thread 0xC40811D4
 --> BSS
 
 
 Page fault: cr2 0xBFC03020, eip 0xBFC00DAB, nos-err 0x4
-PF at 0xBFC03020 on thread 0xC407C114
+PF at 0xBFC03020 on thread 0xC40811D4
 --> BSS
 OPEN FILE: sys:/init.exe
 GetVnodeFromPath: sys:/init.exe
  GetPathComponent --> sys:/init.exe --> sys
- Got mount point: sys, 0xC40111FC, 0xC40109A4, 0xC4010A24
+ Got mount point: sys, 0xC401117C, 0xC401095C, 0xC40109DC
  ==> path sys:/init.exe
  GetPathComponent --> sys:/init.exe --> init.exe
  PATH ITER: init.exe [of sys:/init.exe]
-Creating fd... file = [0xC407EC84, 0xC407E56C], fd = 0
+Creating fd... file = [0xC40836D4, 0xC408359C], fd = 0
 SysMapVirt has flags 0x125 for addr 0x0
 hideously (A) 0x20000000
-Adding mapping at 0x20000000 to vas 0xC407C40C - num is 11. flags = 0x125, rwxgu'lfia = 10001'0100. p 0x0.
+Adding mapping at 0x20000000 to vas 0xC40814CC - num is 11. flags = 0x125, rwxgu'lfia = 10001'0100. p 0x0.
 
 
 Page fault: cr2 0x20000000, eip 0xBFC007AB, nos-err 0x4
-PF at 0x20000000 on thread 0xC407C114
+PF at 0x20000000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4161000
-Adding mapping at 0xC4161000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F57000.
+hideous 0xC4167000
+Adding mapping at 0xC4167000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F56000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 SysMapVirt has flags 0x10F for addr 0x107FF000
-Adding mapping at 0x107FF000 to vas 0xC407C40C - num is 6. flags = 0x10F, rwxgu'lfia = 11101'0000. p 0x0.
+Adding mapping at 0x107FF000 to vas 0xC40814CC - num is 6. flags = 0x10F, rwxgu'lfia = 11101'0000. p 0x0.
 
 
 Page fault: cr2 0x107FF000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x107FF000 on thread 0xC407C114
+PF at 0x107FF000 on thread 0xC40811D4
 --> BSS
 Made a split! (B)
 
 
 Page fault: cr2 0x20001000, eip 0xBFC00E54, nos-err 0x4
-PF at 0x20001000 on thread 0xC407C114
+PF at 0x20001000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4162000
-Adding mapping at 0xC4162000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F52000.
+hideous 0xC4168000
+Adding mapping at 0xC4168000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F51000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x10800000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x10800000 on thread 0xC407C114
+PF at 0x10800000 on thread 0xC40811D4
 --> BSS
 Made a split! (B)
 
 
 Page fault: cr2 0x20002000, eip 0xBFC00E54, nos-err 0x4
-PF at 0x20002000 on thread 0xC407C114
+PF at 0x20002000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4163000
-Adding mapping at 0xC4163000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F50000.
+hideous 0xC4169000
+Adding mapping at 0xC4169000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F4F000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x10801000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x10801000 on thread 0xC407C114
+PF at 0x10801000 on thread 0xC40811D4
 --> BSS
 Made a split! (B)
 
 
 Page fault: cr2 0x20003000, eip 0xBFC00E54, nos-err 0x4
-PF at 0x20003000 on thread 0xC407C114
+PF at 0x20003000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4164000
-Adding mapping at 0xC4164000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F4E000.
+hideous 0xC416A000
+Adding mapping at 0xC416A000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F4D000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x10802000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x10802000 on thread 0xC407C114
+PF at 0x10802000 on thread 0xC40811D4
 --> BSS
 Made a split! (B)
 
 
 Page fault: cr2 0x20004000, eip 0xBFC00E54, nos-err 0x4
-PF at 0x20004000 on thread 0xC407C114
+PF at 0x20004000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4165000
-Adding mapping at 0xC4165000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F4C000.
+hideous 0xC416B000
+Adding mapping at 0xC416B000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F4B000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x10803000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x10803000 on thread 0xC407C114
+PF at 0x10803000 on thread 0xC40811D4
 --> BSS
 Made a split! (B)
 
 
 Page fault: cr2 0x20005000, eip 0xBFC00E54, nos-err 0x4
-PF at 0x20005000 on thread 0xC407C114
+PF at 0x20005000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4166000
-Adding mapping at 0xC4166000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F4A000.
+hideous 0xC416C000
+Adding mapping at 0xC416C000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F49000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x10804000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x10804000 on thread 0xC407C114
+PF at 0x10804000 on thread 0xC40811D4
 --> BSS
 SysMapVirt has flags 0x107 for addr 0x10805000
-Adding mapping at 0x10805000 to vas 0xC407C40C - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
-Adding mapping at 0x10806000 to vas 0xC407C40C - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x10805000 to vas 0xC40814CC - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x10806000 to vas 0xC40814CC - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
 Page fault: cr2 0x20006000, eip 0xBFC00E54, nos-err 0x4
-PF at 0x20006000 on thread 0xC407C114
+PF at 0x20006000 on thread 0xC40811D4
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4167000
-Adding mapping at 0xC4167000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F48000.
+hideous 0xC416D000
+Adding mapping at 0xC416D000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F47000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x10805000, eip 0xBFC00E56, nos-err 0x6
-PF at 0x10805000 on thread 0xC407C114
+PF at 0x10805000 on thread 0xC40811D4
 --> BSS
-Removing fd... file = [0xC407EC84, 0xC407E56C], fd = 0
+Removing fd... file = [0xC40836D4, 0xC408359C], fd = 0
 
 
 Page fault: cr2 0x20008874, eip 0xBFC00650, nos-err 0x4
-PF at 0x20008874 on thread 0xC407C114
+PF at 0x20008874 on thread 0xC40811D4
 --> FILE
 Made a split! (A)
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4168000
-Adding mapping at 0xC4168000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F46000.
+hideous 0xC416E000
+Adding mapping at 0xC416E000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F45000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x2000A044, eip 0xBFC00665, nos-err 0x4
-PF at 0x2000A044 on thread 0xC407C114
+PF at 0x2000A044 on thread 0xC40811D4
 --> FILE
 Made a split! (A)
 RELOADING A PAGE!
-hideous 0xC4169000
-Adding mapping at 0xC4169000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F46000.
+hideous 0xC416F000
+Adding mapping at 0xC416F000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F45000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x20007FA7, eip 0xBFC00E65, nos-err 0x4
-PF at 0x20007FA7 on thread 0xC407C114
+PF at 0x20007FA7 on thread 0xC40811D4
 --> FILE
 RELOADING A PAGE!
-hideous 0xC416A000
-Adding mapping at 0xC416A000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F46000.
+hideous 0xC4170000
+Adding mapping at 0xC4170000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F45000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
 Page fault: cr2 0x2000901C, eip 0xBFC00650, nos-err 0x4
-PF at 0x2000901C on thread 0xC407C114
+PF at 0x2000901C on thread 0xC40811D4
 --> FILE
 RELOADING A PAGE!
-hideous 0xC416B000
-Adding mapping at 0xC416B000 to vas 0xC407C40C - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F46000.
+hideous 0xC4171000
+Adding mapping at 0xC4171000 to vas 0xC40814CC - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F45000.
 Made a split! (B)
 
 
-Page fault: cr2 0xC410C07C, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC410C07C on thread 0xC407B38C
+Page fault: cr2 0xC4112097, eip 0xC010C638, nos-err 0x0
+PF at 0xC4112097 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC416C000
-Adding mapping at 0xC416C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
+hideous 0xC4172000
+Adding mapping at 0xC4172000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F41000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0x108060A4, eip 0x108024F3, nos-err 0x4
-PF at 0x108060A4 on thread 0xC407C114
+Page fault: cr2 0x108060A4, eip 0x1080250D, nos-err 0x4
+PF at 0x108060A4 on thread 0xC40811D4
 --> BSS
 SysMapVirt has flags 0x107 for addr 0x0
 hideously (A) 0x2000B000
-Adding mapping at 0x2000B000 to vas 0xC407C40C - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x2000B000 to vas 0xC40814CC - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
-Page fault: cr2 0x2000B000, eip 0x10802174, nos-err 0x4
-PF at 0x2000B000 on thread 0xC407C114
+Page fault: cr2 0x2000B000, eip 0x1080218E, nos-err 0x4
+PF at 0x2000B000 on thread 0xC40811D4
 --> BSS
 SysMapVirt has flags 0x107 for addr 0x0
 hideously (A) 0x2000C000
-Adding mapping at 0x2000C000 to vas 0xC407C40C - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x2000C000 to vas 0xC40814CC - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
-Page fault: cr2 0x2000C000, eip 0x10802174, nos-err 0x4
-PF at 0x2000C000 on thread 0xC407C114
+Page fault: cr2 0x2000C000, eip 0x1080218E, nos-err 0x4
+PF at 0x2000C000 on thread 0xC40811D4
 --> BSS
 OPEN FILE: con:
 GetVnodeFromPath: con:
  GetPathComponent --> con: --> con
  Got mount point: con, 0xC01169B4, 0xC01167A4, 0xC01182FC
-Creating fd... file = [0xC407CD14, 0xC01182FC], fd = 0
+Creating fd... file = [0xC4081D1C, 0xC01182FC], fd = 0
 SysMapVirt has flags 0x107 for addr 0x0
 hideously (A) 0x2000D000
-Adding mapping at 0x2000D000 to vas 0xC407C40C - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x2000D000 to vas 0xC40814CC - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
-Page fault: cr2 0x2000D000, eip 0x10802174, nos-err 0x4
-PF at 0x2000D000 on thread 0xC407C114
+Page fault: cr2 0x2000D000, eip 0x1080218E, nos-err 0x4
+PF at 0x2000D000 on thread 0xC40811D4
 --> BSS
 OPEN FILE: con:
 GetVnodeFromPath: con:
  GetPathComponent --> con: --> con
  Got mount point: con, 0xC01169B4, 0xC01167A4, 0xC01182FC
-Creating fd... file = [0xC407CC74, 0xC01182FC], fd = 1
-SysIoctl: [0xC407CC74, 0xC01182FC] 1, 0, 0xFFFFEE4
+Creating fd... file = [0xC4081C94, 0xC01182FC], fd = 1
+SysIoctl: [0xC4081C94, 0xC01182FC] 1, 0, 0xFFFFEE4
 VnodeOpIoctl: cmd = 0
 SubordinateIoctl! cmd = 0
 SysMapVirt has flags 0x107 for addr 0x0
 hideously (A) 0x2000E000
-Adding mapping at 0x2000E000 to vas 0xC407C40C - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
+Adding mapping at 0x2000E000 to vas 0xC40814CC - num is 1. flags = 0x107, rwxgu'lfia = 11001'0000. p 0x0.
 
 
-Page fault: cr2 0x2000E000, eip 0x10802174, nos-err 0x4
-PF at 0x2000E000 on thread 0xC407C114
+Page fault: cr2 0x2000E000, eip 0x1080218E, nos-err 0x4
+PF at 0x2000E000 on thread 0xC40811D4
 --> BSS
 OPEN FILE: con:
 GetVnodeFromPath: con:
  GetPathComponent --> con: --> con
  Got mount point: con, 0xC01169B4, 0xC01167A4, 0xC01182FC
-Creating fd... file = [0xC407CBD4, 0xC01182FC], fd = 2
-SysIoctl: [0xC407CBD4, 0xC01182FC] 2, 0, 0xFFFFEE4
+Creating fd... file = [0xC4081BDC, 0xC01182FC], fd = 2
+SysIoctl: [0xC4081BDC, 0xC01182FC] 2, 0, 0xFFFFEE4
 VnodeOpIoctl: cmd = 0
 SubordinateIoctl! cmd = 0
 OPEN FILE: drv0:/
 GetVnodeFromPath: drv0:/
  GetPathComponent --> drv0:/ --> drv0
  Got mount point: drv0, 0xC0116324, 0xC4011ADC, 0xC4011B9C
-Creating fd... file = [0xC407CB94, 0xC4011B9C], fd = 3
-Removing fd... file = [0xC407CB94, 0xC4011B9C], fd = 3
+Creating fd... file = [0xC4081B9C, 0xC4011B9C], fd = 3
+Removing fd... file = [0xC4081B9C, 0xC4011B9C], fd = 3
 OPEN FILE: .
 GetVnodeFromPath: .
  ==> path .
  GetPathComponent --> . --> .
  PATH ITER: . [of .]
-Creating fd... file = [0xC407CB94, 0xC4011B9C], fd = 3
-Removing fd... file = [0xC407CB94, 0xC4011B9C], fd = 3
+Creating fd... file = [0xC4081B9C, 0xC4011B9C], fd = 3
+Removing fd... file = [0xC4081B9C, 0xC4011B9C], fd = 3
 OPEN FILE: .
 GetVnodeFromPath: .
  ==> path .
  GetPathComponent --> . --> .
  PATH ITER: . [of .]
-Creating fd... file = [0xC407CB94, 0xC4011B9C], fd = 3
-Removing fd... file = [0xC407CB94, 0xC4011B9C], fd = 3
+Creating fd... file = [0xC4081B9C, 0xC4011B9C], fd = 3
+Removing fd... file = [0xC4081B9C, 0xC4011B9C], fd = 3
 OPEN FILE: ..
 GetVnodeFromPath: ..
  ==> path ..
@@ -1410,143 +1414,77 @@ needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC410D097, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC410D097 on thread 0xC407B38C
+Page fault: cr2 0xC4113003, eip 0xC010C638, nos-err 0x0
+PF at 0xC4113003 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC416D000
-Adding mapping at 0xC416D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
-Creating fd... file = [0xC407CA7C, 0xC407CABC], fd = 3
-Removing fd... file = [0xC407CA7C, 0xC407CABC], fd = 3
+hideous 0xC4173000
+Adding mapping at 0xC4173000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F41000.
+Creating fd... file = [0xC4081A9C, 0xC4081ADC], fd = 3
+Removing fd... file = [0xC4081A9C, 0xC4081ADC], fd = 3
 OPEN FILE: *:/
 GetVnodeFromPath: *:/
  GetPathComponent --> *:/ --> *
- Got mount point: *, 0xC407A9FC, 0xC407B1EC, 0xC407B22C
-Creating fd... file = [0xC407CB1C, 0xC407B22C], fd = 3
-Removing fd... file = [0xC407CB1C, 0xC407B22C], fd = 3
+ Got mount point: *, 0xC40807AC, 0xC40802C4, 0xC4080304
+Creating fd... file = [0xC4081B3C, 0xC4080304], fd = 3
+Removing fd... file = [0xC4081B3C, 0xC4080304], fd = 3
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC410E003, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC410E003 on thread 0xC407B38C
+Page fault: cr2 0xC411401C, eip 0xC010C638, nos-err 0x0
+PF at 0xC411401C on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC416E000
-Adding mapping at 0xC416E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
+hideous 0xC4174000
+Adding mapping at 0xC4174000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F41000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC410F01C, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC410F01C on thread 0xC407B38C
+Page fault: cr2 0xC4115002, eip 0xC010C638, nos-err 0x0
+PF at 0xC4115002 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC416F000
-Adding mapping at 0xC416F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
+hideous 0xC4175000
+Adding mapping at 0xC4175000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F41000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC4110002, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4110002 on thread 0xC407B38C
+Page fault: cr2 0xC4116019, eip 0xC010C638, nos-err 0x0
+PF at 0xC4116019 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4170000
-Adding mapping at 0xC4170000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
+hideous 0xC4176000
+Adding mapping at 0xC4176000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F41000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC4111019, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4111019 on thread 0xC407B38C
+Page fault: cr2 0xC4117006, eip 0xC010C638, nos-err 0x0
+PF at 0xC4117006 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4171000
-Adding mapping at 0xC4171000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4112006, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4112006 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4172000
-Adding mapping at 0xC4172000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F42000.
+hideous 0xC4177000
+Adding mapping at 0xC4177000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F41000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC414F000, eip 0xC0108335, nos-err 0x2
-PF at 0xC414F000 on thread 0xC407B38C
+Page fault: cr2 0xC4154000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4154000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC4113003, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4113003 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4173000
-Adding mapping at 0xC4173000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4114068, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4114068 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4174000
-Adding mapping at 0xC4174000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4115127, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4115127 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4175000
-Adding mapping at 0xC4175000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4116046, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4116046 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4176000
-Adding mapping at 0xC4176000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4117010, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4117010 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4177000
-Adding mapping at 0xC4177000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC41180DF, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC41180DF on thread 0xC407B38C
+Page fault: cr2 0xC4118003, eip 0xC010C638, nos-err 0x0
+PF at 0xC4118003 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC4178000
@@ -1556,8 +1494,8 @@ needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC4119009, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4119009 on thread 0xC407B38C
+Page fault: cr2 0xC4119068, eip 0xC010C638, nos-err 0x0
+PF at 0xC4119068 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC4179000
@@ -1567,503 +1505,558 @@ needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC411A030, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC411A030 on thread 0xC407B38C
+Page fault: cr2 0xC411A127, eip 0xC010C638, nos-err 0x0
+PF at 0xC411A127 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC417A000
 Adding mapping at 0xC417A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-
-
-Page fault: cr2 0xC4150000, eip 0xC0108335, nos-err 0x2
-PF at 0xC4150000 on thread 0xC407B38C
---> BSS
-Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC411B000, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC411B000 on thread 0xC407B38C
+Page fault: cr2 0xC411B046, eip 0xC010C638, nos-err 0x0
+PF at 0xC411B046 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC417B000
-Adding mapping at 0xC417B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
+Adding mapping at 0xC417B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC411C102, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC411C102 on thread 0xC407B38C
+Page fault: cr2 0xC411C010, eip 0xC010C638, nos-err 0x0
+PF at 0xC411C010 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC417C000
-Adding mapping at 0xC417C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
+Adding mapping at 0xC417C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC411D04C, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC411D04C on thread 0xC407B38C
+Page fault: cr2 0xC411D0DF, eip 0xC010C638, nos-err 0x0
+PF at 0xC411D0DF on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC417D000
-Adding mapping at 0xC417D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
+Adding mapping at 0xC417D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC411E009, eip 0xC010C638, nos-err 0x0
+PF at 0xC411E009 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
 hideous 0xC417E000
-Adding mapping at 0xC417E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F29000.
-Adding mapping at 0xC417F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F28000.
-Adding mapping at 0xC4180000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
-Adding mapping at 0xC4181000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F26000.
+Adding mapping at 0xC417E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC411E18C, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC411E18C on thread 0xC407B38C
+Page fault: cr2 0xC411F030, eip 0xC010C638, nos-err 0x0
+PF at 0xC411F030 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
-hideous 0xC4182000
-Adding mapping at 0xC4182000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC411F057, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC411F057 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4183000
-Adding mapping at 0xC4183000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC41201D6, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC41201D6 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4184000
-Adding mapping at 0xC4184000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4121023, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4121023 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4185000
-Adding mapping at 0xC4185000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC41220DC, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC41220DC on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4186000
-Adding mapping at 0xC4186000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-Made a split! (B)
-
-
-Page fault: cr2 0xC4123024, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4123024 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
-hideous 0xC4187000
-Adding mapping at 0xC4187000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
+hideous 0xC417F000
+Adding mapping at 0xC417F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F35000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4151000, eip 0xC0108335, nos-err 0x2
-PF at 0xC4151000 on thread 0xC407B38C
+Page fault: cr2 0xC4155000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4155000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC4124005, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4124005 on thread 0xC407B38C
+Page fault: cr2 0xC4120000, eip 0xC010C638, nos-err 0x0
+PF at 0xC4120000 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4180000
+Adding mapping at 0xC4180000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC4121102, eip 0xC010C638, nos-err 0x0
+PF at 0xC4121102 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4181000
+hideous 0xC4182000
+Adding mapping at 0xC4182000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2C000.
+Adding mapping at 0xC4183000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F2A000.
+Adding mapping at 0xC4184000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F29000.
+Adding mapping at 0xC4185000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F28000.
+Adding mapping at 0xC4181000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC412204C, eip 0xC010C638, nos-err 0x0
+PF at 0xC412204C on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4186000
+Adding mapping at 0xC4186000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC412318C, eip 0xC010C638, nos-err 0x0
+PF at 0xC412318C on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4187000
+Adding mapping at 0xC4187000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC4124057, eip 0xC010C638, nos-err 0x0
+PF at 0xC4124057 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC4188000
-Adding mapping at 0xC4188000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+Adding mapping at 0xC4188000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC4125016, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4125016 on thread 0xC407B38C
+Page fault: cr2 0xC41251D6, eip 0xC010C638, nos-err 0x0
+PF at 0xC41251D6 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC4189000
-Adding mapping at 0xC4189000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+Adding mapping at 0xC4189000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC41260BB, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC41260BB on thread 0xC407B38C
+Page fault: cr2 0xC4126023, eip 0xC010C638, nos-err 0x0
+PF at 0xC4126023 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC418A000
-Adding mapping at 0xC418A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+Adding mapping at 0xC418A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC41270F5, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC41270F5 on thread 0xC407B38C
+Page fault: cr2 0xC41270DC, eip 0xC010C638, nos-err 0x0
+PF at 0xC41270DC on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC418B000
-Adding mapping at 0xC418B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+Adding mapping at 0xC418B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
 
 
-Page fault: cr2 0xC4128117, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC4128117 on thread 0xC407B38C
+Page fault: cr2 0xC4128024, eip 0xC010C638, nos-err 0x0
+PF at 0xC4128024 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC418C000
-Adding mapping at 0xC418C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+Adding mapping at 0xC418C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F27000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+
+
+Page fault: cr2 0xC4156000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4156000 on thread 0xC4080464
+--> BSS
+Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC412900A, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC412900A on thread 0xC407B38C
+Page fault: cr2 0xC4129005, eip 0xC010C638, nos-err 0x0
+PF at 0xC4129005 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC418D000
 Adding mapping at 0xC418D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-
-
-Page fault: cr2 0xC4152000, eip 0xC0108335, nos-err 0x2
-PF at 0xC4152000 on thread 0xC407B38C
---> BSS
-Made a split! (B)
 Made a split! (B)
 
 
-Page fault: cr2 0xC412A000, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC412A000 on thread 0xC407B38C
+Page fault: cr2 0xC412A016, eip 0xC010C638, nos-err 0x0
+PF at 0xC412A016 on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC418E000
-Adding mapping at 0xC418E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F17000.
+Adding mapping at 0xC418E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+Made a split! (B)
 
 
-Page fault: cr2 0xC412B5CC, eip 0xC010C5FD, nos-err 0x0
-PF at 0xC412B5CC on thread 0xC407B38C
+Page fault: cr2 0xC412B0BB, eip 0xC010C638, nos-err 0x0
+PF at 0xC412B0BB on thread 0xC4080464
 --> FILE
 RELOADING A PAGE!
 hideous 0xC418F000
-Adding mapping at 0xC418F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F17000.
+Adding mapping at 0xC418F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC412C0F5, eip 0xC010C638, nos-err 0x0
+PF at 0xC412C0F5 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4190000
+Adding mapping at 0xC4190000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC412D117, eip 0xC010C638, nos-err 0x0
+PF at 0xC412D117 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4191000
+Adding mapping at 0xC4191000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+Made a split! (B)
+
+
+Page fault: cr2 0xC412E00A, eip 0xC010C638, nos-err 0x0
+PF at 0xC412E00A on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4192000
+Adding mapping at 0xC4192000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F1E000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC4153000, eip 0xC0108335, nos-err 0x2
-PF at 0xC4153000 on thread 0xC407B38C
+Page fault: cr2 0xC4157000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4157000 on thread 0xC4080464
+--> BSS
+Made a split! (B)
+Made a split! (B)
+
+
+Page fault: cr2 0xC412F000, eip 0xC010C638, nos-err 0x0
+PF at 0xC412F000 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4193000
+Adding mapping at 0xC4193000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F17000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC41305CC, eip 0xC010C638, nos-err 0x0
+PF at 0xC41305CC on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC4194000
+Adding mapping at 0xC4194000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F17000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC4158000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4158000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 
 
-Page fault: cr2 0xC4154000, eip 0xC0108335, nos-err 0x2
-PF at 0xC4154000 on thread 0xC407B38C
+Page fault: cr2 0xC4159000, eip 0xC0108348, nos-err 0x2
+PF at 0xC4159000 on thread 0xC4080464
 --> BSS
-hideous 0xC4190000
-Adding mapping at 0xC4190000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-hideous 0xC4191000
-Adding mapping at 0xC4191000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4190000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4190000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC4191000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4191000 on thread 0xC407B38C
---> BSS
-hideous 0xC4192000
-Adding mapping at 0xC4192000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-hideous 0xC4193000
-Adding mapping at 0xC4193000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4192000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4192000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC4193000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4193000 on thread 0xC407B38C
---> BSS
-hideous 0xC4194000
-Adding mapping at 0xC4194000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 hideous 0xC4195000
 Adding mapping at 0xC4195000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4194000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4194000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC4195000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4195000 on thread 0xC407B38C
---> BSS
 hideous 0xC4196000
 Adding mapping at 0xC4196000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC4195000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4195000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC4196000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4196000 on thread 0xC4080464
+--> BSS
 hideous 0xC4197000
 Adding mapping at 0xC4197000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4196000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4196000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC4197000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4197000 on thread 0xC407B38C
---> BSS
 hideous 0xC4198000
 Adding mapping at 0xC4198000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC4197000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4197000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC4198000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4198000 on thread 0xC4080464
+--> BSS
 hideous 0xC4199000
 Adding mapping at 0xC4199000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC4198000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4198000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC4199000, eip 0xC010119C, nos-err 0x2
-PF at 0xC4199000 on thread 0xC407B38C
---> BSS
 hideous 0xC419A000
 Adding mapping at 0xC419A000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC4199000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC4199000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC419A000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC419A000 on thread 0xC4080464
+--> BSS
 hideous 0xC419B000
 Adding mapping at 0xC419B000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC419A000, eip 0xC010119C, nos-err 0x2
-PF at 0xC419A000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC419B000, eip 0xC010119C, nos-err 0x2
-PF at 0xC419B000 on thread 0xC407B38C
---> BSS
 hideous 0xC419C000
 Adding mapping at 0xC419C000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC419B000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC419B000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC419C000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC419C000 on thread 0xC4080464
+--> BSS
+hideous 0xC419D000
 Adding mapping at 0xC419D000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 hideous 0xC419E000
 Adding mapping at 0xC419E000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC419D000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC419D000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC419E000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC419E000 on thread 0xC4080464
+--> BSS
+hideous 0xC419F000
 Adding mapping at 0xC419F000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC419C000, eip 0xC010119C, nos-err 0x2
-PF at 0xC419C000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC419D000, eip 0xC010119C, nos-err 0x2
-PF at 0xC419D000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC419E000, eip 0xC010119C, nos-err 0x2
-PF at 0xC419E000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC419F000, eip 0xC010119C, nos-err 0x2
-PF at 0xC419F000 on thread 0xC407B38C
---> BSS
 hideous 0xC41A0000
 Adding mapping at 0xC41A0000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC419F000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC419F000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41A0000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A0000 on thread 0xC4080464
+--> BSS
 hideous 0xC41A1000
 Adding mapping at 0xC41A1000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41A0000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A0000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41A1000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A1000 on thread 0xC407B38C
---> BSS
-hideous 0xC41A2000
 Adding mapping at 0xC41A2000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 hideous 0xC41A3000
 Adding mapping at 0xC41A3000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41A2000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A2000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41A3000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A3000 on thread 0xC407B38C
---> BSS
-hideous 0xC41A4000
 Adding mapping at 0xC41A4000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41A1000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A1000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41A2000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A2000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41A3000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A3000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41A4000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A4000 on thread 0xC4080464
+--> BSS
 hideous 0xC41A5000
 Adding mapping at 0xC41A5000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41A4000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A4000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41A5000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A5000 on thread 0xC407B38C
---> BSS
 hideous 0xC41A6000
 Adding mapping at 0xC41A6000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41A5000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A5000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41A6000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A6000 on thread 0xC4080464
+--> BSS
 hideous 0xC41A7000
 Adding mapping at 0xC41A7000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41A6000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A6000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41A7000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A7000 on thread 0xC407B38C
---> BSS
 hideous 0xC41A8000
 Adding mapping at 0xC41A8000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41A7000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A7000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41A8000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A8000 on thread 0xC4080464
+--> BSS
 hideous 0xC41A9000
 Adding mapping at 0xC41A9000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41A8000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A8000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41A9000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41A9000 on thread 0xC407B38C
---> BSS
 hideous 0xC41AA000
 Adding mapping at 0xC41AA000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41A9000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41A9000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41AA000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41AA000 on thread 0xC4080464
+--> BSS
 hideous 0xC41AB000
 Adding mapping at 0xC41AB000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41AA000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41AA000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41AB000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41AB000 on thread 0xC407B38C
---> BSS
 hideous 0xC41AC000
 Adding mapping at 0xC41AC000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41AB000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41AB000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41AC000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41AC000 on thread 0xC4080464
+--> BSS
+hideous 0xC41AD000
 Adding mapping at 0xC41AD000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 hideous 0xC41AE000
 Adding mapping at 0xC41AE000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41AD000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41AD000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41AE000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41AE000 on thread 0xC4080464
+--> BSS
+hideous 0xC41AF000
 Adding mapping at 0xC41AF000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-
-
-Page fault: cr2 0xC41AC000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41AC000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41AD000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41AD000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41AE000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41AE000 on thread 0xC407B38C
---> BSS
-
-
-Page fault: cr2 0xC41AF000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41AF000 on thread 0xC407B38C
---> BSS
 hideous 0xC41B0000
-Adding mapping at 0xC41B0000 to vas 0xC013C080 - num is 4. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
-hideous 0xC41B4000
-Adding mapping at 0xC41B4000 to vas 0xC013C080 - num is 4. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Adding mapping at 0xC41B0000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
 
 
-Page fault: cr2 0xC41B0000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B0000 on thread 0xC407B38C
+Page fault: cr2 0xC41AF000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41AF000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41B0000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B0000 on thread 0xC4080464
+--> BSS
+hideous 0xC41B1000
+Adding mapping at 0xC41B1000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Adding mapping at 0xC41B2000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+hideous 0xC41B3000
+Adding mapping at 0xC41B3000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+Adding mapping at 0xC41B4000 to vas 0xC013C080 - num is 1. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41B1000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B1000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41B2000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B2000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41B3000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B3000 on thread 0xC4080464
+--> BSS
+
+
+Page fault: cr2 0xC41B4000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B4000 on thread 0xC4080464
+--> BSS
+hideous 0xC41B5000
+Adding mapping at 0xC41B5000 to vas 0xC013C080 - num is 4. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+hideous 0xC41B9000
+Adding mapping at 0xC41B9000 to vas 0xC013C080 - num is 4. flags = 0x3, rwxgu'lfia = 11010'0000. p 0x0.
+
+
+Page fault: cr2 0xC41B5000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B5000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 
 
-Page fault: cr2 0xC41B1000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B1000 on thread 0xC407B38C
+Page fault: cr2 0xC41B6000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B6000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 
 
-Page fault: cr2 0xC41B2000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B2000 on thread 0xC407B38C
+Page fault: cr2 0xC41B7000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B7000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 
 
-Page fault: cr2 0xC41B3000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B3000 on thread 0xC407B38C
+Page fault: cr2 0xC41B8000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B8000 on thread 0xC4080464
 --> BSS
 
 
-Page fault: cr2 0xC41B4000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B4000 on thread 0xC407B38C
---> BSS
-Made a split! (B)
-
-
-Page fault: cr2 0xC41B5000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B5000 on thread 0xC407B38C
+Page fault: cr2 0xC41B9000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41B9000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 
 
-Page fault: cr2 0xC41B6000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B6000 on thread 0xC407B38C
+Page fault: cr2 0xC41BA000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41BA000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 
 
-Page fault: cr2 0xC41B7000, eip 0xC010119C, nos-err 0x2
-PF at 0xC41B7000 on thread 0xC407B38C
+Page fault: cr2 0xC41BB000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41BB000 on thread 0xC4080464
+--> BSS
+Made a split! (B)
+
+
+Page fault: cr2 0xC41BC000, eip 0xC01011AF, nos-err 0x2
+PF at 0xC41BC000 on thread 0xC4080464
 --> BSS
 Made a split! (B)
 Made a split! (B)
@@ -2120,70 +2113,13 @@ Made a split! (B)
 Made a split! (B)
 Made a split! (B)
 Made a split! (B)
-LOADED THE DRIVER ((sys:/acpi.sys)) TO 0xC410A000
-hideous 0xC41B8000
-Adding mapping at 0xC41B8000 to vas 0xC013C080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
+LOADED THE DRIVER ((sys:/acpi.sys)) TO 0xC410F000
+hideous 0xC41BD000
+Adding mapping at 0xC41BD000 to vas 0xC013C080 - num is 75. flags = 0x21, rwxgu'lfia = 10010'0100. p 0x0.
 
 
-Page fault: cr2 0xC41B8000, eip 0xC010C7AE, nos-err 0x0
-PF at 0xC41B8000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4203000
-Adding mapping at 0xC4203000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC4202298, eip 0xC010C809, nos-err 0x0
-PF at 0xC4202298 on thread 0xC407B38C
---> FILE
-Made a split! (A)
-RELOADING A PAGE!
-hideous 0xC4204000
-Adding mapping at 0xC4204000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC41EB920, eip 0xC010C8A6, nos-err 0x0
-PF at 0xC41EB920 on thread 0xC407B38C
---> FILE
-Made a split! (A)
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4205000
-Adding mapping at 0xC4205000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC41F0ACC, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F0ACC on thread 0xC407B38C
---> FILE
-Made a split! (A)
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4206000
-Adding mapping at 0xC4206000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC41EC000, eip 0xC010C8A6, nos-err 0x0
-PF at 0xC41EC000 on thread 0xC407B38C
---> FILE
-Made a split! (B)
-RELOADING A PAGE!
-hideous 0xC4207000
-Adding mapping at 0xC4207000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-
-
-Page fault: cr2 0xC41F1000, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F1000 on thread 0xC407B38C
+Page fault: cr2 0xC41BD000, eip 0xC010C7E9, nos-err 0x0
+PF at 0xC41BD000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
@@ -2193,119 +2129,203 @@ RELOADING A PAGE! (B)
 needs_relocations = 0
 
 
-Page fault: cr2 0xC41ED000, eip 0xC010C8A6, nos-err 0x0
-PF at 0xC41ED000 on thread 0xC407B38C
+Page fault: cr2 0xC4207298, eip 0xC010C844, nos-err 0x0
+PF at 0xC4207298 on thread 0xC4080464
 --> FILE
-Made a split! (B)
+Made a split! (A)
 RELOADING A PAGE!
 hideous 0xC4209000
 Adding mapping at 0xC4209000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+
+
+Page fault: cr2 0xC41F0920, eip 0xC010C8E1, nos-err 0x0
+PF at 0xC41F0920 on thread 0xC4080464
+--> FILE
+Made a split! (A)
+Made a split! (B)
+RELOADING A PAGE!
 hideous 0xC420A000
 Adding mapping at 0xC420A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
-Adding mapping at 0xC420B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F72000.
-Adding mapping at 0xC420C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F74000.
-Adding mapping at 0xC420D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F76000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
 
 
-Page fault: cr2 0xC41F2000, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F2000 on thread 0xC407B38C
+Page fault: cr2 0xC41F5ACC, eip 0xC010814B, nos-err 0x0
+PF at 0xC41F5ACC on thread 0xC4080464
+--> FILE
+Made a split! (A)
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC420B000
+Adding mapping at 0xC420B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC41F1000, eip 0xC010C8E1, nos-err 0x0
+PF at 0xC41F1000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC420C000
+Adding mapping at 0xC420C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC41F6000, eip 0xC010814B, nos-err 0x0
+PF at 0xC41F6000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC420D000
+Adding mapping at 0xC420D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+
+
+Page fault: cr2 0xC41F2000, eip 0xC010C8E1, nos-err 0x0
+PF at 0xC41F2000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC420E000
-Adding mapping at 0xC420E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F78000.
+Adding mapping at 0xC420E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 hideous 0xC420F000
-Adding mapping at 0xC420F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F78000.
-Adding mapping at 0xC4210000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7C000.
-Adding mapping at 0xC4211000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7E000.
-Adding mapping at 0xC4212000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F80000.
+Adding mapping at 0xC420F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F62000.
+Adding mapping at 0xC4210000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F72000.
+Adding mapping at 0xC4211000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F74000.
+Adding mapping at 0xC4212000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F76000.
 
 
-Page fault: cr2 0xC41EE000, eip 0xC010C8A6, nos-err 0x0
-PF at 0xC41EE000 on thread 0xC407B38C
+Page fault: cr2 0xC41F7000, eip 0xC010814B, nos-err 0x0
+PF at 0xC41F7000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4213000
-Adding mapping at 0xC4213000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F82000.
+Adding mapping at 0xC4213000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F78000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+hideous 0xC4214000
+Adding mapping at 0xC4214000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F78000.
+Adding mapping at 0xC4215000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7C000.
+Adding mapping at 0xC4216000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7E000.
+Adding mapping at 0xC4217000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F80000.
 
 
-Page fault: cr2 0xC41F3000, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F3000 on thread 0xC407B38C
+Page fault: cr2 0xC41F3000, eip 0xC010C8E1, nos-err 0x0
+PF at 0xC41F3000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4214000
-Adding mapping at 0xC4214000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F82000.
+hideous 0xC4218000
+Adding mapping at 0xC4218000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F82000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-hideous 0xC4215000
-Adding mapping at 0xC4215000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F82000.
-Adding mapping at 0xC4216000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0D000.
-Adding mapping at 0xC4217000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0E000.
-Adding mapping at 0xC4218000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0F000.
 
 
-Page fault: cr2 0xC41F4000, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F4000 on thread 0xC407B38C
+Page fault: cr2 0xC41F8000, eip 0xC010814B, nos-err 0x0
+PF at 0xC41F8000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4219000
-Adding mapping at 0xC4219000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F10000.
+Adding mapping at 0xC4219000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F82000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
-
-
-Page fault: cr2 0xC41EF000, eip 0xC010C8A6, nos-err 0x0
-PF at 0xC41EF000 on thread 0xC407B38C
---> FILE
-RELOADING A PAGE!
 hideous 0xC421A000
-Adding mapping at 0xC421A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F10000.
-RELOADING A PAGE! (B)
-needs_relocations = 0
-hideous 0xC421B000
-Adding mapping at 0xC421B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F10000.
-Adding mapping at 0xC421C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F13000.
-Adding mapping at 0xC421D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0B000.
-Adding mapping at 0xC421E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0A000.
-hideous 0xC421F000
-Adding mapping at 0xC421F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F09000.
-Adding mapping at 0xC4220000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F08000.
-Adding mapping at 0xC4221000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F07000.
-Adding mapping at 0xC4222000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F06000.
+Adding mapping at 0xC421A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F82000.
+Adding mapping at 0xC421B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0D000.
+Adding mapping at 0xC421C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0E000.
+Adding mapping at 0xC421D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0F000.
 
 
-Page fault: cr2 0xC41F5000, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F5000 on thread 0xC407B38C
+Page fault: cr2 0xC41F9000, eip 0xC010814B, nos-err 0x0
+PF at 0xC41F9000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
-hideous 0xC4223000
-Adding mapping at 0xC4223000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F05000.
+hideous 0xC421E000
+Adding mapping at 0xC421E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F10000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
+
+
+Page fault: cr2 0xC41F4000, eip 0xC010C8E1, nos-err 0x0
+PF at 0xC41F4000 on thread 0xC4080464
+--> FILE
+RELOADING A PAGE!
+hideous 0xC421F000
+Adding mapping at 0xC421F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F10000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+hideous 0xC4220000
+Adding mapping at 0xC4220000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F10000.
+Adding mapping at 0xC4221000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F13000.
+Adding mapping at 0xC4222000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0B000.
+Adding mapping at 0xC4223000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F0A000.
+OPEN FILE: *:/
+GetVnodeFromPath: *:/
+ GetPathComponent --> *:/ --> *
+ Got mount point: *, 0xC40807AC, 0xC40802C4, 0xC4080304
+Creating fd... file = [0xC421B384, 0xC4080304], fd = 3
+Removing fd... file = [0xC421B384, 0xC4080304], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC421B384, 0xC4080304], fd = 3
+Removing fd... file = [0xC421B384, 0xC4080304], fd = 3
 hideous 0xC4224000
-Adding mapping at 0xC4224000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F05000.
-Adding mapping at 0xC4225000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F03000.
-Adding mapping at 0xC4226000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F02000.
-Adding mapping at 0xC4227000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F01000.
+Adding mapping at 0xC4224000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F09000.
+Adding mapping at 0xC4225000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F08000.
+Adding mapping at 0xC4226000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F07000.
+Adding mapping at 0xC4227000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F06000.
 
 
-Page fault: cr2 0xC41F6000, eip 0xC0108138, nos-err 0x0
-PF at 0xC41F6000 on thread 0xC407B38C
+Page fault: cr2 0xC41FA000, eip 0xC010814B, nos-err 0x0
+PF at 0xC41FA000 on thread 0xC4080464
 --> FILE
 Made a split! (B)
 RELOADING A PAGE!
 hideous 0xC4228000
-Adding mapping at 0xC4228000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F00000.
+Adding mapping at 0xC4228000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F05000.
+RELOADING A PAGE! (B)
+needs_relocations = 0
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4221A64, 0xC4080304], fd = 3
+Removing fd... file = [0xC4221A64, 0xC4080304], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4221A64, 0xC4080304], fd = 3
+Removing fd... file = [0xC4221A64, 0xC4080304], fd = 3
+hideous 0xC4229000
+Adding mapping at 0xC4229000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F05000.
+Adding mapping at 0xC422A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F03000.
+Adding mapping at 0xC422B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F02000.
+Adding mapping at 0xC422C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F01000.
+
+
+Page fault: cr2 0xC41FB000, eip 0xC010814B, nos-err 0x0
+PF at 0xC41FB000 on thread 0xC4080464
+--> FILE
+Made a split! (B)
+RELOADING A PAGE!
+hideous 0xC422D000
+Adding mapping at 0xC422D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F00000.
 RELOADING A PAGE! (B)
 needs_relocations = 0
 Made a split! (B)
@@ -2367,16 +2387,16 @@ Made a split! (B)
 Made a split! (B)
 Made a split! (B)
 Made a split! (B)
-hideous 0xC4229000
-Adding mapping at 0xC4229000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F66000.
-Adding mapping at 0xC422A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3EFF000.
-Adding mapping at 0xC422B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F04000.
-Adding mapping at 0xC422C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F11000.
+hideous 0xC422E000
+Adding mapping at 0xC422E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F66000.
+Adding mapping at 0xC422F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3EFF000.
+Adding mapping at 0xC4230000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F04000.
+Adding mapping at 0xC4231000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F11000.
 ACPI.SYS loaded
 
 
-Page fault: cr2 0xC413C704, eip 0xC411E6FB, nos-err 0x2
-PF at 0xC413C704 on thread 0xC420BB1C
+Page fault: cr2 0xC4141704, eip 0xC41236FB, nos-err 0x2
+PF at 0xC4141704 on thread 0xC4225124
 --> BSS
 AcpiOsInitialize
 AcpiOsAllocate 16
@@ -2489,22 +2509,22 @@ AcpiOsFree
 AcpiOsAllocate 112
 AcpiOsGetRootPointer
 AcpiOsMapMemory 0x40E 0x2
-hideous 0xC422D000
-Adding mapping at 0xC422D000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1011. p 0x3F7A000.
-Got virt: 0xC422D000
-Returning: 0xC422D40E
+hideous 0xC4232000
+Adding mapping at 0xC4232000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1011. p 0x3F7A000.
+Got virt: 0xC4232000
+Returning: 0xC423240E
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x67690 0x400
-hideous 0xC422E000
-Adding mapping at 0xC422E000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x67000.
-Got virt: 0xC422E000
-Returning: 0xC422E690
+hideous 0xC4233000
+Adding mapping at 0xC4233000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x67000.
+Got virt: 0xC4233000
+Returning: 0xC4233690
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0xE0000 0x20000
-hideous 0xC422F000
-Adding mapping at 0xC422F000 to vas 0xC013C080 - num is 32. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE0000.
-Got virt: 0xC422F000
-Returning: 0xC422F000
+hideous 0xC4234000
+Adding mapping at 0xC4234000 to vas 0xC013C080 - num is 32. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xE0000.
+Got virt: 0xC4234000
+Returning: 0xC4234000
 AcpiOsUnmapMemory
 Made a split! (B)
 Made a split! (B)
@@ -2538,41 +2558,41 @@ Made a split! (B)
 Made a split! (B)
 Made a split! (B)
 AcpiOsMapMemory 0xF52A0 0x24
-hideous 0xC424F000
-Adding mapping at 0xC424F000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF5000.
-Got virt: 0xC424F000
-Returning: 0xC424F2A0
+hideous 0xC4254000
+Adding mapping at 0xC4254000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0xF5000.
+Got virt: 0xC4254000
+Returning: 0xC42542A0
 AcpiOsPrintf: ACPI: 
 AcpiOsVprintf: RSDP 0x%8.8X%8.8X %06X (v%.2d %-6.6s)
 AcpiOsPrintf: 
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1C40 0x24
-hideous 0xC4250000
-Adding mapping at 0xC4250000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4250000
-Returning: 0xC4250C40
+hideous 0xC4255000
+Adding mapping at 0xC4255000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4255000
+Returning: 0xC4255C40
 AcpiOsPrintf: ACPI: 
 AcpiOsVprintf: %-4.4s 0x%8.8X%8.8X %06X (v%.2d %-6.6s %-8.8s %08X %-4.4s %08X)
 AcpiOsPrintf: 
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1C40 0x34
-hideous 0xC4251000
-Adding mapping at 0xC4251000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4251000
-Returning: 0xC4251C40
+hideous 0xC4256000
+Adding mapping at 0xC4256000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4256000
+Returning: 0xC4256C40
 AcpiOsMapMemory 0x3FE1AF4 0x24
-hideous 0xC4252000
-Adding mapping at 0xC4252000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4252000
-Returning: 0xC4252AF4
+hideous 0xC4257000
+Adding mapping at 0xC4257000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4257000
+Returning: 0xC4257AF4
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1AF4 0x74
-hideous 0xC4253000
-Adding mapping at 0xC4253000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4253000
-Returning: 0xC4253AF4
+hideous 0xC4258000
+Adding mapping at 0xC4258000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4258000
+Returning: 0xC4258AF4
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
 AcpiOsPrintf: ACPI: 
@@ -2581,28 +2601,28 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1AF4 0x74
-hideous 0xC4254000
-Adding mapping at 0xC4254000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4254000
-Returning: 0xC4254AF4
+hideous 0xC4259000
+Adding mapping at 0xC4259000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4259000
+Returning: 0xC4259AF4
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE0040 0x24
-hideous 0xC4255000
-Adding mapping at 0xC4255000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Got virt: 0xC4255000
-Returning: 0xC4255040
+hideous 0xC425A000
+Adding mapping at 0xC425A000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Got virt: 0xC425A000
+Returning: 0xC425A040
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE0040 0x1AB4
-hideous 0xC4256000
-Adding mapping at 0xC4256000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Adding mapping at 0xC4257000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4256000
-Returning: 0xC4256040
+hideous 0xC425B000
+Adding mapping at 0xC425B000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Adding mapping at 0xC425C000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC425B000
+Returning: 0xC425B040
 AcpiOsMapMemory 0x3FE1AF4 0x74
-hideous 0xC4258000
-Adding mapping at 0xC4258000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4258000
-Returning: 0xC4258AF4
+hideous 0xC425D000
+Adding mapping at 0xC425D000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC425D000
+Returning: 0xC425DAF4
 AcpiOsUnmapMemory
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
@@ -2612,47 +2632,16 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE0000 0x24
-hideous 0xC4259000
-Adding mapping at 0xC4259000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Got virt: 0xC4259000
-Returning: 0xC4259000
+hideous 0xC425E000
+Adding mapping at 0xC425E000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Got virt: 0xC425E000
+Returning: 0xC425E000
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE0000 0x40
-hideous 0xC425A000
-Adding mapping at 0xC425A000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Got virt: 0xC425A000
-Returning: 0xC425A000
-AcpiOsMapMemory 0x3FE1AF4 0x74
-hideous 0xC425B000
-Adding mapping at 0xC425B000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC425B000
-Returning: 0xC425BAF4
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE0040 0x1AB4
-hideous 0xC425C000
-Adding mapping at 0xC425C000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Adding mapping at 0xC425D000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC425C000
-Returning: 0xC425C040
-AcpiOsUnmapMemory
-AcpiOsTableOverride
-AcpiOsPhysicalTableOverride
-AcpiOsPrintf: ACPI: 
-AcpiOsVprintf: %-4.4s 0x%8.8X%8.8X %06X
-AcpiOsPrintf: 
-
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE1B68 0x24
-hideous 0xC425E000
-Adding mapping at 0xC425E000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC425E000
-Returning: 0xC425EB68
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE1B68 0x78
 hideous 0xC425F000
-Adding mapping at 0xC425F000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Adding mapping at 0xC425F000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
 Got virt: 0xC425F000
-Returning: 0xC425FB68
+Returning: 0xC425F000
 AcpiOsMapMemory 0x3FE1AF4 0x74
 hideous 0xC4260000
 Adding mapping at 0xC4260000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
@@ -2666,11 +2655,42 @@ Adding mapping at 0xC4262000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'l
 Got virt: 0xC4261000
 Returning: 0xC4261040
 AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE0000 0x40
+AcpiOsTableOverride
+AcpiOsPhysicalTableOverride
+AcpiOsPrintf: ACPI: 
+AcpiOsVprintf: %-4.4s 0x%8.8X%8.8X %06X
+AcpiOsPrintf: 
+
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE1B68 0x24
 hideous 0xC4263000
-Adding mapping at 0xC4263000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Adding mapping at 0xC4263000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
 Got virt: 0xC4263000
-Returning: 0xC4263000
+Returning: 0xC4263B68
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE1B68 0x78
+hideous 0xC4264000
+Adding mapping at 0xC4264000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4264000
+Returning: 0xC4264B68
+AcpiOsMapMemory 0x3FE1AF4 0x74
+hideous 0xC4265000
+Adding mapping at 0xC4265000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4265000
+Returning: 0xC4265AF4
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE0040 0x1AB4
+hideous 0xC4266000
+Adding mapping at 0xC4266000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Adding mapping at 0xC4267000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4266000
+Returning: 0xC4266040
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE0000 0x40
+hideous 0xC4268000
+Adding mapping at 0xC4268000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Got virt: 0xC4268000
+Returning: 0xC4268000
 AcpiOsUnmapMemory
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
@@ -2680,40 +2700,40 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1BE0 0x24
-hideous 0xC4264000
-Adding mapping at 0xC4264000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4264000
-Returning: 0xC4264BE0
+hideous 0xC4269000
+Adding mapping at 0xC4269000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4269000
+Returning: 0xC4269BE0
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1BE0 0x38
-hideous 0xC4265000
-Adding mapping at 0xC4265000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4265000
-Returning: 0xC4265BE0
-AcpiOsMapMemory 0x3FE1AF4 0x74
-hideous 0xC4266000
-Adding mapping at 0xC4266000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4266000
-Returning: 0xC4266AF4
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE0040 0x1AB4
-hideous 0xC4267000
-Adding mapping at 0xC4267000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Adding mapping at 0xC4268000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4267000
-Returning: 0xC4267040
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE0000 0x40
-hideous 0xC4269000
-Adding mapping at 0xC4269000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Got virt: 0xC4269000
-Returning: 0xC4269000
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE1B68 0x78
 hideous 0xC426A000
 Adding mapping at 0xC426A000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
 Got virt: 0xC426A000
-Returning: 0xC426AB68
+Returning: 0xC426ABE0
+AcpiOsMapMemory 0x3FE1AF4 0x74
+hideous 0xC426B000
+Adding mapping at 0xC426B000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC426B000
+Returning: 0xC426BAF4
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE0040 0x1AB4
+hideous 0xC426C000
+Adding mapping at 0xC426C000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Adding mapping at 0xC426D000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC426C000
+Returning: 0xC426C040
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE0000 0x40
+hideous 0xC426E000
+Adding mapping at 0xC426E000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Got virt: 0xC426E000
+Returning: 0xC426E000
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE1B68 0x78
+hideous 0xC426F000
+Adding mapping at 0xC426F000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC426F000
+Returning: 0xC426FB68
 AcpiOsUnmapMemory
 AcpiOsAllocate 224
 AcpiOsFree
@@ -2725,46 +2745,46 @@ AcpiOsPrintf:
 
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1C18 0x24
-hideous 0xC426B000
-Adding mapping at 0xC426B000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC426B000
-Returning: 0xC426BC18
+hideous 0xC4270000
+Adding mapping at 0xC4270000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4270000
+Returning: 0xC4270C18
 AcpiOsUnmapMemory
 AcpiOsMapMemory 0x3FE1C18 0x28
-hideous 0xC426C000
-Adding mapping at 0xC426C000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC426C000
-Returning: 0xC426CC18
-AcpiOsMapMemory 0x3FE1AF4 0x74
-hideous 0xC426D000
-Adding mapping at 0xC426D000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC426D000
-Returning: 0xC426DAF4
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE0040 0x1AB4
-hideous 0xC426E000
-Adding mapping at 0xC426E000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Adding mapping at 0xC426F000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC426E000
-Returning: 0xC426E040
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE0000 0x40
-hideous 0xC4270000
-Adding mapping at 0xC4270000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Got virt: 0xC4270000
-Returning: 0xC4270000
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE1B68 0x78
 hideous 0xC4271000
 Adding mapping at 0xC4271000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
 Got virt: 0xC4271000
-Returning: 0xC4271B68
-AcpiOsUnmapMemory
-AcpiOsMapMemory 0x3FE1BE0 0x38
+Returning: 0xC4271C18
+AcpiOsMapMemory 0x3FE1AF4 0x74
 hideous 0xC4272000
 Adding mapping at 0xC4272000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
 Got virt: 0xC4272000
-Returning: 0xC4272BE0
+Returning: 0xC4272AF4
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE0040 0x1AB4
+hideous 0xC4273000
+Adding mapping at 0xC4273000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Adding mapping at 0xC4274000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4273000
+Returning: 0xC4273040
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE0000 0x40
+hideous 0xC4275000
+Adding mapping at 0xC4275000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Got virt: 0xC4275000
+Returning: 0xC4275000
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE1B68 0x78
+hideous 0xC4276000
+Adding mapping at 0xC4276000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4276000
+Returning: 0xC4276B68
+AcpiOsUnmapMemory
+AcpiOsMapMemory 0x3FE1BE0 0x38
+hideous 0xC4277000
+Adding mapping at 0xC4277000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4277000
+Returning: 0xC4277BE0
 AcpiOsUnmapMemory
 AcpiOsTableOverride
 AcpiOsPhysicalTableOverride
@@ -2800,11 +2820,11 @@ AcpiOsAllocate 48
 AcpiOsAllocate 48
 AcpiOsAllocate 48
 AcpiOsMapMemory 0x3FE0040 0x1AB4
-hideous 0xC4273000
-Adding mapping at 0xC4273000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Adding mapping at 0xC4274000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
-Got virt: 0xC4273000
-Returning: 0xC4273040
+hideous 0xC4278000
+Adding mapping at 0xC4278000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Adding mapping at 0xC4279000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE1000.
+Got virt: 0xC4278000
+Returning: 0xC4278040
 AcpiOsAllocate 48
 AcpiOsAllocate 52
 AcpiOsAllocate 2
@@ -4593,11 +4613,6 @@ AcpiOsAllocate 48
 AcpiOsAllocate 11
 AcpiOsAllocate 28
 AcpiOsAllocate 48
-hideous 0xC4275000
-Adding mapping at 0xC4275000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F96000.
-Adding mapping at 0xC4276000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F8C000.
-Adding mapping at 0xC4277000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F92000.
-Adding mapping at 0xC4278000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F94000.
 
 !!!!!!!!!!!!!!!!
 
@@ -4662,6 +4677,11 @@ AcpiOsAllocate 48
     AcpiOsReleaseLock
 AcpiOsAllocate 28
 AcpiOsAllocate 48
+hideous 0xC427A000
+Adding mapping at 0xC427A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F96000.
+Adding mapping at 0xC427B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F90000.
+Adding mapping at 0xC427C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F92000.
+Adding mapping at 0xC427D000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F94000.
 
 !!!!!!!!!!!!!!!!
 
@@ -8334,11 +8354,6 @@ AcpiOsAllocate 28
     AcpiOsReleaseLock
 AcpiOsAllocate 28
 AcpiOsAllocate 48
-hideous 0xC4279000
-Adding mapping at 0xC4279000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7A000.
-Adding mapping at 0xC427A000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6E000.
-Adding mapping at 0xC427B000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6A000.
-Adding mapping at 0xC427C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F12000.
 
 !!!!!!!!!!!!!!!!
 
@@ -8362,6 +8377,11 @@ Adding mapping at 0xC427C000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'l
 AcpiOsAllocate 28
 AcpiOsAllocate 48
 AcpiOsAllocate 48
+hideous 0xC427E000
+Adding mapping at 0xC427E000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F7A000.
+Adding mapping at 0xC427F000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6E000.
+Adding mapping at 0xC4280000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F6A000.
+Adding mapping at 0xC4281000 to vas 0xC013C080 - num is 1. flags = 0x13, rwxgu'lfia = 11010'1011. p 0x3F12000.
 
 !!!!!!!!!!!!!!!!
 
@@ -11588,10 +11608,10 @@ AcpiOsReadPort
 AcpiOsWritePort
 AcpiOsReadPort
 AcpiOsMapMemory 0x3FE0000 0x40
-hideous 0xC427D000
-Adding mapping at 0xC427D000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
-Got virt: 0xC427D000
-Returning: 0xC427D000
+hideous 0xC4282000
+Adding mapping at 0xC4282000 to vas 0xC013C080 - num is 1. flags = 0x93, rwxgu'lfia = 11010'1010. p 0x3FE0000.
+Got virt: 0xC4282000
+Returning: 0xC4282000
 
 !!!!!!!!!!!!!!!!
 
@@ -15886,6 +15906,43 @@ AcpiOsAllocate 8
 AcpiOsFree
 AcpiOsFree
 AcpiOsAllocate 52
+OPEN FILE: drv1:/
+GetVnodeFromPath: drv1:/
+ GetPathComponent --> drv1:/ --> drv1
+ Got mount point: drv1, 0xC401140C, 0xC4010B8C, 0xC4010C4C
+Creating fd... file = [0xC4227D3C, 0xC4010C4C], fd = 3
+Removing fd... file = [0xC4227D3C, 0xC4010C4C], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4227D3C, 0xC4010C4C], fd = 3
+Removing fd... file = [0xC4227D3C, 0xC4010C4C], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4227D3C, 0xC4010C4C], fd = 3
+Removing fd... file = [0xC4227D3C, 0xC4010C4C], fd = 3
+OPEN FILE: ..
+GetVnodeFromPath: ..
+ ==> path ..
+ GetPathComponent --> .. --> ..
+ PATH ITER: .. [of ..]
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+Creating fd... file = [0xC4227D3C, 0xC4226974], fd = 3
+Removing fd... file = [0xC4227D3C, 0xC4226974], fd = 3
+OPEN FILE: *:/
+GetVnodeFromPath: *:/
+ GetPathComponent --> *:/ --> *
+ Got mount point: *, 0xC40807AC, 0xC40802C4, 0xC4080304
+Creating fd... file = [0xC4227D3C, 0xC4080304], fd = 3
+Removing fd... file = [0xC4227D3C, 0xC4080304], fd = 3
 AcpiOsAllocate 8
 AcpiOsFree
 AcpiOsFree
@@ -17669,3 +17726,179 @@ Register ACPI_BITREG_SCI_ENABLE has value: 0x1
 AcpiOsReadPort
 Register ACPI_BITREG_POWER_BUTTON_ENABLE has value: 0x1
 ACPI.SYS fully initialised
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4226A8C, 0xC4010C4C], fd = 3
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 0. offset = 1. indirs = 0. name = ..
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 1. offset = 2. indirs = 0. name = .DS_Store
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 2. offset = 3. indirs = 0. name = test3.c
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 3. offset = 4. indirs = 0. name = Sys2
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 4. offset = 5. indirs = 0. name = System
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 5. offset = 6. indirs = 0. name = test1.c
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 6. offset = 7. indirs = 0. name = test2.c
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+Removing fd... file = [0xC4226A8C, 0xC4010C4C], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4226A8C, 0xC4010C4C], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4010C4C], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4226A8C, 0xC4010C4C], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4010C4C], fd = 3
+OPEN FILE: ..
+GetVnodeFromPath: ..
+ ==> path ..
+ GetPathComponent --> .. --> ..
+ PATH ITER: .. [of ..]
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+Creating fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+OPEN FILE: *:/
+GetVnodeFromPath: *:/
+ GetPathComponent --> *:/ --> *
+ Got mount point: *, 0xC40807AC, 0xC40802C4, 0xC4080304
+Creating fd... file = [0xC4226A8C, 0xC4080304], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4080304], fd = 3
+OPEN FILE: System
+GetVnodeFromPath: System
+ ==> path System
+ GetPathComponent --> System --> System
+ PATH ITER: System [of System]
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+Creating fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4226974], fd = 3
+OPEN FILE: ..
+GetVnodeFromPath: ..
+ ==> path ..
+ GetPathComponent --> .. --> ..
+ PATH ITER: .. [of ..]
+FloppyIo
+[floppy]: sent IO commands
+[floppy]: irq wait done
+[floppy]: successful I/O
+[floppy]: will transfer from cylinder != 0
+[floppy]: will transfer from cylinder != 0
+[floppy]: done
+Creating fd... file = [0xC4226A8C, 0xC4226E74], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4226E74], fd = 3
+OPEN FILE: ..
+GetVnodeFromPath: ..
+ ==> path ..
+ GetPathComponent --> .. --> ..
+ PATH ITER: .. [of ..]
+FloppyIo
+[floppy]: will transfer from cylinder != 0
+[floppy]: will transfer from cylinder != 0
+[floppy]: done
+Creating fd... file = [0xC4226A8C, 0xC4226E74], fd = 3
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 0. offset = 1. indirs = 0. name = ..
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 1. offset = 2. indirs = 0. name = .DS_Store
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 2. offset = 3. indirs = 0. name = test3.c
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 3. offset = 4. indirs = 0. name = Sys2
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+entry no = 4. offset = 5. indirs = 0. name = System
+Removing fd... file = [0xC4226A8C, 0xC4226E74], fd = 3
+OPEN FILE: ../..
+GetVnodeFromPath: ../..
+ ==> path ../..
+ GetPathComponent --> ../.. --> ..
+ PATH ITER: .. [of ../..]
+FloppyIo
+[floppy]: will transfer from cylinder != 0
+[floppy]: will transfer from cylinder != 0
+[floppy]: done
+ ==> path ../..
+ GetPathComponent --> ../.. --> ..
+ PATH ITER: .. [of ../..]
+FloppyIo
+[floppy]: will transfer from cylinder == 0
+[floppy]: will transfer from cylinder == 0
+[floppy]: done
+Creating fd... file = [0xC4226A8C, 0xC4226DD4], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4226DD4], fd = 3
+OPEN FILE: *:/
+GetVnodeFromPath: *:/
+ GetPathComponent --> *:/ --> *
+ Got mount point: *, 0xC40807AC, 0xC40802C4, 0xC4080304
+Creating fd... file = [0xC4226A8C, 0xC4080304], fd = 3
+Removing fd... file = [0xC4226A8C, 0xC4080304], fd = 3

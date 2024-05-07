@@ -10,8 +10,8 @@
  * If they are not supported by your compiler or platform, or simply end up
  * calling themselves, use please comment out these definitions.
  */
-#define USE_BUILTIN_MEMCPY
-#define USE_BUILTIN_MEMSET
+#undef USE_BUILTIN_MEMCPY
+#undef USE_BUILTIN_MEMSET
 
 void* memset(void* addr, int c, size_t n)
 {

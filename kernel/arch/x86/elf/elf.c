@@ -189,6 +189,7 @@ static size_t ElfGetSymbolValue(void* data, int table, size_t index, bool* error
 			if (!(ELF32_ST_BIND(symbol->st_info) & STB_WEAK)) {
 				*error = true;
 			}
+			LogWriteSerial("CAN'T FIND SYMBOL %s\n", name);
 			return 0;
 
 		} else {

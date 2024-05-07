@@ -4,6 +4,7 @@
 #include <thread.h>
 #include <vfs.h>
 #include <string.h>
+#include <physical.h>
 #include <transfer.h>
 #include <assert.h>
 #include <irq.h>
@@ -45,6 +46,8 @@ struct floppy_data {
     struct disk_partition_helper partitions;
     int stored_cylinder;
     bool got_cylinder_zero;
+    size_t phys_buffer;
+    size_t virt_buffer;
 };
 
 static void FloppyWriteCommand(struct floppy_data* flp, int cmd) {
@@ -231,25 +234,10 @@ static int FloppySeek(struct floppy_data* flp, int cylinder, int head) {
     return EIO;
 }
 
-static void FloppyDmaInit(void) {
-    /*
-    * Put the data at *physical address* 0x10000. The address can be anywhere 
-    * under 24MB that doesn't cross a 64KB boundary. We choose this location as 
-    * it should be unused as this is where the temporary copy of the kernel was
-    * stored during boot.
-    */
+static void FloppyDmaInit(struct floppy_data* flp) {
+    uint32_t addr = flp->phys_buffer;
+    uint16_t count = CYLINDER_SIZE - 1;
 
-    // TODO: use AllocPhysContiguous
-    uint32_t addr = (uint32_t) 0x10000;
-
-    /*
-    * We must give the DMA the actual count minus 1.
-    */
-    int count = 0x4800 - 1;
-
-    /*
-    * Send some magical stuff to the DMA controller.
-    */
     outb(0x0A, 0x06);
     outb(0x0C, 0xFF);
     outb(0x04, (addr >> 0) & 0xFF);
@@ -287,7 +275,7 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
             if (FloppySeek(flp, cylinder, 1) != 0) return EIO;
         }
 
-        FloppyDmaInit();
+        FloppyDmaInit(flp);
 
         SleepMilli(100);
 
@@ -308,8 +296,6 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
 
         FloppyIrqWait(false);
         LogWriteSerial("[floppy]: irq wait done\n");
-
-        LogWriteSerial("[floppy]: floppy data went to 0x%X\n", 0x10000);
 
         /*
         * Read back some status information, some of which is very mysterious.
@@ -352,8 +338,7 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
         (void) rse;
 
         FloppyMotor(flp, false);
-        // TODO: when AllocPhysContiguous is used, we should use MapVirt and use that instead
-        memcpy(flp->cylinder_buffer, (void*) x86KernelMemoryToPhysical(0x10000), CYLINDER_SIZE);
+        memcpy(flp->cylinder_buffer, (void*) flp->virt_buffer, CYLINDER_SIZE);
         LogWriteSerial("[floppy]: successful I/O\n");
         return 0;
     }
@@ -440,7 +425,6 @@ next_sector:;
             }
         }
 
-
         LogWriteSerial("[floppy]: will transfer from cylinder != 0\n");
         PerformTransfer(flp->cylinder_buffer + (512 * (sector - 1 + head * 18)), io, 512);
         flp->stored_cylinder = cylinder;
@@ -492,13 +476,9 @@ static const struct vnode_operations dev_ops = {
 
 void InitFloppy(void) {
     floppy_lock = CreateMutex("floppy");
-        LogWriteSerial("FLOPPY: -3\n");
-
     CreateThread(FloppyMotorControlThread, NULL, GetVas(), "flpmotor");
 
     for (int i = 0; i < 1; ++i) {
-                LogWriteSerial("FLOPPY: -2\n");
-
         struct vnode* node = CreateVnode(dev_ops, (struct stat) {
             .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
             .st_nlink = 1,
@@ -507,10 +487,17 @@ void InitFloppy(void) {
             .st_size = 512 * 2880,
             .st_dev = NextDevId()
         });
-        LogWriteSerial("FLOPPY: -1\n");
+
+        size_t phys_buffer = AllocPhysContiguous(CYLINDER_SIZE, 0x0, 0xFFFFFF, 0x10000);
+        if (phys_buffer == 0) {
+            LogDeveloperWarning("NO CONTIGUOUS MEMORY AVAILABLE FOR FLOPPY\n");
+            return;
+        }
+        size_t virt_buffer = MapVirt(phys_buffer, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK | VM_MAP_HARDWARE, NULL, 0);
 
         struct floppy_data* flp = AllocHeap(sizeof(struct floppy_data));
         *flp = (struct floppy_data) {
+            .phys_buffer = phys_buffer, .virt_buffer = virt_buffer,
             .disk_num = i, .base = 0x3F0, 
             .stored_cylinder = -1, .got_cylinder_zero = false,
             .cylinder_buffer = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
@@ -518,20 +505,10 @@ void InitFloppy(void) {
         };
         node->data = flp;
 
-        LogWriteSerial("FLOPPY: A\n");
-
         RegisterIrqHandler(PIC_IRQ_BASE + 6, FloppyIrqHandler);
         FloppyReset(flp);
-        LogWriteSerial("FLOPPY: B\n");
-
         InitDiskPartitionHelper(&flp->partitions);
-        LogWriteSerial("FLOPPY: C\n");
-
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
-                LogWriteSerial("FLOPPY: D\n");
-
         CreateDiskPartitions(CreateFile(node, 0, 0, true, true));
-                LogWriteSerial("FLOPPY: E\n");
-
     }
 }
