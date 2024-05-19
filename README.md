@@ -11,6 +11,7 @@ To build it, run `./release.sh`. To run it in QEMU, use the following command: `
 The TODO list:
 - Writing to disk
 - "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
+- Fixing low memory crashes / terrible performance
 - A virtual filesystem (VFS) to manage files, folders and devices
 - Disk auto-detection
 - Disk caching
