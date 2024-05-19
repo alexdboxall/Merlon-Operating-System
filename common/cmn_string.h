@@ -1,3 +1,4 @@
+#include <cmn_string_header.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -10,9 +11,8 @@
  * If they are not supported by your compiler or platform, or simply end up
  * calling themselves, use please comment out these definitions.
  */
-#undef USE_BUILTIN_MEMCPY
-#undef USE_BUILTIN_MEMSET
 
+#undef memset
 void* memset(void* addr, int c, size_t n)
 {
 #ifdef USE_BUILTIN_MEMSET
@@ -27,6 +27,7 @@ void* memset(void* addr, int c, size_t n)
 #endif
 }
 
+#undef memcpy
 void* memcpy(void* restrict dst, const void* restrict src, size_t n)
 {
 #ifdef USE_BUILTIN_MEMCPY

@@ -8,16 +8,18 @@
 
 #ifdef COMPILE_KERNEL
 #include <common.h>
+#include <cmn_string_header.h>
 #define EXPORT_
 #else
 #define EXPORT_
+void* memcpy(void* restrict dst, const void* restrict src, size_t n);
+void* memset(void* addr, int c, size_t n);
 #endif
 
 #ifndef NULL
 #define NULL ((void*) 0)
 #endif
 
-void* memcpy(void* restrict dst, const void* restrict src, size_t n);
 void* memmove(void* dst, const void* src, size_t n);
 char* strcpy(char* restrict dst, const char* restrict src);
 char* strncpy(char* restrict dst, const char* restrict src, size_t n);
@@ -29,7 +31,6 @@ void* memchr(const void* s, int c, size_t n);
 int strncmp(const char* s1, const char* s2, size_t n);
 char* strchr(const char* s, int c);
 
-void* memset(void* addr, int c, size_t n);
 size_t strlen(const char* str);
 void bzero(void* addr, size_t n);
 char* strdup(const char* str);

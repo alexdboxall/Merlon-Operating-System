@@ -267,13 +267,11 @@ ACPI_STATUS AcpiOsGetPhysicalAddress(void* LogicalAddress, ACPI_PHYSICAL_ADDRESS
 
 void* AcpiOsAllocate(ACPI_SIZE Size)
 {
-    LogWriteSerial("AcpiOsAllocate %d\n", Size);
     return AllocHeap(Size);
 }
 
 void AcpiOsFree(void* Memory)
 {
-    LogWriteSerial("AcpiOsFree\n");
     FreeHeap(Memory);
 }
 

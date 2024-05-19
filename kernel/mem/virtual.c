@@ -322,7 +322,6 @@ static int GetPageEvictionRank(struct vas* vas, struct vas_entry* entry) {
     bool accessed;
     bool dirty;
     ArchGetPageUsageBits(vas, entry, &accessed, &dirty);
-    ArchSetPageUsageBits(vas, entry, false, false);
 
     int penalty = (entry->global ? 3 : 0) + entry->times_swapped * 8;
 
@@ -1194,6 +1193,7 @@ static bool DereferenceEntry(struct vas* vas, struct vas_entry* entry) {
             DeallocPhys(entry->physical);
         }
 
+        ArchSetPageUsageBits(vas, entry, false, false);
         DeleteFromAvl(vas, entry);
         FreeHeap(entry);
         FreeVirtRange(vas, virtual, entry->num_pages);

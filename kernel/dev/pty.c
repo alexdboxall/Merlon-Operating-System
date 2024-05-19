@@ -166,8 +166,6 @@ static int MasterClose(struct vnode* node) {
 }
 
 static int SubordinateIoctl(struct vnode* node, int cmd, void* arg) {
-    LogWriteSerial("SubordinateIoctl! cmd = %d\n", cmd);
-
     struct sub_data* internal = (struct sub_data*) node->data;
 
     if (cmd == TCSETS || cmd == TCSETSW || cmd == TCSETSF) {

@@ -185,9 +185,11 @@ size_t AllocPhys(void) {
         /*
          * No stack yet, so must use the bitmap. No point optimising this as
          * only used during boot.
+         * 
+         * Go backwards to keep low memory as free as possible for e.g. DMA
          */
         while (!IsBitmapEntryFree(index)) {
-            index = (index + 1) % MAX_MEMORY_PAGES;
+            index = (index + MAX_MEMORY_PAGES - 1) % MAX_MEMORY_PAGES;
         }
     } else {
         index = PopIndex();

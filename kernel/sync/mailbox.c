@@ -58,13 +58,16 @@ void MailboxDestroy(struct mailbox* mbox) {
 }
 
 static int MailboxWaitAddableInternal(struct mailbox* mbox, int timeout) {
+    LogWriteSerial("MailboxWaitAddableInternal start\n");
     int res = AcquireMutex(mbox->add_mtx, timeout);
     if (res != 0) {
+        LogWriteSerial("MailboxWaitAddableInternal err\n");
         return res;
     }
     if ((res = AcquireSemaphore(mbox->empty_sem, timeout))) {
         ReleaseMutex(mbox->add_mtx);
     }
+    LogWriteSerial("MailboxWaitAddableInternal end\n");
     return res;
 }
 
@@ -124,6 +127,7 @@ int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c) {
     mbox->used_size++;
     ReleaseMutex(mbox->inner_mtx);
     ReleaseMutex(mbox->add_mtx);
+
     ReleaseSemaphore(mbox->full_sem);
     return 0;
 }
@@ -131,13 +135,18 @@ int MailboxAdd(struct mailbox* mbox, int timeout, uint8_t c) {
 static int MailboxWaitGettableInternal(struct mailbox* mbox, int timeout) {
     // TODO: you'll want to create a flag in struct semaphore* call 'interruptable'
     //       or have 'timeout == -2' mean non-interruptable
+
+    LogWriteSerial("MailboxWaitGettableInternal start\n");
+
     int res = AcquireMutex(mbox->get_mtx, timeout);
     if (res != 0) {
+        LogWriteSerial("MailboxWaitGettableInternal err\n");
         return res;
     }
     if ((res = AcquireSemaphore(mbox->full_sem, timeout))) {
         ReleaseMutex(mbox->get_mtx);
     }
+    LogWriteSerial("MailboxWaitGettableInternal end\n");
     return res;
 }
 

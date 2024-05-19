@@ -29,6 +29,7 @@ static const char LOCKED_DRIVER_RODATA set1_map_upper_caps[] =
     "  !@#$%^&*()_+  qwertyuiop{}  asdfghjkl:\"~ |zxcvbnm<>? *       "
     "        789-456+1230.                                           ";
 
+
 /*
 * Special keys that we might want to catch that aren't in the lookup tables.
 * Some have ASCII equivalents (e.g. tab), whereas others we will just define
@@ -80,6 +81,25 @@ static void LOCKED_DRIVER_CODE Ps2KeyboardSetLEDs(void) {
 
     Ps2DeviceWrite(0xED, false);
     Ps2DeviceWrite(data, false);
+}
+
+static uint8_t LOCKED_DRIVER_CODE TranslateCharacter(uint8_t scancode, bool shift) {
+    static const char* set1_tables[] = {
+        set1_map_lower_norm, set1_map_upper_norm, 
+        set1_map_lower_caps, set1_map_upper_caps, 
+    };  
+    const char* table = set1_tables[shift + caps_lock_on * 2];
+
+    /*
+     * I know it's slower, but,
+     * give the XLAT instruction some love...
+     */
+    uint8_t c;
+    __asm__ __volatile__ ("xlat"
+        : "=a" (c) 
+        : "a" (scancode), "b" (table)
+    );
+    return c;
 }
 
 static bool LOCKED_DRIVER_DATA extended = false;
@@ -147,21 +167,7 @@ static void LOCKED_DRIVER_CODE Ps2KeyboardTranslateSet1(uint8_t scancode) {
 
         default:
             if (scancode < strlen(set1_map_lower_norm)) {
-                bool shift = shift_held ^ shift_r_held;
-
-                if (caps_lock_on) {
-                    if (shift) {
-                        c = set1_map_upper_caps[scancode];
-                    } else {
-                        c = set1_map_lower_caps[scancode];
-                    }
-                } else {
-                    if (shift) {
-                        c = set1_map_upper_norm[scancode];
-                    } else {
-                        c = set1_map_lower_norm[scancode];
-                    }
-                }
+                c = TranslateCharacter(scancode, shift_held ^ shift_r_held);
             }
         }
     }
@@ -206,6 +212,7 @@ void LOCKED_DRIVER_CODE HandleCharacter(void* scancode) {
 
 static int LOCKED_DRIVER_CODE Ps2KeyboardIrqHandler(struct x86_regs*) {
 	uint8_t scancode = inb(0x60);
+    LogWriteSerial("GOT KEYBRD IRQ\n");
     if (scancode == 0xE0) {
         extended = true;
     } else {

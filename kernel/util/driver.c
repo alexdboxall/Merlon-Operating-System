@@ -258,6 +258,8 @@ static void ApplyRelocationsToPage(struct rel_table* table, size_t virtual) {
 
     struct rel* entry = bsearch(&target, table->entries, table->used_entries, sizeof(struct rel), BinarySearchComparator);
     if (entry == NULL) {
+        LogWriteSerial("We were looking for target address 0x%X\n", virtual);
+        LogWriteSerial("Maybe this could be an issue if it straddles the page line...? idk\n");
         PanicEx(PANIC_ASSERTION_FAILURE, "relocation table doesn't contain lookup - bsearch or qsort is probably bugged");
     }
 
