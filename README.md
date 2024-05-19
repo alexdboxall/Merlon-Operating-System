@@ -18,6 +18,6 @@ The TODO list:
 - More system calls
 - Fixing up all the other TODOs in the code!!
 
-![NOS Kernel](https://github.com/alexdboxall/NOS/blob/main/doc/assets/readmeimg.png "ATOS Kernel")
+![NOS Kernel](https://github.com/alexdboxall/NOS/blob/main/docs/assets/readmeimg.png "ATOS Kernel")
 
 Copyright Alex Boxall 2022-2024. See LICENSE and ATTRIBUTION for details.
