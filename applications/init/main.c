@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <os/memory.h>
 
 extern int EditorMain(int argc, char** argv);
 extern int LsMain(int argc, char** argv);
@@ -47,6 +48,19 @@ int main(void) {
         } else if (!strcmp(line, "clear\n")) {
             printf("\x1B[2J");
             fflush(stdout);
+
+        } else if (!strcmp(line, "ram\n")) {
+            size_t free = OsGetFreeMemoryKilobytes();
+            size_t total = OsGetTotalMemoryKilobytes();
+            if (total == 0) {
+                printf("RAM information unavailable!!\n\n");
+            } else {
+                printf(
+                    "%d / %d KB used (%d%% free)\n\n", 
+                    total - free, total, 100 * (free) / total
+                );
+            }
+            
 
         } else if (!strcmp(line, "ed\n")) {
             EditorMain(1, NULL);

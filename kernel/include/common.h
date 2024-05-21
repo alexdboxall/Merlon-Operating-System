@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
+#define OS_VERSION_STRING   "NOS"
+#define OS_VERSION_MAJOR    0x00
+#define OS_VERSION_MINOR    0x01
+
 #define export __attribute__((used))
 
 #ifndef NULL

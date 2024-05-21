@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <os/memory.h>
 
 struct dyn_data {
     struct Elf32_Ehdr* elf_header;
@@ -144,6 +145,8 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "kill")) return (size_t) kill;
     if (!xstrcmp(name, "raise")) return (size_t) raise;
     if (!xstrcmp(name, "sched_yield")) return (size_t) sched_yield;
+    if (!xstrcmp(name, "OsGetFreeMemoryKilobytes")) return (size_t) OsGetFreeMemoryKilobytes;
+    if (!xstrcmp(name, "OsGetTotalMemoryKilobytes")) return (size_t) OsGetTotalMemoryKilobytes;
     return (size_t) loltest;
 }
 

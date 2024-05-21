@@ -159,7 +159,8 @@
         "limits.h": "c",
         "ioctl.h": "c",
         "objc.h": "c",
-        "cmn_string_header.h": "c"
+        "cmn_string_header.h": "c",
+        "memory.h": "c"
     },
     "files.exclude": {
         "**/.git": true,

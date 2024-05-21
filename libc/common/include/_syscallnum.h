@@ -21,6 +21,7 @@ enum system_call_numbers {
     SYSCALL_IOCTL,
     SYSCALL_STAT,
     SYSCALL_CHDIR,
+    SYSCALL_INFO,
     
     _SYSCALL_NUM_ENTRIES
 };
