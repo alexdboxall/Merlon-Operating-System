@@ -353,7 +353,7 @@ struct eviction_candidate {
     struct vas_entry* entry;
 };
 
-#define PREV_SWAP_LIMIT 64
+#define PREV_SWAP_LIMIT 32
 
 void FindVirtToEvictRecursive(
     struct vas* vas, 
@@ -384,7 +384,7 @@ void FindVirtToEvictRecursive(
      */
     int limit = (((*count - 500) / 75) + 10);
     if (*count > 500 && *lowest_rank < limit) {
-        return;
+        //return;
     }
 
     // TODO: we really need a better page swapper that doesn't just pick the
@@ -435,10 +435,10 @@ void FindVirtToEvict(
     struct vas_entry** prev_swaps
 ) {
     int count = 0;
-    FindVirtToEvictRecursive(vas, vas->mappings->root, lowest_rank, lowest_ranked, &count, prev_swaps);
     if (include_globals) {
         FindVirtToEvictRecursive(vas, GetCpu()->global_vas_mappings->root, lowest_rank, lowest_ranked, &count, prev_swaps);
     }
+    FindVirtToEvictRecursive(vas, vas->mappings->root, lowest_rank, lowest_ranked, &count, prev_swaps);
 }
 
 /**

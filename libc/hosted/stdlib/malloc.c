@@ -119,6 +119,17 @@ static void SetSizeTags(struct block* block, size_t size) {
 static struct block* RequestBlock(size_t total_size) {
     total_size += MINIMUM_REQUEST_SIZE_INTERNAL * 2;
 
+    /*
+     * We want to round up to page size to ensure that malloc() doesn't waste any 'extra'
+     * memory that mmap gives. e.g. if we ask for 30 bytes, mmap() will give us 4096, but
+     * malloc() will still only think we got 30, wasting a ton of memory. (This is why `ed`
+     * was using so much RAM - each line did a small `malloc` - so each line wasted a whole
+     * page!!
+     * 
+     * Assume the largest page size any sane system will have is 64K.
+     */
+    total_size = (total_size + 65535) & ~0xFFFF;
+
     struct block* block = mmap(0, total_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (block == NULL) {
         return NULL;

@@ -140,6 +140,15 @@ void InitThread(void*) {
     //ObjcTest();
 
     while (true) {
+        size_t free = GetFreePhysKilobytes();
+        size_t total = GetTotalPhysKilobytes();
+        LogWriteSerial(
+            "FREE RAM: %d / %d KB used (%d%% free)\n\n", 
+            total - free, total, 100 * (free) / total
+        );
+        SleepMilli(1000);
+    }
+    while (true) {
         /*
          * We crash in strange and rare conditions if this thread's stack gets 
          * removed, so we will ensure we don't terminate it.
