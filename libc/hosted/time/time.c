@@ -67,6 +67,12 @@ struct tm* localtime(const time_t* timer) {
     return &tm;
 }
 
+struct tm* gmtime(const time_t* timer) {
+    uint64_t t = (OsGetLocalTime() - OsGetUtcTime()) / 1000000ULL;
+    t = *timer - t;
+    return localtime(&t);
+}
+
 char* ctime(const time_t* clock) {
     return asctime(localtime(clock));
 }

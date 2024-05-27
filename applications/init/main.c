@@ -47,8 +47,6 @@ static void ShowDateAndTime(void) {
     time_t curtime;
     time(&curtime);
     printf("%s\n", ctime(&curtime));
-    //struct ostime t = TimeValueToStruct(OsGetLocalTime());
-    //printf("%d:%02d:%02d %d/%d/%d\n\n", t.hour, t.min, t.sec, t.day, t.month, t.year);
 }
 
 int main(void) {

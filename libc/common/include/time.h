@@ -30,3 +30,4 @@ clock_t clock(void);
 char* asctime(const struct tm* timeptr);
 struct tm* localtime(const time_t* timer);
 char* ctime(const time_t* clock);
+struct tm* gmtime(const time_t* timer);
