@@ -53,7 +53,7 @@ void x86HandleInterrupt(struct x86_regs* r) {
         HandleVirtFault(x86GetCr2(), type);
 
     } else if (num == ISR_NMI) {
-        Panic(PANIC_NON_MASKABLE_INTERRUPT);
+        HandleNmi();
 
     } else if (num == ISR_SYSTEM_CALL) {
         r->eax = HandleSystemCall(r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi);

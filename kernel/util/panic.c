@@ -45,7 +45,9 @@ static const char* message_table[_PANIC_HIGHEST_VALUE] = {
 	[PANIC_SPINLOCK_DOUBLE_ACQUISITION]			= "spinlock attempted to be locked while currently held",
 	[PANIC_SPINLOCK_RELEASED_BEFORE_ACQUIRED]	= "spinlock attempted to be released while not held",
 	[PANIC_DOUBLE_FREE_DETECTED]				= "heap memory freed twice",
-	[PANIC_CONFLICTING_ALLOCATION_REQUIREMENTS]	= "conflicting heap allocation requirements"
+	[PANIC_CONFLICTING_ALLOCATION_REQUIREMENTS]	= "conflicting heap allocation requirements",
+	[PANIC_BUS_FAULT]							= "hardware error on bus",
+	[PANIC_MEMORY_FAULT]						= "hardware error with memory",
 };
 
 static void (*graphical_panic_handler)(int, const char*) = NULL;

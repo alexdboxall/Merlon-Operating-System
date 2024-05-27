@@ -9,13 +9,9 @@
 #include <cpu.h>
 #include <machine/portio.h>
 #include <machine/interrupt.h>
+#include <machine/cmos.h>
 #include <errno.h>
 #include <driver.h>
-
-static void x86EnableNMIs(void) {
-    outb(0x70, inb(0x70) & 0x7F);
-    inb(0x71);
-}
 
 void ArchInitBootstrapCpu(struct cpu*) {
     x86InitGdt();
@@ -23,11 +19,12 @@ void ArchInitBootstrapCpu(struct cpu*) {
     x86InitTss();
     
     InitPic();
-    InitPit(40);
-
+    InitPit(50);
+    
     ArchEnableInterrupts();
     x86MakeReadyForIrqs();
-    x86EnableNMIs();
+
+    InitCmos();
 }
 
 bool ArchInitNextCpu(struct cpu*) {

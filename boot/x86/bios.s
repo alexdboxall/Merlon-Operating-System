@@ -549,6 +549,46 @@ real16:
 	jmp goBackHome
 
 bios_read_key:
+	mov [realModeRet1], dword 0
+
+	mov ah, 1
+	int 0x16
+	jz goBackHome
+
+	; we got a key!
+	; AL has ASCII, AH has scancode
+
+	mov ah, 0
+	int 0x16
+	
+	test al, al
+	jz .special_key
+	movzx eax, al
+	mov [realModeRet1], eax
+	jmp goBackHome
+
+.special_key:
+	cmp ah, 0x48
+	je .up
+	cmp ah, 0x4D
+	je .right
+	cmp ah, 0x4B
+	je .left
+	cmp ah, 0x50
+	je .right
+	jmp goBackHome
+
+.up:
+	mov [realModeRet1], dword 1
+	jmp goBackHome
+.down:
+	mov [realModeRet1], dword 2
+	jmp goBackHome
+.left:
+	mov [realModeRet1], dword 3
+	jmp goBackHome
+.right:
+	mov [realModeRet1], dword 4
 	jmp goBackHome
 
 bios_wait_100ms:

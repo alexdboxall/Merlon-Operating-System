@@ -7,12 +7,41 @@
 #include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <os/memory.h>
+
+#include <os/sysinfo.h>
 
 extern int EditorMain(int argc, char** argv);
 extern int LsMain(int argc, char** argv);
 
+static void ShowVersionInformation(void) {
+    char ver_string[64];
+    int major_ver;
+    int minor_ver;
+    OsGetVersion(&major_ver, &minor_ver, ver_string, 32);
+
+    printf(
+        "%s\n"
+        "Version %d.%d\n"
+        "Copyright Alex Boxall 2022-2024\n\n",
+        ver_string, major_ver, minor_ver
+    );
+}
+
+static void ShowMemoryUsage(void) {
+    size_t free = OsGetFreeMemoryKilobytes();
+    size_t total = OsGetTotalMemoryKilobytes();
+    if (total == 0) {
+        printf("Memory information unavailable\n\n");
+    } else {
+        printf(
+            "%d / %d KB used (%d%% free)\n\n", 
+            total - free, total, 100 * (free) / total
+        );
+    }  
+}
+
 int main(void) {
+
     /*
     pid_t child = fork();
     if (child == 0) {
@@ -25,6 +54,9 @@ int main(void) {
     }
     */
 
+    putchar('\n');
+    ShowVersionInformation();
+    ShowMemoryUsage();
     chdir("drv0:/");
     
     char line[300];
@@ -49,18 +81,11 @@ int main(void) {
             printf("\x1B[2J");
             fflush(stdout);
 
-        } else if (!strcmp(line, "ram\n")) {
-            size_t free = OsGetFreeMemoryKilobytes();
-            size_t total = OsGetTotalMemoryKilobytes();
-            if (total == 0) {
-                printf("RAM information unavailable!!\n\n");
-            } else {
-                printf(
-                    "%d / %d KB used (%d%% free)\n\n", 
-                    total - free, total, 100 * (free) / total
-                );
-            }
-            
+        } else if (!strcmp(line, "mem\n") || !strcmp(line, "ram\n")) {
+            ShowMemoryUsage();
+
+        } else if (!strcmp(line, "ver\n")) {
+            ShowVersionInformation();
 
         } else if (!strcmp(line, "ed\n")) {
             EditorMain(1, NULL);

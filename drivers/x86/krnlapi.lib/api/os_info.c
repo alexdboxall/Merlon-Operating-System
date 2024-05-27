@@ -23,3 +23,15 @@ size_t OsGetTotalMemoryKilobytes(void) {
         return kilobytes;
     }
 }
+
+void OsGetVersion(int* major, int* minor, char* string, int length) {
+    size_t version;
+    int res = _system_call(SYSCALL_INFO, SYSINFO_OS_VERSION, (size_t) &version, (size_t) string, length, 0);
+    if (res == 0) {
+        *major = (version >> 8) & 0xFF;
+        *minor = (version >> 0) & 0xFF;
+    } else {
+        *major = -1;
+        *minor = -1;
+    }
+}

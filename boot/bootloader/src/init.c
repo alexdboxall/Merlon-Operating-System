@@ -4,6 +4,8 @@
 
 #define ENTRY_POINT __attribute__((__section__(".entrypoint")))
 
+struct kernel_boot_info kboot_info;
+
 struct firmware_info* firmware;
 struct firmware_info* GetFw(void) {
     return firmware;
@@ -33,14 +35,89 @@ static void DrawBootMessage() {
     ++dot_cycle;
 }
 
-static bool DisplayBootScreen(void) {
+static void DisplayBootingHeader(void) {
     Clear();
     SetCursor(2, 1);
     Puts("Booting NOS", BOOTCOL_WHITE_ON_BLACK);
+}
+
+static void ShowRamTable(void) {
+    Printf("  The RAM table has %d entries:\n  ", GetFw()->num_ram_table_entries);
+    for (size_t i = 0; i < GetFw()->num_ram_table_entries; ++i) {
+        struct boot_memory_entry ram = GetFw()->ram_table[i];
+        int type = BOOTRAM_GET_TYPE(ram.info);
+
+        Printf("      [%s]: 0x%X -> 0x%X (len: 0x%X)\n  ", 
+            type == BOOTRAM_TYPE_AVAILABLE ? "AVAIL" :
+            (type == BOOTRAM_TYPE_RECLAIMABLE ? "ACPI " : "RESV "),
+            (size_t) ram.address,
+            (size_t) (ram.address + ram.length - 1),
+            (size_t) ram.length
+        ); 
+    }
+}
+
+static void BootOptionsMenu(void) {
+    const char* options[] = {
+        "[1] - Continue booting",
+        "[2] - Reboot",
+        "",
+        "[R] - Show RAM table",        
+        NULL
+    };
+
+    while (true) {
+        Clear();
+        SetCursor(2, 1);
+        Puts("Boot Options", BOOTCOL_WHITE_ON_BLACK);
+        SetCursor(2, 3);
+        Puts("Please select an option by pressing that key on your keyboard.", BOOTCOL_GREY_ON_BLACK);
+
+        int i = 0;
+        while (options[i] != NULL) {
+            SetCursor(4, 5 + i); 
+            Puts(options[i], BOOTCOL_GREY_ON_BLACK);
+            ++i;
+        }
+        SetCursor(4, 5 + i);
+        if (kboot_info.enable_floppy) {
+            Puts("[F] - Disable floppy drive", BOOTCOL_GREY_ON_BLACK);
+        } else {
+            Puts("[F] - Enable floppy drive", BOOTCOL_GREY_ON_BLACK);
+        }
+
+retry:;
+        char key = WaitKey();
+        if (key == '1') {
+            break;
+        } else if (key == '2') {
+            Reboot();
+        } else if (key == 'R' || key == 'r') {
+            Clear();
+            SetCursor(2, 1);
+            Puts("RAM Table\n\n", BOOTCOL_WHITE_ON_BLACK);
+            ShowRamTable();
+            Puts("\n  Press the ESC key to continue.", BOOTCOL_WHITE_ON_BLACK);
+            while (CheckKey() != BOOTKEY_ESCAPE) {
+                ;
+            }
+        } else if (key == 'F' || key == 'f') {
+            kboot_info.enable_floppy ^= 1;
+        } else {
+            goto retry;
+        }
+    }
+
+    DisplayBootingHeader();
+    Puts("...", BOOTCOL_WHITE_ON_BLACK);
+}
+
+static bool DisplayBootScreen(void) {
+    DisplayBootingHeader();
     SetCursor(2, 23);
     Puts("Press the ESC key to load boot options", BOOTCOL_GREY_ON_BLACK);
 
-    for (int i = 0; i < 4 /* 8 */; ++i) {
+    for (int i = 0; i < 4; ++i) {
         DrawBootMessage(i);
         Sleep(200);
         if (CheckKey() == BOOTKEY_ESCAPE) {
@@ -76,25 +153,6 @@ static size_t LoadProgramHeaders(size_t base) {
     return elf->e_entry;
 }
 
-static void ShowRamTable(void) {
-    DiagnosticPrintf("The RAM table has %d entries:\n  ", GetFw()->num_ram_table_entries);
-    for (size_t i = 0; i < GetFw()->num_ram_table_entries; ++i) {
-        struct boot_memory_entry ram = GetFw()->ram_table[i];
-        int type = BOOTRAM_GET_TYPE(ram.info);
-
-        DiagnosticPrintf("    [%s]: 0x%X -> 0x%X (len: 0x%X)\n  ", 
-            type == BOOTRAM_TYPE_AVAILABLE ? "AVAIL" :
-            (type == BOOTRAM_TYPE_RECLAIMABLE ? "ACPI " : "RESV "),
-            (size_t) ram.address,
-            (size_t) (ram.address + ram.length - 1),
-            (size_t) ram.length
-        ); 
-    }
-}
-
-struct kernel_boot_info kboot_info;
-
-
 void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
     firmware = fw;
 
@@ -118,9 +176,11 @@ void ENTRY_POINT InitBootloader(struct firmware_info* fw) {
     DiagnosticPrintf("The kernel's executable has been fully loaded to address 0x%X.\n  ", fw->kernel_load_point);
     DiagnosticPrintf("The kernel entry point is at 0x%X\n  ", entry_point);
 
-    ShowRamTable();
+    kboot_info.enable_floppy = 1;
 
-    (void) show_boot_options;
+    if (show_boot_options) {
+        BootOptionsMenu();
+    }
 
     ExitBootServices();
 

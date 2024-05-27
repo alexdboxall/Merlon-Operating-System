@@ -18,7 +18,7 @@
 #define export
 #endif
 
-export void* memchr(const void* s, int c, size_t n) {
+void* memchr(const void* s, int c, size_t n) {
 	const uint8_t* ptr = (const uint8_t*) s;
 
 	while (n--) {
@@ -57,7 +57,7 @@ int strncmp(const char* s1, const char* s2, size_t n) {
 	}
 }
 
-export void* memmove(void* dst, const void* src, size_t n) {
+void* memmove(void* dst, const void* src, size_t n) {
 	uint8_t* a = (uint8_t*) dst;
 	const uint8_t* b = (const uint8_t*) src;
 
@@ -77,7 +77,7 @@ export void* memmove(void* dst, const void* src, size_t n) {
 	return dst;
 }
 
-export char* strcat(char* restrict dst, const char* restrict src) {
+char* strcat(char* restrict dst, const char* restrict src) {
 	char* ret = dst;
 
 	while (*dst) {
@@ -91,7 +91,7 @@ export char* strcat(char* restrict dst, const char* restrict src) {
 	return ret;
 }
 
-export char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
+char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
 	char* ret = dst;
 
 	while (n--) {
@@ -105,7 +105,7 @@ export char* strncpy(char* restrict dst, const char* restrict src, size_t n) {
 	return ret;
 }
 
-export char* strchr(const char* s, int c) {
+char* strchr(const char* s, int c) {
 	do {
 		if (*s == (char) c) {
 			return (char*) s;
@@ -114,7 +114,7 @@ export char* strchr(const char* s, int c) {
 	return NULL;
 }
 
-export char* strdup(const char* str) {
+char* strdup(const char* str) {
 	char* copy = (char*) malloc(strlen(str) + 1);
 	strcpy(copy, str);
 	return copy;

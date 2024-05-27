@@ -21,15 +21,17 @@ struct boot_memory_entry {
 };
 
 #define BOOTKEY_NONE     0
+
 #define BOOTKEY_SPACE    ' '
 #define BOOTKEY_UP       1
 #define BOOTKEY_DOWN     2
 #define BOOTKEY_LEFT     3
 #define BOOTKEY_RIGHT    4
-#define BOOTKEY_BKSP     5
-#define BOOTKEY_ESCAPE   6
-#define BOOTKEY_TAB      '\t'   // 9
-#define BOOTKEY_ENTER    '\n'   // 10
+
+#define BOOTKEY_BKSP     0x8
+#define BOOTKEY_ESCAPE   0x1B  
+#define BOOTKEY_TAB      0x9   // '\t'
+#define BOOTKEY_ENTER    0xD   // '\r' 
 
 struct firmware_info {
     size_t num_ram_table_entries;
@@ -96,4 +98,10 @@ struct kernel_boot_info {
     size_t boot_medium;
     size_t firmware_type;
 
+    bool enable_floppy;
+
 } __attribute__((packed));
+
+#ifdef COMPILE_KERNEL
+struct kernel_boot_info GetBootInformation(void);
+#endif

@@ -106,6 +106,19 @@ void ArchCallGlobalConstructors(void);
 
 void ArchInitDev(bool fs);
 
+/*
+ * We give `timezone_offset` in case the architecture/configuration wants to use
+ * local time to store the RTC.
+ * 
+ * Microseconds since 1601.
+ * 
+ * local = UTC + timezone_offset
+ * 
+ * `ArchSetUtcTime` returns an errno.
+ */
+uint64_t ArchGetUtcTime(int64_t timezone_offset);
+int ArchSetUtcTime(uint64_t time, int64_t timezone_offset);
+
 
 /*
  * Used only if the AVL tree is insufficient, e.g. for deallocating part of the kernel region to, e.g.
