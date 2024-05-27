@@ -6,10 +6,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <locale.h>
+#include <os/time.h>
 
 extern int main(int argc, char** argv, char** envp);
 
+extern uint64_t initial_time_for_clock;
+
 void _start(int argc, char** argv, char** envp) {
+    initial_time_for_clock = OsGetLocalTime();
+
     stdin = fopen("con:", "r");
     stdout = fopen("con:", "w");
     stderr = fopen("con:", "w");
