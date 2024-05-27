@@ -32,3 +32,4 @@ int SysIoctl(size_t, size_t, size_t, size_t, size_t);
 int SysStat(size_t, size_t, size_t, size_t, size_t);
 int SysChdir(size_t, size_t, size_t, size_t, size_t);
 int SysInfo(size_t, size_t, size_t, size_t, size_t);
+int SysTime(size_t, size_t, size_t, size_t, size_t);

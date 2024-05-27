@@ -6,9 +6,10 @@
 #define RTC_SECOND  0x00
 #define RTC_MINUTE  0x02
 #define RTC_HOUR    0x04
-#define RTC_DAY     0x06
+#define RTC_DAY     0x07
 #define RTC_MONTH   0x08
 #define RTC_YEAR    0x09
+#define RTC_WEEKDAY 0x06
 
 #define CURRENT_YEAR 2024
 
@@ -73,13 +74,14 @@ static void SetCentury(int century, bool rtc_in_bcd_mode) {
     }
 }
 
-static bool AreTimesEqual(struct rtctime a, struct rtctime b) {
+static bool AreTimesEqual(struct ostime a, struct ostime b) {
     return a.sec == b.sec && a.min == b.min && a.hour == b.hour &&
            a.day == b.day && a.month == b.month && a.year == b.year;
 }
 
-static void ReadTimeState(struct rtctime* t)
+static void ReadTimeState(struct ostime* t)
 {
+    t->microsec = 0;
     t->sec = ReadCmos(RTC_SECOND);
     t->min = ReadCmos(RTC_MINUTE);
     t->hour = ReadCmos(RTC_HOUR);
@@ -105,7 +107,7 @@ static void ReadTimeState(struct rtctime* t)
     t->year += GetCentury(t->year, bcd) * 100;
 }
 
-static void WriteTimeState(struct rtctime t)
+static void WriteTimeState(struct ostime t)
 {
     uint8_t reg_b = ReadCmos(0x0B);
     bool bcd = !(reg_b & 0x04);
@@ -134,13 +136,14 @@ static void WriteTimeState(struct rtctime t)
     WriteCmos(RTC_DAY, t.day);
     WriteCmos(RTC_MONTH, t.month);
     WriteCmos(RTC_YEAR, t.year);
+    
+    WriteCmos(RTC_WEEKDAY, GetWeekday(t));
+    LogWriteSerial("writing weekday %d (1-7, Sunday=1)\n", GetWeekday(t));
 }
 
-uint64_t ArchGetUtcTime(int64_t timezone_offset) {
-    (void) timezone_offset;
-    
-    struct rtctime time;
-    struct rtctime prev;
+uint64_t ArchGetUtcTime(int64_t timezone_offset) {    
+    struct ostime time;
+    struct ostime prev;
 
     while (IsUpdateInProgress()) {
         ;
@@ -159,14 +162,14 @@ uint64_t ArchGetUtcTime(int64_t timezone_offset) {
 
     LogWriteSerial("RTC got %d:%d:%d %d/%d/%d\n", time.hour, time.min, time.sec, time.day, time.month, time.year);
 
-    return TimeStructToValue(time);
+    return TimeStructToValue(time) - timezone_offset;
 }
 
 int ArchSetUtcTime(uint64_t time, int64_t timezone_offset) {
-    (void) timezone_offset;
+    time += timezone_offset;
     
-    struct rtctime rtime = TimeValueToStruct(time);
-    struct rtctime readback;
+    struct ostime rtime = TimeValueToStruct(time);
+    struct ostime readback;
 
     do {
         WriteTimeState(rtime);

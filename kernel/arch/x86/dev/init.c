@@ -35,7 +35,7 @@ void ArchInitDev(bool fs) {
         uint64_t utct = ArchGetUtcTime(0);
         LogWriteSerial("UTC time = 0x%X 0x%X\n", (uint32_t) utct, (uint32_t) (utct >> 32));
 
-        struct rtctime splitt = TimeValueToStruct(utct);
+        struct ostime splitt = TimeValueToStruct(utct);
         LogWriteSerial("%d:%d:%d %d/%d/%d", splitt.hour, splitt.min, splitt.sec, splitt.day, splitt.month, splitt.year);
 
         utct = TimeStructToValue(splitt);

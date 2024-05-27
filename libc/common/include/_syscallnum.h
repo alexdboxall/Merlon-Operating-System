@@ -22,6 +22,7 @@ enum system_call_numbers {
     SYSCALL_STAT,
     SYSCALL_CHDIR,
     SYSCALL_INFO,
+    SYSCALL_TIME,
     
     _SYSCALL_NUM_ENTRIES
 };

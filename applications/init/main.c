@@ -5,9 +5,11 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <timeconv.h>
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include <os/time.h>
 #include <os/sysinfo.h>
 
 extern int EditorMain(int argc, char** argv);
@@ -38,6 +40,11 @@ static void ShowMemoryUsage(void) {
             total - free, total, 100 * (free) / total
         );
     }  
+}
+
+static void ShowDateAndTime(void) {
+    struct ostime t = TimeValueToStruct(OsGetLocalTime());
+    printf("%d:%02d:%02d %d/%d/%d\n\n", t.hour, t.min, t.sec, t.day, t.month, t.year);
 }
 
 int main(void) {
@@ -83,6 +90,9 @@ int main(void) {
 
         } else if (!strcmp(line, "mem\n") || !strcmp(line, "ram\n")) {
             ShowMemoryUsage();
+
+        } else if (!strcmp(line, "date\n") || !strcmp(line, "time\n")) {
+            ShowDateAndTime();
 
         } else if (!strcmp(line, "ver\n")) {
             ShowVersionInformation();

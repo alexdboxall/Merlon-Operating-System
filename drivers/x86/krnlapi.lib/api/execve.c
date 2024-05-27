@@ -20,6 +20,7 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/time.h>
 #include <os/everything.h>
 
 struct dyn_data {
@@ -148,6 +149,10 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "OsGetFreeMemoryKilobytes")) return (size_t) OsGetFreeMemoryKilobytes;
     if (!xstrcmp(name, "OsGetTotalMemoryKilobytes")) return (size_t) OsGetTotalMemoryKilobytes;
     if (!xstrcmp(name, "OsGetVersion")) return (size_t) OsGetVersion;
+    if (!xstrcmp(name, "OsSetLocalTime")) return (size_t) OsSetLocalTime;
+    if (!xstrcmp(name, "OsGetLocalTime")) return (size_t) OsGetLocalTime;
+    if (!xstrcmp(name, "OsSetTimezone")) return (size_t) OsSetTimezone;
+    if (!xstrcmp(name, "OsGetTimezone")) return (size_t) OsGetTimezone;
     return (size_t) loltest;
 }
 
