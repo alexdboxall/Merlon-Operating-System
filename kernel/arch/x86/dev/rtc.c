@@ -136,9 +136,6 @@ static void WriteTimeState(struct ostime t)
     WriteCmos(RTC_DAY, t.day);
     WriteCmos(RTC_MONTH, t.month);
     WriteCmos(RTC_YEAR, t.year);
-    
-    WriteCmos(RTC_WEEKDAY, GetWeekday(t));
-    LogWriteSerial("writing weekday %d (1-7, Sunday=1)\n", GetWeekday(t));
 }
 
 uint64_t ArchGetUtcTime(int64_t timezone_offset) {    
@@ -175,6 +172,9 @@ int ArchSetUtcTime(uint64_t time, int64_t timezone_offset) {
         WriteTimeState(rtime);
         ReadTimeState(&readback);
     } while (!AreTimesEqual(rtime, readback));
+
+    WriteCmos(RTC_WEEKDAY, GetWeekday(time));
+    LogWriteSerial("writing weekday %d (1-7, Sunday=1)\n", GetWeekday(time));
 
     return 0;
 }

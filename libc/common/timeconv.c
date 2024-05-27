@@ -109,14 +109,13 @@ struct ostime TimeValueToStruct(uint64_t t) {
 /**
  * Sunday = 1, Monday = 2, ..., Saturday = 6.
  */
-int GetWeekday(struct ostime t) {
+int GetWeekday(uint64_t t) {
+	int days_since_1601 = t / 1000000ULL / SECS_PER_DAY;
+
 	/*
-	 * https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week#Keith
+	 * 1 Janurary 1601 was a Monday.
 	 */
-	int d = t.day;
-	int m = t.month;
-	int y = t.year;
-	return 1 + ((d+=m<3 ? y-- : y-2,23*m/9+d+4+y/4-y/100+y/400) % 7);
+	return (1 + days_since_1601) % 7 + 1;
 }
 
 #define SECS_BETWEEN_1970_AND_1601 11644473600ULL
