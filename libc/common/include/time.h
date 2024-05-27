@@ -28,3 +28,5 @@ struct timespec {
 time_t time(time_t* t);
 clock_t clock(void);
 char* asctime(const struct tm* timeptr);
+struct tm* localtime(const time_t* timer);
+char* ctime(const time_t* clock);

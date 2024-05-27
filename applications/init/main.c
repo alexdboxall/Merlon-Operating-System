@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <timeconv.h>
 #include <dirent.h>
+#include <time.h>
 #include <sys/stat.h>
 
 #include <os/time.h>
@@ -43,8 +44,11 @@ static void ShowMemoryUsage(void) {
 }
 
 static void ShowDateAndTime(void) {
-    struct ostime t = TimeValueToStruct(OsGetLocalTime());
-    printf("%d:%02d:%02d %d/%d/%d\n\n", t.hour, t.min, t.sec, t.day, t.month, t.year);
+    time_t curtime;
+    time(&curtime);
+    printf("%s\n", ctime(&curtime));
+    //struct ostime t = TimeValueToStruct(OsGetLocalTime());
+    //printf("%d:%02d:%02d %d/%d/%d\n\n", t.hour, t.min, t.sec, t.day, t.month, t.year);
 }
 
 int main(void) {

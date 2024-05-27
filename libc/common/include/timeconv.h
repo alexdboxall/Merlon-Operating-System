@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #endif
 
+#define SECS_PER_DAY 86400
+
 /*
  * A time value is in microseconds since 1601.
  */
@@ -30,3 +32,5 @@ uint64_t UnixTimeToTimeValue(uint64_t t);
  * Sunday = 1, Monday = 2, ..., Saturday = 6.
  */
 int GetWeekday(uint64_t t);
+
+extern int cumulative_days_in_months[13];

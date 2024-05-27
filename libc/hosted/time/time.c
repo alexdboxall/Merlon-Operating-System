@@ -1,5 +1,7 @@
 #include <time.h>
 #include <stdio.h>
+#include <errno.h>
+#include <timeconv.h>
 #include <sys/time.h>
 #include <os/time.h>
 
@@ -40,4 +42,31 @@ char* asctime(const struct tm* timeptr) {
         timeptr->tm_min, timeptr->tm_sec,
         1900 + timeptr->tm_year);
     return result;
+}
+
+struct tm* localtime(const time_t* timer) {
+    if (timer == NULL) {
+        errno = EINVAL;
+        return NULL;
+    }
+
+    uint64_t t = UnixTimeToTimeValue(*timer);
+    int days_since_1601 = t / 1000000ULL / SECS_PER_DAY;
+    struct ostime ost = TimeValueToStruct(t);
+    
+    static struct tm tm;
+    tm.tm_sec = ost.sec;
+    tm.tm_min = ost.min;
+    tm.tm_hour = ost.hour;
+    tm.tm_mday = ost.day;
+    tm.tm_mon = ost.month - 1;
+    tm.tm_year = ost.year - 1900;
+    tm.tm_yday = cumulative_days_in_months[ost.month - 1] + ost.day - 1;
+	tm.tm_wday = (1 + days_since_1601) % 7;
+    tm.tm_isdst = 0;
+    return &tm;
+}
+
+char* ctime(const time_t* clock) {
+    return asctime(localtime(clock));
 }

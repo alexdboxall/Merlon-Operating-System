@@ -5,13 +5,11 @@
  * Note that these time conversions are not particually quick.
  */
 
-#define SECS_PER_DAY 86400
-
 static bool IsLeapYear(int year) {
 	return (year % 4 == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }
 
-static int cumulative_days_in_months[] = {
+int cumulative_days_in_months[13] = {
 	0,															// 1 Jan
 	31,															// 1 Feb
 	31 + 28,													// 1 March
