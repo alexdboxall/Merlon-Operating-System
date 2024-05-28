@@ -26,7 +26,7 @@ int SysNanosleep(size_t wait_ptr, size_t remain_ptr, size_t, size_t, size_t) {
 	 */
 	uint64_t start_time = GetSystemTimer();
 	LogWriteSerial("SysNanosleep: 0x%X 0x%X\n", (uint32_t) wait_ns, (uint32_t) (wait_ns >> 32));
-	SleepNano(wait_ns);
+	int eintr = SleepNano(wait_ns);
 
 	int64_t remain_ns = GetSystemTimer() - start_time;
 	if (remain_ns < 0) {
@@ -34,6 +34,11 @@ int SysNanosleep(size_t wait_ptr, size_t remain_ptr, size_t, size_t, size_t) {
 	}
 	uint64_t remain_ns_unsigned = remain_ns;
 	io = CreateTransferWritingToUser((void*) remain_ptr, sizeof(uint64_t), 0);
-    return PerformTransfer(&remain_ns_unsigned, &io, sizeof(uint64_t));
+    res = PerformTransfer(&remain_ns_unsigned, &io, sizeof(uint64_t));
+	if (res != 0) {
+		return res;
+	}
+
+	return eintr;
 }
 

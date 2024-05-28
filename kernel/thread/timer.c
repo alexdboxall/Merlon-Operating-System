@@ -5,6 +5,7 @@
 #include <cpu.h>
 #include <panic.h>
 #include <irql.h>
+#include <errno.h>
 #include <log.h>
 #include <arch.h>
 #include <thread.h>
@@ -94,9 +95,11 @@ void HandleSleepWakeups(void* sys_time_ptr) {
 
     struct thread* iter = sleep_list.head;
     while (iter) {
-        if (iter->sleep_expiry <= system_time) {
+        /* TODO: probably whack an `|| (HasBeenSignalled())`*/
+        if (iter->sleep_expiry <= system_time || iter->signal_intr) {
             ThreadListDelete(&sleep_list, iter);
             iter->timed_out = true;
+            iter->timed_out_due_to_signal = iter->signal_intr;
             UnblockThread(iter);
             iter = sleep_list.head;     // restart, as list changed
 
@@ -108,11 +111,11 @@ void HandleSleepWakeups(void* sys_time_ptr) {
     UnlockScheduler();
 }
 
-void SleepUntil(uint64_t system_time_ns) {
+int SleepUntil(uint64_t system_time_ns) {
     EXACT_IRQL(IRQL_STANDARD);
 
     if (system_time_ns < GetSystemTimer()) {
-        return;
+        return 0;
     }
 
     LockScheduler();
@@ -120,12 +123,14 @@ void SleepUntil(uint64_t system_time_ns) {
     QueueForSleep(GetThread());
     BlockThread(THREAD_STATE_SLEEPING);
     UnlockScheduler();
+
+    return GetThread()->timed_out_due_to_signal ? EINTR : 0;
 }
 
-void SleepNano(uint64_t delta_ns) {
-    SleepUntil(GetSystemTimer() + delta_ns);
+int SleepNano(uint64_t delta_ns) {
+    return SleepUntil(GetSystemTimer() + delta_ns);
 }
 
-void SleepMilli(uint32_t delta_ms) {
-    SleepNano(((uint64_t) delta_ms) * 1000000ULL);
+int SleepMilli(uint32_t delta_ms) {
+    return SleepNano(((uint64_t) delta_ms) * 1000000ULL);
 }

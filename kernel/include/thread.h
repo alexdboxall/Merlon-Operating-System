@@ -57,6 +57,7 @@ struct thread {
     int schedule_policy;
     size_t canary_position;
     bool timed_out;
+    bool timed_out_due_to_signal;
     bool needs_termination;
 
     struct semaphore* waiting_on_semaphore;
@@ -104,9 +105,9 @@ void UnblockThread(struct thread* thr);
 void UnblockThreadGiftingTimeslice(struct thread* thr);
 int SetThreadPriority(struct thread* thread, int policy, int priority);
 
-void SleepUntil(uint64_t system_time_ns);
-void SleepNano(uint64_t delta_ns);
-void SleepMilli(uint32_t delta_ms);
+int SleepUntil(uint64_t system_time_ns);
+int SleepNano(uint64_t delta_ns);
+int SleepMilli(uint32_t delta_ms);
 
 void HandleSleepWakeups(void* sys_time_ptr); // used internally between timer.c and thread.c
 void InitIdle(void);

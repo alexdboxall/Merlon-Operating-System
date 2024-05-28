@@ -93,6 +93,7 @@ int main(void) {
         } else if (!strcmp(line, "sleep_test\n") || !strcmp(line, "sleep test\n")) {
             for (int i = 0; i < 10; ++i) {
                 printf("%d...\n", i + 1);
+                fflush(stdout);
                 sleep(1);
             }
 
