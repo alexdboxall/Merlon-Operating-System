@@ -13,7 +13,7 @@ int nanosleep(const struct timespec* req, struct timespec* rem) {
         return -1;
     }
 
-    uint64_t nanosecs = req->tv_nsec * 1000000000ULL + req->tv_sec;
+    uint64_t nanosecs = req->tv_sec * 1000000000ULL + req->tv_nsec;
     uint64_t remainder = 0;
     int res = _system_call(SYSCALL_NANOSLEEP, (size_t) &nanosecs, (size_t) &remainder, 0, 0, 0);
     if (rem != NULL) {

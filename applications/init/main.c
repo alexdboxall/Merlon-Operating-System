@@ -90,6 +90,12 @@ int main(void) {
             printf("\x1B[2J");
             fflush(stdout);
 
+        } else if (!strcmp(line, "sleep_test\n") || !strcmp(line, "sleep test\n")) {
+            for (int i = 0; i < 10; ++i) {
+                printf("%d...\n", i + 1);
+                sleep(1);
+            }
+
         } else if (!strcmp(line, "mem\n") || !strcmp(line, "ram\n")) {
             ShowMemoryUsage();
 

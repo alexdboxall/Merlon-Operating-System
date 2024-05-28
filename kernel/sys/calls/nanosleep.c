@@ -25,6 +25,7 @@ int SysNanosleep(size_t wait_ptr, size_t remain_ptr, size_t, size_t, size_t) {
 	 * TODO: need to allow this to be EINTR'ed.
 	 */
 	uint64_t start_time = GetSystemTimer();
+	LogWriteSerial("SysNanosleep: 0x%X 0x%X\n", (uint32_t) wait_ns, (uint32_t) (wait_ns >> 32));
 	SleepNano(wait_ns);
 
 	int64_t remain_ns = GetSystemTimer() - start_time;
