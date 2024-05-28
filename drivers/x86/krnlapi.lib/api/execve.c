@@ -15,6 +15,7 @@
 #include <virtual.h>
 #include <elf.h>
 #include <signal.h>
+#include <time.h>
 #include <machine/config.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -153,6 +154,7 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "OsGetLocalTime")) return (size_t) OsGetLocalTime;
     if (!xstrcmp(name, "OsSetTimezone")) return (size_t) OsSetTimezone;
     if (!xstrcmp(name, "OsGetTimezone")) return (size_t) OsGetTimezone;
+    if (!xstrcmp(name, "nanosleep")) return (size_t) nanosleep;
     return (size_t) loltest;
 }
 

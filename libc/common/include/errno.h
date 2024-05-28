@@ -44,6 +44,7 @@
 #define ENOTRECOVERABLE	32			// Non returning operation has failed past point of no return
 #define EINTR			33			// Interrupted by signal
 #define ECANCELED		34			// Operation cancelled
+#define EOVERFLOW		35			// Overflow
 #ifndef COMPILE_KERNEL
 
 int* __thread_local_errno_();

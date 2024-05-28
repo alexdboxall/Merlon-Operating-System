@@ -163,7 +163,8 @@
         "memory.h": "c",
         "everything.h": "c",
         "sysinfo.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "cmath": "c"
     },
     "files.exclude": {
         "**/.git": true,

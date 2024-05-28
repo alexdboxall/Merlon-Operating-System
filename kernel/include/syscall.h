@@ -33,3 +33,4 @@ int SysStat(size_t, size_t, size_t, size_t, size_t);
 int SysChdir(size_t, size_t, size_t, size_t, size_t);
 int SysInfo(size_t, size_t, size_t, size_t, size_t);
 int SysTime(size_t, size_t, size_t, size_t, size_t);
+int SysNanosleep(size_t, size_t, size_t, size_t, size_t);

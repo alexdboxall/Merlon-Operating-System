@@ -16,6 +16,8 @@ struct tm {
     int tm_wday;
     int tm_yday;
     int tm_isdst;
+    int tm_gmtoff;
+    const char* tm_zone;
 };
 
 struct timespec {
@@ -31,3 +33,5 @@ char* asctime(const struct tm* timeptr);
 struct tm* localtime(const time_t* timer);
 char* ctime(const time_t* clock);
 struct tm* gmtime(const time_t* timer);
+time_t mktime(struct tm* timeptr);
+int nanosleep(const struct timespec* req, struct timespec* rem);

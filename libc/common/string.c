@@ -216,6 +216,8 @@ char* strerror(int err) {
 		return "Interrupted by signal";
 	case ECANCELED:
 		return "Operation cancelled";
+	case EOVERFLOW:
+		return "Overflow";
 	default:
 		return "Unknown error";
 	}
