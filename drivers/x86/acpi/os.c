@@ -715,6 +715,8 @@ void AcpicaThread(void*) {
         return;
     }
 
+    LogWriteSerial("Century register is at CMOS: 0x%X\n", AcpiGbl_FADT.Century);
+
     // For some PCs, may need to add this to get power button to work, 
     // according to https://forum.osdev.org/viewtopic.php?f=1&t=33640
     // The handler itself (`acpi_ec_handler`) can just return AE_OK.
@@ -863,6 +865,7 @@ void AcpicaThread(void*) {
 
     LogWriteSerial("ACPI.SYS fully initialised\n");
 
+    InitSimpleBootFlag();
     PollIrqs();
 }
 

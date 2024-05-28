@@ -30,7 +30,7 @@ static void HideBootOptionsMessage(void) {
 static void DrawBootMessage() {
     static int dot_cycle = 0;
     for (int j = 0; j < 3; ++j) {
-        Putchar(13 + j, 1, (dot_cycle % 4) > j ? '.' : 0, BOOTCOL_WHITE_ON_BLACK);
+        Putchar(16 + j, 1, (dot_cycle % 4) > j ? '.' : 0, BOOTCOL_WHITE_ON_BLACK);
     }
     ++dot_cycle;
 }
@@ -38,7 +38,7 @@ static void DrawBootMessage() {
 static void DisplayBootingHeader(void) {
     Clear();
     SetCursor(2, 1);
-    Puts("Booting NOS", BOOTCOL_WHITE_ON_BLACK);
+    Puts("Booting Merlon", BOOTCOL_WHITE_ON_BLACK);
 }
 
 static void ShowRamTable(void) {

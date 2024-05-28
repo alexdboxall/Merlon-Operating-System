@@ -164,7 +164,8 @@
         "everything.h": "c",
         "sysinfo.h": "c",
         "time.h": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "acpi.h": "c"
     },
     "files.exclude": {
         "**/.git": true,
