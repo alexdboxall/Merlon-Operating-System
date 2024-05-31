@@ -715,7 +715,7 @@ void AcpicaThread(void*) {
         return;
     }
 
-    LogWriteSerial("Century register is at CMOS: 0x%X\n", AcpiGbl_FADT.Century);
+    InitCenturyRegister();
 
     // For some PCs, may need to add this to get power button to work, 
     // according to https://forum.osdev.org/viewtopic.php?f=1&t=33640

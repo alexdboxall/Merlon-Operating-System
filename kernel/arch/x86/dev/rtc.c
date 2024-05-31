@@ -44,21 +44,34 @@ static int Convert24HourTo12(int hour, bool* pm) {
     return hour;
 }
 
+/*
+ * ACPI.SYS will set this with the correct value if one exists.
+ */
+int x86_rtc_century_register = -1;
 static int GetCenturyRegister(void) {
-    return -1;
+    return x86_rtc_century_register;
+}
+
+static int GetCenturyGuess(int low_year) {
+    int year = low_year + (CURRENT_YEAR / 100) * 100;
+    if (year < CURRENT_YEAR) year += 100;
+    return year / 100;
 }
 
 static int GetCentury(int low_year, bool rtc_in_bcd_mode) {
+    int guess = GetCenturyGuess(low_year);
+
     int century_reg = GetCenturyRegister();
     if (century_reg == -1) {
-        int year = low_year + (CURRENT_YEAR / 100) * 100;
-        if (year < CURRENT_YEAR) year += 100;
-        return year / 100;
+        return guess;        
 
     } else {
         uint8_t century = ReadCmos(century_reg);
         if (rtc_in_bcd_mode) {
             century = BcdToBinary(century);
+        }
+        if (century != guess) {
+            LogDeveloperWarning("RTC century (and maybe everything else) is probably wrong\n");
         }
         return century;
     }

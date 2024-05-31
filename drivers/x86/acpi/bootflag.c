@@ -6,7 +6,7 @@
 
 static bool HasCorrectParity(uint8_t val) {
     /*
-     * Odd parity is correct.
+     * The simple boot flag needs odd parity.
      */
     bool odd = false;
     for (int i = 0; i < 8; ++i) {
@@ -29,8 +29,10 @@ void InitSimpleBootFlag(void) {
 
         if (byte & 0b01110000) {
             LogWriteSerial("Simple boot flag has reserved bits set...\n");
+            
         } else if (!HasCorrectParity(byte)) {
             LogWriteSerial("Simple boot flag has invalid parity...\n");
+
         } else {
             /*
              * Set boot as successful, disable diagostics, give OS control of
