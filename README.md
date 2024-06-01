@@ -20,8 +20,8 @@ The TODO list:
 
 ![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readme/b.jpg "Merlon Kernel")
 
+Copyright Alex Boxall 2022-2024. See LICENSE for details.
+
 Merlon is named after the character from *Super Paper Mario*, Merlon.
 
 ![Merlon](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/logo/merlon.png)
-
-Copyright Alex Boxall 2022-2024. See LICENSE for details.
