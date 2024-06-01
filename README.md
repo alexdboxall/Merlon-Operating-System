@@ -11,13 +11,14 @@ To build it, run `./release.sh`. To run it in QEMU, use the following command: `
 The TODO list:
 - Writing to disk
 - "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
-- Fixing low memory crashes / terrible performance
+- Fixing low memory crashes
 - A virtual filesystem (VFS) to manage files, folders and devices
 - Disk auto-detection
 - Disk caching
 - More system calls
 - Fixing up all the other TODOs in the code!!
 
-![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readmeimg.png "Merlon Kernel")
+![alt text](image.png)
+![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readme/1.png "Merlon Kernel")
 
 Copyright Alex Boxall 2022-2024. See LICENSE and ATTRIBUTION for details.
