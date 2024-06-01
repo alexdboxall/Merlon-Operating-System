@@ -18,7 +18,7 @@ The TODO list:
 - More system calls
 - Fixing up all the other TODOs in the code!!
 
-![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readme/a.png "Merlon Kernel")
+![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readme/b.jpg "Merlon Kernel")
 
 Merlon is named after the character from *Super Paper Mario*, Merlon.
 
