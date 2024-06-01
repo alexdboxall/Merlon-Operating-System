@@ -3,3 +3,4 @@ log.txt
 toolchain/archives/
 toolchain/build/
 toolchain/source/
+toolchain/output/
