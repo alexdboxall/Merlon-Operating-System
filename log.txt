@@ -12632,3 +12632,175 @@ GOT KEYBRD IRQ
 GOT KEYBRD IRQ
 GOT KEYBRD IRQ
 GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+RTC got 12:22:11 1/6/2024
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4071124, 0xC4001174], fd = 3
+Removing fd... file = [0xC4071124, 0xC4001174], fd = 3
+OPEN FILE: .
+GetVnodeFromPath: .
+ ==> path .
+ GetPathComponent --> . --> .
+ PATH ITER: . [of .]
+Creating fd... file = [0xC4071124, 0xC4001174], fd = 3
+Removing fd... file = [0xC4071124, 0xC4001174], fd = 3
+OPEN FILE: ..
+GetVnodeFromPath: ..
+ ==> path ..
+ GetPathComponent --> .. --> ..
+ PATH ITER: .. [of ..]
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+Creating fd... file = [0xC4071124, 0xC421DAE4], fd = 3
+Removing fd... file = [0xC4071124, 0xC421DAE4], fd = 3
+OPEN FILE: *:/
+GetVnodeFromPath: *:/
+ GetPathComponent --> *:/ --> *
+ Got mount point: *, 0xC4071DA4, 0xC4071034, 0xC4072F5C
+Creating fd... file = [0xC4071124, 0xC4072F5C], fd = 3
+Removing fd... file = [0xC4071124, 0xC4072F5C], fd = 3
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
+GOT KEYBRD IRQ
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitAddableInternal start
+MailboxWaitAddableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+MailboxWaitGettableInternal end
+MailboxWaitGettableInternal start
+GOT KEYBRD IRQ
