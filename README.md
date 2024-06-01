@@ -18,7 +18,6 @@ The TODO list:
 - More system calls
 - Fixing up all the other TODOs in the code!!
 
-![alt text](image.png)
 ![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readme/1.png "Merlon Kernel")
 
 Copyright Alex Boxall 2022-2024. See LICENSE and ATTRIBUTION for details.
