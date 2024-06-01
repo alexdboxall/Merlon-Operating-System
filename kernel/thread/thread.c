@@ -224,6 +224,9 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
     thr->vas = vas;
     thr->signal_intr = false;
+    thr->pending_signals = 0;
+    thr->blocked_signals = 0;
+    thr->signal_being_handled = -1;
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr, kernel_stack_kb == 0 ? DEFAULT_KERNEL_STACK_KB : 0);
 
@@ -244,10 +247,6 @@ struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct va
     return CreateThreadEx(
         entry_point, argument, vas, name, GetProcess(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_NORMAL, 0
     );
-}
-
-bool HasBeenSignalled(void) {
-    return GetThread()->signal_intr;
 }
 
 static void UpdateTimesliceExpiry(void) {

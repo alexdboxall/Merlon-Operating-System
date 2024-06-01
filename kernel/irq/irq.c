@@ -53,8 +53,11 @@ void RespondToIrq(int irq, int req_irl, platform_irq_context_t* context) {
 
 void UnhandledFault(void) {
     if (GetProcess() != NULL) {
-        LogWriteSerial("unhandled fault...\n");
-        TerminateThread(GetThread());
+        // TODO: this would actually raise SIGSEGV
+        // 
+        LogWriteSerial("unhandled fault... terminating the thread 0x%X...\n", GetThread());
+        //TerminateThread(GetThread());
+        GetThread()->needs_termination = true;
 
     } else {
         Panic(PANIC_UNHANDLED_KERNEL_EXCEPTION);

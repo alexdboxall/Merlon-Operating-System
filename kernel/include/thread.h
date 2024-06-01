@@ -65,6 +65,9 @@ struct thread {
     struct process* process;
 
     bool signal_intr;
+    uint64_t pending_signals;
+    uint64_t blocked_signals;
+    int signal_being_handled;
 
     /*
      * The system time at which this task's time has expired. If this is 0, then the task will not have a set time limit.

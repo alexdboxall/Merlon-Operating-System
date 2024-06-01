@@ -106,11 +106,28 @@ int main(void) {
         } else if (!strcmp(line, "ver\n")) {
             ShowVersionInformation();
 
+        } else if (!strcmp(line, "do_sigill\n") || !strcmp(line, "do sigill\n") || !strcmp(line, "sigill\n")) {
+            asm volatile ("hlt");
+
+        } else if (!strcmp(line, "do_sigsegv\n") || !strcmp(line, "do sigsegv\n") || !strcmp(line, "sigsegv\n")) {
+            uint32_t* arr = (uint32_t*) (size_t) (0xABCDEF);
+            *arr = 0;
+
         } else if (!strcmp(line, "ed\n")) {
             EditorMain(1, NULL);
 
         } else if (!strcmp(line, "pwd\n")) {
             printf("%s\n\n", cwd_buffer);
+
+        } else if (!strcmp(line, "exec\n")) {
+            char* args[] = {
+                "drv0:/System/init.exe",
+                NULL
+            };
+            char* env[] = {
+                NULL
+            };
+            execve(args[0], args, env);
 
         } else if (!strcmp(line, "ls\n") || !strcmp(line, "dir\n")) {
             LsMain(1, NULL);

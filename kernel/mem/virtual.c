@@ -1002,14 +1002,21 @@ static void BringIntoMemoryFromSwapfile(struct vas_entry* entry) {
 }
 
 static void BringInBlankPage(struct vas* vas, struct vas_entry* entry, size_t faulting_virt, int fault_type) {
+    /*
+     * UnhandledFault returns if usermode caused a fault, so remember to return
+     * afterwards.
+     */
     if ((fault_type & VM_READ) && !entry->read) {
         UnhandledFault();
+        return;
     }
     if ((fault_type & VM_WRITE) && !entry->write) {
         UnhandledFault();
+        return;
     }
     if ((fault_type & VM_EXEC) && !entry->exec) {
         UnhandledFault();
+        return;
     }
 
     SplitLargePageEntryIntoMultiple(vas, faulting_virt, entry, 1);
@@ -1416,6 +1423,13 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
                                     "executing pageable code? or calling AllocHeapEx wrong with a lock held?");
     }
 
+    /*
+     * This function has a few `goto cleanup`s. Remember that if a usermode
+     * program is page faults invalidly, we still need to release the kernelmode
+     * VAS lock, and decrement `handling_page_fault`. And the caller of this
+     * function may have stuff it wants to do. i.e. we need to ensure we still
+     * return gracefully.
+     */
     struct vas* vas = GetVas();
     AcquireSpinlock(&vas->lock);
     ++handling_page_fault;
@@ -1426,6 +1440,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     if (entry == NULL) {
         UnhandledFault();
+        goto cleanup;
     }
 
     /*
@@ -1476,8 +1491,10 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     int result = BringIntoMemory(vas, entry, fault_type & VM_WRITE, faulting_virt, fault_type);
     if (result != 0) {
         UnhandledFault();
+        goto cleanup;
     }
 
+cleanup:
     --handling_page_fault;
     ReleaseSpinlock(&vas->lock);
 }
