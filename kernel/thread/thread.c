@@ -18,6 +18,8 @@
 #include <progload.h>
 #include <semaphore.h>
 #include <process.h>
+#include <ksignal.h>
+#include <signal.h>
 
 static struct thread_list ready_list;
 static struct spinlock scheduler_lock;
@@ -226,7 +228,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->signal_intr = false;
     thr->pending_signals = 0;
     thr->blocked_signals = 0;
-    thr->signal_being_handled = -1;
+    thr->user_common_signal_handler = 0;
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr, kernel_stack_kb == 0 ? DEFAULT_KERNEL_STACK_KB : 0);
 
@@ -470,6 +472,7 @@ void Schedule(void) {
      * a thread off another list if it's blocked, as we don't know what list it's on. This way, we just
      * signal that it needs terminating next time we allow it to run.
      */
+    
     if (GetThread()->needs_termination) {
         TerminateThread(GetThread());
         Panic(PANIC_IMPOSSIBLE_RETURN);

@@ -24,6 +24,7 @@ enum system_call_numbers {
     SYSCALL_INFO,
     SYSCALL_TIME,
     SYSCALL_NANOSLEEP,
+    SYSCALL_SIGNAL,
     
     _SYSCALL_NUM_ENTRIES
 };

@@ -116,6 +116,7 @@ static void loltest(void) {
 }
 
 extern void dyn_fixup_asm(void);
+extern void OsInitSignals(void);
 
 size_t resolve_address(char* name) {
     if (!xstrcmp(name, "_exit")) return (size_t) _exit;
@@ -155,6 +156,7 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "OsSetTimezone")) return (size_t) OsSetTimezone;
     if (!xstrcmp(name, "OsGetTimezone")) return (size_t) OsGetTimezone;
     if (!xstrcmp(name, "nanosleep")) return (size_t) nanosleep;
+    if (!xstrcmp(name, "OsInitSignals")) return (size_t) OsInitSignals;
     return (size_t) loltest;
 }
 

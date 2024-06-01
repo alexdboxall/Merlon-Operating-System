@@ -13,13 +13,14 @@
 #include <semaphore.h>
 #include <process.h>
 #include <ksignal.h>
+#include <signal.h>
 
 void RaiseSignal(struct thread* thr, int sig_num, bool lock_already_held) {
     if (!lock_already_held) {
         LockScheduler();
     }
     thr->signal_intr = true;
-    thr->pending_signals |= sig_num;
+    thr->pending_signals |= 1 << sig_num;
     if (!lock_already_held) {
         UnlockScheduler();
     }
@@ -42,14 +43,19 @@ int FindSignalToHandle() {
      * and because we have reached this far, we're already about to handle the
      * signal so no need to continue stopping further operations.
      */
-    AssertSchedulerLockHeld();
     struct thread* thr = GetThread();
+    if (thr == NULL) {
+        return -1;
+    }
     uint64_t available_signals = thr->pending_signals & (~thr->blocked_signals);
     if (available_signals == 0) {
         return -1;
     }
 
     thr->signal_intr = false;
+
+    LogWriteSerial("pending_signals = 0x%X\n", (uint32_t) thr->pending_signals);
+    LogWriteSerial("blocked_signals = 0x%X\n", (uint32_t) thr->blocked_signals);
 
     int index = 0;
     while (!(available_signals & 1)) {
@@ -59,17 +65,25 @@ int FindSignalToHandle() {
 
     thr->pending_signals &= ~(1 << index);
     thr->blocked_signals |= 1 << index;
-    thr->signal_being_handled = index;
+    LogWriteSerial("FindSignalToHandle = %d\n", index);
     return index;
 }
 
-void FinishHandlingSignal(void) {
-    AssertSchedulerLockHeld();
+size_t HandleSignal(int sig_num) {
     struct thread* thr = GetThread();
+    if (sig_num == SIGKILL) {
+        thr->needs_termination = true;
+        return 0;
+    }
+
+    if (thr->user_common_signal_handler == 0) {
+        thr->needs_termination = true;
+    }
 
     /*
      * If the signal ran, it can't have been blocked by the user, and hence it
      * was blocked by `FindSignalToHandle`, so revert that.
      */
-    thr->blocked_signals &= ~(1 << thr->signal_being_handled);
+    thr->blocked_signals &= ~(1 << sig_num);
+    return thr->user_common_signal_handler;
 }

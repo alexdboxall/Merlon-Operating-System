@@ -24,6 +24,7 @@
 #include <swapfile.h>
 #include <vfs.h>
 #include <errno.h>
+#include <ksignal.h>
 
 // TODO: lots of locks! especially the global cpu one
 
@@ -1007,15 +1008,15 @@ static void BringInBlankPage(struct vas* vas, struct vas_entry* entry, size_t fa
      * afterwards.
      */
     if ((fault_type & VM_READ) && !entry->read) {
-        UnhandledFault();
+        UnhandledFault(UNHANDLED_FAULT_SEGV);
         return;
     }
     if ((fault_type & VM_WRITE) && !entry->write) {
-        UnhandledFault();
+        UnhandledFault(UNHANDLED_FAULT_SEGV);
         return;
     }
     if ((fault_type & VM_EXEC) && !entry->exec) {
-        UnhandledFault();
+        UnhandledFault(UNHANDLED_FAULT_SEGV);
         return;
     }
 
@@ -1439,36 +1440,10 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
     struct vas_entry* entry = GetVirtEntry(vas, faulting_virt);
 
     if (entry == NULL) {
-        UnhandledFault();
+        UnhandledFault(UNHANDLED_FAULT_SEGV);
         goto cleanup;
     }
 
-    /*
-     * TODO: 
-     * I've learnt we can fault on reading entry here... The reason? I think it's 
-     * because GetVirtEntry() can return something in the global page structure, but
-     * between there and here, someone else modifies it...? Maybe we need to look
-     * individual entries... and have e.g. GetVirtEntry and ReleaseVirtEntry
-     * 
-     * It looks like the previous page fault ended up calling `UnhandledFault()` - 
-     * it looks like the app stuffed up, but in terminating the app we've somehow 
-     * taken down the system, due to the above issue.
-     * 
-     * page fault: cr2 0x20ADB000, eip 0x1080208F, nos-err 0x4
-        PF at 0x20ADB000 on thread 0xC405CCC4
-        --> BSS
-        Removing fd... file = [0xC405A0EC, 0xC42898EC], fd = 4
-
-
-        Page fault: cr2 0x8, eip 0x108006D0, nos-err 0x4        
-        PF at 0x8 on thread 0xC405CCC4
-        unhandled fault...                      <---- user app screws up
-
-
-        Page fault: cr2 0x5, eip 0xC010560D, nos-err 0x0        <---- this isn't good - this address is the 
-                                                                      `entry->load_in_progress` line
-        PANIC 12 page fault while IRQL >= IRQL_SCHEDULER. is some clown holding a spinlock while executing pageable code? or calling AllocHeapEx wrong with a lock held?
-     */
     if (entry->load_in_progress) {
         LogWriteSerial("Telling a page to retry as loading is already in progress...\n");
         --handling_page_fault;
@@ -1490,7 +1465,7 @@ void HandleVirtFault(size_t faulting_virt, int fault_type) {
 
     int result = BringIntoMemory(vas, entry, fault_type & VM_WRITE, faulting_virt, fault_type);
     if (result != 0) {
-        UnhandledFault();
+        UnhandledFault(UNHANDLED_FAULT_SEGV);
         goto cleanup;
     }
 

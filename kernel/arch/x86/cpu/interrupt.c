@@ -60,7 +60,7 @@ void x86HandleInterrupt(struct x86_regs* r) {
 
     } else {
         LogWriteSerial("Got interrupt %d. (r->eip = 0x%X)\n", num, r->eip);
-        UnhandledFault();
+        UnhandledFault(UNHANDLED_FAULT_OTHER);
     }
 }
 

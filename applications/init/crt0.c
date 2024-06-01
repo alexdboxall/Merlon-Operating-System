@@ -8,12 +8,14 @@
 #include <locale.h>
 #include <os/time.h>
 
-extern int main(int argc, char** argv, char** envp);
+int main(int argc, char** argv, char** envp);
+void OsInitSignals(void);
 
 extern uint64_t initial_time_for_clock;
 
 void _start(int argc, char** argv, char** envp) {
     initial_time_for_clock = OsGetLocalTime();
+    OsInitSignals();
 
     stdin = fopen("con:", "r");
     stdout = fopen("con:", "w");
