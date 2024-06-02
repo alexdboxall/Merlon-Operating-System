@@ -30,6 +30,7 @@ The TODO list (vaguely in order)
 - "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
 - `<pthread.h>`
 - Disk auto-detection
+- OS-specific toolchain
 - A GUI!
 - Fixing low memory crashes
 - Disk caching
