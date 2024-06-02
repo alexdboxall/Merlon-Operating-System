@@ -27,15 +27,15 @@ The TODO list (vaguely in order)
 - `fork`
 - Writing a "decent" shell
 - FAT support using FatFS
-- "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
 - `<pthread.h>`
 - Disk auto-detection
 - OS-specific toolchain
 - A GUI!
 - Fixing low memory crashes
 - Disk caching
+- "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
 - Better kernel support and testing for `EINTR`
-- `sigaction`, `sigprocmask`, etc.
+- `SIGCHLD`, `sigaction`, `sigprocmask`, etc.
 - Other system calls and functions, ...
 - Fixing up all the other TODOs in the code!!
 
