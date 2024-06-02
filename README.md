@@ -8,14 +8,34 @@ It is currently only implemented for x86, but should be easy to port to other pl
 
 To build it, run `./release.sh`. To run it in QEMU, use the following command: `qemu-system-i386 -soundhw pcspk -hda build/output/disk.bin -m 3M`
 
-The TODO list:
-- Writing to disk
-- "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
-- Fixing low memory crashes
+Some features include:
+- Fully multithreaded kernel
+- Custom standard C library
+- Relocatable and dynamically linked drivers
+- A dynamically linked library for accessing the kernel
+- Support for signals
+- ACPICA driver
+- Page swapping when low on memory
+- Message passing
 - A virtual filesystem (VFS) to manage files, folders and devices
+- Custom second-stage bootloader written in C for portability (uses an abstraction library loaded in stage one)
+- Supports i486 and later processors, only needs 3MiB RAM to run
+- Drivers so far: PS/2, ATA, RTC, ACPI
+- Filesystem support: DemoFS, (FAT support coming)
+
+The TODO list (vaguely in order)
+- `fork`
+- Writing a "decent" shell
+- FAT support using FatFS
+- "Homemade" FAT driver (instead of using FatFS) - for code style consistency and better integration
+- `<pthread.h>`
 - Disk auto-detection
+- A GUI!
+- Fixing low memory crashes
 - Disk caching
-- More system calls
+- Better kernel support and testing for `EINTR`
+- `sigaction`, `sigprocmask`, etc.
+- Other system calls and functions, ...
 - Fixing up all the other TODOs in the code!!
 
 ![Merlon Kernel](https://github.com/alexdboxall/Merlon/blob/main/docs/assets/readme/b.jpg "Merlon Kernel")
