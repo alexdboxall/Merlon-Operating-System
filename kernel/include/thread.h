@@ -65,8 +65,8 @@ struct thread {
     struct process* process;
 
     bool signal_intr;
-    uint64_t pending_signals;
-    uint64_t blocked_signals;
+    uint32_t pending_signals;
+    uint32_t blocked_signals;
     size_t user_common_signal_handler;
 
     /*

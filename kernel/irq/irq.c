@@ -71,6 +71,12 @@ void UnhandledFault(int type) {
             LogWriteSerial("raising signal SIGILL\n");
             RaiseSignal(GetThread(), SIGILL, false);
             Schedule();
+
+        } else if (type == UNHANDLED_FAULT_DIVISION && !(thr->blocked_signals & (1 << SIGFPE))) {
+            LogWriteSerial("raising signal SIGFPE\n");
+            RaiseSignal(GetThread(), SIGFPE, false);
+            Schedule();
+
         } else {
             LogWriteSerial("bye bye thread\n");
             GetThread()->needs_termination = true;

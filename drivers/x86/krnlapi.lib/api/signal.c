@@ -55,18 +55,20 @@ static void SignalIgnore(int sig_num) {
  * They should all be set to `SignalDefault`, but we'll treat NULL as being 
  * a placeholder meaning SignalDefault. 
  */
-void (*signal_handers[64])(int) = {0};
+void (*signal_handers[_SIG_UPPER_BND])(int) = {0};
 
 int OsCommonSignalHandler(int sig_num) {
-    dbgprintf("Got signal %d\n", sig_num);
-    if (sig_num < 64) {
+    if (sig_num < _SIG_UPPER_BND) {
+        dbgprintf("Got signal %d\n", sig_num);
         if (signal_handers[sig_num] == NULL) {
             signal_handers[sig_num] = SignalDefault;
         }
         signal_handers[sig_num](sig_num);
+        _system_call(SYSCALL_SIGNAL, 1, 0, sig_num, 0, 0);
+        return 0;
+    } else {
+        return EINVAL;
     }
-    _system_call(SYSCALL_SIGNAL, 1, 0, sig_num, 0, 0);
-    return 0;
 }
 
 void OsInitSignals(void) {
@@ -80,7 +82,7 @@ void (*signal(int sig, void (*func)(int)))(int) {
     if (func == SIG_IGN) {
         func = SignalIgnore;
     }
-    if (sig < 64) {
+    if (sig < _SIG_UPPER_BND) {
         void (*old_handler)(int) = signal_handers[sig];
         signal_handers[sig] = func;
         if (old_handler == NULL) {
@@ -94,13 +96,9 @@ void (*signal(int sig, void (*func)(int)))(int) {
 }
 
 int raise(int sig) {
-    (void) sig;
-    return ENOSYS;
+    return OsCommonSignalHandler(sig);
 }
 
 int kill(pid_t pid, int sig) {
-    (void) pid;
-    (void) sig;
-    errno = ENOSYS;
-    return -1;
+    return _system_call(SYSCALL_SIGNAL, 2, 0, sig, pid, 0);
 }

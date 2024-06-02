@@ -15,7 +15,10 @@
 #include <ksignal.h>
 #include <signal.h>
 
-void RaiseSignal(struct thread* thr, int sig_num, bool lock_already_held) {
+int RaiseSignal(struct thread* thr, int sig_num, bool lock_already_held) {
+    if (sig_num >= _SIG_UPPER_BND) {
+        return EINVAL;
+    }
     if (!lock_already_held) {
         LockScheduler();
     }
@@ -24,6 +27,7 @@ void RaiseSignal(struct thread* thr, int sig_num, bool lock_already_held) {
     if (!lock_already_held) {
         UnlockScheduler();
     }
+    return 0;
 }
 
 bool HasBeenSignalled(void) {
@@ -47,15 +51,12 @@ int FindSignalToHandle() {
     if (thr == NULL) {
         return -1;
     }
-    uint64_t available_signals = thr->pending_signals & (~thr->blocked_signals);
+    uint32_t available_signals = thr->pending_signals & (~thr->blocked_signals);
     if (available_signals == 0) {
         return -1;
     }
 
     thr->signal_intr = false;
-
-    LogWriteSerial("pending_signals = 0x%X\n", (uint32_t) thr->pending_signals);
-    LogWriteSerial("blocked_signals = 0x%X\n", (uint32_t) thr->blocked_signals);
 
     int index = 0;
     while (!(available_signals & 1)) {
@@ -65,7 +66,6 @@ int FindSignalToHandle() {
 
     thr->pending_signals &= ~(1 << index);
     thr->blocked_signals |= 1 << index;
-    LogWriteSerial("FindSignalToHandle = %d\n", index);
     return index;
 }
 

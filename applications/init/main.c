@@ -8,10 +8,11 @@
 #include <timeconv.h>
 #include <dirent.h>
 #include <time.h>
+#include <signal.h>
 #include <sys/stat.h>
 
-#include <os/time.h>
-#include <os/sysinfo.h>
+#include <merlon/time.h>
+#include <merlon/sysinfo.h>
 
 extern int EditorMain(int argc, char** argv);
 extern int LsMain(int argc, char** argv);
@@ -49,6 +50,11 @@ static void ShowDateAndTime(void) {
     printf("%s\n", ctime(&curtime));
 }
 
+void div0_handler(int) {
+    printf("Uh oh, we divided by zero!!\n");
+    abort();
+}
+
 int main(void) {
 
     /*
@@ -62,6 +68,10 @@ int main(void) {
         wait(0);
     }
     */
+
+    signal(SIGFPE, div0_handler);
+
+    int fpe_test = 3;
 
     putchar('\n');
     ShowVersionInformation();
@@ -96,6 +106,13 @@ int main(void) {
                 fflush(stdout);
                 sleep(1);
             }
+
+        } else if (!strcmp(line, "div0\n")) {
+            int res = 10 / fpe_test;
+            printf("Dividing 10 by %d gives %d. Next time, we'll divide by %d.\n\n",
+                fpe_test, res, fpe_test - 1
+            );
+            --fpe_test;
 
         } else if (!strcmp(line, "mem\n") || !strcmp(line, "ram\n")) {
             ShowMemoryUsage();
@@ -139,7 +156,7 @@ int main(void) {
                 printf("%s\n\n", strerror(errno));
             }
 
-        } else {
+        } else if (strcmp(line, "\n")) {
             printf("Command not found: %s\n", line);
         }
     }

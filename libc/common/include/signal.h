@@ -39,7 +39,10 @@
 #define SIGVTALRM       26
 #define SIGXCPU         27
 #define SIGXFSZ         28
-#define _SIG_UPPER_BND  29
+#define _SIG_UPPER_BND  29  // MUST BE LESS THAN 32 (i.e. 31 is MAX)
+                            // AS WE USE UINT32_T AT THE MOMENT FOR HOLDING
+                            // SIGNAL INFO (to speed up `FindSignalToHandle`,
+                            // which runs on every IRQ)
 
 void (*signal(int sig, void (*func)(int)))(int);
 int raise(int sig);

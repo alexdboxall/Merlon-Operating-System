@@ -17,7 +17,7 @@ typedef uint32_t key_t;
 typedef uint32_t mode_t;
 typedef uint32_t nlink_t;
 typedef uint32_t off_t;
-typedef uint32_t pid_t;
+typedef int32_t pid_t;
 typedef uint64_t suseconds_t;
 typedef uint64_t time_t;
 typedef uint64_t timer_t;

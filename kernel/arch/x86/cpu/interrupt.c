@@ -13,6 +13,8 @@
 #define ISR_SYSTEM_CALL 96
 #define ISR_PAGE_FAULT  14
 #define ISR_NMI         2
+#define ISR_INVALID_OP  6
+#define ISR_DIV_ERR     0
 
 static bool ready_for_irqs = false;
 
@@ -57,6 +59,12 @@ void x86HandleInterrupt(struct x86_regs* r) {
 
     } else if (num == ISR_SYSTEM_CALL) {
         r->eax = HandleSystemCall(r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi);
+
+    } else if (num == ISR_DIV_ERR) {
+        UnhandledFault(UNHANDLED_FAULT_DIVISION);
+
+    } else if (num == ISR_INVALID_OP) {
+        UnhandledFault(UNHANDLED_FAULT_ILL);
 
     } else {
         LogWriteSerial("Got interrupt %d. (r->eip = 0x%X)\n", num, r->eip);

@@ -3,9 +3,10 @@
 #include <arch.h>
 #include <common.h>
 
-#define UNHANDLED_FAULT_SEGV    0
-#define UNHANDLED_FAULT_ILL     1
-#define UNHANDLED_FAULT_OTHER   2
+#define UNHANDLED_FAULT_SEGV        0
+#define UNHANDLED_FAULT_ILL         1
+#define UNHANDLED_FAULT_OTHER       2
+#define UNHANDLED_FAULT_DIVISION    3
 
 typedef int(*irq_handler_t)(platform_irq_context_t*);
 

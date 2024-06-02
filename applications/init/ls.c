@@ -30,7 +30,7 @@ int LsMain(int, char**) {
             printf(
                 "%8s %s\n",
                 GetDirectoryEntryTypeString(dir->d_type),
-                dir->d_name
+                dir->d_namecd
             );
         }
         closedir(d);

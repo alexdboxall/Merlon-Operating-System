@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <locale.h>
-#include <os/time.h>
+#include <merlon/time.h>
 
 int main(int argc, char** argv, char** envp);
 void OsInitSignals(void);
