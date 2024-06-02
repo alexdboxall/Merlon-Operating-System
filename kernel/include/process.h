@@ -2,12 +2,14 @@
 
 #include <common.h>
 #include <sys/types.h>
+#include <linkedlist.h>
 
 struct fd_table;
 struct vnode;
 
 struct process {
     pid_t pid;
+    pid_t pgid;
     pid_t parent;
     struct vas* vas;
     struct tree* children;
@@ -26,6 +28,7 @@ struct process* ForkProcess(void);
 pid_t WaitProcess(pid_t pid, int* status, int flags);
 void KillProcess(int retv);
 
+struct linked_list* GetProcessesFromPgid(pid_t pgid);
 struct process* GetProcessFromPid(pid_t pid);
 struct process* GetProcess(void);
 pid_t GetPid(struct process* prcss);

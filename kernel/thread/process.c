@@ -101,6 +101,7 @@ struct process* CreateProcessEx(pid_t parent_pid) {
     prcss->retv = 0;
     prcss->terminated = false;
     prcss->pid = InsertIntoProcessTable(prcss);
+    prcss->pgid = prcss->pid;
     prcss->fd_table = CreateFdTable();
 
     if (parent_pid != 0) {
@@ -132,6 +133,7 @@ struct process* CreateProcess(pid_t parent_pid) {
     prcss->retv = 0;
     prcss->terminated = false;
     prcss->pid = InsertIntoProcessTable(prcss);
+    prcss->pgid = prcss->pid;
     prcss->fd_table = CreateFdTable();
 
     if (parent_pid != 0) {
@@ -343,8 +345,8 @@ void KillProcess(int retv) {
     prcss->retv = retv;
     
     /**
-     * Must run it in a different thread and process (a NULL process is fine), as it is going to kill all
-     * threads in the process, and the process itself.
+     * Must run it in a different thread and process (a NULL process is fine), 
+     * as it is going to kill all threads in the process, and the process itself.
      */
     CreateThreadEx(KillProcessHelper, (void*) prcss, GetKernelVas(), "process killer", NULL, 
         SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH, 0);
@@ -353,9 +355,9 @@ void KillProcess(int retv) {
 }
 
 /**
- * Returns a pointer to the process that the thread currently running on this CPU belongs to. If there is no
- * running thread (i.e. multitasking hasn't started yet), or the thread does not belong to a process, NULL
- * is returned.
+ * Returns a pointer to the process that the thread currently running on this 
+ * CPU belongs to. If there is no running thread (i.e. multitasking hasn't 
+ * started yet), or the thread does not belong to a process, NULL is returned.
  * 
  * @return The process of the current thread, if it exists, or NULL otherwise.
  */
@@ -402,6 +404,34 @@ struct process* GetProcessFromPid(pid_t pid) {
     ReleaseMutex(process_table_mutex);
 
     return node == NULL ? NULL : node->process;
+}
+
+static void GetProcessesFromPgidRecursive(struct tree_node* node, pid_t pgid, struct linked_list* list) {
+    if (node == NULL) {
+        return;
+    }
+
+    struct process_table_node* pnode = node->data;
+    if (pnode != NULL && pnode->process != NULL && pnode->process->pgid == pgid) {
+        ListInsertEnd(list, pnode->process);
+    }
+
+    GetProcessesFromPgidRecursive(node->left, pgid, list);
+    GetProcessesFromPgidRecursive(node->right, pgid, list);
+}
+
+/*
+ * Given a process group id, returns a list containing all of the processes in
+ * that group. Each node is a void* that can be casted to a `struct process*`.
+ * 
+ * Returns an empty list if there are none. Caller to destroy list.
+ */
+struct linked_list* GetProcessesFromPgid(pid_t pgid) {
+    struct linked_list* list = ListCreate();
+    AcquireMutex(process_table_mutex, -1);
+    GetProcessesFromPgidRecursive(process_table->root, pgid, list);
+    ReleaseMutex(process_table_mutex);
+    return list;
 }
 
 /**

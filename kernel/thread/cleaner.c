@@ -14,6 +14,11 @@ static void CleanerThread(void*) {
         UnmapVirt(thr->kernel_stack_top - thr->kernel_stack_size, thr->kernel_stack_size);
         FreeHeap(thr->name);
         FreeHeap(thr);
+
+        // TODO: NEED TO CHECK IF IT THIS SHOULD KILL THE PROCESS (DUE TO BEING)
+        // FINAL THREAD. SHOULD PROBABLY HAVE A PRCSS->ALREADY_KILLED, AS KILLING
+        // A PROCESSES CAUSES A THREAD TO APPEAR HEAR, THIS SHOULD PREVENT ENDLESS
+        // RECURSION. 
     }
 }
 

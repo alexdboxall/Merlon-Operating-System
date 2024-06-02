@@ -23,14 +23,14 @@ static const char* GetDirectoryEntryTypeString(int dirent) {
 
 int LsMain(int, char**) {
     DIR *d;
-    struct dirent *dir;
+    struct dirent* dir;
     d = opendir(".");
     if (d) {
         while ((dir = readdir(d)) != NULL) {
             printf(
                 "%8s %s\n",
                 GetDirectoryEntryTypeString(dir->d_type),
-                dir->d_namecd
+                dir->d_name
             );
         }
         closedir(d);

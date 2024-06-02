@@ -69,6 +69,9 @@ int main(void) {
     }
     */
 
+    tcsetpgrp(fileno(stdin), getpgid(0));
+    tcsetpgrp(fileno(stdout), getpgid(0));
+
     signal(SIGFPE, div0_handler);
 
     int fpe_test = 3;

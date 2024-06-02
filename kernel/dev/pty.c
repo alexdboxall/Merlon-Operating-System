@@ -10,8 +10,10 @@
 #include <heap.h>
 #include <stdlib.h>
 #include <vfs.h>
+#include <tree.h>
 #include <video.h>
 #include <log.h>
+#include <process.h>
 #include <assert.h>
 #include <irql.h>
 #include <errno.h>
@@ -25,6 +27,9 @@
 #include <mailbox.h>
 #include <virtual.h> 
 #include <sys/ioctl.h>
+#include <ksignal.h>
+#include <signal.h>
+#include <sys/types.h>
 
 #define INTERNAL_BUFFER_SIZE 4096   // used to communicate with master and sub   
                                     // used for displaying, so larger buffer
@@ -46,6 +51,7 @@ struct sub_data {
     char line_buffer[LINE_BUFFER_SIZE];
     uint8_t line_buffer_char_width[LINE_BUFFER_SIZE];
     int line_buffer_pos;
+    pid_t controlling_pgid;
 };
 
 static void FlushSubordinateLineBuffer(struct vnode* node) {
@@ -80,6 +86,26 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
     internal->line_buffer_pos++;
 }
 
+static void SendCtrlC(pid_t pgid) {
+    LogWriteSerial("sending CTRL+C to pgid %d\n", pgid);
+
+    struct linked_list* prcsses = GetProcessesFromPgid(pgid);
+    struct linked_list_node* node = ListGetFirstNode(prcsses);
+
+    LockScheduler();
+    while (node != NULL) {
+        struct process* p = ListGetDataFromNode(node);
+        LogWriteSerial("Found prcss %d\n", p->pid);
+        struct tree* threads = p->threads;
+        if (threads->root != NULL && threads->root->data != NULL) {
+            LogWriteSerial("Signalling thread 0x%X\n", threads->root->data);
+            RaiseSignal((struct thread*) threads->root->data, SIGINT, false);
+        }
+        node = ListGetNextNode(node);
+    }
+    UnlockScheduler();
+}
+
 static void LineProcessor(void* sub_) {
     //SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
@@ -93,6 +119,8 @@ static void LineProcessor(void* sub_) {
 
         uint8_t c;
         MailboxGet(master_internal->keybrd_buffer, -1, &c);
+
+        LogWriteSerial("Got character: %d\n", c);
 
         /*
          * Must happen before we modify the line buffer (i.e. to add / backspace 
@@ -118,7 +146,16 @@ static void LineProcessor(void* sub_) {
             AddToSubordinateLineBuffer(node, c, 1);
         }
 
+        /*
+         * ASCII 3 is `CTRL+C`, and so we want to handle that straight away so
+         * we can send SIGINT. 
+         */
         if (c == '\n' || c == 3 || !canon) {
+            LogWriteSerial("FLUSHING BUFFER...\n");
+            if (c == 3) {
+                LogWriteSerial("SENDING CTRL+C...\n");
+                SendCtrlC(internal->controlling_pgid);
+            }
             FlushSubordinateLineBuffer(node);
         }
     }
@@ -188,6 +225,21 @@ static int SubordinateIoctl(struct vnode* node, int cmd, void* arg) {
     } else if (cmd == TCGETS) {
         struct transfer tr = CreateTransferWritingToUser(arg, sizeof(struct termios), 0);
         return PerformTransfer(&internal->termios, &tr, sizeof(struct termios));
+
+    } else if (cmd == TIOCGPGRP) {
+        struct transfer tr = CreateTransferWritingToUser(arg, sizeof(pid_t), 0);
+        return PerformTransfer(&internal->controlling_pgid, &tr, sizeof(pid_t));
+
+    } else if (cmd == TIOCSPGRP) {
+        pid_t new_pgid;
+        struct transfer tr = CreateTransferReadingFromUser(arg, sizeof(pid_t), 0);
+        int res = PerformTransfer(&new_pgid, &tr, sizeof(pid_t));
+        if (res != 0) {
+            return res;
+        }
+        LogWriteSerial("setting the termial controlling pgid to %d\n", new_pgid);
+        internal->controlling_pgid = new_pgid;
+        return 0;
     
     } else {
         return EINVAL;
@@ -226,6 +278,7 @@ void CreatePseudoTerminal(struct vnode** master, struct vnode** subordinate) {
 
     s_data->master = m;
     s_data->termios.c_lflag = ICANON | ECHO;
+    s_data->controlling_pgid = GetPid(GetProcess());
 
     m->data = m_data;
     s->data = s_data;

@@ -157,6 +157,8 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "OsGetTimezone")) return (size_t) OsGetTimezone;
     if (!xstrcmp(name, "nanosleep")) return (size_t) nanosleep;
     if (!xstrcmp(name, "OsInitSignals")) return (size_t) OsInitSignals;
+    if (!xstrcmp(name, "getpgid")) return (size_t) getpgid;
+    if (!xstrcmp(name, "setpgid")) return (size_t) setpgid;
     return (size_t) loltest;
 }
 

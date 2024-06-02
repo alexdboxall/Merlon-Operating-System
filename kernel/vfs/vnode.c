@@ -120,7 +120,8 @@ int VnodeOpWrite(struct vnode* node, struct transfer* io) {
 int VnodeOpIoctl(struct vnode* node, int command, void* buffer) {
     CheckVnode(node);
     if (node->ops.ioctl == NULL) {
-        if (command == TCGETS || command == TCSETS || command == TCSETSW || command == TCSETSF) {
+        if (command == TCGETS || command == TCSETS || command == TCSETSW || command == TCSETSF ||
+            command == TIOCGPGRP || command == TIOCSPGRP) {
             return ENOTTY;
         }
         return EINVAL;
