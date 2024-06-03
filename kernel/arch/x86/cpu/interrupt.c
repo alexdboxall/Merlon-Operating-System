@@ -9,6 +9,7 @@
 #include <syscall.h>
 #include <panic.h>
 #include <console.h>
+#include <log.h>
 
 #define ISR_SYSTEM_CALL 96
 #define ISR_PAGE_FAULT  14
@@ -28,6 +29,7 @@ static int GetRequiredIrql(int irq_num) {
 
 void x86HandleInterrupt(struct x86_regs* r) {
     int num = r->int_no;
+    LogWriteSerial("IRQ %d\n", num);
 
     if (num >= PIC_IRQ_BASE && num < PIC_IRQ_BASE + 16) {
         RespondToIrq(num, GetRequiredIrql(num), r);

@@ -162,14 +162,14 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
 struct process* ForkProcess(void) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
 
+    struct process* prcss = GetProcess();
     LogWriteSerial("About to lock the process...\n");
-    LockProcess(GetProcess());
+    LockProcess(prcss);
     LogWriteSerial("Process locked...\n");
-    LogWriteSerial("our pid is %d\n", GetProcess()->pid);
-    struct process* new_process = CreateProcessEx(GetProcess()->pid);
+    LogWriteSerial("our pid is %d\n", prcss->pid);
+    struct process* new_process = CreateProcessEx(prcss->pid);
     LogWriteSerial("created a new process with pid %d\n", new_process->pid);
     DestroyVas(new_process->vas);
-    LogWriteSerial("destroyed the old VAS...\n");
 
     // TODO: there are probably more things to copy over in the future (e.g. list of open file descriptors, etc.)
     //       the open files, etc.
@@ -177,6 +177,8 @@ struct process* ForkProcess(void) {
 
     // TODO: file descriptor table...
 
+    new_process->pgid = prcss->pgid;
+    LogWriteSerial("copying the VAS...\n");
     new_process->vas = CopyVas();
     LogWriteSerial("given it a new vas...\n");
     CopyThreadOnFork(new_process, GetThread());

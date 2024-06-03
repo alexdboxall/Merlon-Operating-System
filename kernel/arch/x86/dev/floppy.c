@@ -261,13 +261,13 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
     if (FloppySeek(flp, cylinder, 1) != 0) return EIO;
 
     /*
-    * This time, we'll try up to 20 times.
+    * This time, we'll try up to 10 times.
     */
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 10; ++i) {
         FloppyMotor(flp, true);
 
-        if (i % 2 == 3) {
-            if (i % 10 == 8) {
+        if (i % 3 == 2) {
+            if (i % 6 == 5) {
                 FloppyReset(flp);
                 FloppyMotor(flp, true);
             }
@@ -477,75 +477,74 @@ static const struct vnode_operations dev_ops = {
     .follow         = Follow,
 };
 
-static int DetectFloppy(void) {
+static bool DetectFloppy(void) {
+    /*
+     * Lowest bit of offset 0x10 into the BIOS Data Area tells us if the BIOS
+     * detected any floppy drives.
+     */
     uint16_t bda_word = *((uint16_t*) x86KernelMemoryToPhysical(0x410));
     if (!(bda_word & 1)) {
-        return 0;
+        return false;
     }
 
-    int num_disks = 1 + ((bda_word >> 4) & 3);
-
+    /*
+     * The high nibble refers to the first drive. If it is zero, there is no
+     * drive. Otherwise, it refers to the drive type.
+     */
     uint8_t cmos_val = ReadCmos(0x10);
-    uint8_t drv1 = cmos_val >> 4;
-    uint8_t drv2 = cmos_val & 0xF;
-
-    if (drv1 == 0) {
-        num_disks = 0;
-    } else if (drv2 == 0) {
-        num_disks = 1;
-    }
-
-    return num_disks;
+    return (cmos_val >> 4);
 }
 
 void InitFloppy(void) {
-    int num_floppies = DetectFloppy();
-    if (num_floppies == 0) {
+    if (!DetectFloppy()) {
         return;
     }
 
     floppy_lock = CreateMutex("floppy");
     CreateThread(FloppyMotorControlThread, NULL, GetVas(), "flpmotor");
 
-    for (int i = 0; i < num_floppies; ++i) {
-        struct vnode* node = CreateVnode(dev_ops, (struct stat) {
-            .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
-            .st_nlink = 1,
-            .st_blksize = 512,
-            .st_blocks = 2880,
-            .st_size = 512 * 2880,
-            .st_dev = NextDevId()
-        });
+    RegisterIrqHandler(PIC_IRQ_BASE + 6, FloppyIrqHandler);
 
-        size_t phys_buffer = AllocPhysContiguous(CYLINDER_SIZE, 0x0, 0xFFFFFF, 0x10000);
-        if (phys_buffer == 0) {
-            LogDeveloperWarning("NO CONTIGUOUS MEMORY AVAILABLE FOR FLOPPY\n");
-            return;
-        }
-        size_t virt_buffer = MapVirt(phys_buffer, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK | VM_MAP_HARDWARE, NULL, 0);
+    /*
+     * We will only support the first floppy drive that a system has.
+     */
+    struct vnode* node = CreateVnode(dev_ops, (struct stat) {
+        .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
+        .st_nlink = 1,
+        .st_blksize = 512,
+        .st_blocks = 2880,
+        .st_size = 512 * 2880,
+        .st_dev = NextDevId()
+    });
 
-        struct floppy_data* flp = AllocHeap(sizeof(struct floppy_data));
-        *flp = (struct floppy_data) {
-            .phys_buffer = phys_buffer, .virt_buffer = virt_buffer,
-            .disk_num = i, .base = 0x3F0, 
-            .stored_cylinder = -1, .got_cylinder_zero = false,
-            .cylinder_buffer = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
-            .cylinder_zero   = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
-        };
-        node->data = flp;
-
-        RegisterIrqHandler(PIC_IRQ_BASE + 6, FloppyIrqHandler);
-        int res = FloppyReset(flp);
-        if (res != 0) {
-            LogWriteSerial("FDC doesn't work...\n");
-            UnmapVirt(virt_buffer, CYLINDER_SIZE);
-            DeallocPhysContiguous(phys_buffer, CYLINDER_SIZE);
-            FreeHeap(flp);
-            FreeHeap(node);
-            return;
-        }
-        InitDiskPartitionHelper(&flp->partitions);
-        AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
-        CreateDiskPartitions(CreateFile(node, 0, 0, true, true));
+    size_t phys_buffer = AllocPhysContiguous(CYLINDER_SIZE, 0x0, 0xFFFFFF, 0x10000);
+    if (phys_buffer == 0) {
+        LogDeveloperWarning("NO CONTIGUOUS MEMORY AVAILABLE FOR FLOPPY\n");
+        return;
     }
+    size_t virt_buffer = MapVirt(phys_buffer, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK | VM_MAP_HARDWARE, NULL, 0);
+
+    struct floppy_data* flp = AllocHeap(sizeof(struct floppy_data));
+    *flp = (struct floppy_data) {
+        .phys_buffer = phys_buffer, .virt_buffer = virt_buffer,
+        .disk_num = 0, .base = 0x3F0, 
+        .stored_cylinder = -1, .got_cylinder_zero = false,
+        .cylinder_buffer = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
+        .cylinder_zero   = (uint8_t*) MapVirt(0, 0, CYLINDER_SIZE, VM_READ | VM_WRITE | VM_LOCK, NULL, 0),
+    };
+    node->data = flp;
+
+    int res = FloppyReset(flp);
+    if (res != 0) {
+        LogWriteSerial("FDC doesn't work...\n");
+        UnmapVirt(virt_buffer, CYLINDER_SIZE);
+        DeallocPhysContiguous(phys_buffer, CYLINDER_SIZE);
+        FreeHeap(flp);
+        FreeHeap(node);
+        return;
+    }
+
+    InitDiskPartitionHelper(&flp->partitions);
+    AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
+    CreateDiskPartitions(CreateFile(node, 0, 0, true, true));
 }

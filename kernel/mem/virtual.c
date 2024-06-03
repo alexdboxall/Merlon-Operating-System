@@ -1001,9 +1001,10 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
     new_entry->allocated = true;
     DeleteFromAvl(GetVas(), entry);
     FreeHeap(entry);
-    ArchUpdateMapping(GetVas(), entry);
+    ArchUpdateMapping(GetVas(), new_entry);
     ArchFlushTlb(GetVas());
-    inline_memcpy((void*) entry->virtual, page_data, ARCH_PAGE_SIZE);
+
+    inline_memcpy((void*) new_entry->virtual, page_data, ARCH_PAGE_SIZE);
 }
 
 static void BringIntoMemoryFromFile(struct vas_entry* entry, size_t faulting_virt) {
@@ -1296,11 +1297,11 @@ int UnmapVirt(size_t virtual, size_t bytes) {
 }
 
 static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
-    LogWriteSerial("[CopyVasRecursive]: node 0x%X\n", node);
-
     if (node == NULL) {
         return;
     }
+
+    LogWriteSerial("[CopyVasRecursive]: node 0x%X\n", node);
 
     struct vas_entry* entry = node->data;
     LogWriteSerial("[CopyVasRecursive]: entry is at 0x%X\n", entry);
@@ -1308,9 +1309,9 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
 
     if (entry->lock) {
         /*
-        * Got to add the new entry right now. We know it must be in memory as it
-        * is locked.
-        */
+         * Got to add the new entry right now. We know it must be in memory as it
+         * is locked.
+         */
         LogWriteSerial("[CopyVasRecursive]: locked entry...\n");
 
         assert(entry->in_ram);
@@ -1323,7 +1324,10 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
             * data there. Then the original physical page that was there is free to use
             * as the copy.
             */
-            uint8_t page_data[ARCH_PAGE_SIZE];  // TODO: MapVirt this ? 
+
+            LogDeveloperWarning("TODO: forking of locked pages not implemented yet, as the existing implemention has 4KiB on the stack, which actually overflows us because it's recursive");
+            Panic(PANIC_NOT_IMPLEMENTED);
+            /*uint8_t page_data[ARCH_PAGE_SIZE];  // TODO: MapVirt this ? 
             inline_memcpy(page_data, (void*) entry->virtual, ARCH_PAGE_SIZE);
             size_t new_physical = entry->physical;
             entry->physical = AllocPhys();
@@ -1337,7 +1341,7 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
             new_entry->physical = new_physical;
             new_entry->allocated = true;
             TreeInsert(new_vas->mappings, entry);        // don't need to insert global - we're copying so it's already in global
-            ArchAddMapping(new_vas, entry);
+            ArchAddMapping(new_vas, entry);*/
 
         } else {
             PanicEx(PANIC_UNKNOWN, "can't fork with a hardware-mapped page");
@@ -1365,18 +1369,25 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
         entry->ref_count++;
 
         // again, no need to add to global - it's already there!
+        LogWriteSerial("Will try to add entry with virt 0x%X to the tree. ref count %d. alloc %d. loading %d\n", entry->virtual, entry->ref_count, entry->allocated, entry->load_in_progress);
         TreeInsert(new_vas->mappings, entry);
         LogWriteSerial("[CopyVasRecursive]: inserted into tree...\n");
 
         ArchUpdateMapping(GetVas(), entry);
         LogWriteSerial("[CopyVasRecursive]: updated arch...\n");
 
+        LogWriteSerial("[CopyVasRecursive]: btw, the mapping is for virt 0x%X\n", entry->virtual);
+
+        // TODO: change this so we copy everything, and then recursively go
+        // through and ArchAddMapping on all the entries...
+        // Do that in a seperate CopyVasApplyChangesRecursive(), called by
+        // CopyVasApplyChanges()
+        struct vas* current_vas = GetVas();
+        SetVas(new_vas);
         ArchAddMapping(new_vas, entry);
+        SetVas(current_vas);
         LogWriteSerial("[CopyVasRecursive]: added to arch...\n");
     }
-
-    LogWriteSerial("[CopyVasRecursive]: node->left 0x%X\n", node->left);
-    LogWriteSerial("[CopyVasRecursive]: node->right 0x%X\n", node->right);
 
     CopyVasRecursive(node->left, new_vas);
     CopyVasRecursive(node->right, new_vas);

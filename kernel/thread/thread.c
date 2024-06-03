@@ -207,6 +207,7 @@ void CopyThreadOnFork(struct process* prcss, struct thread* old) {
     thr->process = prcss;
     
     LockScheduler();
+    LogWriteSerial("The forked thread is 0x%X\n", thr);
     ThreadListInsert(&ready_list, thr);
     UnlockScheduler();
 }
@@ -414,6 +415,7 @@ static void ScheduleWithLockHeld(void) {
 
     struct thread* old_thread = GetThread();
     struct thread* new_thread = ready_list.head;
+    LogWriteSerial("Sch 0x%X\n", new_thread);
 
     if (old_thread == NULL) {
         /*
