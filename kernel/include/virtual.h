@@ -19,6 +19,7 @@
 #define VM_RELOCATABLE  1024    /* needs driver fixups whenever swapped back in*/
 #define VM_EVICT_FIRST  2048
 #define VM_SHARED       4096    /* fork() will cause the memory to be shared */
+#define VM_HARD_IO_FAIL 8192    /* see `hard_io_failure` */
 
 #define VMUN_ALLOW_NON_EXIST    1
 
@@ -49,7 +50,8 @@ struct vas_entry {
     uint8_t times_swapped   : 4;
     uint8_t evict_first     : 1;
     uint8_t share_on_fork   : 1;
-    uint8_t                 : 2;
+    uint8_t hard_io_failure : 1;        /* if set, kernel mode, file mapped I/O failures will panic, if clear it will return a zero page */
+    uint8_t                 : 1;
 
     int lock;
     int num_pages;                      /* only used for non-allocated or hardware mapped to reduce the number of AVL entries */

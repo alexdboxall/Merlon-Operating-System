@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <machine/pic.h>
 #include <machine/portio.h>
+#include <machine/cmos.h>
 #include <heap.h>
 #include <virtual.h>
 #include <stdlib.h>
@@ -80,22 +81,24 @@ static void FloppyCheckInterrupt(struct floppy_data* flp, int* st0, int* cyl) {
     *cyl = FloppyReadData(flp);
 }
 
-/*
- * The state can be 0 (off), 1 (on) or 2 (currently on, but will shortly be turned off).
- */
-static volatile int floppy_motor_state = 0;
-static volatile int floppy_motor_ticks = 0;
+
+#define MOTOR_STATE_OFF             0
+#define MOTOR_STATE_ON              1
+#define MOTOR_STATE_TURN_OFF_SOON   2
+
+static volatile int floppy_motor_state = MOTOR_STATE_OFF;
+static volatile int floppy_motor_ticks = MOTOR_STATE_OFF;
 
 static void FloppyMotor(struct floppy_data* flp, bool state) {
     if (state) {
-        if (!floppy_motor_state) {
+        if (floppy_motor_state == MOTOR_STATE_OFF) {
             outb(flp->base + FLOPPY_DOR, 0x1C);
             SleepMilli(150);
         }
-        floppy_motor_state = 1;
+        floppy_motor_state = MOTOR_STATE_ON;
 
     } else {
-        floppy_motor_state = 2;
+        floppy_motor_state = MOTOR_STATE_TURN_OFF_SOON;
         floppy_motor_ticks = 1000;
     }
 }
@@ -263,7 +266,7 @@ static int FloppyDoCylinder(struct floppy_data* flp, int cylinder) {
     for (int i = 0; i < 20; ++i) {
         FloppyMotor(flp, true);
 
-        if (i % 5 == 3) {
+        if (i % 2 == 3) {
             if (i % 10 == 8) {
                 FloppyReset(flp);
                 FloppyMotor(flp, true);
@@ -474,11 +477,37 @@ static const struct vnode_operations dev_ops = {
     .follow         = Follow,
 };
 
+static int DetectFloppy(void) {
+    uint16_t bda_word = *((uint16_t*) x86KernelMemoryToPhysical(0x410));
+    if (!(bda_word & 1)) {
+        return 0;
+    }
+
+    int num_disks = 1 + ((bda_word >> 4) & 3);
+
+    uint8_t cmos_val = ReadCmos(0x10);
+    uint8_t drv1 = cmos_val >> 4;
+    uint8_t drv2 = cmos_val & 0xF;
+
+    if (drv1 == 0) {
+        num_disks = 0;
+    } else if (drv2 == 0) {
+        num_disks = 1;
+    }
+
+    return num_disks;
+}
+
 void InitFloppy(void) {
+    int num_floppies = DetectFloppy();
+    if (num_floppies == 0) {
+        return;
+    }
+
     floppy_lock = CreateMutex("floppy");
     CreateThread(FloppyMotorControlThread, NULL, GetVas(), "flpmotor");
 
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < num_floppies; ++i) {
         struct vnode* node = CreateVnode(dev_ops, (struct stat) {
             .st_mode = S_IFBLK | S_IRWXU | S_IRWXG | S_IRWXO,
             .st_nlink = 1,
@@ -506,7 +535,15 @@ void InitFloppy(void) {
         node->data = flp;
 
         RegisterIrqHandler(PIC_IRQ_BASE + 6, FloppyIrqHandler);
-        FloppyReset(flp);
+        int res = FloppyReset(flp);
+        if (res != 0) {
+            LogWriteSerial("FDC doesn't work...\n");
+            UnmapVirt(virt_buffer, CYLINDER_SIZE);
+            DeallocPhysContiguous(phys_buffer, CYLINDER_SIZE);
+            FreeHeap(flp);
+            FreeHeap(node);
+            return;
+        }
         InitDiskPartitionHelper(&flp->partitions);
         AddVfsMount(node, GenerateNewRawDiskName(DISKUTIL_TYPE_FLOPPY));
         CreateDiskPartitions(CreateFile(node, 0, 0, true, true));

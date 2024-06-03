@@ -129,8 +129,19 @@ static void PerformDeferredAccess(void* data) {
         (void*) target_address, ARCH_PAGE_SIZE, access->offset, access->direction
     );
 
+    LogWriteSerial("access = 0x%X\n", access);
+    LogWriteSerial("access->entry = 0x%X\n", access->entry);
+
     int res = (write ? WriteFile : ReadFile)(access->file, &tr);
     if (res != 0) {
+        LogWriteSerial("PerformDeferredAccess failed...\n");
+        LogWriteSerial("write = %d\n", write);
+        LogWriteSerial("access = 0x%X\n", access);
+        LogWriteSerial("access->entry = 0x%X\n", access->entry);
+        LogWriteSerial("swp = %d",
+            access->entry->swapfile
+        );
+
         /*
          * TODO: it's not actually always a failure. the only 'panic' condition 
          *       is when it involves the swapfile, but this code is also used 
@@ -144,11 +155,18 @@ static void PerformDeferredAccess(void* data) {
         if (access->entry->swapfile) {
             Panic(PANIC_DISK_FAILURE_ON_SWAPFILE);
         } else {
+            if (access->entry->user) {
+                RaiseSignal(GetThread(), SIGBUS, false);
+            } else {
+                if (access->entry->hard_io_failure) {
+                    PanicEx(PANIC_DISK_FAILURE_ON_SWAPFILE, "disk failure on non-swapfile");
+                } 
+            }
+
             // I think for reads, it's okay to not do anything here on error, 
             // and just make use of the number of bytes that were actually 
             // transfered (and therefore complete failure means we just end up
             // with a blanked-out page being allocated).
-            Panic(PANIC_NOT_IMPLEMENTED);
         }
     }
 
@@ -251,6 +269,7 @@ static void DeferDiskWrite(size_t old_addr, struct file* file, off_t offset) {
     
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
+    access->entry = GetVirtEntry(GetVas(), new_addr);
     access->file = file;
     access->direction = TRANSFER_WRITE;
     access->offset = offset;
@@ -263,6 +282,7 @@ static void DeferDiskRead(
 ) {
     struct defer_disk_access* access = AllocHeap(sizeof(struct defer_disk_access));
     access->address = new_addr;
+    access->entry = GetVirtEntry(GetVas(), new_addr);
     access->file = file;
     access->direction = TRANSFER_READ;
     access->offset = offset;
@@ -575,6 +595,7 @@ static void AddMapping(struct vas* vas, size_t physical, size_t virtual, int fla
     entry->share_on_fork = (flags & VM_SHARED) ? 1 : 0;
     entry->evict_first = (flags & VM_EVICT_FIRST) ? 1 : 0;
     entry->relocatable = (flags & VM_RELOCATABLE) ? 1 : 0;
+    entry->hard_io_failure = (flags & VM_HARD_IO_FAIL) ? 1 : 0;
     entry->allow_temp_write = false;
     entry->load_in_progress = false;
     entry->global = !(flags & VM_LOCAL);
@@ -745,6 +766,8 @@ static void FreeVirtRange(struct vas* vas, size_t virtual, size_t pages) {
  *                                        request.
  *                      VM_EVICT_FIRST  : indicates to the virtual memory manager that when memory is low, this page should be
  *                                        evicted before other pages
+ *                      VM_HARD_IO_FAIL : if set, and VM_FILE is set, and VM_USER is clear, then if a file access has an I/O error,
+ *                                        the kernel will panic. if clear, it will return a zeroed-out page instead
  * @param file      If VM_FILE is set, then the page is backed by this file, starting at the position specified by pos.
  *                      If VM_FILE is clear, then this value must be NULL.
  * @param pos       If VM_FILE is set, then this is the offset into the file where the page is mapped to. If VM_FILE is clear,
@@ -768,6 +791,8 @@ size_t MapVirtEx(struct vas* vas, size_t physical, size_t virtual, size_t pages,
     RETURN_FAIL_IF(EINVAL, (flags & VM_RELOCATABLE) && (flags & VM_USER));
     RETURN_FAIL_IF(EINVAL, (flags & VM_RELOCATABLE) && physical == 0);
     RETURN_FAIL_IF(EINVAL, (flags & VM_LOCK) && (flags & VM_SHARED));
+    RETURN_FAIL_IF(EINVAL, (flags & VM_HARD_IO_FAIL) && (flags & VM_USER));
+    RETURN_FAIL_IF(EINVAL, (flags & VM_HARD_IO_FAIL) && !(flags & VM_FILE));
     RETURN_FAIL_IF(EACCES, (flags & VM_FILE) && !(IFTODT(file->node->stat.st_mode) == DT_REG || IFTODT(file->node->stat.st_mode) == DT_BLK));
     RETURN_FAIL_IF(EACCES, (flags & VM_FILE) && !file->can_read);
     RETURN_FAIL_IF(EACCES, (flags & VM_FILE) && !file->can_write && (flags & VM_WRITE));
