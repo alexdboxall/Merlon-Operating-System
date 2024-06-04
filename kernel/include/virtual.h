@@ -98,7 +98,7 @@ struct vas* CreateVas(void);
 void CreateVasEx(struct vas* vas, int flags);
 void DestroyVas(struct vas* vas);
 
-struct vas* CopyVas(void);
+struct vas* CopyVas(struct vas* new_vas);
 void SetVas(struct vas* vas);
 void InitVirt(void);
 bool IsVirtInitialised(void);

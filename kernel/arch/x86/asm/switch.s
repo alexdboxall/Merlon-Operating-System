@@ -86,4 +86,10 @@ ArchSwitchThread:
 	pop esi
 	pop ebx
 
+	cmp ebp, 0xAAAAAAAA
+	je ooh
 	ret
+
+ooh:
+	pop eax
+	jmp $

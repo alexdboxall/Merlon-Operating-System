@@ -170,8 +170,9 @@ struct process* ForkProcess(size_t user_stub_addr) {
     LogWriteSerial("Process locked...\n");
     LogWriteSerial("our pid is %d\n", prcss->pid);
     struct process* new_process = CreateProcessEx(prcss->pid);
+    CopyVas(new_process->vas);
+    new_process->pgid = prcss->pgid;
     LogWriteSerial("created a new process with pid %d\n", new_process->pid);
-    DestroyVas(new_process->vas);
 
     // TODO: there are probably more things to copy over in the future (e.g. list of open file descriptors, etc.)
     //       the open files, etc.
@@ -179,10 +180,6 @@ struct process* ForkProcess(size_t user_stub_addr) {
 
     // TODO: file descriptor table...
 
-    new_process->pgid = prcss->pgid;
-    LogWriteSerial("copying the VAS...\n");
-    new_process->vas = CopyVas();
-    LogWriteSerial("given it a new vas... (0x%X)\n", new_process->vas);
     CreateInitialForkThread(new_process, GetThread());
     LogWriteSerial("copying the thread across...\n");
     UnlockProcess(GetProcess());

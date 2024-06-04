@@ -184,11 +184,6 @@ void ArchInitVirt(void) {
 	}
 
 	/*
-	 * TODO: we need to set up all of the page directories, so that cloned VASes
-	 * actually get the changes...
-	 */
-	
-	/*
 	 * Set up recursive mapping by mapping the 1024th page table to the page 
 	 * directory. See arch_vas_set_entry for an explaination of why we do this.
      * "Locking" this page directory entry is the only we can lock the final 
@@ -222,6 +217,8 @@ void ArchInitVirt(void) {
 		}
 		++tables_allocated;
 		x86AllocatePageTable(vas, i);
+
+		LogWriteSerial("table %d allocated to 0x%X (is 0x%X)\n", i, vas->arch_data->v_page_directory[i], kernel_page_directory[i]);
 	}
 
 	LogWriteSerial("can access %d MB of kernel virtual memory\n", tables_allocated * 4);

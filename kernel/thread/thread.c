@@ -232,8 +232,45 @@ void CreateInitialForkThread(struct process* prcss, struct thread* old) {
      */
     LogWriteSerial("AAA\n");
     struct thread* thr = CreateThreadEx(ThreadForkInitialisation, NULL, prcss->vas, "uforked", prcss, old->schedule_policy, old->priority, old->kernel_stack_size / 1024);
+   
+    /*
+     * We only actually care about the final 20 bytes - the part the will get used
+     * to pop off the values of the GP registers and the return value to usermode.
+     * 
+     * @@@ TODO:
+     * This is x86 specific - it should go into an Arch function like
+     * ArchPrepareForkStack.
+     */
+    
+    size_t* old_stk = (size_t*) old->stack_pointer;
+    LogWriteSerial("SWITCHING TO THE OLD VAS AT 0x%X\n", old->vas);
+    SetVas(old->vas);
+    LogWriteSerial("OLD_STK = 0x%X\n", old->stack_pointer);
+    size_t ebp = *(old_stk++);
+    size_t edi = *(old_stk++);
+    size_t esi = *(old_stk++);
+    size_t ebx = *(old_stk++);
+    size_t ret = *(old_stk++);
+    SetVas(thr->vas);
+
+    ebp = 0xAAAAAAAA;
+
+    LogWriteSerial("EBP = 0x%X\nEDI = 0x%X\nESI = 0x%X\nEBX = 0X%X\nRET = 0x%X\n",
+        ebp, edi, esi, ebx, ret
+    );
+
+    thr->stack_pointer = thr->kernel_stack_top;
+    size_t* new_stk = (size_t*) thr->stack_pointer;
+
+    *(--new_stk) = ret;
+    *(--new_stk) = ebx;
+    *(--new_stk) = esi;
+    *(--new_stk) = edi;
+    *(--new_stk) = ebp;
+    thr->stack_pointer -= 5 * sizeof(size_t);
 
     LogWriteSerial("FORKING THREAD 0x%X -> 0x%X\n", old, thr);
+    LogWriteSerial("STACK IS AT 0x%X vs. OLD AT 0x%X\n", thr->stack_pointer, old->stack_pointer);
 }
 
 struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb) {
@@ -385,11 +422,8 @@ void AssertSchedulerLockHeld(void) {
 }
 
 __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread) {
-    LogWriteSerial("SwitchToNewTask... nt = 0x%X\n", new_thread);
     new_thread->state = THREAD_STATE_RUNNING;
-    LogWriteSerial("A... ");
     ThreadListDeleteTop(&ready_list);
-    LogWriteSerial("B... ");
 
     /*
      * No IRQs allowed while this happens, as we need to protect the CPU structure.
@@ -397,24 +431,16 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
      * calls GetCpu(), we'll be in a bit of strife.
      */
     struct cpu* cpu = GetCpu();
-    LogWriteSerial("C... ");
+
     AcquireSpinlock(&innermost_lock);
-    LogWriteSerial("D... ");
 
     if (new_thread->vas != old_thread->vas) {
-        LogWriteSerial("E... ");
         SetVas(new_thread->vas);
-        LogWriteSerial("set vas...\n");
     }
-    LogWriteSerial("F... ");
 
     cpu->current_thread = new_thread;
-    LogWriteSerial("G... ");
-
     cpu->current_vas = new_thread->vas;
-    LogWriteSerial("about to switch... esp = 0x%X\n", new_thread->stack_pointer);
     ArchSwitchThread(old_thread, new_thread);
-    LogWriteSerial("switched...\n");
 
     /*
      * This code doesn't get called on the first time a thread gets run!! It jumps straight from
@@ -429,12 +455,14 @@ static void ScheduleWithLockHeld(void) {
     if (GetIrql() != IRQL_SCHEDULER) {
         LogWriteSerial("ScheduleWithLockHeld with irql = %d\n", GetIrql());
     }
+
     EXACT_IRQL(IRQL_SCHEDULER);
     AssertSchedulerLockHeld();
 
     struct thread* old_thread = GetThread();
     struct thread* new_thread = ready_list.head;
-    LogWriteSerial("Sch 0x%X\n", new_thread);
+
+    LogWriteSerial("ScheduleWithLockHeld 0x%X -> 0x%X\n", old_thread, new_thread);
 
     if (old_thread == NULL) {
         /*
@@ -486,7 +514,6 @@ void Schedule(void) {
 
     LockScheduler();
     ScheduleWithLockHeld();
-    LogWriteSerial("ScheduleWithLockHeld. esp = 0x%X\n", GetThread()->stack_pointer);
     UnlockScheduler();
 
     /**
