@@ -100,8 +100,6 @@ static void CreateKernelStacks(struct thread* thr, int kernel_stack_kb) {
 #endif
     thr->kernel_stack_top = stack_top;
     thr->kernel_stack_size = total_bytes;
-
-    thr->stack_pointer = ArchPrepareStack(thr->kernel_stack_top);
 }
 
 static size_t CreateUserStack(int size) {
@@ -205,9 +203,25 @@ void CopyThreadOnFork(struct process* prcss, struct thread* old) {
     thr->name = strdup(old->name);
     thr->vas = prcss->vas;
     thr->process = prcss;
-    
+    CreateKernelStacks(thr, old->kernel_stack_size / 1024);
+
+    size_t new_stack_bottom = thr->kernel_stack_top - thr->kernel_stack_size;
+    size_t old_stack_bottom = old->kernel_stack_top - old->kernel_stack_size;
+    LogWriteSerial("OLD STACK: 0x%X\n", old_stack_bottom);
+    LogWriteSerial("NEW STACK: 0x%X\n", new_stack_bottom);
+    memcpy((void*) new_stack_bottom, (const void*) old_stack_bottom, thr->kernel_stack_size);
+    LogWriteSerial("STACK CONTENTS:\n    ");
+    for (size_t i = 0; i < thr->kernel_stack_size; i += sizeof(size_t)) {
+        LogWriteSerial("0x%X, ", *((size_t*) (new_stack_bottom + i)));
+        if ((i / sizeof(size_t)) % 8 == 7) {
+            LogWriteSerial("\n0x%X:    ", new_stack_bottom + i);
+        }
+    }
+
+    thr->stack_pointer += (thr->kernel_stack_top - old->kernel_stack_top);
+
     LockScheduler();
-    LogWriteSerial("The forked thread is 0x%X\n", thr);
+    LogWriteSerial("The forked thread is 0x%X. esp = 0x%X\n", thr, thr->stack_pointer);
     ThreadListInsert(&ready_list, thr);
     UnlockScheduler();
 }
@@ -232,6 +246,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->user_common_signal_handler = 0;
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr, kernel_stack_kb == 0 ? DEFAULT_KERNEL_STACK_KB : 0);
+    thr->stack_pointer = ArchPrepareStack(thr->kernel_stack_top);
 
     if (prcss != NULL) {
         AddThreadToProcess(prcss, thr);
@@ -283,6 +298,8 @@ struct process* CreateUsermodeProcess(struct process* parent, const char* filena
 }
 
 void ThreadInitialisationHandler(void) {
+    LogWriteSerial("ThreadInitialisationHandler...\n");
+
     /*
      * This normally happends in the schedule code, just after the call to ArchSwitchThread,
      * but we forced ourselves to jump here instead, so we'd better do it now.
@@ -391,11 +408,14 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
 
     if (new_thread->vas != old_thread->vas) {
         SetVas(new_thread->vas);
+        LogWriteSerial("set vas...\n");
     }
 
     cpu->current_thread = new_thread;
     cpu->current_vas = new_thread->vas;
+    LogWriteSerial("about to switch... esp = 0x%X\n", new_thread->stack_pointer);
     ArchSwitchThread(old_thread, new_thread);
+    LogWriteSerial("switched...\n");
 
     /*
      * This code doesn't get called on the first time a thread gets run!! It jumps straight from
@@ -467,6 +487,7 @@ void Schedule(void) {
 
     LockScheduler();
     ScheduleWithLockHeld();
+    LogWriteSerial("ScheduleWithLockHeld. esp = 0x%X\n", GetThread()->stack_pointer);
     UnlockScheduler();
 
     /**
