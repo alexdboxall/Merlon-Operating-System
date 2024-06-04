@@ -974,6 +974,8 @@ static size_t SplitLargePageEntryIntoMultiple(struct vas* vas, size_t virtual, s
 }
 
 static void BringIntoMemoryFromCow(struct vas_entry* entry) {
+    //entry->load_in_progress = true;
+    
     /*
     * If someone deallocates a COW page in another process to get the ref
     * count back to 1 already, then we just have the page to ourselves again.
@@ -982,6 +984,7 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
         entry->cow = false;
         ArchUpdateMapping(GetVas(), entry);
         ArchFlushTlb(GetVas());
+        //entry->load_in_progress = false;
         return;
     }
 
@@ -1000,11 +1003,12 @@ static void BringIntoMemoryFromCow(struct vas_entry* entry) {
     new_entry->physical = AllocPhys();
     new_entry->allocated = true;
     DeleteFromAvl(GetVas(), entry);
-    FreeHeap(entry);
+    InsertIntoAvl(GetVas(), new_entry);
     ArchUpdateMapping(GetVas(), new_entry);
     ArchFlushTlb(GetVas());
 
     inline_memcpy((void*) new_entry->virtual, page_data, ARCH_PAGE_SIZE);
+    //entry->load_in_progress = false;
 }
 
 static void BringIntoMemoryFromFile(struct vas_entry* entry, size_t faulting_virt) {
@@ -1070,6 +1074,7 @@ static int BringIntoMemory(struct vas* vas, struct vas_entry* entry, bool allow_
         assert(entry->num_pages == 1);
         LogWriteSerial("--> COW\n");
         BringIntoMemoryFromCow(entry);
+        LogWriteSerial("COW DONE\n");
         return 0;
     }
 
@@ -1365,6 +1370,7 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
 
         if (!entry->share_on_fork) {
             entry->cow = true;
+            LogWriteSerial("COWING ADDRESS 0x%X\n", entry->virtual);
         }
         entry->ref_count++;
 
@@ -1396,7 +1402,7 @@ static void CopyVasRecursive(struct tree_node* node, struct vas* new_vas) {
 struct vas* CopyVas(void) {
     struct vas* vas = GetVas();
     struct vas* new_vas = CreateVas();
-    LogWriteSerial("[CopyVas]: created new...\n");
+    LogWriteSerial("[CopyVas]: created new... (0x%X)\n", new_vas);
     AcquireSpinlock(&vas->lock);
     LogWriteSerial("[CopyVas]: locked...\n");
     // no need to change global - it's already there!
@@ -1456,6 +1462,7 @@ int handling_page_fault = 0;
 
 void HandleVirtFault(size_t faulting_virt, int fault_type) {
     if (GetIrql() >= IRQL_SCHEDULER) {
+        ArchDisableInterrupts();
         PanicEx(PANIC_INVALID_IRQL, "page fault while IRQL >= IRQL_SCHEDULER. is some clown holding a spinlock while "
                                     "executing pageable code? or calling AllocHeapEx wrong with a lock held?");
     }

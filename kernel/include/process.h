@@ -24,7 +24,7 @@ struct process {
 
 void InitProcess(void);
 struct process* CreateProcess(pid_t parent_pid);
-struct process* ForkProcess(void);
+struct process* ForkProcess(size_t user_stub_addr);
 pid_t WaitProcess(pid_t pid, int* status, int flags);
 void KillProcess(int retv);
 

@@ -18,6 +18,8 @@ int SysReadWrite(size_t fd, size_t size, size_t buffer, size_t br_out, size_t wr
 		return res;
 	}
 
+	LogWriteSerial("SYSREADWRITE of size %d, write = %d\n", size, write);
+
 	if (write && (file->flags & O_APPEND)) {
         file->seek_position = file->node->stat.st_size;
 	}

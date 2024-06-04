@@ -159,8 +159,10 @@ void AddThreadToProcess(struct process* prcss, struct thread* thr) {
     UnlockProcess(prcss);
 }
 
-struct process* ForkProcess(void) {
+struct process* ForkProcess(size_t user_stub_addr) {
     MAX_IRQL(IRQL_PAGE_FAULT);   
+
+    LogWriteSerial("ForkProcess(0x%X)\n", user_stub_addr);
 
     struct process* prcss = GetProcess();
     LogWriteSerial("About to lock the process...\n");
@@ -180,8 +182,8 @@ struct process* ForkProcess(void) {
     new_process->pgid = prcss->pgid;
     LogWriteSerial("copying the VAS...\n");
     new_process->vas = CopyVas();
-    LogWriteSerial("given it a new vas...\n");
-    CopyThreadOnFork(new_process, GetThread());
+    LogWriteSerial("given it a new vas... (0x%X)\n", new_process->vas);
+    CreateInitialForkThread(new_process, GetThread());
     LogWriteSerial("copying the thread across...\n");
     UnlockProcess(GetProcess());
     LogWriteSerial("unlocked the process...\n");

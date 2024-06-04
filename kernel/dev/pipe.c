@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <panic.h>
+#include <ksignal.h>
 #include <mailbox.h>
 
 #define PIPE_SIGNATURE 0xa306a9b939f6d794
@@ -31,7 +32,12 @@ struct pipe {
 static int ReadWrite(struct vnode* node, struct transfer* tr) {
     struct pipe* pipe = node->data;
     if (pipe->broken) {
-        return tr->direction == TRANSFER_READ ? 0 : EPIPE;
+        if (tr->direction == TRANSFER_READ) {
+            return 0;
+        } else {
+            RaiseSignal(GetThread(), SIGPIPE, false);
+            return EPIPE;
+        }
     }
     return MailboxAccess(pipe->mbox, tr);
 }

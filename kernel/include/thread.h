@@ -99,7 +99,7 @@ void AssertSchedulerLockHeld(void);
 void TerminateThread(struct thread* thr);
 void TerminateThreadLockHeld(struct thread* thr);
 
-void CopyThreadOnFork(struct process* prcss, struct thread* old);
+void CreateInitialForkThread(struct process* prcss, struct thread* old);
 struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb);
 struct thread* CreateThread(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name);
 
@@ -128,3 +128,4 @@ struct process* CreateUsermodeProcess(struct process* parent, const char* filena
  */
 void AssignThreadToCpu(void);
 void UnassignThreadToCpu(void);
+

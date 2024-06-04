@@ -54,6 +54,7 @@ static void x86MapPage(struct vas* vas, size_t physical, size_t virtual, int fla
 	if (vas != GetVas()) {
 		LogDeveloperWarning("NON-LOCAL VAS x86MapPage!!! THIS ISN'T GOING TO WORK AS-IS!\n");
 	}
+	LogWriteSerial("MAPPING PH 0x%X VT 0x%X FL 0x%X\n", physical, virtual, flags);
 	*x86GetPageEntry(vas, virtual) = physical | flags;
 }
 
@@ -141,6 +142,7 @@ void ArchFlushTlb(struct vas* vas) {
 }
 
 void ArchInitVas(struct vas* vas) {
+	LogWriteSerial("initialising a VAS 0x%X\n", vas);
 	size_t virt = MapVirt(
 		0, 0, ARCH_PAGE_SIZE, VM_READ | VM_WRITE | VM_USER | VM_LOCK, NULL, 0
 	);
@@ -181,6 +183,11 @@ void ArchInitVirt(void) {
 		first_page_table[i] = (i * ARCH_PAGE_SIZE) | x86_PAGE_PRESENT | x86_PAGE_WRITE;
 	}
 
+	/*
+	 * TODO: we need to set up all of the page directories, so that cloned VASes
+	 * actually get the changes...
+	 */
+	
 	/*
 	 * Set up recursive mapping by mapping the 1024th page table to the page 
 	 * directory. See arch_vas_set_entry for an explaination of why we do this.

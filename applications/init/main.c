@@ -93,11 +93,10 @@ int main(void) {
 
         if (!strcmp(line, "fork\n")) {
             printf("About to fork()...\n");
+            fflush(stdout);
             pid_t ret = fork();
             printf("Fork returned %d!\n", ret);
-            while (true) {
-                ;
-            }
+            fflush(stdout);
         
         } else if (!strcmp(line, "clear\n")) {
             printf("\x1B[2J");

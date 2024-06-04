@@ -189,41 +189,51 @@ static int GetNextThreadId(void) {
     return result;
 }
 
-void CopyThreadOnFork(struct process* prcss, struct thread* old) {
+void ThreadForkInitialisation(void*) {
+    LogWriteSerial("A THREAD IN THE FORKED PROCESS IS RUNNING...\n");
+    while (true) {
+        ;
+    }
+}
+
+void ThreadExecuteInUsermode(void* arg) {
+    struct thread* thr = GetThread();
+
+    size_t entry_point;
+    int res = LoadProgramLoaderIntoAddressSpace(&entry_point);
+    if (res != 0) {
+        LogDeveloperWarning("COULDN'T LOAD PROGRAM LOADER!\n");
+        TerminateThread(thr);
+    }
+
+    size_t user_stack = CreateUserStack(USER_STACK_MAX_SIZE);
+
+    LockScheduler();
+    thr->stack_pointer = user_stack;
+    UnlockScheduler();
+
+    ArchFlushTlb(GetVas());
+    ArchSwitchToUsermode(entry_point, user_stack, arg);
+}
+
+void CreateInitialForkThread(struct process* prcss, struct thread* old) {
     assert(old->waiting_on_semaphore == NULL);
     assert(!old->needs_termination);
     assert(old->state == THREAD_STATE_RUNNING);
     assert(prcss != NULL);
     assert(old != NULL);
 
-    struct thread* thr = AllocHeap(sizeof(struct thread));
-    *thr = *old;
-    thr->state = THREAD_STATE_READY;
-    thr->time_used = 0;
-    thr->name = strdup(old->name);
-    thr->vas = prcss->vas;
-    thr->process = prcss;
-    CreateKernelStacks(thr, old->kernel_stack_size / 1024);
+    /*
+     * Because we use the same stack as last time, it will already have the
+     * correct return address for going back to where the user wanted, and 
+     * restore the registers. We don't go through thread initialisation like
+     * normal, as `ArchPrepareStack` only happens on new stacks, and that only 
+     * happens on `CreateUserStack`, which doesn't happen here.
+     */
+    LogWriteSerial("AAA\n");
+    struct thread* thr = CreateThreadEx(ThreadForkInitialisation, NULL, prcss->vas, "uforked", prcss, old->schedule_policy, old->priority, old->kernel_stack_size / 1024);
 
-    size_t new_stack_bottom = thr->kernel_stack_top - thr->kernel_stack_size;
-    size_t old_stack_bottom = old->kernel_stack_top - old->kernel_stack_size;
-    LogWriteSerial("OLD STACK: 0x%X\n", old_stack_bottom);
-    LogWriteSerial("NEW STACK: 0x%X\n", new_stack_bottom);
-    memcpy((void*) new_stack_bottom, (const void*) old_stack_bottom, thr->kernel_stack_size);
-    LogWriteSerial("STACK CONTENTS:\n    ");
-    for (size_t i = 0; i < thr->kernel_stack_size; i += sizeof(size_t)) {
-        LogWriteSerial("0x%X, ", *((size_t*) (new_stack_bottom + i)));
-        if ((i / sizeof(size_t)) % 8 == 7) {
-            LogWriteSerial("\n0x%X:    ", new_stack_bottom + i);
-        }
-    }
-
-    thr->stack_pointer += (thr->kernel_stack_top - old->kernel_stack_top);
-
-    LockScheduler();
-    LogWriteSerial("The forked thread is 0x%X. esp = 0x%X\n", thr, thr->stack_pointer);
-    ThreadListInsert(&ready_list, thr);
-    UnlockScheduler();
+    LogWriteSerial("FORKING THREAD 0x%X -> 0x%X\n", old, thr);
 }
 
 struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct vas* vas, const char* name, struct process* prcss, int policy, int priority, int kernel_stack_kb) {
@@ -271,26 +281,6 @@ static void UpdateTimesliceExpiry(void) {
     struct thread* thr = GetThread();
     thr->timeslice_expiry = GetSystemTimer() + thr->gifted_timeslice + (thr->priority == 255 ? 0 : (20 + thr->priority / 4) * 1000000ULL);
     thr->gifted_timeslice = 0;
-}
-
-void ThreadExecuteInUsermode(void* arg) {
-    struct thread* thr = GetThread();
-
-    size_t entry_point;
-    int res = LoadProgramLoaderIntoAddressSpace(&entry_point);
-    if (res != 0) {
-        LogDeveloperWarning("COULDN'T LOAD PROGRAM LOADER!\n");
-        TerminateThread(thr);
-    }
-
-    size_t user_stack = CreateUserStack(USER_STACK_MAX_SIZE);
-
-    LockScheduler();
-    thr->stack_pointer = user_stack;
-    UnlockScheduler();
-
-    ArchFlushTlb(GetVas());
-    ArchSwitchToUsermode(entry_point, user_stack, arg);
 }
 
 struct process* CreateUsermodeProcess(struct process* parent, const char* filename) {
@@ -395,8 +385,11 @@ void AssertSchedulerLockHeld(void) {
 }
 
 __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_thread, struct thread* new_thread) {
+    LogWriteSerial("SwitchToNewTask... nt = 0x%X\n", new_thread);
     new_thread->state = THREAD_STATE_RUNNING;
+    LogWriteSerial("A... ");
     ThreadListDeleteTop(&ready_list);
+    LogWriteSerial("B... ");
 
     /*
      * No IRQs allowed while this happens, as we need to protect the CPU structure.
@@ -404,14 +397,20 @@ __attribute__((returns_twice)) static void SwitchToNewTask(struct thread* old_th
      * calls GetCpu(), we'll be in a bit of strife.
      */
     struct cpu* cpu = GetCpu();
+    LogWriteSerial("C... ");
     AcquireSpinlock(&innermost_lock);
+    LogWriteSerial("D... ");
 
     if (new_thread->vas != old_thread->vas) {
+        LogWriteSerial("E... ");
         SetVas(new_thread->vas);
         LogWriteSerial("set vas...\n");
     }
+    LogWriteSerial("F... ");
 
     cpu->current_thread = new_thread;
+    LogWriteSerial("G... ");
+
     cpu->current_vas = new_thread->vas;
     LogWriteSerial("about to switch... esp = 0x%X\n", new_thread->stack_pointer);
     ArchSwitchThread(old_thread, new_thread);
