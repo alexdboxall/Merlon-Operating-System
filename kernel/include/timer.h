@@ -7,6 +7,11 @@ uint64_t GetSystemTimer(void);
 void ReceivedTimer(uint64_t nanos);
 void InitTimer(void);
 
+int CreateAlarmAbsolute(uint64_t system_time_ns, void (*callback)(void*), void* arg, int* id_out);
+int CreateAlarmMilli(uint32_t delta_ms, void (*callback)(void*), void* arg, int* id_out);
+int GetAlarmTimeRemaining(int id, uint64_t* time_left_out);
+int DestroyAlarm(int id, uint64_t* time_left_out);
+
 /*
  * Internal functions to do shenanigans
  */

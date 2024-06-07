@@ -12,6 +12,18 @@
 #include <priorityqueue.h>
 #include <threadlist.h>
 
+#define EXPIRED_ALARM ((uint64_t) -1)
+#define MAX_ALARMS 256
+
+struct alarm {
+    uint64_t wakeup_time;
+    void (*callback)(void*);
+    void* arg;
+};
+
+static struct alarm alarms[MAX_ALARMS];
+static int num_alarms_installed = 0;
+
 static struct spinlock timer_lock;
 static struct thread_list sleep_list;
 
@@ -79,6 +91,17 @@ bool TryDequeueForSleep(struct thread* thr) {
     return false;
 }
 
+static void HandleAlarms(uint64_t time) {
+    AssertSchedulerLockHeld();
+    for (int i = 0; i < MAX_ALARMS && num_alarms_installed > 0; ++i) {
+        if (alarms[i].wakeup_time <= time) {
+            alarms[i].wakeup_time = EXPIRED_ALARM;
+            num_alarms_installed--;
+            DeferUntilIrql(IRQL_STANDARD, alarms[i].callback, alarms[i].arg);
+        }
+    }
+}
+
 void HandleSleepWakeups(void* sys_time_ptr) {
     EXACT_IRQL(IRQL_STANDARD);
 
@@ -93,9 +116,10 @@ void HandleSleepWakeups(void* sys_time_ptr) {
 
     uint64_t system_time = *((uint64_t*) sys_time_ptr);
 
+    HandleAlarms(system_time);
+
     struct thread* iter = sleep_list.head;
     while (iter) {
-        /* TODO: probably whack an `|| (HasBeenSignalled())`*/
         if (iter->sleep_expiry <= system_time || iter->signal_intr) {
             ThreadListDelete(&sleep_list, iter);
             iter->timed_out = true;
@@ -133,4 +157,79 @@ int SleepNano(uint64_t delta_ns) {
 
 int SleepMilli(uint32_t delta_ms) {
     return SleepNano(((uint64_t) delta_ms) * 1000000ULL);
+}
+
+int CreateAlarmAbsolute(uint64_t system_time_ns, void (*callback)(void*), void* arg, int* id_out) {
+    if (system_time_ns < GetSystemTimer()) {
+        *id_out = -1;
+        return EALREADY;
+    }
+
+    LockScheduler();
+    if (num_alarms_installed >= MAX_ALARMS) {
+        UnlockScheduler();
+        *id_out = -1;
+        return EAGAIN;
+    }
+
+    for (int i = 0; i < MAX_ALARMS; ++i) {
+        if (alarms[i].wakeup_time == 0) {
+            alarms[i].wakeup_time = system_time_ns;
+            alarms[i].arg = arg;
+            alarms[i].callback = callback;
+            *id_out = i;
+            break;
+        }
+    }
+
+    ++num_alarms_installed;
+
+    UnlockScheduler();
+    return 0;
+}
+
+int CreateAlarmMilli(uint32_t delta_ms, void (*callback)(void*), void* arg, int* id_out) {
+    return CreateAlarmAbsolute(((uint64_t) delta_ms) * 1000000ULL, callback, arg, id_out);
+}
+
+static int UpdateAlarm(int id, uint64_t* time_left_out, bool destroy) {
+    if (id >= MAX_ALARMS) {
+        return EINVAL;
+    }
+    LockScheduler();
+    uint64_t sys_time = GetSystemTimer();
+    int retv = 0;
+
+    if (alarms[id].wakeup_time == 0) {
+        retv = EINVAL;
+    } else {
+        if (alarms[id].wakeup_time <= sys_time) {
+            /*
+             * In the time that they called `DestoryAlarm`, it went off. That's
+             * an odd situation, so just pretend it's still got a nanosecond to
+             * go, and hopefully the caller will retry.
+             */
+            *time_left_out = 1;
+
+        } else if (alarms[id].wakeup_time == EXPIRED_ALARM) {
+            *time_left_out = 0;
+        } else {
+            *time_left_out = alarms[id].wakeup_time - sys_time;
+        }
+
+        if (destroy) {
+            alarms[id].wakeup_time = 0;
+        }
+    }
+
+    UnlockScheduler();
+    return retv;
+}
+
+int GetAlarmTimeRemaining(int id, uint64_t* time_left_out) {
+    return UpdateAlarm(id, time_left_out, false);
+}
+
+int DestroyAlarm(int id, uint64_t* time_left_out) {
+    return UpdateAlarm(id, time_left_out, true);
 }
