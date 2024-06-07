@@ -170,6 +170,7 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "sigisemptyset")) return (size_t) sigisemptyset;
     if (!xstrcmp(name, "sigorset")) return (size_t) sigorset;
     if (!xstrcmp(name, "sigandset")) return (size_t) sigandset;
+    if (!xstrcmp(name, "alarm")) return (size_t) alarm;
     return (size_t) loltest;
 }
 

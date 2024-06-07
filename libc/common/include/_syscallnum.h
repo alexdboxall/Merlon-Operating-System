@@ -26,6 +26,7 @@ enum system_call_numbers {
     SYSCALL_NANOSLEEP,
     SYSCALL_SIGNAL,
     SYSCALL_PGID,
+    SYSCALL_ALARM,
     
     _SYSCALL_NUM_ENTRIES
 };

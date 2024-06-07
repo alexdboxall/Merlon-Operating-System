@@ -36,3 +36,4 @@ int SysTime(size_t, size_t, size_t, size_t, size_t);
 int SysNanosleep(size_t, size_t, size_t, size_t, size_t);
 int SysSignal(size_t, size_t, size_t, size_t, size_t);
 int SysPgid(size_t, size_t, size_t, size_t, size_t);
+int SysAlarm(size_t, size_t, size_t, size_t, size_t);

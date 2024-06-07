@@ -293,6 +293,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->blocked_signals = 0;
     thr->prev_blocked_signals = 0;
     thr->user_common_signal_handler = 0;
+    thr->alarm_id = -1;
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr, kernel_stack_kb == 0 ? DEFAULT_KERNEL_STACK_KB : 0);
     thr->stack_pointer = ArchPrepareStack(thr->kernel_stack_top);

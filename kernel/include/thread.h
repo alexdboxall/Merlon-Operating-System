@@ -83,7 +83,7 @@ struct thread {
     uint64_t gifted_timeslice;
 
     uint64_t sleep_expiry;
-    uint64_t alarm_expiry;
+    int alarm_id;
 };
 
 bool HasBeenSignalled();

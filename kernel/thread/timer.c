@@ -9,6 +9,7 @@
 #include <log.h>
 #include <arch.h>
 #include <thread.h>
+#include <ksignal.h>
 #include <priorityqueue.h>
 #include <threadlist.h>
 
@@ -188,8 +189,8 @@ int CreateAlarmAbsolute(uint64_t system_time_ns, void (*callback)(void*), void* 
     return 0;
 }
 
-int CreateAlarmMilli(uint32_t delta_ms, void (*callback)(void*), void* arg, int* id_out) {
-    return CreateAlarmAbsolute(((uint64_t) delta_ms) * 1000000ULL, callback, arg, id_out);
+int CreateAlarmMicro(uint64_t delta_us, void (*callback)(void*), void* arg, int* id_out) {
+    return CreateAlarmAbsolute(GetSystemTimer() + delta_us * 1000ULL, callback, arg, id_out);
 }
 
 static int UpdateAlarm(int id, uint64_t* time_left_out, bool destroy) {
@@ -232,4 +233,32 @@ int GetAlarmTimeRemaining(int id, uint64_t* time_left_out) {
 
 int DestroyAlarm(int id, uint64_t* time_left_out) {
     return UpdateAlarm(id, time_left_out, true);
+}
+
+static void UnixAlarmHandler(void* arg) {
+    uint64_t rem;
+    struct thread* thr = (struct thread*) arg;
+    RaiseSignal(thr, SIGALRM, false);
+    DestroyAlarm(thr->alarm_id, &rem);
+}
+
+int InstallUnixAlarm(uint64_t microseconds, uint64_t* remaining_microsecs) {
+    LockScheduler();
+    uint64_t time_left;
+    int res = DestroyAlarm(GetThread()->alarm_id, &time_left);
+    GetThread()->alarm_id = -1;
+    if (res == 0) {
+        *remaining_microsecs = (time_left + 999ULL) / 1000ULL;
+    }
+    UnlockScheduler();
+    if (res != 0) {
+        return EINVAL;
+    }
+    if (microseconds != 0) {
+        res = CreateAlarmMicro(microseconds, UnixAlarmHandler, GetThread(), &(GetThread()->alarm_id));
+        if (res != 0) {
+            return res;
+        }
+    }
+    return 0;
 }
