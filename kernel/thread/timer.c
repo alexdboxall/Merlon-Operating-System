@@ -9,6 +9,7 @@
 #include <log.h>
 #include <arch.h>
 #include <thread.h>
+#include <string.h>
 #include <ksignal.h>
 #include <priorityqueue.h>
 #include <threadlist.h>
@@ -67,6 +68,7 @@ uint64_t GetSystemTimer(void) {
 void InitTimer(void) {
     InitSpinlock(&timer_lock, "timer", IRQL_TIMER);
     ThreadListInit(&sleep_list, NEXT_INDEX_SLEEP);
+    memset(alarms, 0, sizeof(alarms));
 }
 
 void QueueForSleep(struct thread* thr) {
@@ -95,7 +97,7 @@ bool TryDequeueForSleep(struct thread* thr) {
 static void HandleAlarms(uint64_t time) {
     AssertSchedulerLockHeld();
     for (int i = 0; i < MAX_ALARMS && num_alarms_installed > 0; ++i) {
-        if (alarms[i].wakeup_time <= time) {
+        if (alarms[i].wakeup_time <= time && alarms[i].wakeup_time != 0 && alarms[i].wakeup_time != EXPIRED_ALARM) {
             alarms[i].wakeup_time = EXPIRED_ALARM;
             num_alarms_installed--;
             DeferUntilIrql(IRQL_STANDARD, alarms[i].callback, alarms[i].arg);
@@ -194,7 +196,7 @@ int CreateAlarmMicro(uint64_t delta_us, void (*callback)(void*), void* arg, int*
 }
 
 static int UpdateAlarm(int id, uint64_t* time_left_out, bool destroy) {
-    if (id >= MAX_ALARMS) {
+    if (id >= MAX_ALARMS || id < 0) {
         return EINVAL;
     }
     LockScheduler();
@@ -243,22 +245,20 @@ static void UnixAlarmHandler(void* arg) {
 }
 
 int InstallUnixAlarm(uint64_t microseconds, uint64_t* remaining_microsecs) {
-    LockScheduler();
-    uint64_t time_left;
+    uint64_t time_left = 4;
     int res = DestroyAlarm(GetThread()->alarm_id, &time_left);
+
     GetThread()->alarm_id = -1;
     if (res == 0) {
         *remaining_microsecs = (time_left + 999ULL) / 1000ULL;
     }
-    UnlockScheduler();
-    if (res != 0) {
-        return EINVAL;
-    }
+
     if (microseconds != 0) {
         res = CreateAlarmMicro(microseconds, UnixAlarmHandler, GetThread(), &(GetThread()->alarm_id));
         if (res != 0) {
             return res;
         }
     }
+
     return 0;
 }

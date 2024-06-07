@@ -50,6 +50,20 @@ static void ShowDateAndTime(void) {
     printf("%s\n", ctime(&curtime));
 }
 
+void alarm_handler(int sig) {
+    (void) sig;
+    printf("Got the alarm!\n");
+}
+
+static void AlarmTest(void) {
+    printf("Testing `alarm()` and `pause()`\n");
+    signal(SIGALRM, alarm_handler);
+    printf("In 3 seconds, we should receive the alarm.\n");
+    alarm(3);
+    pause();
+    printf("That's all!\n\n");
+}
+
 void div0_handler(int) {
     printf("Uh oh, we divided by zero!!\n");
     abort();
@@ -101,6 +115,9 @@ int main(void) {
         } else if (!strcmp(line, "clear\n")) {
             printf("\x1B[2J");
             fflush(stdout);
+
+        } else if (!strcmp(line, "alarm_test\n") || !strcmp(line, "alarm test\n")) {
+            AlarmTest();
 
         } else if (!strcmp(line, "sleep_test\n") || !strcmp(line, "sleep test\n")) {
             for (int i = 0; i < 10; ++i) {
