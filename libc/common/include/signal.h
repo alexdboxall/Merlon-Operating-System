@@ -62,3 +62,6 @@ int sigfillset(sigset_t *set);
 int sigaddset(sigset_t *set, int signum);
 int sigdelset(sigset_t *set, int signum);
 int sigismember(const sigset_t *set, int signum);
+int sigisemptyset(const sigset_t *set);
+int sigorset(sigset_t* dest, const sigset_t* left, const sigset_t* right);
+int sigandset(sigset_t* dest, const sigset_t* left, const sigset_t* right);

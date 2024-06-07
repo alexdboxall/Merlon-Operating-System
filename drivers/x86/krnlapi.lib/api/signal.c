@@ -195,3 +195,29 @@ int sigismember(const sigset_t *set, int signum) {
 
     return (*set & (1 << signum)) ? 1 : 0;
 }
+
+int sigisemptyset(const sigset_t* set) {
+    if (set == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    return *set == 0;
+}
+
+int sigorset(sigset_t* dest, const sigset_t* left, const sigset_t* right) {
+    if (dest == NULL || left == NULL || right == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    *dest = *left | *right;
+    return 0;
+}
+
+int sigandset(sigset_t* dest, const sigset_t* left, const sigset_t* right) {
+    if (dest == NULL || left == NULL || right == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    *dest = *left & *right;
+    return 0;
+}
