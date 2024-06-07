@@ -162,6 +162,11 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "pause")) return (size_t) pause;
     if (!xstrcmp(name, "sigsuspend")) return (size_t) sigsuspend;
     if (!xstrcmp(name, "sigprocmask")) return (size_t) sigprocmask;
+    if (!xstrcmp(name, "sigemptyset")) return (size_t) sigemptyset;
+    if (!xstrcmp(name, "sigfillset")) return (size_t) sigfillset;
+    if (!xstrcmp(name, "sigaddset")) return (size_t) sigaddset;
+    if (!xstrcmp(name, "sigdelset")) return (size_t) sigdelset;
+    if (!xstrcmp(name, "sigismember")) return (size_t) sigismember;
     return (size_t) loltest;
 }
 

@@ -137,3 +137,61 @@ int pause(void) {
     }
     return 0;
 }
+
+
+int sigemptyset(sigset_t* set) {
+    if (set == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    *set = 0;
+    return 0;
+}
+
+int sigfillset(sigset_t* set) {
+    if (set == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    *set = -1;
+    return 0;
+}
+
+int sigaddset(sigset_t* set, int signum) {
+    if (set == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    if (signum >= _SIG_UPPER_BND) {
+        errno = EINVAL;
+        return -1;
+    }
+    *set |= (1 << signum);
+    return 0;
+}
+
+int sigdelset(sigset_t *set, int signum) {
+    if (set == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    if (signum >= _SIG_UPPER_BND) {
+        errno = EINVAL;
+        return -1;
+    }
+    *set &= ~(1 << signum);
+    return 0;   
+}
+
+int sigismember(const sigset_t *set, int signum) {
+    if (set == NULL) {
+        errno = EFAULT;
+        return -1;
+    }
+    if (signum >= _SIG_UPPER_BND) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    return (*set & (1 << signum)) ? 1 : 0;
+}
