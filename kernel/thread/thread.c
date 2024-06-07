@@ -283,6 +283,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->name = strdup(name);
     thr->priority = priority;
     thr->needs_termination = false;
+    thr->needs_stopping = false;
     thr->waiting_on_semaphore = NULL;
     thr->schedule_policy = policy;
     thr->timeslice_expiry = GetSystemTimer() + TIMESLICE_LENGTH_MS;
@@ -290,6 +291,7 @@ struct thread* CreateThreadEx(void(*entry_point)(void*), void* argument, struct 
     thr->signal_intr = false;
     thr->pending_signals = 0;
     thr->blocked_signals = 0;
+    thr->prev_blocked_signals = 0;
     thr->user_common_signal_handler = 0;
     thr->thread_id = GetNextThreadId();
     CreateKernelStacks(thr, kernel_stack_kb == 0 ? DEFAULT_KERNEL_STACK_KB : 0);
@@ -525,6 +527,10 @@ void Schedule(void) {
     if (GetThread()->needs_termination) {
         TerminateThread(GetThread());
         Panic(PANIC_IMPOSSIBLE_RETURN);
+    }
+
+    if (GetThread()->needs_stopping) {
+        StopThread(GetThread());
     }
 }
 

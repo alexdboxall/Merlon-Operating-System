@@ -31,6 +31,10 @@
 #include <signal.h>
 #include <sys/types.h>
 
+#define CTRL_C ('C' - 64)
+#define CTRL_Q ('Q' - 64)
+#define CTRL_Z ('Z' - 64)
+
 #define INTERNAL_BUFFER_SIZE 4096   // used to communicate with master and sub   
                                     // used for displaying, so larger buffer
                                     // means text prints faster
@@ -86,26 +90,6 @@ static void AddToSubordinateLineBuffer(struct vnode* node, char c, int width) {
     internal->line_buffer_pos++;
 }
 
-static void SendCtrlC(pid_t pgid) {
-    LogWriteSerial("sending CTRL+C to pgid %d\n", pgid);
-
-    struct linked_list* prcsses = GetProcessesFromPgid(pgid);
-    struct linked_list_node* node = ListGetFirstNode(prcsses);
-
-    LockScheduler();
-    while (node != NULL) {
-        struct process* p = ListGetDataFromNode(node);
-        LogWriteSerial("Found prcss %d\n", p->pid);
-        struct tree* threads = p->threads;
-        if (threads->root != NULL && threads->root->data != NULL) {
-            LogWriteSerial("Signalling thread 0x%X\n", threads->root->data);
-            RaiseSignal((struct thread*) threads->root->data, SIGINT, false);
-        }
-        node = ListGetNextNode(node);
-    }
-    UnlockScheduler();
-}
-
 static void LineProcessor(void* sub_) {
     //SetThreadPriority(GetThread(), SCHEDULE_POLICY_FIXED, FIXED_PRIORITY_KERNEL_HIGH);
 
@@ -150,11 +134,13 @@ static void LineProcessor(void* sub_) {
          * ASCII 3 is `CTRL+C`, and so we want to handle that straight away so
          * we can send SIGINT. 
          */
-        if (c == '\n' || c == 3 || !canon) {
-            LogWriteSerial("FLUSHING BUFFER...\n");
-            if (c == 3) {
-                LogWriteSerial("SENDING CTRL+C...\n");
-                SendCtrlC(internal->controlling_pgid);
+        if (c == '\n' || c == CTRL_C || c == CTRL_Q || c == CTRL_Z || !canon) {
+            if (c == CTRL_C) {
+                RaiseSignalToProcessGroup(internal->controlling_pgid, SIGINT);
+            } else if (c == CTRL_Q) {
+                RaiseSignalToProcessGroup(internal->controlling_pgid, SIGCONT);
+            } else if (c == CTRL_Z) {
+                RaiseSignalToProcessGroup(internal->controlling_pgid, SIGSTOP);
             }
             FlushSubordinateLineBuffer(node);
         }

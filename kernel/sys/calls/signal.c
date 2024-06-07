@@ -10,6 +10,16 @@
 #include <tree.h>
 #include <process.h>
 
+/*
+ * TODO: should split up into:
+ *
+ * SysSignalInternal (op 0, 1)
+ * SysKill (op 2)
+ * SysSigsuspend (op 3)
+ * SysSigprocmask (op 4)
+ * 
+ * Also make the args less arcane...
+ */
 int SysSignal(size_t op, size_t ptr_arg, size_t sig_num, size_t arg, size_t) {
     struct thread* thr = GetThread();
     if (op == 0) {
@@ -27,6 +37,14 @@ int SysSignal(size_t op, size_t ptr_arg, size_t sig_num, size_t arg, size_t) {
         /*
          * This call is the "end of signal" call - i.e. sigreturn
          */
+
+        if (sig_num >= _SIG_UPPER_BND) {
+            /*
+             * Prevent dodgy user processes from trying to muck up the internal
+             * blocked signal state.
+             */
+            return EINVAL;
+        }
         thr->blocked_signals &= ~(1 << sig_num);
         return 0;
 
@@ -61,6 +79,49 @@ int SysSignal(size_t op, size_t ptr_arg, size_t sig_num, size_t arg, size_t) {
         }
         return ENOSYS;
 
+    } else if (op == 3) {
+        /*
+         * This is the `sigsuspend` call.
+         */
+
+        sigset_t new_mask;
+        sigset_t old_mask;
+        struct transfer io;
+        int res;
+
+        io = CreateTransferReadingFromUser((void*) ptr_arg, sizeof(sigset_t), 0);
+        res = PerformTransfer(&new_mask, &io, sizeof(sigset_t));
+        if (res != 0) {
+            return res;
+        }
+
+        res = SuspendForSignal(new_mask, &old_mask, true);
+        if (res != EINTR) {
+            return res;
+        }
+
+        io = CreateTransferWritingToUser((void*) arg, sizeof(sigset_t), 0);
+        return PerformTransfer(&old_mask, &io, sizeof(sigset_t));
+
+    } else if (op == 4) {
+        /*
+         * `sigprocmask`
+         */
+        sigset_t old_mask;
+        sigset_t changes;
+        struct transfer io;
+        int res;
+
+        io = CreateTransferReadingFromUser((void*) ptr_arg, sizeof(sigset_t), 0);
+        res = PerformTransfer(&changes, &io, sizeof(sigset_t));
+        if (res != 0) {
+            return res;
+        }
+
+        res = SetSignalProtectionMask(sig_num, &changes, &old_mask, true);
+    
+        io = CreateTransferWritingToUser((void*) arg, sizeof(sigset_t), 0);
+        return PerformTransfer(&old_mask, &io, sizeof(sigset_t));
 
     } else {
         return EINVAL;

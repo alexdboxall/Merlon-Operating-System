@@ -19,6 +19,7 @@
 #include <vfs.h>
 #include <process.h>
 #include <log.h>
+#include <ksignal.h>
 #include <linkedlist.h>
 
 struct process_table_node {
@@ -325,6 +326,7 @@ static void KillProcessHelper(void* arg) {
         struct process* parent = GetProcessFromPid(prcss->parent);
         assert(parent != NULL);
         ReleaseSemaphore(parent->killed_children_semaphore);
+        RaiseSignal(GetArbitraryThreadFromProcess(parent), SIGCHLD, false);
     }
 
     TerminateThread(GetThread());
@@ -472,4 +474,13 @@ pid_t WaitProcess(pid_t pid, int* status, int flags) {
     }
 
     return result;
+}
+
+struct thread* GetArbitraryThreadFromProcess(struct process* p) {
+    struct tree* threads = p->threads;
+    if (threads->root != NULL && threads->root->data != NULL) {
+        return (struct thread*) threads->root->data;
+    } else {
+        return NULL;
+    }
 }

@@ -37,3 +37,5 @@ struct fd_table* GetFdTable(struct process* prcss);
 
 void AddThreadToProcess(struct process* prcss, struct thread* thr);
 struct process* CreateProcessWithEntryPoint(pid_t parent, void(*entry_point)(void*), void* arg);
+
+struct thread* GetArbitraryThreadFromProcess(struct process* p);

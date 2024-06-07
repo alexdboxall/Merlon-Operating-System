@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common.h>
+#include <signal.h>
 
 struct semaphore;
 struct process;
@@ -11,6 +12,8 @@ struct process;
 #define THREAD_STATE_WAITING_FOR_SEMAPHORE                  3
 #define THREAD_STATE_WAITING_FOR_SEMAPHORE_WITH_TIMEOUT     4
 #define THREAD_STATE_TERMINATED                             5
+#define THREAD_STATE_STOPPED                                6
+#define THREAD_STATE_WAITING_FOR_SIGNAL                     7
 
 #define SCHEDULE_POLICY_FIXED             0
 #define SCHEDULE_POLICY_USER_HIGHER       1
@@ -59,14 +62,16 @@ struct thread {
     bool timed_out;
     bool timed_out_due_to_signal;
     bool needs_termination;
+    bool needs_stopping;        // SIGSTOP
 
     struct semaphore* waiting_on_semaphore;
 
     struct process* process;
 
     bool signal_intr;
-    uint32_t pending_signals;
-    uint32_t blocked_signals;
+    sigset_t pending_signals;
+    sigset_t blocked_signals;
+    sigset_t prev_blocked_signals;
     size_t user_common_signal_handler;
 
     /*
@@ -107,6 +112,9 @@ void BlockThread(int reason);
 void UnblockThread(struct thread* thr);
 void UnblockThreadGiftingTimeslice(struct thread* thr);
 int SetThreadPriority(struct thread* thread, int policy, int priority);
+
+void StopThread(struct thread* thr);
+void ContinueThread(struct thread* thr);
 
 int SleepUntil(uint64_t system_time_ns);
 int SleepNano(uint64_t delta_ns);

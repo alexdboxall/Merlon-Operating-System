@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <sys/types.h>
 
+typedef uint32_t sigset_t;
+
 /*
  * SIG_DFL must be 0, as we memset() the default signal structure to zero.
  */
@@ -43,6 +45,10 @@
                             // AS WE USE UINT32_T AT THE MOMENT FOR HOLDING
                             // SIGNAL INFO (to speed up `FindSignalToHandle`,
                             // which runs on every IRQ)
+                            
+#define SIG_BLOCK   1
+#define SIG_UNBLOCK 2
+#define SIG_SETMASK 3
 
 void (*signal(int sig, void (*func)(int)))(int);
 int raise(int sig);
