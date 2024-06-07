@@ -89,20 +89,20 @@ int SysSignal(size_t op, size_t ptr_arg, size_t sig_num, size_t arg, size_t) {
         struct transfer io;
         int res;
 
-        io = CreateTransferReadingFromUser((void*) ptr_arg, sizeof(sigset_t), 0);
-        res = PerformTransfer(&new_mask, &io, sizeof(sigset_t));
-        if (res != 0) {
-            return res;
+        if (ptr_arg == 0) {
+            return PauseForSignal();
+            
+        } else {
+            io = CreateTransferReadingFromUser((void*) ptr_arg, sizeof(sigset_t), 0);
+            res = PerformTransfer(&new_mask, &io, sizeof(sigset_t));
+            if (res != 0) {
+                return res;
+            }
+
+            return SuspendForSignal(new_mask, &old_mask, true);
         }
-
-        res = SuspendForSignal(new_mask, &old_mask, true);
-        if (res != EINTR) {
-            return res;
-        }
-
-        io = CreateTransferWritingToUser((void*) arg, sizeof(sigset_t), 0);
-        return PerformTransfer(&old_mask, &io, sizeof(sigset_t));
-
+        
+        
     } else if (op == 4) {
         /*
          * `sigprocmask`
@@ -118,7 +118,7 @@ int SysSignal(size_t op, size_t ptr_arg, size_t sig_num, size_t arg, size_t) {
             return res;
         }
 
-        res = SetSignalProtectionMask(sig_num, &changes, &old_mask, true);
+        res = SetBlockedSignals(sig_num, &changes, &old_mask, true);
     
         io = CreateTransferWritingToUser((void*) arg, sizeof(sigset_t), 0);
         return PerformTransfer(&old_mask, &io, sizeof(sigset_t));

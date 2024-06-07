@@ -145,7 +145,7 @@ static void ProtectSpecialSignals(sigset_t* blocked) {
 }
 
 /*
- * Can be used to implement `pause()` and `sigsuspend()`.
+ * Can be used to implement `sigsuspend()`.
  */
 int SuspendForSignal(sigset_t new_mask, sigset_t* old_mask, bool protect) {
     if (old_mask == NULL) {
@@ -162,13 +162,24 @@ int SuspendForSignal(sigset_t new_mask, sigset_t* old_mask, bool protect) {
     }
     BlockThread(THREAD_STATE_WAITING_FOR_SIGNAL);
     UnlockScheduler();
+    Schedule();
+    LockScheduler();
+    thr->blocked_signals = thr->prev_blocked_signals;
+    UnlockScheduler();
+    return EINTR;
+}
+
+int PauseForSignal(void) {
+    LockScheduler();
+    BlockThread(THREAD_STATE_WAITING_FOR_SIGNAL);
+    UnlockScheduler();
     return EINTR;
 }
 
 /*
  * `sigprocmask()`
  */
-int SetSignalProtectionMask(int how, sigset_t* changes, sigset_t* old, bool protect) {
+int SetBlockedSignals(int how, sigset_t* changes, sigset_t* old, bool protect) {
     if (changes == NULL) {
         return EFAULT;
     }

@@ -59,7 +59,6 @@ void (*signal_handers[_SIG_UPPER_BND])(int) = {0};
 
 int OsCommonSignalHandler(int sig_num) {
     if (sig_num < _SIG_UPPER_BND) {
-        dbgprintf("Got signal %d\n", sig_num);
         if (signal_handers[sig_num] == NULL) {
             signal_handers[sig_num] = SignalDefault;
         }
@@ -101,4 +100,40 @@ int raise(int sig) {
 
 int kill(pid_t pid, int sig) {
     return _system_call(SYSCALL_SIGNAL, 2, 0, sig, pid, 0);
+}
+
+int sigprocmask(int how, const sigset_t* restrict set, sigset_t* restrict oldset) {
+    if (set == NULL) {
+        return EFAULT;
+    }
+    sigset_t changes = *set;
+    sigset_t old;
+    
+    int res = _system_call(SYSCALL_SIGNAL, 4, (size_t) &changes, how, (size_t) &old, 0);
+    if (oldset != NULL) {
+        *oldset = old;
+    }
+    if (res != 0) {
+        errno = res;
+        return -1;
+    }
+    return 0;
+}
+
+int sigsuspend(const sigset_t* mask) {
+    int res = _system_call(SYSCALL_SIGNAL, 3, (size_t) mask, 0, 0, 0);
+    if (res != 0) {
+        errno = res;
+        return -1;
+    }
+    return 0;
+}
+
+int pause(void) {
+    int res = _system_call(SYSCALL_SIGNAL, 3, 0, 0, 0, 0);
+    if (res != 0) {
+        errno = res;
+        return -1;
+    }
+    return 0;
 }

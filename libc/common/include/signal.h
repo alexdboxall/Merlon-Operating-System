@@ -53,3 +53,6 @@ typedef uint32_t sigset_t;
 void (*signal(int sig, void (*func)(int)))(int);
 int raise(int sig);
 int kill(pid_t pid, int sig);
+
+int sigprocmask(int how, const sigset_t* restrict set, sigset_t* restrict oldset);
+int sigsuspend(const sigset_t* mask);

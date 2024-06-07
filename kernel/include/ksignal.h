@@ -12,5 +12,6 @@ size_t HandleSignal(int sig_num);
 
 #include <signal.h>
 
-int SetSignalProtectionMask(int how, sigset_t* changes, sigset_t* old, bool protect);
+int SetBlockedSignals(int how, sigset_t* changes, sigset_t* old, bool protect);
 int SuspendForSignal(sigset_t new_mask, sigset_t* old_mask, bool protect);
+int PauseForSignal(void);

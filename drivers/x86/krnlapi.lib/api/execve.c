@@ -159,6 +159,9 @@ size_t resolve_address(char* name) {
     if (!xstrcmp(name, "OsInitSignals")) return (size_t) OsInitSignals;
     if (!xstrcmp(name, "getpgid")) return (size_t) getpgid;
     if (!xstrcmp(name, "setpgid")) return (size_t) setpgid;
+    if (!xstrcmp(name, "pause")) return (size_t) pause;
+    if (!xstrcmp(name, "sigsuspend")) return (size_t) sigsuspend;
+    if (!xstrcmp(name, "sigprocmask")) return (size_t) sigprocmask;
     return (size_t) loltest;
 }
 

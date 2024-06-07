@@ -47,4 +47,6 @@ char* getcwd(char* buf, size_t size);
 int usleep(useconds_t usec);
 unsigned sleep(unsigned seconds);
 
+int pause(void);
+
 #endif
